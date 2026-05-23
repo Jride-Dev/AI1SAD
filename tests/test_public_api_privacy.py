@@ -122,6 +122,16 @@ class FakeDB:
     def __init__(self):
         self.collections = {
             COLLECTIONS["incidents"]: FakeCollection([PUBLIC_INCIDENT, PRIVATE_INCIDENT, RESTRICTED_INCIDENT]),
+            COLLECTIONS["private_notes"]: FakeCollection(
+                [
+                    {
+                        "_id": "private-note-1",
+                        "visibility": "private",
+                        "incident_id": "public-1",
+                        "note": "Do not expose this private analyst note",
+                    }
+                ]
+            ),
             COLLECTIONS["sources"]: FakeCollection(
                 [
                     {"_id": "public-source", "name": "public-source", "visibility": "public"},
@@ -179,7 +189,15 @@ class PublicApiPrivacyTests(unittest.TestCase):
         self.assertEqual([item["_id"] for item in response.json()], ["public-location"])
         self.assertEqual(self.db[COLLECTIONS["locations"]].last_find_query["visibility"], "public")
 
+    def test_private_notes_collection_has_no_public_route(self):
+        response = self.client.get("/api/v1/private_notes")
+        self.assertEqual(response.status_code, 404)
+
+        incident_response = self.client.get("/api/v1/incidents/public-1")
+        self.assertEqual(incident_response.status_code, 200)
+        self.assertNotIn("private", str(incident_response.json()).lower())
+        self.assertIsNone(self.db[COLLECTIONS["private_notes"]].last_find_query)
+
 
 if __name__ == "__main__":
     unittest.main()
-

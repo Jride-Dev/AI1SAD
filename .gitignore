@@ -11,6 +11,10 @@ venv/
 # source notes, URLs, and other details unsuitable for public publishing.
 data/raw/*
 !data/raw/README.md
+data/raw/external/
+data/processed/
+reports/*.json
+reports/*.csv
 
 # Generated public artifacts can be rebuilt from raw data.
 data/public/*.csv

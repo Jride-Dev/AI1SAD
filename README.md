@@ -1,66 +1,92 @@
 # AI1SAD
 
-All-in-1 Shark Attack Database connecting gathered information around the world.
+All-in-1 Shark Attack Database connecting gathered public shark-incident information around the world.
 
-AI1SAD is a GitHub-ready FastAPI project for serving privacy-preserving shark attack incident records from local raw data.
+AI1SAD is a FastAPI + MongoDB Atlas project for serving privacy-preserving shark incident records. The API is designed for public analysis, dashboards, and research workflows while keeping raw source files, victim-identifying fields, private notes, and restricted material out of public responses.
 
-The project keeps original source files under `data/raw`, keeps hidden or sensitive working material under `data/private`, and exports only sanitized public records to `data/public`.
+## What The API Provides
 
-## Quickstart
+- Public incident search and lookup
+- Yearly, country, region, activity, species, and fatality-rate stats
+- Nearby location lookup using MongoDB geospatial indexes
+- Public source metadata
+- Seed scripts for turning cleaned local data into MongoDB Atlas collections
+
+## Local Setup
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python scripts/inspect_source.py
-python scripts/export_public.py
+```
+
+Create a local `.env` file. Do not commit it.
+
+```text
+MONGODB_URI=<your-mongodb-atlas-connection-string>
+MONGODB_DATABASE=AI1SAD
+SHARK_ATTACK_API_TITLE=AI1SAD Shark Attack Data API
+```
+
+Build and seed the MongoDB collections:
+
+```powershell
+python scripts/build_complete_database.py
+python scripts/seed_mongodb_collections.py --replace
+```
+
+Run the API:
+
+```powershell
 uvicorn app.main:app --reload
 ```
 
 Open `http://127.0.0.1:8000/docs` for interactive API documentation.
 
-## Data Pipeline
-
-1. Put original source files in `data/raw`.
-2. Use `python scripts/inspect_source.py` to inspect columns, counts, duplicate headers, and raw file inventory.
-3. Use `python scripts/export_public.py` to create:
-   - `data/public/incidents_public.csv`
-   - `data/public/shark_attacks.sqlite`
-4. Start the API with `uvicorn app.main:app --reload`.
-
-The export excludes victim names, investigator/source notes, PDF links, private notes, exact street addresses, and restricted-source content.
-
 ## API Endpoints
 
 - `GET /health`
-- `GET /incidents`
-- `GET /incidents/{incident_id}`
-- `GET /stats/yearly`
-- `GET /stats/countries`
-- `GET /stats/activities`
-- `GET /stats/fatality-rate`
-- `GET /species`
-- `GET /locations`
+- `GET /api/v1/incidents`
+- `GET /api/v1/incidents/{id}`
+- `GET /api/v1/stats/yearly`
+- `GET /api/v1/stats/by-country`
+- `GET /api/v1/stats/by-region`
+- `GET /api/v1/stats/by-activity`
+- `GET /api/v1/stats/by-species`
+- `GET /api/v1/stats/fatality-rate`
+- `GET /api/v1/locations/nearby`
+- `GET /api/v1/sources`
 
-See [docs/API.md](docs/API.md) for details.
+See [docs/API.md](docs/API.md) for parameters and sample responses.
 
-## Repository Layout
+## MongoDB Collections
 
-```text
-app/                  FastAPI application
-scripts/              Inspection, cleaning, normalization, and export scripts
-tests/                Basic privacy and normalization tests
-data/raw/             Original source files, preserved locally and ignored by Git
-data/private/         Sensitive or hidden local-only files; ignored by Git
-data/public/          Generated sanitized public artifacts
-docs/                 API, schema, source, and ethics documentation
-```
+- `incidents`
+- `sources`
+- `species`
+- `locations`
+- `ingestion_runs`
+- `data_quality_reports`
+- `private_notes`
+
+Public API routes read only public-safe collections and always filter returned records with `visibility="public"`. Internal collections have no public route.
+
+## Safety And Privacy Warning
+
+Raw shark incident files can contain victim names, investigator/source notes, PDF links, exact locations, and restricted-source material. Keep raw files local. Never commit `.env`, `data/raw`, `data/raw/external`, `data/processed`, `reports`, `data/private`, MongoDB exports, or private notes.
+
+The API must not expose:
+
+- Victim names
+- Private notes
+- Investigator or source notes
+- Restricted records
+- PDF or href links
+- Exact street addresses
+- Raw geocode caches
 
 ## Validation
 
 ```powershell
 python -m unittest discover -s tests -p "test_*.py"
-python scripts/inspect_source.py --raw-dir data/raw --source attacks.csv
-python scripts/export_public.py
 ```
-

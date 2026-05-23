@@ -5,7 +5,7 @@ MongoDB credentials must stay in a local `.env` file or process environment. Do 
 Required local environment:
 
 ```text
-MONGODB_URI=mongodb+srv://user:password@example.mongodb.net/?appName=AI1SAD
+MONGODB_URI=<your-mongodb-atlas-connection-string>
 MONGODB_DATABASE=AI1SAD
 ```
 
