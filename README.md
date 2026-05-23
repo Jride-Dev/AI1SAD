@@ -1,6 +1,8 @@
-# Shark Attack Data API
+# AI1SAD
 
-GitHub-ready FastAPI project for serving privacy-preserving shark attack incident records from local raw data.
+All-in-1 Shark Attack Database connecting gathered information around the world.
+
+AI1SAD is a GitHub-ready FastAPI project for serving privacy-preserving shark attack incident records from local raw data.
 
 The project keeps original source files under `data/raw`, keeps hidden or sensitive working material under `data/private`, and exports only sanitized public records to `data/public`.
 
@@ -62,4 +64,3 @@ python scripts/inspect_source.py --raw-dir data/raw --source attacks.csv
 python scripts/export_public.py
 ```
 
-If your OneDrive folder blocks process-level writes, run the same scripts with output paths outside OneDrive, then copy the artifacts back through your normal file manager.
