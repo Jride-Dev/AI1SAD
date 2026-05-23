@@ -1,0 +1,35 @@
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+
+
+def load_env(path: Path = Path(".env")) -> None:
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+@dataclass(frozen=True)
+class Settings:
+    mongodb_uri: str
+    mongodb_database: str
+    api_title: str = "AI1SAD Shark Attack Data API"
+
+
+@lru_cache
+def get_settings() -> Settings:
+    load_env()
+    return Settings(
+        mongodb_uri=os.getenv("MONGODB_URI", ""),
+        mongodb_database=os.getenv("MONGODB_DATABASE", "AI1SAD"),
+        api_title=os.getenv("SHARK_ATTACK_API_TITLE", "AI1SAD Shark Attack Data API"),
+    )
+

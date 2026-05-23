@@ -1,50 +1,101 @@
 # Schema
 
-The initial schema was generated after inspecting `attacks.csv`, which contains the following source columns:
+The MongoDB Atlas phase uses seven collections.
 
-```text
-Case Number, Date, Year, Type, Country, Area, Location, Activity, Name,
-Sex , Age, Injury, Fatal (Y/N), Time, Species , Investigator or Source,
-pdf, href formula, href, Case Number, Case Number, original order, , 
-```
+## incidents
 
-The source file includes duplicate `Case Number` columns and blank trailing columns. The public schema intentionally keeps only fields useful for aggregate analysis and removes direct identifiers and restricted-source fields.
+API-facing scrubbed incident records.
 
-## Table: public_incidents
+Important fields:
 
-| Column | Type | Description |
-| --- | --- | --- |
-| `incident_id` | TEXT primary key | Stable SHA-256-derived public ID. |
-| `case_number_public` | TEXT | Cleaned public case number when present. |
-| `date_text` | TEXT | Original date text, retained because many historical dates are approximate. |
-| `year` | INTEGER | Parsed incident year. |
-| `incident_type` | TEXT | Source incident type, such as provoked or unprovoked. |
-| `country_normalized` | TEXT | Uppercase country label. |
-| `area_normalized` | TEXT | State, province, region, or broad area. |
-| `location_public` | TEXT | Generalized location with street addresses redacted. |
-| `activity_normalized` | TEXT | Lowercase activity label. |
-| `sex` | TEXT | Source sex value where available. |
-| `age` | TEXT | Source age text where available. |
-| `injury_summary` | TEXT | Truncated injury text with simple name redaction. |
-| `fatal` | INTEGER | `1` for fatal, `0` otherwise. |
-| `time_text` | TEXT | Source time text where available. |
-| `species_normalized` | TEXT | Lowercase shark species or description. |
+- `_id`: stable public source-row ID
+- `canonical_key`: dedupe key shared by duplicate source rows
+- `visibility`: `public`, `private`, or `restricted`
+- `date`: `text`, `year`, `month`, `day`
+- `incident_type`
+- `country`
+- `region`
+- `location.name`
+- `location.geo`: GeoJSON point with `[longitude, latitude]`
+- `activity`
+- `sex`
+- `age`
+- `injury_summary`
+- `fatal`
+- `species.common`
+- `species.scientific`
+- `source.name`
+- `source.path`
+- `source.row_number`
+- `source.source_record_id`
+- `duplicate.is_duplicate`
+- `duplicate.duplicate_of`
+
+Excluded from this collection: victim names, investigator/source notes, PDF links, href links, private notes, exact street addresses, and restricted raw content.
+
+## sources
+
+Public source metadata:
+
+- `_id`
+- `name`
+- `visibility`
+- `source_url`
+- `path`
+- `rows_raw`
+- `rows_normalized`
+- `records_loaded`
+
+## species
+
+Species rollups:
+
+- `_id`
+- `common`
+- `scientific_names`
+- `visibility`
+- `incident_count`
+
+## locations
+
+Location rollups:
+
+- `_id`
+- `visibility`
+- `country`
+- `region`
+- `name`
+- `geo`
+- `incident_count`
+
+## ingestion_runs
+
+Internal ingestion metadata. Public API routes do not expose this collection.
+
+## data_quality_reports
+
+Internal quality summaries. Public API routes do not expose this collection.
+
+## private_notes
+
+Private and restricted notes. Public API routes never query this collection.
 
 ## Indexes
 
-- `idx_public_incidents_year`
-- `idx_public_incidents_country`
-- `idx_public_incidents_activity`
-- `idx_public_incidents_species`
+Incident indexes:
 
-## Excluded Fields
+- `visibility + date.year`
+- `visibility + country`
+- `visibility + region`
+- `visibility + activity`
+- `visibility + species.common`
+- `visibility + fatal`
+- `canonical_key`
+- `source.name`
+- `location.geo` as `2dsphere`
 
-- `Name`
-- `Investigator or Source`
-- `pdf`
-- `href formula`
-- `href`
-- Private notes
-- Exact street addresses
-- Restricted-source content
+Location indexes:
+
+- `visibility + country + region`
+- `geo` as `2dsphere`
 
