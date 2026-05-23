@@ -1,0 +1,45 @@
+{
+  "source_file": "data/raw/attacks.csv",
+  "encoding_detected_during_setup": "cp1252 fallback required after utf-8 decode failure",
+  "row_count_observed": 6302,
+  "column_count_observed": 24,
+  "columns": [
+    "Case Number",
+    "Date",
+    "Year",
+    "Type",
+    "Country",
+    "Area",
+    "Location",
+    "Activity",
+    "Name",
+    "Sex ",
+    "Age",
+    "Injury",
+    "Fatal (Y/N)",
+    "Time",
+    "Species ",
+    "Investigator or Source",
+    "pdf",
+    "href formula",
+    "href",
+    "Case Number",
+    "Case Number",
+    "original order",
+    "",
+    ""
+  ],
+  "duplicate_columns": [
+    "Case Number"
+  ],
+  "public_exclusions": [
+    "Name",
+    "Investigator or Source",
+    "pdf",
+    "href formula",
+    "href",
+    "private notes",
+    "exact addresses",
+    "restricted-source content"
+  ]
+}

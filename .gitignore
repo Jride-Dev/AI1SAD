@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+.env
+
+# Original source files are preserved locally but can include victim names,
+# source notes, URLs, and other details unsuitable for public publishing.
+data/raw/*
+!data/raw/README.md
+
+# Generated public artifacts can be rebuilt from raw data.
+data/public/*.csv
+data/public/*.sqlite
+data/public/*.db
+data/public/schema.json
+
+# Hidden, sensitive, restricted, or license-unclear data must stay local.
+data/private/
