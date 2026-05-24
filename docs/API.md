@@ -462,6 +462,11 @@ Returns one public alert by id or `404` for private, restricted, missing, or int
 
 Evaluates a warning/surveillance/activity payload and returns proposed alerts without persisting them. This endpoint is useful for replay validation and local operator tooling.
 
+Optional query parameters:
+
+- `use_open_meteo=true`: fetch live Open-Meteo rainfall/weather signals and let live rainfall influence the warning score used for alert evaluation.
+- `lookback_hours`: live weather lookback window, default `72`.
+
 Sample request:
 
 ```json

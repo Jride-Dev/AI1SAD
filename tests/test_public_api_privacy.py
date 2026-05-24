@@ -147,6 +147,12 @@ class FakeCollection:
             return type("ReplaceResult", (), {"matched_count": 0, "modified_count": 0, "upserted_id": replacement.get("_id")})()
         return type("ReplaceResult", (), {"matched_count": 0, "modified_count": 0, "upserted_id": None})()
 
+    def insert_one(self, document: dict[str, Any]):
+        stored = deepcopy(document)
+        stored.setdefault("_id", f"fake-{len(self.docs) + 1}")
+        self.docs.append(stored)
+        return type("InsertResult", (), {"inserted_id": stored["_id"]})()
+
     def count_documents(self, query: dict[str, Any]) -> int:
         return len([doc for doc in self.docs if matches(doc, query)])
 

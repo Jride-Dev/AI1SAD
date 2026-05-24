@@ -20,8 +20,8 @@ from app.services.regional_packs import (
     pack_entitlement_summary,
 )
 from app.services.warning_engine import WARNING_DISCLAIMER, calculate_warning, is_stale
+from app.providers.open_meteo import fetch_live_open_meteo_signals, record_provider_failure, record_provider_success
 from providers.manual_events import build_manual_event
-from providers.open_meteo import fetch_previous_72h
 from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
 from app.replay.runner import ReplayResult, ReplayRunner
 
@@ -453,10 +453,34 @@ def evaluate_alert_payload(
     payload: dict[str, Any] = Body(...),
     db: Database = Depends(get_database),
     enabled_packs: str | None = None,
+    use_open_meteo: bool = False,
+    lookback_hours: Annotated[int, Query(ge=1, le=168)] = 72,
 ) -> dict[str, Any]:
-    response = {"alerts": evaluate_alerts(payload)}
     lat = payload.get("lat", payload.get("location", {}).get("lat"))
     lon = payload.get("lon", payload.get("location", {}).get("lon"))
+    if use_open_meteo and lat is not None and lon is not None:
+        try:
+            signals = fetch_live_open_meteo_signals(lat=float(lat), lon=float(lon), lookback_hours=lookback_hours)
+            signal_inputs = warning_inputs_from_signals(signals)
+            payload["signals"] = list(payload.get("signals", [])) + signals
+            payload["data_freshness"] = {**payload.get("data_freshness", {}), **signal_inputs["data_freshness"]}
+            warning = calculate_warning(
+                lat=float(lat),
+                lon=float(lon),
+                lookback_hours=lookback_hours,
+                rainfall_72h_mm=signal_inputs["rainfall_72h_mm"],
+                provider_status=signal_inputs["provider_status"],
+            )
+            existing_warning_score = float(payload.get("warning_score", 0) or 0)
+            live_warning_score = float(warning["warning_score"])
+            payload["warning_score"] = min(100, existing_warning_score + live_warning_score) if existing_warning_score else live_warning_score
+            payload.setdefault("dominant_factors", warning["dominant_factors"])
+            record_provider_success(db, records_ingested=len(signals), observed_at=signals[0].get("timestamp") if signals else None)
+        except Exception as exc:
+            payload["data_freshness"] = {**payload.get("data_freshness", {}), "open_meteo": {"status": "missing", "last_error": type(exc).__name__}}
+            payload["confidence"] = max(0.25, float(payload.get("confidence", 0.5) or 0.5) - 0.15)
+            record_provider_failure(db, error=exc)
+    response = {"alerts": evaluate_alerts(payload)}
     return annotate_response_with_pack(
         response,
         db,
@@ -604,13 +628,19 @@ def warning_payload(
     profiles = list(db[COLLECTIONS["regional_risk_profiles"]].find({"visibility": "public"}, {"private_notes": 0, "restricted": 0}))
     inputs = warning_inputs_from_mongo(db, lat, lon, radius_km)
     provider_status: dict[str, str] = {}
-    if use_open_meteo and inputs["rainfall_72h_mm"] is None:
+    if use_open_meteo:
         try:
-            meteo = fetch_previous_72h(lat, lon)
-            inputs["rainfall_72h_mm"] = meteo.get("rainfall_72h_mm")
+            signals = fetch_live_open_meteo_signals(lat=lat, lon=lon, lookback_hours=lookback_hours)
+            signal_inputs = warning_inputs_from_signals(signals)
+            if signal_inputs["rainfall_72h_mm"] is not None:
+                inputs["rainfall_72h_mm"] = max(float(inputs["rainfall_72h_mm"] or 0), float(signal_inputs["rainfall_72h_mm"]))
+            inputs["signal_data_freshness"].update(signal_inputs["data_freshness"])
+            inputs["signal_provider_status"].update(signal_inputs["provider_status"])
             provider_status["open_meteo"] = "ok"
-        except Exception:
+            record_provider_success(db, records_ingested=len(signals), observed_at=signals[0].get("timestamp") if signals else None)
+        except Exception as exc:
             provider_status["open_meteo"] = "unavailable"
+            record_provider_failure(db, error=exc)
     for source, present in inputs.pop("data_presence").items():
         provider_status[source] = "ok" if present else "missing"
     provider_status.update(inputs.pop("signal_provider_status", {}))

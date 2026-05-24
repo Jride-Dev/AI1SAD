@@ -14,10 +14,13 @@ AI1SAD tracks provider status in:
 {
   "provider": "open_meteo",
   "last_success": "2026-05-23T06:21:00Z",
+  "last_error": null,
   "records_ingested": 483,
   "status": "healthy"
 }
 ```
+
+For Open-Meteo live lookups, `records_ingested` counts the normalized weather signals generated for the request. Failures set `status="degraded"` and record a safe `last_error` summary.
 
 ## Public API
 
@@ -26,6 +29,7 @@ AI1SAD tracks provider status in:
 ## Failure Rules
 
 - Provider failures must not crash warning or surveillance endpoints.
+- Open-Meteo failures must not crash warning or alert-evaluation endpoints.
 - Failed providers should lower confidence through missing or stale data freshness.
 - Error summaries must not include API keys, passwords, tokens, or full raw response dumps.
 - Placeholder providers should fail closed with clear messages until terms, credentials, and data contracts are reviewed.

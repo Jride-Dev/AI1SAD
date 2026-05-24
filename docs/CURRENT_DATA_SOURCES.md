@@ -4,7 +4,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 
 ## Reliable Automated Sources
 
-- Open-Meteo: no-key rainfall and air-temperature history for previous 72 hours.
+- Open-Meteo: active no-key hourly rainfall, air temperature, and wind-speed lookback for warning and alert evaluation. See [Open-Meteo Provider](OPEN_METEO_PROVIDER.md).
 - NOAA/NWS: future interface for U.S. weather alerts and observations.
 - NOAA CoastWatch ERDDAP: future SST interface once dataset IDs and spatial/time windows are selected.
 
@@ -34,6 +34,8 @@ Provider ingestion is tracked separately from public warning responses:
 - `provider_health`: latest provider status, including `last_success`, `records_ingested`, and `status`.
 
 When observations are stale or missing, the warning engine lowers confidence and adds the source to `missing_data_sources`. It does not silently assume normal conditions.
+
+`use_open_meteo=true` on warning or alert-evaluation routes fetches live Open-Meteo data, normalizes it into Signal-shaped weather records, updates provider health, and uses the live rainfall value when computing the warning score.
 
 Phase 5 also normalizes provider outputs into the generic `signals` collection. Signals carry `signal_type`, species context when known, location, timestamp, expiration, confidence, provider source, freshness, relevance, and public/private visibility. Warning and surveillance engines can consume active public signals alongside legacy observation collections.
 

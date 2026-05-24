@@ -136,6 +136,7 @@ Useful scripts include:
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Data Sources](docs/DATA_SOURCES.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
+- [Open-Meteo Provider](docs/OPEN_METEO_PROVIDER.md)
 - [Risk Model](docs/RISK_MODEL.md)
 - [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
