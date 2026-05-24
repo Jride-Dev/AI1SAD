@@ -15,6 +15,8 @@ from app.services.signal_broker import active_public_signals, data_freshness_sum
 from app.services.warning_engine import WARNING_DISCLAIMER, calculate_warning, is_stale
 from providers.manual_events import build_manual_event
 from providers.open_meteo import fetch_previous_72h
+from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
+from app.replay.runner import ReplayResult, ReplayRunner
 
 
 router = APIRouter(prefix="/api/v1")
@@ -898,3 +900,151 @@ def explain_risk(
         month=month,
         weekend=weekend,
     )
+
+
+@router.get("/replay/scenarios")
+def replay_list_scenarios() -> dict[str, Any]:
+    summary = {}
+    for sid, scenario in REPLAY_SCENARIOS.items():
+        summary[sid] = {
+            "label": scenario.label,
+            "lat": scenario.lat,
+            "lon": scenario.lon,
+            "month": scenario.month,
+            "activity_context": scenario.activity_context,
+            "tags": scenario.tags,
+        }
+    return {"scenarios": summary}
+
+
+@router.get("/replay/run")
+def replay_run(
+    scenario_id: str = "florida_summer_heavy_rain",
+) -> dict[str, Any]:
+    return replay_run_scenario(scenario_id)
+
+
+@router.get("/replay/run/{scenario_id}")
+def replay_run_scenario(scenario_id: str) -> dict[str, Any]:
+    scenario = REPLAY_SCENARIOS.get(scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
+    runner = ReplayRunner()
+    result = runner.run_scenario(scenario)
+    if result.error:
+        return {"scenario_id": scenario_id, "error": result.error}
+    return _replay_response(result)
+
+
+@router.post("/replay/run")
+def replay_run_custom(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    scenario = ReplayScenario(
+        scenario_id=payload.get("scenario_id", "custom"),
+        label=payload.get("label", "Custom replay scenario"),
+        lat=float(payload["lat"]),
+        lon=float(payload["lon"]),
+        timestamp=datetime.fromisoformat(payload.get("timestamp", datetime.now(timezone.utc).isoformat()).replace("Z", "+00:00")),
+        rainfall_72h_mm=payload.get("rainfall_72h_mm"),
+        river_mouth_distance_km=payload.get("river_mouth_distance_km"),
+        sea_surface_temp_c=payload.get("sea_surface_temp_c"),
+        sst_anomaly_c=payload.get("sst_anomaly_c"),
+        vessel_activity_index=payload.get("vessel_activity_index"),
+        human_exposure_index=payload.get("human_exposure_index"),
+        biological_events=payload.get("biological_events", []),
+        month=payload.get("month"),
+        activity_context=payload.get("activity_context"),
+        suspected_species=payload.get("suspected_species"),
+        lookback_hours=payload.get("lookback_hours", 72),
+        radius_km=payload.get("radius_km", 25.0),
+    )
+    runner = ReplayRunner()
+    result = runner.run_scenario(scenario)
+    if result.error:
+        return {"scenario_id": scenario.scenario_id, "error": result.error}
+    return _replay_response(result)
+
+
+@router.get("/replay/run-all")
+def replay_run_all() -> dict[str, Any]:
+    runner = ReplayRunner()
+    results = runner.run_all()
+    return {"results": {sid: (_replay_response(res) if not res.error else {"scenario_id": sid, "error": res.error}) for sid, res in results.items()}}
+
+
+@router.get("/replay/decay-analysis/{scenario_id}")
+def replay_decay_analysis(scenario_id: str) -> dict[str, Any]:
+    scenario = REPLAY_SCENARIOS.get(scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
+    runner = ReplayRunner()
+    return runner.run_decay_analysis(scenario)
+
+
+@router.get("/replay/heatmap")
+def replay_heatmap(
+    lat: Annotated[float, Query(ge=-90, le=90)] = 27.7,
+    lon: Annotated[float, Query(ge=-180, le=180)] = -80.2,
+    radius_km: Annotated[float, Query(gt=0, le=200)] = 25.0,
+    grid_points: Annotated[int, Query(ge=5, le=50)] = 15,
+    activity_context: str | None = None,
+    suspected_species: str | None = None,
+    month: Annotated[int | None, Query(ge=1, le=12)] = None,
+) -> dict[str, Any]:
+    runner = ReplayRunner()
+    return runner.run_heatmap(
+        lat=lat,
+        lon=lon,
+        radius_km=radius_km,
+        grid_points=grid_points,
+        activity_context=activity_context,
+        suspected_species=suspected_species,
+        month=month,
+    )
+
+
+@router.get("/replay/compare")
+def replay_compare(
+    scenario_id: str = "florida_summer_heavy_rain",
+) -> dict[str, Any]:
+    return replay_compare_quiet_day(scenario_id)
+
+
+@router.get("/replay/compare-quiet-day/{scenario_id}")
+def replay_compare_quiet_day(scenario_id: str) -> dict[str, Any]:
+    scenario = REPLAY_SCENARIOS.get(scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
+    runner = ReplayRunner()
+    result = runner.run_scenario(scenario)
+    if result.error:
+        return {"scenario_id": scenario_id, "error": result.error}
+    return {
+        "scenario_id": scenario_id,
+        "scenario_label": scenario.label,
+        "quiet_day_comparison": result.quiet_day_comparison,
+    }
+
+
+def _replay_response(result: ReplayResult) -> dict[str, Any]:
+    return {
+        "scenario_id": result.scenario_id,
+        "label": result.label,
+        "timestamp": result.timestamp.isoformat(),
+        "location": result.location,
+        "warning": {
+            "warning_score": result.warning.get("warning_score", 0),
+            "warning_band": result.warning.get("warning_band", "unknown"),
+            "activity_context_score": result.warning.get("activity_context_score", 0),
+            "activity_context_band": result.warning.get("activity_context_band", "unknown"),
+            "confidence": result.warning.get("confidence", 0),
+            "dominant_factors": result.warning.get("dominant_factors", []),
+            "data_sources_used": result.warning.get("data_sources_used", []),
+            "missing_data_sources": result.warning.get("missing_data_sources", []),
+        },
+        "surveillance": {
+            "priority_score": (result.surveillance or {}).get("zones", [{}])[0].get("surveillance_priority_score", 0) if result.surveillance else 0,
+            "priority_band": (result.surveillance or {}).get("zones", [{}])[0].get("surveillance_priority_band", "unknown") if result.surveillance else "unknown",
+        },
+        "quiet_day_comparison": result.quiet_day_comparison,
+        "confidence_decomposition": result.confidence_decomposition,
+    }

@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException
 
 from app.api_v1 import router as api_v1_router
+from app.api_access import ApiAccessMiddleware
 from app.config import get_settings
 from app.mongodb import ensure_mongodb_indexes, get_client, get_database
 
@@ -15,6 +16,8 @@ app = FastAPI(
     description="MongoDB Atlas API for public, privacy-preserving shark incident records.",
 )
 app.include_router(api_v1_router)
+if settings.api_access_enabled:
+    app.add_middleware(ApiAccessMiddleware, default_rate_limit_per_minute=settings.api_free_rate_limit_per_minute)
 
 
 @app.on_event("startup")

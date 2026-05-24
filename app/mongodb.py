@@ -46,6 +46,12 @@ COLLECTIONS = {
     "prey_presence_zones": "prey_presence_zones",
     "vessel_activity_snapshots": "vessel_activity_snapshots",
     "tourism_exposure_profiles": "tourism_exposure_profiles",
+    "users": "users",
+    "api_keys": "api_keys",
+    "usage_logs": "usage_logs",
+    "billing_tiers": "billing_tiers",
+    "rate_limits": "rate_limits",
+    "subscription_status": "subscription_status",
 }
 
 
@@ -145,3 +151,14 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["vessel_activity_snapshots"]].create_index([("visibility", ASCENDING), ("observed_at", DESCENDING)])
     db[COLLECTIONS["vessel_activity_snapshots"]].create_index([("location.geo", GEOSPHERE)])
     db[COLLECTIONS["tourism_exposure_profiles"]].create_index([("visibility", ASCENDING), ("region", ASCENDING)])
+
+    db[COLLECTIONS["users"]].create_index([("email", ASCENDING)], unique=True, sparse=True)
+    db[COLLECTIONS["users"]].create_index([("created_at", DESCENDING)])
+    db[COLLECTIONS["api_keys"]].create_index([("key_hash", ASCENDING)], unique=True)
+    db[COLLECTIONS["api_keys"]].create_index([("user_id", ASCENDING), ("status", ASCENDING)])
+    db[COLLECTIONS["usage_logs"]].create_index([("api_key_id", ASCENDING), ("timestamp", DESCENDING)])
+    db[COLLECTIONS["usage_logs"]].create_index([("timestamp", DESCENDING)])
+    db[COLLECTIONS["billing_tiers"]].create_index([("tier", ASCENDING)], unique=True)
+    db[COLLECTIONS["rate_limits"]].create_index([("tier", ASCENDING), ("route_group", ASCENDING)], unique=True)
+    db[COLLECTIONS["subscription_status"]].create_index([("user_id", ASCENDING)], unique=True)
+    db[COLLECTIONS["subscription_status"]].create_index([("tier", ASCENDING), ("status", ASCENDING)])

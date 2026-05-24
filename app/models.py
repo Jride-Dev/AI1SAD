@@ -197,3 +197,55 @@ class WarningSnapshot(BaseModel):
     expires_at: datetime | None = None
     location: PublicLocation = Field(default_factory=PublicLocation)
     response: dict[str, Any] = Field(default_factory=dict)
+
+
+class User(BaseModel):
+    id: str | None = Field(default=None, alias="_id")
+    email: str | None = None
+    organization: str | None = None
+    created_at: datetime | None = None
+    status: str = "active"
+
+    model_config = {"populate_by_name": True}
+
+
+class ApiKey(BaseModel):
+    id: str | None = Field(default=None, alias="_id")
+    user_id: str | None = None
+    key_hash: str
+    tier: str = "free"
+    status: str = "active"
+    created_at: datetime | None = None
+    expires_at: datetime | None = None
+
+    model_config = {"populate_by_name": True}
+
+
+class UsageLog(BaseModel):
+    api_key_id: str | None = None
+    route: str
+    method: str
+    timestamp: datetime
+    status_code: int | None = None
+    tier: str = "free"
+
+
+class BillingTier(BaseModel):
+    tier: str
+    monthly_request_limit: int | None = None
+    rate_limit_per_minute: int
+    allowed_route_groups: list[str] = Field(default_factory=list)
+    commercial_use: bool = False
+
+
+class RateLimit(BaseModel):
+    tier: str
+    route_group: str = "default"
+    requests_per_minute: int
+
+
+class SubscriptionStatus(BaseModel):
+    user_id: str
+    tier: str = "free"
+    status: str = "active"
+    current_period_end: datetime | None = None

@@ -3,15 +3,15 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from app.disclaimers import AI1SAD_API_DISCLAIMER
 from app.risk_model import band_for_score, haversine_km, nearest_profile, profile_summary
 from app.services.activity_hazard import activity_hazard_score
 from app.services.warning_engine import calculate_warning, parse_dt
 
 
 SURVEILLANCE_DISCLAIMER = (
-    "This drone/search prioritization score supports coastal safety planning. It does not predict "
-    "individual shark attacks, infer shark intent, classify a person as provoking an animal, or replace "
-    "local lifeguard, aviation, wildlife, beach-closure, weather, or emergency guidance."
+    f"{AI1SAD_API_DISCLAIMER} This drone/search prioritization score supports coastal safety planning "
+    "and does not infer shark intent or classify a person as provoking an animal."
 )
 
 

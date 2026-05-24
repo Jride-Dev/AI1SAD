@@ -3,15 +3,12 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from app.disclaimers import AI1SAD_API_DISCLAIMER
 from app.risk_model import RISK_DISCLAIMER, band_for_score, nearest_profile, profile_summary
 from app.services.activity_hazard import activity_hazard_score
 
 
-WARNING_DISCLAIMER = (
-    "This warning score estimates current shark encounter conditions from available signals. "
-    "It is not an attack prediction, safety guarantee, or substitute for local lifeguard, "
-    "weather, beach-closure, wildlife, or emergency guidance."
-)
+WARNING_DISCLAIMER = AI1SAD_API_DISCLAIMER
 
 
 def clamp(value: float, low: float = 0, high: float = 1) -> float:

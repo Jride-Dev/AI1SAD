@@ -578,3 +578,80 @@ Signal broker indexes:
 - `migration_windows`: `visibility + region + species`
 - `prey_presence_zones` and `vessel_activity_snapshots`: `visibility + observed_at` and `location.geo`
 - `tourism_exposure_profiles`: `visibility + region`
+
+## Monetization And API Access Collections
+
+These collections support future hosted API access. No billing secrets or payment-provider keys belong in MongoDB public responses or committed files.
+
+### users
+
+```json
+{
+  "_id": "user_123",
+  "email": "user@example.com",
+  "organization": "Example Research Lab",
+  "status": "active",
+  "created_at": "2026-05-24T00:00:00Z"
+}
+```
+
+### api_keys
+
+API keys must be stored as hashes.
+
+```json
+{
+  "_id": "key_123",
+  "user_id": "user_123",
+  "key_hash": "sha256_hash_only",
+  "tier": "free",
+  "status": "active",
+  "created_at": "2026-05-24T00:00:00Z"
+}
+```
+
+### usage_logs
+
+```json
+{
+  "api_key_id": "key_123",
+  "route": "/api/v1/incidents",
+  "method": "GET",
+  "timestamp": "2026-05-24T00:00:00Z",
+  "status_code": 200,
+  "tier": "free"
+}
+```
+
+### billing_tiers
+
+```json
+{
+  "tier": "developer",
+  "monthly_request_limit": 100000,
+  "rate_limit_per_minute": 120,
+  "allowed_route_groups": ["incidents", "stats", "warnings", "signals"],
+  "commercial_use": true
+}
+```
+
+### rate_limits
+
+```json
+{
+  "tier": "free",
+  "route_group": "default",
+  "requests_per_minute": 60
+}
+```
+
+### subscription_status
+
+```json
+{
+  "user_id": "user_123",
+  "tier": "free",
+  "status": "active",
+  "current_period_end": null
+}
+```

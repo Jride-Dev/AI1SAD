@@ -33,6 +33,8 @@ AI1SAD is in active development. The current repo includes:
 
 AI1SAD is not an attack-prediction system and must not be presented as one. Scores estimate environmental and behavioral conditions associated with elevated shark encounter likelihood.
 
+AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
+
 Public API responses must not expose:
 
 - Victim names
@@ -96,6 +98,17 @@ python -m pytest -q
 
 Admin ingestion endpoints are disabled by default.
 
+## API Access
+
+The repository includes placeholder API key validation, rate-limit hooks, and monetization data models for future hosted deployments. Access control is disabled by default for local development.
+
+Initial access tiers are documented in [API Access Tiers](docs/API_ACCESS_TIERS.md):
+
+- Free
+- Developer
+- Research
+- Government/Enterprise
+
 ## Data And Ingestion
 
 Raw and private source material should stay out of public API responses. Keep original files under `data/raw` and sensitive material under ignored/private paths.
@@ -108,6 +121,9 @@ Useful scripts include:
 ## Documentation
 
 - [API](docs/API.md)
+- [API Access Tiers](docs/API_ACCESS_TIERS.md)
+- [Usage Policy](docs/USAGE_POLICY.md)
+- [Disclaimer](docs/DISCLAIMER.md)
 - [Schema](docs/SCHEMA.md)
 - [Privacy](docs/PRIVACY.md)
 - [Data Quality](docs/DATA_QUALITY.md)
@@ -121,3 +137,7 @@ Useful scripts include:
 - [Species Season Profiles](docs/SPECIES_SEASON_PROFILES.md)
 - [Provider Health](docs/PROVIDER_HEALTH.md)
 - [Ethics And Limitations](docs/ETHICS_AND_LIMITATIONS.md)
+
+## License
+
+AI1SAD code is licensed under the [Apache License 2.0](LICENSE). Data sources may have separate licenses, terms, and privacy restrictions.

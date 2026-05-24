@@ -1,5 +1,7 @@
 # API
 
+AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
+
 Base URL for local development: `http://127.0.0.1:8000`
 
 All public data routes live under `/api/v1` and filter MongoDB records with `visibility="public"`. Incident list and stats routes exclude duplicate source rows by default.
@@ -433,3 +435,47 @@ Returns public species season profiles for a region.
 `GET /api/v1/species/{species}/risk-profile`
 
 Returns public species season profiles, migration windows, and active signals for a species.
+
+## Replay Validation
+
+`GET /api/v1/replay/run`
+
+Runs a built-in replay scenario by query string. Defaults to `florida_summer_heavy_rain`.
+
+Example:
+
+`GET /api/v1/replay/run?scenario_id=wa_spearfishing_reef_white`
+
+`POST /api/v1/replay/run`
+
+Runs a custom replay scenario from a JSON request body. This is useful for deterministic local validation and should not be treated as live prediction.
+
+`GET /api/v1/replay/compare`
+
+Compares a built-in replay scenario with the quiet-day baseline.
+
+Example:
+
+`GET /api/v1/replay/compare?scenario_id=south_africa_white_shark_surf_seal_colony`
+
+`GET /api/v1/replay/heatmap`
+
+Generates a surveillance-priority heatmap by default. Each cell includes:
+
+- `surveillance_priority_score`
+- `surveillance_priority_band`
+- `warning_score`
+- `warning_band`
+- `activity_hazard_score`
+- `activity_hazard_band`
+
+`GET /api/v1/replay/scenarios`
+
+Lists built-in replay scenarios.
+
+Compatibility/helper routes:
+
+- `GET /api/v1/replay/run/{scenario_id}`
+- `GET /api/v1/replay/run-all`
+- `GET /api/v1/replay/decay-analysis/{scenario_id}`
+- `GET /api/v1/replay/compare-quiet-day/{scenario_id}`
