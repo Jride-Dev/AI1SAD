@@ -22,6 +22,8 @@ class Settings:
     mongodb_uri: str
     mongodb_database: str
     api_title: str = "AI1SAD Shark Attack Data API"
+    admin_events_enabled: bool = False
+    admin_surveillance_enabled: bool = False
 
 
 @lru_cache
@@ -31,5 +33,6 @@ def get_settings() -> Settings:
         mongodb_uri=os.getenv("MONGODB_URI", ""),
         mongodb_database=os.getenv("MONGODB_DATABASE", "AI1SAD"),
         api_title=os.getenv("SHARK_ATTACK_API_TITLE", "AI1SAD Shark Attack Data API"),
+        admin_events_enabled=os.getenv("ADMIN_EVENTS_ENABLED", "false").lower() == "true",
+        admin_surveillance_enabled=os.getenv("ADMIN_SURVEILLANCE_ENABLED", "false").lower() == "true",
     )
-

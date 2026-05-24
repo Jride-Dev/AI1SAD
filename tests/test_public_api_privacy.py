@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import FastAPI
@@ -55,6 +56,8 @@ def matches(document: dict[str, Any], query: dict[str, Any]) -> bool:
         if isinstance(expected, dict):
             if "$ne" in expected and value == expected["$ne"]:
                 return False
+            if "$gt" in expected and value <= expected["$gt"]:
+                return False
             if "$regex" in expected and expected["$regex"].lower() not in str(value or "").lower():
                 return False
             continue
@@ -101,12 +104,22 @@ class FakeCollection:
         self.last_find_query = query
         return FakeCursor([deepcopy(doc) for doc in self.docs if matches(doc, query)])
 
-    def find_one(self, query: dict[str, Any]) -> dict[str, Any] | None:
+    def find_one(self, query: dict[str, Any], _projection: dict[str, Any] | None = None) -> dict[str, Any] | None:
         self.last_find_query = query
         for doc in self.docs:
             if matches(doc, query):
                 return deepcopy(doc)
         return None
+
+    def replace_one(self, query: dict[str, Any], replacement: dict[str, Any], upsert: bool = False):
+        for index, doc in enumerate(self.docs):
+            if matches(doc, query):
+                self.docs[index] = deepcopy(replacement)
+                return type("ReplaceResult", (), {"matched_count": 1, "modified_count": 1, "upserted_id": None})()
+        if upsert:
+            self.docs.append(deepcopy(replacement))
+            return type("ReplaceResult", (), {"matched_count": 0, "modified_count": 0, "upserted_id": replacement.get("_id")})()
+        return type("ReplaceResult", (), {"matched_count": 0, "modified_count": 0, "upserted_id": None})()
 
     def count_documents(self, query: dict[str, Any]) -> int:
         return len([doc for doc in self.docs if matches(doc, query)])
@@ -144,6 +157,219 @@ class FakeDB:
                     {"_id": "private-location", "name": "private-location", "visibility": "private"},
                 ]
             ),
+            COLLECTIONS["risk_observations"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-risk",
+                        "visibility": "public",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                        "risk": {"score": 20, "band": "low"},
+                    },
+                    {
+                        "_id": "private-risk",
+                        "visibility": "private",
+                        "private_notes": "Do not expose private risk observation",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                        "risk": {"score": 90, "band": "high"},
+                    },
+                ]
+            ),
+            COLLECTIONS["regional_risk_profiles"]: FakeCollection(
+                [
+                    {
+                        "_id": "florida",
+                        "region_key": "florida",
+                        "name": "Florida",
+                        "visibility": "public",
+                        "private_notes": "Do not expose regional profile notes",
+                        "center": {"geo": {"type": "Point", "coordinates": [-80.2, 27.7]}},
+                        "local_summer_high_exposure_months": [5, 6, 7, 8, 9],
+                        "known_high_attention_months": [3, 4, 10],
+                        "dominant_species": ["blacktip shark"],
+                        "environmental_multipliers": {"summer": 1.08},
+                        "human_exposure_multipliers": {"weekend": 1.15, "non_summer_tourist": 1.08, "beach_exposure": 1.1},
+                        "notes": "Public profile note",
+                        "citations": ["test citation"],
+                    },
+                    {
+                        "_id": "private-profile",
+                        "region_key": "private-profile",
+                        "name": "Private Profile",
+                        "visibility": "private",
+                        "private_notes": "Never expose this private profile",
+                        "center": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["weather_observations"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-weather",
+                        "visibility": "public",
+                        "rainfall_mm": 50,
+                        "observed_at": datetime.now(timezone.utc),
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    }
+                ]
+            ),
+            COLLECTIONS["ocean_observations"]: FakeCollection([]),
+            COLLECTIONS["vessel_activity"]: FakeCollection([]),
+            COLLECTIONS["human_exposure_estimates"]: FakeCollection([]),
+            COLLECTIONS["biological_events"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-bio-event",
+                        "visibility": "public",
+                        "event_type": "whale_carcass",
+                        "description": "Public whale carcass report",
+                        "observed_at": datetime.now(timezone.utc),
+                        "expires_at": datetime.now(timezone.utc) + timedelta(days=7),
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                    {
+                        "_id": "private-bio-event",
+                        "visibility": "private",
+                        "event_type": "whale_carcass",
+                        "private_notes": "Do not expose private biological event",
+                        "description": "Private event",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["warning_snapshots"]: FakeCollection([]),
+            COLLECTIONS["provider_runs"]: FakeCollection([]),
+            COLLECTIONS["provider_failures"]: FakeCollection([]),
+            COLLECTIONS["provider_health"]: FakeCollection([]),
+            COLLECTIONS["marine_incidents"]: FakeCollection([]),
+            COLLECTIONS["shipping_events"]: FakeCollection([]),
+            COLLECTIONS["fish_kill_reports"]: FakeCollection([]),
+            COLLECTIONS["carcass_reports"]: FakeCollection([]),
+            COLLECTIONS["beach_closures"]: FakeCollection([]),
+            COLLECTIONS["surveillance_zones"]: FakeCollection([]),
+            COLLECTIONS["surveillance_missions"]: FakeCollection([]),
+            COLLECTIONS["recent_interactions"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-interaction",
+                        "visibility": "public",
+                        "observed_at": datetime.now(timezone.utc),
+                        "fatal": False,
+                        "summary": "Public interaction summary",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                    {
+                        "_id": "private-interaction",
+                        "visibility": "private",
+                        "observed_at": datetime.now(timezone.utc),
+                        "fatal": True,
+                        "private_notes": "Do not expose private interaction note",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["sighting_reports"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-sighting",
+                        "visibility": "public",
+                        "observed_at": datetime.now(timezone.utc),
+                        "verified": True,
+                        "confidence": "verified",
+                        "summary": "Public sighting report",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                    {
+                        "_id": "private-sighting",
+                        "visibility": "private",
+                        "observed_at": datetime.now(timezone.utc),
+                        "verified": True,
+                        "private_notes": "Do not expose private sighting note",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["reef_features"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-reef",
+                        "visibility": "public",
+                        "feature_type": "reef",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                    {
+                        "_id": "private-reef",
+                        "visibility": "private",
+                        "private_notes": "Do not expose private reef note",
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["drone_priority_snapshots"]: FakeCollection([]),
+            COLLECTIONS["signals"]: FakeCollection(
+                [
+                    {
+                        "_id": "public-signal",
+                        "visibility": "public",
+                        "signal_type": "weather_rainfall",
+                        "species": "bull shark",
+                        "timestamp": datetime.now(timezone.utc),
+                        "expires_at": datetime.now(timezone.utc) + timedelta(hours=12),
+                        "confidence": 0.8,
+                        "value": 100,
+                        "units": "mm",
+                        "source": {"provider": "test_weather", "dataset": "unit_test"},
+                        "risk_relevance": {"score": 0.8, "factors": ["rainfall_runoff"]},
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                    {
+                        "_id": "private-signal",
+                        "visibility": "private",
+                        "signal_type": "weather_rainfall",
+                        "timestamp": datetime.now(timezone.utc),
+                        "confidence": 1,
+                        "value": 200,
+                        "private_notes": "Do not expose private signal note",
+                        "source": {"provider": "private_provider"},
+                        "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+                    },
+                ]
+            ),
+            COLLECTIONS["ecology_events"]: FakeCollection([]),
+            COLLECTIONS["species_season_profiles"]: FakeCollection(
+                [
+                    {
+                        "_id": "bull-florida",
+                        "visibility": "public",
+                        "region": "Florida",
+                        "species": "bull shark",
+                        "active_months": [5, 6, 7, 8, 9],
+                        "peak_months": [8, 9],
+                        "risk_factors": ["river mouth", "runoff"],
+                    },
+                    {
+                        "_id": "private-season",
+                        "visibility": "private",
+                        "region": "Florida",
+                        "species": "bull shark",
+                        "private_notes": "Do not expose private season note",
+                    },
+                ]
+            ),
+            COLLECTIONS["migration_windows"]: FakeCollection(
+                [
+                    {
+                        "_id": "bull-migration",
+                        "visibility": "public",
+                        "region": "Florida",
+                        "species": "bull shark",
+                        "start_month": 7,
+                        "end_month": 10,
+                    }
+                ]
+            ),
+            COLLECTIONS["prey_presence_zones"]: FakeCollection([]),
+            COLLECTIONS["vessel_activity_snapshots"]: FakeCollection([]),
+            COLLECTIONS["tourism_exposure_profiles"]: FakeCollection([]),
         }
 
     def __getitem__(self, name: str) -> FakeCollection:
@@ -197,6 +423,152 @@ class PublicApiPrivacyTests(unittest.TestCase):
         self.assertEqual(incident_response.status_code, 200)
         self.assertNotIn("private", str(incident_response.json()).lower())
         self.assertIsNone(self.db[COLLECTIONS["private_notes"]].last_find_query)
+
+    def test_risk_history_excludes_private_observations(self):
+        response = self.client.get("/api/v1/risk/history?lat=25&lon=-80")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("not an attack prediction", payload["disclaimer"])
+        self.assertEqual([item["_id"] for item in payload["results"]], ["public-risk"])
+        self.assertNotIn("private", str(payload).lower())
+        self.assertEqual(self.db[COLLECTIONS["risk_observations"]].last_find_query["visibility"], "public")
+
+    def test_risk_location_uses_only_public_incident_density(self):
+        response = self.client.get("/api/v1/risk/location?lat=25&lon=-80&recent_rainfall_mm_24h=50&weekend=true&month=11")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("not an attack prediction", payload["disclaimer"])
+        self.assertNotIn("Private note should not appear", str(payload))
+        self.assertNotIn("Restricted note should not appear", str(payload))
+        self.assertNotIn("private profile", str(payload).lower())
+        self.assertNotIn("regional profile notes", str(payload).lower())
+        self.assertEqual(payload["signals"]["historical_incident_count"], 1)
+        self.assertEqual(payload["regional_profile"]["region_key"], "florida")
+        self.assertGreater(payload["warning_score"], payload["score"])
+        self.assertEqual(self.db[COLLECTIONS["incidents"]].last_find_query["visibility"], "public")
+
+    def test_warning_events_exclude_private_notes(self):
+        response = self.client.get("/api/v1/warnings/events?lat=25&lon=-80")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual([item["_id"] for item in payload["results"]], ["public-bio-event"])
+        self.assertNotIn("private", str(payload).lower())
+        self.assertEqual(self.db[COLLECTIONS["biological_events"]].last_find_query["visibility"], "public")
+
+    def test_warning_location_excludes_private_notes(self):
+        response = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&month=11")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("not an attack prediction", payload["disclaimer"])
+        self.assertNotIn("private", str(payload).lower())
+        self.assertIn("warning_score", payload)
+        self.assertIn("contribution", payload["dominant_factors"][0])
+        self.assertFalse(payload["cached"])
+
+    def test_warning_location_uses_public_cache_snapshot(self):
+        first = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&month=11")
+        second = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&month=11")
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertFalse(first.json()["cached"])
+        self.assertTrue(second.json()["cached"])
+        self.assertEqual(self.db[COLLECTIONS["warning_snapshots"]].docs[0]["visibility"], "public")
+        self.assertIn("expires_at", self.db[COLLECTIONS["warning_snapshots"]].docs[0])
+
+    def test_manual_event_admin_endpoint_disabled_by_default(self):
+        response = self.client.post(
+            "/api/v1/admin/events/manual",
+            json={"event_type": "whale_carcass", "lat": 25, "lon": -80, "description": "test"},
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_surveillance_search_zones_exclude_private_notes(self):
+        response = self.client.get(
+            "/api/v1/surveillance/search-zones?lat=25&lon=-80&activity_context=fishing&suspected_species=bull%20shark&river_mouth_distance_km=1"
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("prioritization score", payload["disclaimer"])
+        self.assertEqual(len(payload["zones"]), 1)
+        self.assertIn("dominant_factors", payload["zones"][0])
+        self.assertNotIn("private", str(payload).lower())
+        self.assertEqual(self.db[COLLECTIONS["recent_interactions"]].last_find_query["visibility"], "public")
+        self.assertEqual(self.db[COLLECTIONS["sighting_reports"]].last_find_query["visibility"], "public")
+
+    def test_surveillance_recent_interactions_and_sightings_exclude_private(self):
+        interactions = self.client.get("/api/v1/surveillance/recent-interactions?lat=25&lon=-80")
+        sightings = self.client.get("/api/v1/surveillance/sightings?lat=25&lon=-80")
+        self.assertEqual(interactions.status_code, 200)
+        self.assertEqual(sightings.status_code, 200)
+        self.assertEqual([item["_id"] for item in interactions.json()["results"]], ["public-interaction"])
+        self.assertEqual([item["_id"] for item in sightings.json()["results"]], ["public-sighting"])
+        self.assertNotIn("private", str(interactions.json()).lower())
+        self.assertNotIn("private", str(sightings.json()).lower())
+
+    def test_surveillance_admin_endpoints_disabled_by_default(self):
+        payload = {"lat": 25, "lon": -80, "summary": "test"}
+        interaction = self.client.post("/api/v1/admin/surveillance/interaction", json=payload)
+        sighting = self.client.post("/api/v1/admin/surveillance/sighting", json=payload)
+        self.assertEqual(interaction.status_code, 403)
+        self.assertEqual(sighting.status_code, 403)
+
+    def test_signals_api_excludes_private_signals(self):
+        response = self.client.get("/api/v1/signals/location?lat=25&lon=-80")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual([item["_id"] for item in payload["results"]], ["public-signal"])
+        self.assertNotIn("private", str(payload).lower())
+        self.assertIn("data_freshness", payload)
+
+    def test_active_signal_influences_warning_score(self):
+        with_signal = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&bypass_cache=true")
+        self.db[COLLECTIONS["signals"]].docs = []
+        without_signal = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&bypass_cache=true")
+        self.assertEqual(with_signal.status_code, 200)
+        self.assertEqual(without_signal.status_code, 200)
+        self.assertGreater(with_signal.json()["warning_score"], without_signal.json()["warning_score"])
+
+    def test_stale_signal_reduces_warning_confidence(self):
+        self.db[COLLECTIONS["signals"]].docs = [
+            {
+                "_id": "stale-signal",
+                "visibility": "public",
+                "signal_type": "weather_rainfall",
+                "timestamp": datetime.now(timezone.utc) - timedelta(hours=8),
+                "expires_at": datetime.now(timezone.utc) + timedelta(hours=4),
+                "max_age_hours": 6,
+                "confidence": 0.8,
+                "value": 100,
+                "source": {"provider": "test_weather"},
+                "risk_relevance": {"score": 0.8, "factors": ["rainfall_runoff"]},
+                "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+            }
+        ]
+        response = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&bypass_cache=true")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("test_weather:stale", payload["missing_data_sources"])
+        self.assertEqual(payload["data_freshness"]["test_weather"]["status"], "stale")
+
+    def test_provider_health_and_species_profiles_are_public_safe(self):
+        self.db[COLLECTIONS["provider_health"]].docs = [{"_id": "open_meteo", "provider": "open_meteo", "status": "healthy"}]
+        health = self.client.get("/api/v1/provider-health")
+        season = self.client.get("/api/v1/regions/Florida/season-profile")
+        species = self.client.get("/api/v1/species/bull%20shark/risk-profile")
+        self.assertEqual(health.status_code, 200)
+        self.assertEqual(season.status_code, 200)
+        self.assertEqual(species.status_code, 200)
+        self.assertNotIn("private", str(season.json()).lower())
+        self.assertNotIn("private", str(species.json()).lower())
+
+    def test_provider_failure_does_not_crash_warning_endpoint(self):
+        self.db[COLLECTIONS["provider_failures"]].docs = [
+            {"_id": "failure-1", "provider": "noaa_coastwatch", "status": "failed", "error_summary": "timeout"}
+        ]
+        response = self.client.get("/api/v1/warnings/location?lat=25&lon=-80&bypass_cache=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("data_freshness", response.json())
+        self.assertEqual(response.json()["data_freshness"]["ocean_observations"]["status"], "missing")
 
 
 if __name__ == "__main__":

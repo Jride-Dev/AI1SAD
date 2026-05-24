@@ -1,0 +1,315 @@
+from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+from typing import Any
+
+from app.risk_model import band_for_score, haversine_km, nearest_profile, profile_summary
+from app.services.warning_engine import calculate_warning, parse_dt
+
+
+SURVEILLANCE_DISCLAIMER = (
+    "This drone/search prioritization score supports coastal safety planning. It does not predict "
+    "individual shark attacks, infer shark intent, classify a person as provoking an animal, or replace "
+    "local lifeguard, aviation, wildlife, beach-closure, weather, or emergency guidance."
+)
+
+
+ACTIVITY_WEIGHTS = {
+    "swimming": 4,
+    "surfing": 7,
+    "spearfishing": 14,
+    "diving": 10,
+    "fishing": 12,
+}
+
+
+def priority_band(score: float) -> str:
+    return band_for_score(score)
+
+
+def recent_public_docs(docs: list[dict[str, Any]], now: datetime, lookback_hours: int) -> list[dict[str, Any]]:
+    cutoff = now - timedelta(hours=lookback_hours)
+    recent = []
+    for doc in docs:
+        if doc.get("visibility", "public") != "public":
+            continue
+        observed_at = parse_dt(doc.get("observed_at"))
+        if observed_at is None or observed_at >= cutoff:
+            recent.append(doc)
+    return recent
+
+
+def verified_sighting_count(docs: list[dict[str, Any]]) -> int:
+    accepted = {"official", "verified"}
+    return sum(1 for doc in docs if str(doc.get("confidence", "")).lower() in accepted or doc.get("verified") is True)
+
+
+def fatal_interaction_count(docs: list[dict[str, Any]]) -> int:
+    return sum(1 for doc in docs if bool(doc.get("fatal")))
+
+
+def habitat_points(reef_features: list[dict[str, Any]], activity_context: str | None) -> float:
+    base = min(15, len(reef_features) * 5)
+    if activity_context in {"spearfishing", "diving"} and reef_features:
+        base += 8
+    return min(24, base)
+
+
+def activity_points(activity_context: str | None) -> float:
+    if not activity_context:
+        return 0
+    return ACTIVITY_WEIGHTS.get(activity_context.lower(), 5)
+
+
+def species_region_points(
+    profile: dict[str, Any] | None,
+    *,
+    suspected_species: str | None,
+    activity_context: str | None,
+    river_mouth_distance_km: float | None,
+    reef_count: int,
+    warning_score: float,
+    month: int | None,
+) -> tuple[float, list[dict[str, Any]]]:
+    if not profile:
+        return 0, []
+
+    region = profile.get("region_key")
+    species = (suspected_species or "").lower()
+    points = 0.0
+    factors: list[dict[str, Any]] = []
+
+    def add(factor: str, value: Any, pts: float, rationale: str) -> None:
+        nonlocal points
+        points += pts
+        factors.append({"factor": factor, "value": value, "points": pts, "rationale": rationale})
+
+    if suspected_species and suspected_species.lower() in {item.lower() for item in profile.get("dominant_species", [])}:
+        add("regional_species_match", suspected_species, 8, "Suspected species is listed in the nearest public regional profile.")
+
+    if region == "western_australia" and ("white" in species or not species):
+        if activity_context in {"spearfishing", "diving"} and reef_count:
+            add("wa_white_shark_reef_spearfishing_context", activity_context, 18, "Western Australia white shark profile weights reef/spearfishing or diving search context.")
+        elif reef_count:
+            add("wa_white_shark_reef_context", reef_count, 10, "Western Australia white shark profile weights reef/dropoff habitat.")
+
+    if region == "new_south_wales_australia" and ("bull" in species or not species):
+        if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
+            add("nsw_bull_shark_river_runoff_context", river_mouth_distance_km, 18, "NSW bull shark profile weights river-mouth/runoff contexts.")
+
+    if region == "hawaii" and ("tiger" in species or not species) and month == 10:
+        add("hawaii_tiger_shark_october_context", month, 14, "Hawaii tiger shark profile applies October/Sharktober attention context.")
+
+    if region == "florida" and ("bull" in species or "blacktip" in species or not species):
+        if activity_context in {"surfing", "fishing"}:
+            add("florida_surf_fishing_context", activity_context, 10, "Florida blacktip/bull profile weights surf and fishing exposure.")
+        if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
+            add("florida_runoff_river_context", river_mouth_distance_km, 10, "Florida bull shark profile weights river mouth and runoff sensitivity.")
+
+    if warning_score >= 50:
+        add("current_warning_context", warning_score, min(12, warning_score / 8), "Current weather/ocean warning score is elevated.")
+
+    return min(points, 35), factors
+
+
+def recommended_pattern_for(activity_context: str | None, reef_count: int, river_mouth_distance_km: float | None) -> str:
+    if activity_context in {"spearfishing", "diving"} and reef_count:
+        return "reef-edge expanding grid"
+    if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
+        return "river-mouth parallel transects"
+    if activity_context in {"surfing", "swimming"}:
+        return "surf-zone ladder search"
+    return "coastal expanding square"
+
+
+def score_surveillance_zones(
+    *,
+    lat: float,
+    lon: float,
+    radius_km: float,
+    mission_type: str,
+    lookback_hours: int,
+    activity_context: str | None = None,
+    suspected_species: str | None = None,
+    river_mouth_distance_km: float | None = None,
+    month: int | None = None,
+    profiles: list[dict[str, Any]] | None = None,
+    recent_interactions: list[dict[str, Any]] | None = None,
+    sighting_reports: list[dict[str, Any]] | None = None,
+    reef_features: list[dict[str, Any]] | None = None,
+    warning_inputs: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    now = datetime.now(timezone.utc)
+    interactions = recent_public_docs(recent_interactions or [], now, lookback_hours)
+    sightings = recent_public_docs(sighting_reports or [], now, lookback_hours)
+    reefs = [doc for doc in reef_features or [] if doc.get("visibility", "public") == "public"]
+    profile = nearest_profile(lat, lon, profiles) if profiles is not None else nearest_profile(lat, lon)
+
+    warning_inputs = warning_inputs or {}
+    warning = calculate_warning(
+        lat=lat,
+        lon=lon,
+        lookback_hours=lookback_hours,
+        rainfall_72h_mm=warning_inputs.get("rainfall_72h_mm"),
+        river_mouth_distance_km=river_mouth_distance_km,
+        sea_surface_temp_c=warning_inputs.get("sea_surface_temp_c"),
+        sst_anomaly_c=warning_inputs.get("sst_anomaly_c"),
+        vessel_activity_index=warning_inputs.get("vessel_activity_index"),
+        biological_events=warning_inputs.get("biological_events", []),
+        human_exposure_index=warning_inputs.get("human_exposure_index"),
+        month=month,
+        profiles=profiles,
+        provider_status=warning_inputs.get("provider_status", {}),
+    )
+
+    factors: list[dict[str, Any]] = []
+
+    interaction_points = min(28, len(interactions) * 14 + fatal_interaction_count(interactions) * 8)
+    factors.append(
+        {
+            "factor": "recent_interactions_nearby",
+            "value": len(interactions),
+            "points": interaction_points,
+            "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        }
+    )
+
+    verified_count = verified_sighting_count(sightings)
+    sighting_points = min(22, verified_count * 11 + max(0, len(sightings) - verified_count) * 4)
+    factors.append(
+        {
+            "factor": "verified_sightings_nearby",
+            "value": verified_count,
+            "points": sighting_points,
+            "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        }
+    )
+
+    reef_points = habitat_points(reefs, activity_context)
+    factors.append(
+        {
+            "factor": "reef_dropoff_habitat_proximity",
+            "value": len(reefs),
+            "points": reef_points,
+            "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        }
+    )
+
+    river_points = 0
+    if river_mouth_distance_km is not None:
+        if river_mouth_distance_km <= 1:
+            river_points = 16
+        elif river_mouth_distance_km <= 5:
+            river_points = 11
+        elif river_mouth_distance_km <= 10:
+            river_points = 5
+    factors.append(
+        {
+            "factor": "river_mouth_runoff_proximity",
+            "value": river_mouth_distance_km,
+            "points": river_points,
+            "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        }
+    )
+
+    factors.append(
+        {
+            "factor": "activity_context",
+            "value": activity_context,
+            "points": activity_points(activity_context),
+            "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        }
+    )
+
+    species_points, species_factors = species_region_points(
+        profile,
+        suspected_species=suspected_species,
+        activity_context=activity_context,
+        river_mouth_distance_km=river_mouth_distance_km,
+        reef_count=len(reefs),
+        warning_score=warning["warning_score"],
+        month=month,
+    )
+    factors.extend(species_factors)
+    factors.append(
+        {
+            "factor": "regional_species_suitability",
+            "value": suspected_species,
+            "points": species_points,
+            "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        }
+    )
+
+    human_exposure = warning_inputs.get("human_exposure_index")
+    human_points = round(min(12, max(0, float(human_exposure or 0)) * 12), 2)
+    factors.append(
+        {
+            "factor": "human_exposure_level",
+            "value": human_exposure,
+            "points": human_points,
+            "rationale": "Human activity level affects search urgency and area selection.",
+        }
+    )
+
+    raw_score = sum(float(factor.get("points", 0)) for factor in factors)
+    priority_score = min(100, round(raw_score, 2))
+    for factor in factors:
+        factor["contribution"] = round(float(factor.get("points", 0)) / priority_score, 4) if priority_score else 0
+    dominant_factors = sorted(factors, key=lambda item: item.get("points", 0), reverse=True)[:6]
+
+    missing_sources = set(warning.get("missing_data_sources", []))
+    data_sources_used = set(warning.get("data_sources_used", []))
+    if interactions:
+        data_sources_used.add("recent_interactions")
+    else:
+        missing_sources.add("recent_interactions")
+    if sightings:
+        data_sources_used.add("sighting_reports")
+    else:
+        missing_sources.add("sighting_reports")
+    if reefs:
+        data_sources_used.add("reef_features")
+    else:
+        missing_sources.add("reef_features")
+    if profile:
+        data_sources_used.add("regional_risk_profiles")
+    else:
+        missing_sources.add("regional_risk_profiles")
+
+    confidence = round(max(0.25, min(0.92, 0.88 - len(missing_sources) * 0.05)), 2)
+    zone_radius = round(max(0.5, min(radius_km, 2.5 if priority_score >= 50 else 4.0)), 2)
+    zone_id = f"{mission_type}:{lat:.3f}:{lon:.3f}:{lookback_hours}:{activity_context or 'general'}"
+
+    zone = {
+        "zone_id": zone_id,
+        "priority_score": priority_score,
+        "priority_band": priority_band(priority_score),
+        "center": {"geo": {"type": "Point", "coordinates": [lon, lat]}},
+        "radius_km": zone_radius,
+        "polygon": None,
+        "recommended_pattern": recommended_pattern_for(activity_context, len(reefs), river_mouth_distance_km),
+        "dominant_factors": dominant_factors,
+        "confidence": confidence,
+        "data_sources_used": sorted(data_sources_used),
+        "missing_data_sources": sorted(missing_sources),
+        "regional_profile": profile_summary(profile),
+        "mission_type": mission_type,
+        "activity_context": activity_context,
+        "suspected_species": suspected_species,
+        "distance_from_request_km": 0,
+        "disclaimer": SURVEILLANCE_DISCLAIMER,
+    }
+
+    return {
+        "disclaimer": SURVEILLANCE_DISCLAIMER,
+        "query": {
+            "lat": lat,
+            "lon": lon,
+            "radius_km": radius_km,
+            "mission_type": mission_type,
+            "lookback_hours": lookback_hours,
+            "activity_context": activity_context,
+            "suspected_species": suspected_species,
+        },
+        "zones": [zone],
+    }
