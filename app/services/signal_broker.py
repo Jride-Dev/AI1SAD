@@ -18,6 +18,13 @@ DEFAULT_MAX_AGE_HOURS = {
     "prey_presence": 72,
     "tourism_exposure": 168,
     "human_exposure": 24,
+    "weather_alert": 6,
+    "flood_alert": 6,
+    "thunderstorm_alert": 6,
+    "coastal_flood_alert": 6,
+    "rip_current_alert": 6,
+    "high_surf_alert": 6,
+    "marine_warning": 6,
 }
 
 
@@ -95,6 +102,8 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
         "vessel_activity_index": None,
         "biological_events": [],
         "human_exposure_index": None,
+        "weather_alerts": [],
+        "weather_alert_score": 0,
         "provider_status": {},
         "data_freshness": {},
     }
@@ -127,6 +136,35 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
             inputs["biological_events"].append(event)
         elif signal_type in {"tourism_exposure", "human_exposure"} and value is not None:
             inputs["human_exposure_index"] = max(float(value), float(inputs["human_exposure_index"] or 0))
+        elif signal_type in {
+            "weather_alert",
+            "flood_alert",
+            "thunderstorm_alert",
+            "coastal_flood_alert",
+            "rip_current_alert",
+            "high_surf_alert",
+            "marine_warning",
+        }:
+            alert_score = {
+                "flood_alert": 8,
+                "coastal_flood_alert": 8,
+                "rip_current_alert": 7,
+                "high_surf_alert": 7,
+                "thunderstorm_alert": 5,
+                "marine_warning": 5,
+                "weather_alert": 3,
+            }.get(str(signal_type), 3)
+            inputs["weather_alert_score"] = max(float(inputs["weather_alert_score"]), alert_score)
+            inputs["weather_alerts"].append(
+                {
+                    "visibility": "public",
+                    "signal_type": signal_type,
+                    "headline": signal.get("headline"),
+                    "timestamp": signal.get("timestamp"),
+                    "expires_at": signal.get("expires_at"),
+                    "confidence": signal.get("confidence"),
+                }
+            )
 
         if status == "stale":
             inputs["provider_status"][f"signal:{signal_type}"] = "stale"

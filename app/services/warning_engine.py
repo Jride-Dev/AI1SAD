@@ -117,6 +117,8 @@ def calculate_warning(
     sst_anomaly_c: float | None = None,
     vessel_activity_index: float | None = None,
     biological_events: list[dict[str, Any]] | None = None,
+    weather_alerts: list[dict[str, Any]] | None = None,
+    weather_alert_score: float | None = None,
     human_exposure_index: float | None = None,
     activity_context: str | None = None,
     reef_habitat: bool = False,
@@ -193,6 +195,12 @@ def calculate_warning(
         missing_sources.add("biological_events")
     factors.append({"factor": "biological_event_score", "value": len(bio_events), "points": bio_score, "rationale": "Whale carcass, stranding, baitfish, or prey event signal."})
 
+    alert_events = [event for event in weather_alerts or [] if event.get("visibility", "public") == "public"]
+    alert_score = min(10, float(weather_alert_score or 0))
+    if alert_events:
+        data_sources_used.append("noaa_nws")
+    factors.append({"factor": "weather_alert_score", "value": len(alert_events), "points": alert_score, "rationale": "NOAA/NWS public weather alert context such as flood, surf, rip current, thunderstorm, coastal flood, or marine warnings."})
+
     if human_exposure_index is None:
         human_score = 0
         missing_sources.add("human_exposure_estimates")
@@ -212,6 +220,8 @@ def calculate_warning(
             data_sources_used.append(provider)
         elif status == "stale":
             missing_sources.add(f"{provider}:stale")
+        elif status == "not_applicable":
+            continue
         else:
             missing_sources.add(provider)
 
@@ -237,6 +247,7 @@ def calculate_warning(
             "sst_anomaly_score": round(anomaly_score, 2),
             "fishing_vessel_activity_score": vessel_score,
             "biological_event_score": bio_score,
+            "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
             "regional_seasonal_multiplier": multiplier,
         },

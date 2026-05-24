@@ -21,6 +21,12 @@ from app.services.regional_packs import (
 )
 from app.services.warning_engine import WARNING_DISCLAIMER, calculate_warning, is_stale
 from app.providers.open_meteo import fetch_live_open_meteo_signals, record_provider_failure, record_provider_success
+from app.providers.noaa_nws import (
+    fetch_live_noaa_nws_signals,
+    noaa_nws_status_for_location,
+    record_provider_failure as record_noaa_nws_failure,
+    record_provider_success as record_noaa_nws_success,
+)
 from providers.manual_events import build_manual_event
 from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
 from app.replay.runner import ReplayResult, ReplayRunner
@@ -454,6 +460,7 @@ def evaluate_alert_payload(
     db: Database = Depends(get_database),
     enabled_packs: str | None = None,
     use_open_meteo: bool = False,
+    use_noaa_nws: bool = False,
     lookback_hours: Annotated[int, Query(ge=1, le=168)] = 72,
 ) -> dict[str, Any]:
     lat = payload.get("lat", payload.get("location", {}).get("lat"))
@@ -480,6 +487,34 @@ def evaluate_alert_payload(
             payload["data_freshness"] = {**payload.get("data_freshness", {}), "open_meteo": {"status": "missing", "last_error": type(exc).__name__}}
             payload["confidence"] = max(0.25, float(payload.get("confidence", 0.5) or 0.5) - 0.15)
             record_provider_failure(db, error=exc)
+    if use_noaa_nws and lat is not None and lon is not None:
+        status = noaa_nws_status_for_location(float(lat), float(lon))
+        if status == "not_applicable":
+            payload["data_freshness"] = {**payload.get("data_freshness", {}), "noaa_nws": {"status": "not_applicable"}}
+            record_noaa_nws_success(db, records_ingested=0, status="not_applicable")
+        else:
+            try:
+                signals = fetch_live_noaa_nws_signals(lat=float(lat), lon=float(lon), lookback_hours=lookback_hours)
+                signal_inputs = warning_inputs_from_signals(signals)
+                payload["signals"] = list(payload.get("signals", [])) + signals
+                payload["data_freshness"] = {**payload.get("data_freshness", {}), **signal_inputs["data_freshness"]}
+                warning = calculate_warning(
+                    lat=float(lat),
+                    lon=float(lon),
+                    lookback_hours=lookback_hours,
+                    weather_alerts=signal_inputs["weather_alerts"],
+                    weather_alert_score=signal_inputs["weather_alert_score"],
+                    provider_status=signal_inputs["provider_status"],
+                )
+                existing_warning_score = float(payload.get("warning_score", 0) or 0)
+                live_warning_score = float(warning["warning_score"])
+                payload["warning_score"] = min(100, existing_warning_score + live_warning_score) if existing_warning_score else live_warning_score
+                payload.setdefault("dominant_factors", warning["dominant_factors"])
+                record_noaa_nws_success(db, records_ingested=len(signals), observed_at=signals[0].get("timestamp") if signals else None)
+            except Exception as exc:
+                payload["data_freshness"] = {**payload.get("data_freshness", {}), "noaa_nws": {"status": "missing", "last_error": type(exc).__name__}}
+                payload["confidence"] = max(0.25, float(payload.get("confidence", 0.5) or 0.5) - 0.15)
+                record_noaa_nws_failure(db, error=exc)
     response = {"alerts": evaluate_alerts(payload)}
     return annotate_response_with_pack(
         response,
@@ -610,12 +645,13 @@ def warning_payload(
     month: int | None,
     river_mouth_distance_km: float | None,
     use_open_meteo: bool,
+    use_noaa_nws: bool,
     bypass_cache: bool = False,
     enabled_packs: list[str] | None = None,
 ) -> dict[str, Any]:
     cache_key = cache_key_for_warning(lat, lon, radius_km, lookback_hours, month, river_mouth_distance_km)
     now = datetime.now(timezone.utc)
-    if not bypass_cache and not use_open_meteo:
+    if not bypass_cache and not use_open_meteo and not use_noaa_nws:
         cached = db[COLLECTIONS["warning_snapshots"]].find_one(
             {"visibility": "public", "cache_key": cache_key, "expires_at": {"$gt": now}},
             {"_id": 0, "response": 1},
@@ -641,6 +677,25 @@ def warning_payload(
         except Exception as exc:
             provider_status["open_meteo"] = "unavailable"
             record_provider_failure(db, error=exc)
+    if use_noaa_nws:
+        noaa_status = noaa_nws_status_for_location(lat, lon)
+        if noaa_status == "not_applicable":
+            provider_status["noaa_nws"] = "not_applicable"
+            inputs["signal_data_freshness"]["noaa_nws"] = {"status": "not_applicable"}
+            record_noaa_nws_success(db, records_ingested=0, status="not_applicable")
+        else:
+            try:
+                signals = fetch_live_noaa_nws_signals(lat=lat, lon=lon, lookback_hours=lookback_hours)
+                signal_inputs = warning_inputs_from_signals(signals)
+                inputs["weather_alerts"] = signal_inputs["weather_alerts"]
+                inputs["weather_alert_score"] = signal_inputs["weather_alert_score"]
+                inputs["signal_data_freshness"].update(signal_inputs["data_freshness"])
+                inputs["signal_provider_status"].update(signal_inputs["provider_status"])
+                provider_status["noaa_nws"] = "ok"
+                record_noaa_nws_success(db, records_ingested=len(signals), observed_at=signals[0].get("timestamp") if signals else None)
+            except Exception as exc:
+                provider_status["noaa_nws"] = "unavailable"
+                record_noaa_nws_failure(db, error=exc)
     for source, present in inputs.pop("data_presence").items():
         provider_status[source] = "ok" if present else "missing"
     provider_status.update(inputs.pop("signal_provider_status", {}))
@@ -664,13 +719,17 @@ def warning_payload(
         sst_anomaly_c=inputs["sst_anomaly_c"],
         vessel_activity_index=inputs["vessel_activity_index"],
         biological_events=inputs["biological_events"],
+        weather_alerts=inputs.get("weather_alerts", []),
+        weather_alert_score=inputs.get("weather_alert_score", 0),
         human_exposure_index=inputs["human_exposure_index"],
         month=month,
         profiles=profiles,
         provider_status=provider_status,
     )
     response["data_freshness"] = {
-        source: {"status": "missing"} for source, status in provider_status.items() if status == "missing"
+        source: {"status": "missing" if status in {"missing", "unavailable"} else status}
+        for source, status in provider_status.items()
+        if status in {"missing", "unavailable", "not_applicable"}
     }
     response["data_freshness"].update(signal_data_freshness)
     ttl_minutes = profile_cache_ttl_minutes(db, lat, lon)
@@ -698,6 +757,7 @@ def warning_for_location(
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
     use_open_meteo: bool = False,
+    use_noaa_nws: bool = False,
     bypass_cache: bool = False,
     enabled_packs: str | None = None,
 ) -> dict[str, Any]:
@@ -710,6 +770,7 @@ def warning_for_location(
         month=month,
         river_mouth_distance_km=river_mouth_distance_km,
         use_open_meteo=use_open_meteo,
+        use_noaa_nws=use_noaa_nws,
         bypass_cache=bypass_cache,
         enabled_packs=parse_enabled_packs(enabled_packs),
     )
@@ -724,6 +785,7 @@ def warning_explain(
     lookback_hours: Annotated[int, Query(ge=1, le=168)] = 72,
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
+    use_noaa_nws: bool = False,
     enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     return warning_payload(
@@ -735,6 +797,7 @@ def warning_explain(
         month=month,
         river_mouth_distance_km=river_mouth_distance_km,
         use_open_meteo=False,
+        use_noaa_nws=use_noaa_nws,
         enabled_packs=parse_enabled_packs(enabled_packs),
     )
 

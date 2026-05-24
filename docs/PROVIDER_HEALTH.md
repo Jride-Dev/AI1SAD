@@ -22,6 +22,8 @@ AI1SAD tracks provider status in:
 
 For Open-Meteo live lookups, `records_ingested` counts the normalized weather signals generated for the request. Failures set `status="degraded"` and record a safe `last_error` summary.
 
+For NOAA/NWS live lookups, `records_ingested` counts normalized active weather-alert signals. U.S. requests with no active alerts can still be `healthy` with zero records. Outside-U.S. coordinates are recorded as `not_applicable`, not failures.
+
 ## Public API
 
 `GET /api/v1/provider-health` returns provider rollups and recent failures with credentials, private notes, and restricted details excluded.
@@ -30,6 +32,7 @@ For Open-Meteo live lookups, `records_ingested` counts the normalized weather si
 
 - Provider failures must not crash warning or surveillance endpoints.
 - Open-Meteo failures must not crash warning or alert-evaluation endpoints.
+- NOAA/NWS failures or outside-U.S. coordinates must not crash warning or alert-evaluation endpoints.
 - Failed providers should lower confidence through missing or stale data freshness.
 - Error summaries must not include API keys, passwords, tokens, or full raw response dumps.
 - Placeholder providers should fail closed with clear messages until terms, credentials, and data contracts are reviewed.

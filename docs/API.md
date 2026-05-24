@@ -271,7 +271,7 @@ The warning score is the base rule score plus nearest regional profile multiplie
 
 Returns a warning score from recent/current observations near a coordinate.
 
-Query parameters include `lat`, `lon`, `radius_km`, `lookback_hours`, `month`, `river_mouth_distance_km`, `use_open_meteo`, and `bypass_cache`. By default, stored `warning_snapshots` may be reused until their regional TTL expires. Use `bypass_cache=true` for forced recomputation during debugging or ingestion QA.
+Query parameters include `lat`, `lon`, `radius_km`, `lookback_hours`, `month`, `river_mouth_distance_km`, `use_open_meteo`, `use_noaa_nws`, and `bypass_cache`. By default, stored `warning_snapshots` may be reused until their regional TTL expires. Use `bypass_cache=true` for forced recomputation during debugging or ingestion QA.
 
 Public response fields include:
 
@@ -465,6 +465,7 @@ Evaluates a warning/surveillance/activity payload and returns proposed alerts wi
 Optional query parameters:
 
 - `use_open_meteo=true`: fetch live Open-Meteo rainfall/weather signals and let live rainfall influence the warning score used for alert evaluation.
+- `use_noaa_nws=true`: fetch live NOAA/NWS U.S. weather alerts and let relevant alert context influence the warning score used for alert evaluation. Outside-U.S. coordinates return provider status `not_applicable`.
 - `lookback_hours`: live weather lookback window, default `72`.
 
 Sample request:
