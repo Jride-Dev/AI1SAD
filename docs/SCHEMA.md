@@ -655,3 +655,101 @@ API keys must be stored as hashes.
   "current_period_end": null
 }
 ```
+
+## Alert Engine Collections
+
+Public alert responses always filter with `visibility="public"` and exclude private notes, restricted records, raw provider secrets, victim names, and internal analyst fields.
+
+### alerts
+
+```json
+{
+  "_id": "alert_horseshoe_reef_replay",
+  "visibility": "public",
+  "status": "active",
+  "alert_type": "surveillance_priority",
+  "level": "urgent_surveillance",
+  "title": "High surveillance-priority zone",
+  "summary": "Safety teams should prioritize this area for drone, lookout, or patrol review even if the general warning score is low.",
+  "location": {"geo": {"type": "Point", "coordinates": [115.5153234, -31.9826564]}},
+  "zone": {
+    "zone_id": "horseshoe_reef_replay",
+    "location": {"geo": {"type": "Point", "coordinates": [115.5153234, -31.9826564]}},
+    "radius_km": 2.5,
+    "polygon": null
+  },
+  "recommended_action": "Prioritize drone/search coverage for this zone and review local safety guidance before water activity.",
+  "dominant_factors": [
+    {"factor": "WA reef spearfishing white shark context", "contribution": 0.58}
+  ],
+  "confidence": 0.48,
+  "expires_at": "2026-05-24T18:00:00Z",
+  "data_freshness": {"environmental": {"status": "missing"}},
+  "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes."
+}
+```
+
+### alert_zones
+
+Reusable public or internal alert-zone definitions.
+
+```json
+{
+  "_id": "alert_zone_horseshoe_reef",
+  "visibility": "public",
+  "name": "Horseshoe Reef operational zone",
+  "location": {"geo": {"type": "Point", "coordinates": [115.5153234, -31.9826564]}},
+  "radius_km": 2.5,
+  "polygon": null
+}
+```
+
+### alert_rules
+
+Rule definitions for deterministic alert generation.
+
+```json
+{
+  "_id": "surveillance_priority_75",
+  "alert_type": "surveillance_priority",
+  "status": "active",
+  "threshold": 75,
+  "level_map": {"75": "warning", "85": "urgent_surveillance"}
+}
+```
+
+### alert_delivery_logs
+
+Delivery attempts for email, webhook, dashboard, or future integrations. Public routes do not expose this collection.
+
+```json
+{
+  "_id": "delivery_123",
+  "alert_id": "alert_horseshoe_reef_replay",
+  "channel": "webhook",
+  "status": "queued",
+  "created_at": "2026-05-24T12:00:00Z"
+}
+```
+
+### alert_acknowledgements
+
+Human acknowledgement records. Public routes do not expose this collection.
+
+```json
+{
+  "_id": "ack_123",
+  "alert_id": "alert_horseshoe_reef_replay",
+  "acknowledged_by": "lifeguard_supervisor",
+  "created_at": "2026-05-24T12:10:00Z",
+  "note": "Reviewed by duty team"
+}
+```
+
+Alert indexes:
+
+- `alerts`: `visibility + status + expires_at`, `alert_type + level`, and `location.geo` as `2dsphere`
+- `alert_zones`: `visibility + created_at` and `location.geo` as `2dsphere`
+- `alert_rules`: `alert_type + status`
+- `alert_delivery_logs`: `alert_id + created_at`
+- `alert_acknowledgements`: `alert_id + created_at`

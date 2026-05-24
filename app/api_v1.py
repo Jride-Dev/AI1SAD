@@ -12,6 +12,7 @@ from app.mongodb import COLLECTIONS, get_database, public_match
 from app.risk_model import RISK_DISCLAIMER, RISK_FACTOR_DEFINITIONS, nearest_profile, score_risk
 from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surveillance_zones
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
+from app.services.alert_engine import evaluate_alerts
 from app.services.warning_engine import WARNING_DISCLAIMER, calculate_warning, is_stale
 from providers.manual_events import build_manual_event
 from providers.open_meteo import fetch_previous_72h
@@ -343,6 +344,79 @@ def nearby_locations(
 def sources(db: Database = Depends(get_database), limit: Annotated[int, Query(ge=1, le=250)] = 100) -> list[dict[str, Any]]:
     projection = {"private_notes": 0, "restricted": 0}
     return list(db[COLLECTIONS["sources"]].find(public_match(), projection).sort("name", 1).limit(limit))
+
+
+def serialize_alert(document: dict[str, Any]) -> dict[str, Any]:
+    alert = mongo_public_doc(document)
+    alert.pop("private_notes", None)
+    alert.pop("restricted", None)
+    return alert
+
+
+@router.get("/alerts/active")
+def active_alerts(
+    db: Database = Depends(get_database),
+    limit: Annotated[int, Query(ge=1, le=250)] = 100,
+) -> dict[str, Any]:
+    now = datetime.now(timezone.utc)
+    query = {"visibility": "public", "status": "active", "expires_at": {"$gt": now}}
+    projection = {"private_notes": 0, "restricted": 0}
+    docs = list(db[COLLECTIONS["alerts"]].find(query, projection).limit(limit))
+    return {"results": [serialize_alert(doc) for doc in docs]}
+
+
+@router.get("/alerts/location")
+def alerts_for_location(
+    db: Database = Depends(get_database),
+    lat: Annotated[float, Query(ge=-90, le=90)] = 0,
+    lon: Annotated[float, Query(ge=-180, le=180)] = 0,
+    radius_km: Annotated[float, Query(gt=0, le=1000)] = 50,
+    limit: Annotated[int, Query(ge=1, le=250)] = 100,
+) -> dict[str, Any]:
+    now = datetime.now(timezone.utc)
+    query = public_near_query(lat, lon, radius_km)
+    query["status"] = "active"
+    query["expires_at"] = {"$gt": now}
+    docs = list(db[COLLECTIONS["alerts"]].find(query, {"private_notes": 0, "restricted": 0}).limit(limit))
+    return {"results": [serialize_alert(doc) for doc in docs]}
+
+
+@router.get("/alerts/{alert_id}")
+def get_alert(alert_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    doc = db[COLLECTIONS["alerts"]].find_one({"_id": alert_id, "visibility": "public"}, {"private_notes": 0, "restricted": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    return serialize_alert(doc)
+
+
+@router.post("/alerts/evaluate")
+def evaluate_alert_payload(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return {"alerts": evaluate_alerts(payload)}
+
+
+@router.post("/admin/alerts/acknowledge")
+def acknowledge_alert(payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    if not get_settings().admin_alerts_enabled:
+        raise HTTPException(status_code=403, detail="Alert admin endpoint is disabled")
+    doc = {
+        "alert_id": payload["alert_id"],
+        "acknowledged_by": payload.get("acknowledged_by"),
+        "created_at": datetime.now(timezone.utc),
+        "note": payload.get("note", ""),
+    }
+    result = db[COLLECTIONS["alert_acknowledgements"]].insert_one(doc)
+    return {"inserted_id": str(result.inserted_id), "status": "acknowledged"}
+
+
+@router.post("/admin/alerts/resolve")
+def resolve_alert(payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    if not get_settings().admin_alerts_enabled:
+        raise HTTPException(status_code=403, detail="Alert admin endpoint is disabled")
+    result = db[COLLECTIONS["alerts"]].update_one(
+        {"_id": payload["alert_id"]},
+        {"$set": {"status": "resolved", "resolved_at": datetime.now(timezone.utc), "resolved_by": payload.get("resolved_by")}},
+    )
+    return {"matched_count": result.matched_count, "status": "resolved"}
 
 
 @router.get("/signals/location")

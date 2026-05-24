@@ -410,6 +410,99 @@ Disabled by default. Enable only in trusted deployments with `ADMIN_SURVEILLANCE
 
 Disabled by default. Enable only in trusted deployments with `ADMIN_SURVEILLANCE_ENABLED=true`.
 
+## Alerts
+
+AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
+
+`GET /api/v1/alerts/active`
+
+Returns active public alerts whose `expires_at` is still in the future.
+
+Sample response:
+
+```json
+{
+  "results": [
+    {
+      "_id": "alert_horseshoe_reef_replay",
+      "visibility": "public",
+      "status": "active",
+      "alert_type": "surveillance_priority",
+      "level": "urgent_surveillance",
+      "title": "High surveillance-priority zone",
+      "summary": "Safety teams should prioritize this area for drone, lookout, or patrol review even if the general warning score is low.",
+      "location": {"geo": {"type": "Point", "coordinates": [115.5153234, -31.9826564]}},
+      "recommended_action": "Prioritize drone/search coverage for this zone and review local safety guidance before water activity.",
+      "dominant_factors": [{"factor": "WA reef spearfishing white shark context", "contribution": 0.58}],
+      "confidence": 0.48,
+      "expires_at": "2026-05-24T18:00:00Z",
+      "data_freshness": {"environmental": {"status": "missing"}},
+      "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes."
+    }
+  ]
+}
+```
+
+`GET /api/v1/alerts/location`
+
+Query parameters:
+
+- `lat`
+- `lon`
+- `radius_km`
+- `limit`
+
+Returns active public alerts near a coordinate. Private/internal alert records are excluded with `visibility="public"` filtering.
+
+`GET /api/v1/alerts/{alert_id}`
+
+Returns one public alert by id or `404` for private, restricted, missing, or internal-only records.
+
+`POST /api/v1/alerts/evaluate`
+
+Evaluates a warning/surveillance/activity payload and returns proposed alerts without persisting them. This endpoint is useful for replay validation and local operator tooling.
+
+Sample request:
+
+```json
+{
+  "lat": -31.9826564,
+  "lon": 115.5153234,
+  "warning_score": 0,
+  "activity_hazard_score": 58,
+  "surveillance_priority_score": 99.3,
+  "confidence": 0.48,
+  "dominant_factors": [
+    {"factor": "WA reef spearfishing white shark context", "points": 58}
+  ],
+  "data_freshness": {"environmental": {"status": "missing"}}
+}
+```
+
+Possible alert types:
+
+- `general_warning`
+- `surveillance_priority`
+- `activity_hazard`
+- `biological_event`
+- `sighting_cluster`
+- `post_incident_surveillance`
+
+Possible alert levels:
+
+- `advisory`
+- `watch`
+- `warning`
+- `urgent_surveillance`
+
+`POST /api/v1/admin/alerts/acknowledge`
+
+Disabled by default. Enable only in trusted deployments with `ADMIN_ALERTS_ENABLED=true`.
+
+`POST /api/v1/admin/alerts/resolve`
+
+Disabled by default. Enable only in trusted deployments with `ADMIN_ALERTS_ENABLED=true`.
+
 ## Signal Broker
 
 `GET /api/v1/signals/location`

@@ -26,6 +26,7 @@ AI1SAD is in active development. The current repo includes:
 - Current-condition warning signals
 - Deterministic warning-score explanations
 - Surveillance search-zone prioritization for coastal safety planning
+- Alert generation for drone operators, lifeguards, beach managers, researchers, and API users
 - Provider-based signal broker for normalized environmental/ecology/activity inputs
 - Seed and ingestion scripts for normalized public data
 
@@ -65,6 +66,7 @@ MONGODB_DATABASE=AI1SAD
 SHARK_ATTACK_API_TITLE=AI1SAD Shark Attack Data API
 ADMIN_EVENTS_ENABLED=false
 ADMIN_SURVEILLANCE_ENABLED=false
+ADMIN_ALERTS_ENABLED=false
 ```
 
 Run the API:
@@ -93,6 +95,7 @@ python -m pytest -q
 - `/api/v1/risk/location`
 - `/api/v1/warnings/location`
 - `/api/v1/surveillance/search-zones`
+- `/api/v1/alerts/active`
 - `/api/v1/signals/location`
 - `/api/v1/provider-health`
 
@@ -132,6 +135,9 @@ Useful scripts include:
 - [Risk Model](docs/RISK_MODEL.md)
 - [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
+- [Alert Engine](docs/ALERT_ENGINE.md)
+- [Alert Levels](docs/ALERT_LEVELS.md)
+- [Human Override](docs/HUMAN_OVERRIDE.md)
 - [Horseshoe Reef Case Study](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Signal Broker](docs/SIGNAL_BROKER.md)
 - [Species Season Profiles](docs/SPECIES_SEASON_PROFILES.md)

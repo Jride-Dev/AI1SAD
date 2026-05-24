@@ -24,6 +24,7 @@ class Settings:
     api_title: str = "AI1SAD Shark Attack Data API"
     admin_events_enabled: bool = False
     admin_surveillance_enabled: bool = False
+    admin_alerts_enabled: bool = False
     api_access_enabled: bool = False
     api_free_rate_limit_per_minute: int = 60
 
@@ -37,6 +38,7 @@ def get_settings() -> Settings:
         api_title=os.getenv("SHARK_ATTACK_API_TITLE", "AI1SAD Shark Attack Data API"),
         admin_events_enabled=os.getenv("ADMIN_EVENTS_ENABLED", "false").lower() == "true",
         admin_surveillance_enabled=os.getenv("ADMIN_SURVEILLANCE_ENABLED", "false").lower() == "true",
+        admin_alerts_enabled=os.getenv("ADMIN_ALERTS_ENABLED", "false").lower() == "true",
         api_access_enabled=os.getenv("API_ACCESS_ENABLED", "false").lower() == "true",
         api_free_rate_limit_per_minute=int(os.getenv("API_FREE_RATE_LIMIT_PER_MINUTE", "60")),
     )

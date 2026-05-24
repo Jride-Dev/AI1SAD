@@ -249,3 +249,57 @@ class SubscriptionStatus(BaseModel):
     tier: str = "free"
     status: str = "active"
     current_period_end: datetime | None = None
+
+
+class AlertZone(BaseModel):
+    zone_id: str | None = None
+    location: PublicLocation = Field(default_factory=PublicLocation)
+    radius_km: float | None = None
+    polygon: dict[str, Any] | None = None
+
+
+class AlertTrigger(BaseModel):
+    trigger_type: str
+    threshold: float | None = None
+    observed_value: float | None = None
+    rationale: str | None = None
+
+
+class AlertAudience(BaseModel):
+    audiences: list[str] = Field(default_factory=lambda: ["api_users"])
+
+
+class AlertDeliveryStatus(BaseModel):
+    status: str = "not_sent"
+    channels: list[str] = Field(default_factory=list)
+    last_attempt_at: datetime | None = None
+
+
+class AlertExpiration(BaseModel):
+    created_at: datetime
+    expires_at: datetime
+    reason: str | None = None
+
+
+class Alert(BaseModel):
+    id: str | None = Field(default=None, alias="_id")
+    visibility: str = "public"
+    status: str = "active"
+    alert_type: str
+    level: str
+    title: str
+    summary: str
+    zone: AlertZone
+    location: PublicLocation | None = None
+    recommended_action: str
+    dominant_factors: list[dict[str, Any]] = Field(default_factory=list)
+    confidence: float = Field(default=0.5, ge=0, le=1)
+    data_freshness: dict[str, Any] = Field(default_factory=dict)
+    trigger: AlertTrigger
+    audience: AlertAudience = Field(default_factory=AlertAudience)
+    delivery_status: AlertDeliveryStatus = Field(default_factory=AlertDeliveryStatus)
+    expiration: AlertExpiration
+    expires_at: datetime | None = None
+    disclaimer: str
+
+    model_config = {"populate_by_name": True}

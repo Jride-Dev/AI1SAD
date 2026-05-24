@@ -52,6 +52,11 @@ COLLECTIONS = {
     "billing_tiers": "billing_tiers",
     "rate_limits": "rate_limits",
     "subscription_status": "subscription_status",
+    "alerts": "alerts",
+    "alert_zones": "alert_zones",
+    "alert_rules": "alert_rules",
+    "alert_delivery_logs": "alert_delivery_logs",
+    "alert_acknowledgements": "alert_acknowledgements",
 }
 
 
@@ -162,3 +167,12 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["rate_limits"]].create_index([("tier", ASCENDING), ("route_group", ASCENDING)], unique=True)
     db[COLLECTIONS["subscription_status"]].create_index([("user_id", ASCENDING)], unique=True)
     db[COLLECTIONS["subscription_status"]].create_index([("tier", ASCENDING), ("status", ASCENDING)])
+
+    db[COLLECTIONS["alerts"]].create_index([("visibility", ASCENDING), ("status", ASCENDING), ("expires_at", ASCENDING)])
+    db[COLLECTIONS["alerts"]].create_index([("alert_type", ASCENDING), ("level", ASCENDING)])
+    db[COLLECTIONS["alerts"]].create_index([("location.geo", GEOSPHERE)])
+    db[COLLECTIONS["alert_zones"]].create_index([("visibility", ASCENDING), ("created_at", DESCENDING)])
+    db[COLLECTIONS["alert_zones"]].create_index([("location.geo", GEOSPHERE)])
+    db[COLLECTIONS["alert_rules"]].create_index([("alert_type", ASCENDING), ("status", ASCENDING)])
+    db[COLLECTIONS["alert_delivery_logs"]].create_index([("alert_id", ASCENDING), ("created_at", DESCENDING)])
+    db[COLLECTIONS["alert_acknowledgements"]].create_index([("alert_id", ASCENDING), ("created_at", DESCENDING)])

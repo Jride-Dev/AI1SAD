@@ -45,6 +45,32 @@ RESTRICTED_INCIDENT = {
     "injury_summary": "Restricted note should not appear",
 }
 
+PUBLIC_ALERT = {
+    "_id": "public-alert",
+    "visibility": "public",
+    "status": "active",
+    "alert_type": "surveillance_priority",
+    "level": "urgent_surveillance",
+    "title": "Public surveillance alert",
+    "summary": "Public alert summary",
+    "location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
+    "zone": {"location": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}}, "radius_km": 2.5},
+    "recommended_action": "Prioritize drone/search coverage.",
+    "dominant_factors": [{"factor": "public factor", "contribution": 0.4}],
+    "confidence": 0.8,
+    "expires_at": datetime.now(timezone.utc) + timedelta(hours=2),
+    "data_freshness": {"weather": {"status": "fresh"}},
+    "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.",
+}
+
+PRIVATE_ALERT = {
+    **PUBLIC_ALERT,
+    "_id": "private-alert",
+    "visibility": "private",
+    "title": "Private alert",
+    "private_notes": "Do not expose private alert notes",
+}
+
 
 def matches(document: dict[str, Any], query: dict[str, Any]) -> bool:
     for key, expected in query.items():
@@ -370,6 +396,11 @@ class FakeDB:
             COLLECTIONS["prey_presence_zones"]: FakeCollection([]),
             COLLECTIONS["vessel_activity_snapshots"]: FakeCollection([]),
             COLLECTIONS["tourism_exposure_profiles"]: FakeCollection([]),
+            COLLECTIONS["alerts"]: FakeCollection([PUBLIC_ALERT, PRIVATE_ALERT]),
+            COLLECTIONS["alert_zones"]: FakeCollection([]),
+            COLLECTIONS["alert_rules"]: FakeCollection([]),
+            COLLECTIONS["alert_delivery_logs"]: FakeCollection([]),
+            COLLECTIONS["alert_acknowledgements"]: FakeCollection([]),
         }
 
     def __getitem__(self, name: str) -> FakeCollection:
@@ -569,6 +600,42 @@ class PublicApiPrivacyTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("data_freshness", response.json())
         self.assertEqual(response.json()["data_freshness"]["ocean_observations"]["status"], "missing")
+
+    def test_alert_routes_exclude_private_alerts(self):
+        active = self.client.get("/api/v1/alerts/active")
+        nearby = self.client.get("/api/v1/alerts/location?lat=25&lon=-80")
+        private_lookup = self.client.get("/api/v1/alerts/private-alert")
+        self.assertEqual(active.status_code, 200)
+        self.assertEqual(nearby.status_code, 200)
+        self.assertEqual(private_lookup.status_code, 404)
+        self.assertEqual([item["_id"] for item in active.json()["results"]], ["public-alert"])
+        self.assertEqual([item["_id"] for item in nearby.json()["results"]], ["public-alert"])
+        self.assertNotIn("private", str(active.json()).lower())
+        self.assertNotIn("private", str(nearby.json()).lower())
+
+    def test_alert_evaluate_is_public_safe(self):
+        response = self.client.post(
+            "/api/v1/alerts/evaluate",
+            json={
+                "lat": 25,
+                "lon": -80,
+                "warning_score": 0,
+                "surveillance_priority_score": 92,
+                "activity_hazard_score": 50,
+                "confidence": 0.7,
+                "dominant_factors": [{"factor": "reef context", "private_notes": "hide me"}],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(any(alert["alert_type"] == "surveillance_priority" for alert in payload["alerts"]))
+        self.assertNotIn("private_notes", str(payload))
+
+    def test_alert_admin_endpoints_disabled_by_default(self):
+        acknowledge = self.client.post("/api/v1/admin/alerts/acknowledge", json={"alert_id": "public-alert"})
+        resolve = self.client.post("/api/v1/admin/alerts/resolve", json={"alert_id": "public-alert"})
+        self.assertEqual(acknowledge.status_code, 403)
+        self.assertEqual(resolve.status_code, 403)
 
 
 if __name__ == "__main__":
