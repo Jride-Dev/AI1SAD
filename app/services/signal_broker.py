@@ -19,6 +19,7 @@ DEFAULT_MAX_AGE_HOURS = {
     "tourism_exposure": 168,
     "human_exposure": 24,
     "weather_alert": 6,
+    "sea_surface_temperature": 24,
     "flood_alert": 6,
     "thunderstorm_alert": 6,
     "coastal_flood_alert": 6,
@@ -119,7 +120,7 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
 
         if signal_type == "weather_rainfall" and value is not None:
             inputs["rainfall_72h_mm"] = max(float(value), float(inputs["rainfall_72h_mm"] or 0))
-        elif signal_type == "ocean_sst" and value is not None:
+        elif signal_type in {"ocean_sst", "sea_surface_temperature"} and value is not None:
             inputs["sea_surface_temp_c"] = float(value)
         elif signal_type == "sst_anomaly" and value is not None:
             inputs["sst_anomaly_c"] = float(value)

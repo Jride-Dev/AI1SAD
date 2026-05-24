@@ -24,6 +24,8 @@ For Open-Meteo live lookups, `records_ingested` counts the normalized weather si
 
 For NOAA/NWS live lookups, `records_ingested` counts normalized active weather-alert signals. U.S. requests with no active alerts can still be `healthy` with zero records. Outside-U.S. coordinates are recorded as `not_applicable`, not failures.
 
+For NOAA CoastWatch SST, Phase 9C is offline/test-first. Mocked or pre-fetched SST records normalize into signals and data freshness, but live ERDDAP provider runs are not enabled yet.
+
 ## Public API
 
 `GET /api/v1/provider-health` returns provider rollups and recent failures with credentials, private notes, and restricted details excluded.

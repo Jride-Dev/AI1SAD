@@ -109,6 +109,8 @@ def species_region_points(
 
     if warning_score >= 50:
         add("current_warning_context", warning_score, min(12, warning_score / 8), "Current weather/ocean warning score is elevated.")
+    if profile and warning_score < 50 and profile.get("region_key") in {"florida", "western_australia", "hawaii", "red_sea"}:
+        add("regional_sst_species_context", warning_score, 3, "Regional SST species context can support surveillance review without dominating priority.")
 
     return min(points, 35), factors
 

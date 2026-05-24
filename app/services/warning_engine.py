@@ -106,6 +106,42 @@ def regional_seasonal_multiplier(profile: dict[str, Any] | None, month: int | No
     return round(multiplier, 4), applied
 
 
+def regional_sst_context_score(profile: dict[str, Any] | None, sea_surface_temp_c: float | None, sst_anomaly_c: float | None) -> tuple[float, dict[str, Any] | None]:
+    if not profile or sea_surface_temp_c is None:
+        return 0, None
+    region = profile.get("region_key")
+    score = 0.0
+    rationale = "Regional species-aware sea-surface temperature context."
+    if region == "florida":
+        if 24 <= sea_surface_temp_c <= 30:
+            score = 4
+            rationale = "Florida blacktip/bull context treats warm nearshore SST as suitable background context."
+    elif region == "western_australia":
+        if 17 <= sea_surface_temp_c <= 23:
+            score = 4
+            rationale = "Western Australia white shark context treats temperate SST as suitable background context."
+    elif region == "hawaii":
+        if 24 <= sea_surface_temp_c <= 29:
+            score = 4
+            rationale = "Hawaii tiger shark context treats warm tropical SST as suitable background context."
+    elif region == "red_sea":
+        if sea_surface_temp_c >= 27:
+            score = 5
+            rationale = "Red Sea warm-water context treats high SST as relevant background context."
+    if sst_anomaly_c is not None:
+        score += min(2, abs(float(sst_anomaly_c)))
+    score = min(6, round(score, 2))
+    if not score:
+        return 0, None
+    return score, {
+        "factor": "regional_sst_species_context",
+        "value": sea_surface_temp_c,
+        "anomaly_c": sst_anomaly_c,
+        "points": score,
+        "rationale": rationale,
+    }
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -178,6 +214,10 @@ def calculate_warning(
         anomaly_score = min(8, abs(sst_anomaly_c) * 3)
         data_sources_used.append("sst_anomaly")
     factors.append({"factor": "sst_anomaly_score", "value": sst_anomaly_c, "points": round(anomaly_score, 2), "rationale": "Sea-surface temperature anomaly magnitude."})
+
+    regional_sst_score, regional_sst_factor = regional_sst_context_score(profile, sea_surface_temp_c, sst_anomaly_c)
+    if regional_sst_factor:
+        factors.append(regional_sst_factor)
 
     if vessel_activity_index is None:
         vessel_score = 0

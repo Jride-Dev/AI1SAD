@@ -197,6 +197,7 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
 
     sighting_count = sum(1 for signal in signals if signal.get("signal_type") in {"sighting", "shark_sighting"})
     carcass_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "biological_event"})
+    sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
     recent_interactions = int(payload.get("recent_interactions_count", 0) or 0)
 
     if sighting_count >= 2:
@@ -244,6 +245,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 expires_hours=12,
                 now=now,
                 confidence=confidence,
+            )
+        )
+
+    if sst_context_count and surveillance_score >= 60:
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(surveillance_score),
+                title="SST-supported surveillance context",
+                summary="Public SST context supports regional surveillance review when combined with other surveillance-priority factors.",
+                recommended_action="Use SST context as supporting information for patrol or drone-priority review; do not treat it as a standalone attack prediction.",
+                trigger={"trigger_type": "sst_context", "threshold": 60, "observed_value": surveillance_score},
+                expires_hours=6,
+                now=now,
+                confidence=max(confidence - 0.02, 0.25),
             )
         )
 
