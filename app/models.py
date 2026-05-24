@@ -303,3 +303,61 @@ class Alert(BaseModel):
     disclaimer: str
 
     model_config = {"populate_by_name": True}
+
+
+class RegionalPack(BaseModel):
+    id: str | None = Field(default=None, alias="_id")
+    pack_id: str
+    visibility: str = "public"
+    name: str
+    covered_regions: list[str] = Field(default_factory=list)
+    dominant_species: list[str] = Field(default_factory=list)
+    seasonal_windows: dict[str, Any] = Field(default_factory=dict)
+    environmental_signals: list[str] = Field(default_factory=list)
+    human_exposure_signals: list[str] = Field(default_factory=list)
+    surveillance_rules: list[str] = Field(default_factory=list)
+    alert_rules: list[str] = Field(default_factory=list)
+    replay_scenarios: list[str] = Field(default_factory=list)
+    docs_links: list[str] = Field(default_factory=list)
+    required_access_tier: str = "free"
+    features: list[str] = Field(default_factory=list)
+
+    model_config = {"populate_by_name": True}
+
+
+class PackEntitlement(BaseModel):
+    id: str | None = Field(default=None, alias="_id")
+    visibility: str = "public"
+    user_id: str | None = None
+    organization: str | None = None
+    pack_id: str
+    access_tier: str = "free"
+    status: str = "active"
+    expires_at: datetime | None = None
+
+    model_config = {"populate_by_name": True}
+
+
+class PackFeature(BaseModel):
+    pack_id: str
+    feature_key: str
+    visibility: str = "public"
+    description: str | None = None
+    enabled: bool = True
+
+
+class PackReplayScenario(BaseModel):
+    pack_id: str
+    scenario_id: str
+    visibility: str = "public"
+    label: str | None = None
+    tags: list[str] = Field(default_factory=list)
+
+
+class PackSpeciesProfile(BaseModel):
+    pack_id: str
+    species: str
+    visibility: str = "public"
+    seasonal_windows: dict[str, Any] = Field(default_factory=dict)
+    environmental_triggers: list[str] = Field(default_factory=list)
+    surveillance_notes: list[str] = Field(default_factory=list)

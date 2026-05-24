@@ -401,6 +401,90 @@ class FakeDB:
             COLLECTIONS["alert_rules"]: FakeCollection([]),
             COLLECTIONS["alert_delivery_logs"]: FakeCollection([]),
             COLLECTIONS["alert_acknowledgements"]: FakeCollection([]),
+            COLLECTIONS["regional_packs"]: FakeCollection(
+                [
+                    {
+                        "_id": "core",
+                        "pack_id": "core",
+                        "visibility": "public",
+                        "name": "AI1SAD Core",
+                        "covered_regions": ["global"],
+                        "center": {"geo": {"type": "Point", "coordinates": [0, 0]}},
+                        "coverage_radius_km": 20040,
+                        "dominant_species": ["bull shark"],
+                        "environmental_signals": ["rainfall"],
+                        "human_exposure_signals": ["activity_context"],
+                        "surveillance_rules": ["core_surveillance"],
+                        "alert_rules": ["core_alert"],
+                        "replay_scenarios": ["florida_summer_heavy_rain"],
+                        "docs_links": ["docs/REGIONAL_PACKS.md"],
+                        "required_access_tier": "free",
+                        "features": ["core_warning"],
+                    },
+                    {
+                        "_id": "florida",
+                        "pack_id": "florida",
+                        "visibility": "public",
+                        "name": "Florida Regional Pack",
+                        "covered_regions": ["Florida"],
+                        "center": {"geo": {"type": "Point", "coordinates": [-80.2, 27.7]}},
+                        "coverage_radius_km": 900,
+                        "dominant_species": ["bull shark", "blacktip shark"],
+                        "environmental_signals": ["rainfall_runoff"],
+                        "human_exposure_signals": ["weekend"],
+                        "surveillance_rules": ["inlet_runoff"],
+                        "alert_rules": ["crowded_beach_inlet_rainfall"],
+                        "replay_scenarios": ["florida_summer_heavy_rain"],
+                        "docs_links": ["docs/REGIONAL_PACKS.md"],
+                        "required_access_tier": "developer",
+                        "features": ["florida_inlet_rules"],
+                    },
+                    {
+                        "_id": "private-pack",
+                        "pack_id": "private-pack",
+                        "visibility": "private",
+                        "name": "Private Pack",
+                        "private_notes": "Do not expose private pack notes",
+                    },
+                ]
+            ),
+            COLLECTIONS["pack_entitlements"]: FakeCollection([]),
+            COLLECTIONS["pack_features"]: FakeCollection(
+                [
+                    {"_id": "public-pack-feature", "visibility": "public", "pack_id": "florida", "feature_key": "inlet_runoff"},
+                    {
+                        "_id": "private-pack-feature",
+                        "visibility": "private",
+                        "pack_id": "florida",
+                        "feature_key": "private",
+                        "private_notes": "Do not expose private feature",
+                    },
+                ]
+            ),
+            COLLECTIONS["pack_replay_scenarios"]: FakeCollection(
+                [
+                    {"_id": "public-pack-replay", "visibility": "public", "pack_id": "florida", "scenario_id": "florida_summer_heavy_rain"},
+                    {
+                        "_id": "private-pack-replay",
+                        "visibility": "private",
+                        "pack_id": "florida",
+                        "scenario_id": "private_replay",
+                        "private_notes": "Do not expose private replay",
+                    },
+                ]
+            ),
+            COLLECTIONS["pack_species_profiles"]: FakeCollection(
+                [
+                    {"_id": "public-pack-species", "visibility": "public", "pack_id": "florida", "species": "bull shark"},
+                    {
+                        "_id": "private-pack-species",
+                        "visibility": "private",
+                        "pack_id": "florida",
+                        "species": "private shark",
+                        "private_notes": "Do not expose private species",
+                    },
+                ]
+            ),
         }
 
     def __getitem__(self, name: str) -> FakeCollection:

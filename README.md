@@ -27,6 +27,7 @@ AI1SAD is in active development. The current repo includes:
 - Deterministic warning-score explanations
 - Surveillance search-zone prioritization for coastal safety planning
 - Alert generation for drone operators, lifeguards, beach managers, researchers, and API users
+- Regional pack metadata for optional higher-resolution local intelligence
 - Provider-based signal broker for normalized environmental/ecology/activity inputs
 - Seed and ingestion scripts for normalized public data
 
@@ -96,6 +97,8 @@ python -m pytest -q
 - `/api/v1/warnings/location`
 - `/api/v1/surveillance/search-zones`
 - `/api/v1/alerts/active`
+- `/api/v1/packs`
+- `/api/v1/access/entitlements`
 - `/api/v1/signals/location`
 - `/api/v1/provider-health`
 
@@ -120,6 +123,7 @@ Useful scripts include:
 
 - `scripts/load_mongodb.py`
 - `scripts/seed_regional_risk_profiles.py`
+- `scripts/seed_regional_packs.py`
 
 ## Documentation
 
@@ -138,6 +142,8 @@ Useful scripts include:
 - [Alert Engine](docs/ALERT_ENGINE.md)
 - [Alert Levels](docs/ALERT_LEVELS.md)
 - [Human Override](docs/HUMAN_OVERRIDE.md)
+- [Regional Packs](docs/REGIONAL_PACKS.md)
+- [Pack Entitlements](docs/PACK_ENTITLEMENTS.md)
 - [Horseshoe Reef Case Study](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Signal Broker](docs/SIGNAL_BROKER.md)
 - [Species Season Profiles](docs/SPECIES_SEASON_PROFILES.md)

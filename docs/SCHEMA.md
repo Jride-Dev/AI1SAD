@@ -753,3 +753,94 @@ Alert indexes:
 - `alert_rules`: `alert_type + status`
 - `alert_delivery_logs`: `alert_id + created_at`
 - `alert_acknowledgements`: `alert_id + created_at`
+
+## Regional Pack Collections
+
+Regional pack collections support soft entitlements. Core functionality is not blocked when a regional pack is not enabled.
+
+### regional_packs
+
+```json
+{
+  "_id": "western_australia",
+  "pack_id": "western_australia",
+  "visibility": "public",
+  "name": "Western Australia Regional Pack",
+  "covered_regions": ["Western Australia"],
+  "center": {"geo": {"type": "Point", "coordinates": [115.8, -31.9]}},
+  "coverage_radius_km": 1800,
+  "dominant_species": ["white shark", "tiger shark", "bronze whaler"],
+  "seasonal_windows": {"australia_high_exposure_months": [1, 2]},
+  "environmental_signals": ["reef_habitat", "dropoff_habitat", "SST", "biological_events"],
+  "human_exposure_signals": ["spearfishing", "diving_with_catch", "surfing", "fishing"],
+  "surveillance_rules": ["white_shark_reef_spearfishing", "post_incident_surveillance"],
+  "alert_rules": ["urgent_surveillance_low_warning_split"],
+  "replay_scenarios": ["wa_spearfishing_reef_white", "horseshoe_reef_2026_replay"],
+  "docs_links": ["docs/CASE_STUDY_HORSESHOE_REEF_2026.md"],
+  "required_access_tier": "research",
+  "features": ["wa_white_shark_context", "wa_reef_surveillance", "wa_replays"]
+}
+```
+
+### pack_entitlements
+
+```json
+{
+  "_id": "entitlement_123",
+  "visibility": "public",
+  "user_id": "user_123",
+  "organization": "Coastal Safety Team",
+  "pack_id": "western_australia",
+  "access_tier": "research",
+  "status": "active",
+  "expires_at": null
+}
+```
+
+### pack_features
+
+```json
+{
+  "_id": "feature_wa_reef_surveillance",
+  "visibility": "public",
+  "pack_id": "western_australia",
+  "feature_key": "wa_reef_surveillance",
+  "description": "Western Australia reef/dropoff surveillance-priority rules.",
+  "enabled": true
+}
+```
+
+### pack_replay_scenarios
+
+```json
+{
+  "_id": "pack_replay_wa_horseshoe",
+  "visibility": "public",
+  "pack_id": "western_australia",
+  "scenario_id": "wa_spearfishing_reef_white",
+  "label": "Western Australia spearfishing reef white shark replay",
+  "tags": ["western_australia", "spearfishing", "white_shark"]
+}
+```
+
+### pack_species_profiles
+
+```json
+{
+  "_id": "wa_white_shark",
+  "visibility": "public",
+  "pack_id": "western_australia",
+  "species": "white shark",
+  "seasonal_windows": {"australia_high_exposure_months": [1, 2]},
+  "environmental_triggers": ["reef_habitat", "dropoff_habitat", "biological_events"],
+  "surveillance_notes": ["Spearfishing is activity context, not automatic provocation."]
+}
+```
+
+Regional pack indexes:
+
+- `regional_packs`: `visibility + pack_id` and `center.geo` as `2dsphere`
+- `pack_entitlements`: `visibility + pack_id + status`
+- `pack_features`: `visibility + pack_id + feature_key`
+- `pack_replay_scenarios`: `visibility + pack_id + scenario_id`
+- `pack_species_profiles`: `visibility + pack_id + species`

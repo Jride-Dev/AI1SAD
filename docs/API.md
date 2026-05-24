@@ -503,6 +503,52 @@ Disabled by default. Enable only in trusted deployments with `ADMIN_ALERTS_ENABL
 
 Disabled by default. Enable only in trusted deployments with `ADMIN_ALERTS_ENABLED=true`.
 
+## Regional Packs
+
+Regional packs are a soft entitlement system. Core model access is not blocked when a regional pack is unavailable or not enabled.
+
+`GET /api/v1/packs`
+
+Returns public pack metadata.
+
+`GET /api/v1/packs/{pack_id}`
+
+Returns one public pack.
+
+`GET /api/v1/packs/{pack_id}/species`
+
+Returns the pack dominant species and any public pack species profiles.
+
+`GET /api/v1/packs/{pack_id}/signals`
+
+Returns environmental, human exposure, surveillance, and alert signal/rule keys for a pack.
+
+`GET /api/v1/packs/{pack_id}/replays`
+
+Returns replay scenario ids associated with a pack.
+
+`GET /api/v1/access/entitlements`
+
+Returns soft entitlement state. Query `enabled_packs=florida,hawaii` can be used in local/dev calls to simulate enabled packs.
+
+Warning, surveillance, replay, and alert-evaluation responses include:
+
+- `active_pack`
+- `pack_features_used`
+- `pack_notice`
+- `available_pack` when a regional pack matches the location
+
+Sample pack notice:
+
+```json
+{
+  "active_pack": "core",
+  "available_pack": "western_australia",
+  "pack_features_used": ["core_warning", "core_surveillance"],
+  "pack_notice": "A higher-resolution regional pack is available for this location. Core remains available; regional packs are soft-gated and not hard billing enforcement."
+}
+```
+
 ## Signal Broker
 
 `GET /api/v1/signals/location`

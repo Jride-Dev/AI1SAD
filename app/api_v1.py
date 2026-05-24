@@ -13,6 +13,12 @@ from app.risk_model import RISK_DISCLAIMER, RISK_FACTOR_DEFINITIONS, nearest_pro
 from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surveillance_zones
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
 from app.services.alert_engine import evaluate_alerts
+from app.services.regional_packs import (
+    annotate_response_with_pack,
+    load_public_packs,
+    pack_context,
+    pack_entitlement_summary,
+)
 from app.services.warning_engine import WARNING_DISCLAIMER, calculate_warning, is_stale
 from providers.manual_events import build_manual_event
 from providers.open_meteo import fetch_previous_72h
@@ -99,6 +105,12 @@ def public_near_query(lat: float, lon: float, radius_km: float, geo_field: str =
 def latest_public_docs(db: Database, collection_name: str, lat: float, lon: float, radius_km: float, limit: int = 50) -> list[dict[str, Any]]:
     cursor = db[collection_name].find(public_near_query(lat, lon, radius_km), {"private_notes": 0, "restricted": 0}).limit(limit)
     return [mongo_public_doc(document) for document in cursor]
+
+
+def parse_enabled_packs(value: str | None) -> list[str] | None:
+    if not value:
+        return None
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 
 def warning_inputs_from_mongo(db: Database, lat: float, lon: float, radius_km: float) -> dict[str, Any]:
@@ -346,6 +358,53 @@ def sources(db: Database = Depends(get_database), limit: Annotated[int, Query(ge
     return list(db[COLLECTIONS["sources"]].find(public_match(), projection).sort("name", 1).limit(limit))
 
 
+@router.get("/packs")
+def list_packs(db: Database = Depends(get_database)) -> dict[str, Any]:
+    packs = load_public_packs(db)
+    return {"soft_entitlements_only": True, "results": packs}
+
+
+@router.get("/packs/{pack_id}")
+def get_pack(pack_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    pack = next((item for item in load_public_packs(db) if item.get("pack_id") == pack_id), None)
+    if not pack:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    return pack
+
+
+@router.get("/packs/{pack_id}/species")
+def pack_species(pack_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    pack = get_pack(pack_id, db)
+    projection = {"private_notes": 0, "restricted": 0, "internal_rules": 0}
+    docs = list(db[COLLECTIONS["pack_species_profiles"]].find({"visibility": "public", "pack_id": pack_id}, projection).limit(250))
+    return {"pack_id": pack_id, "dominant_species": pack.get("dominant_species", []), "results": [mongo_public_doc(doc) for doc in docs]}
+
+
+@router.get("/packs/{pack_id}/signals")
+def pack_signals(pack_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    pack = get_pack(pack_id, db)
+    return {
+        "pack_id": pack_id,
+        "environmental_signals": pack.get("environmental_signals", []),
+        "human_exposure_signals": pack.get("human_exposure_signals", []),
+        "surveillance_rules": pack.get("surveillance_rules", []),
+        "alert_rules": pack.get("alert_rules", []),
+    }
+
+
+@router.get("/packs/{pack_id}/replays")
+def pack_replays(pack_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    pack = get_pack(pack_id, db)
+    projection = {"private_notes": 0, "restricted": 0, "internal_rules": 0}
+    docs = list(db[COLLECTIONS["pack_replay_scenarios"]].find({"visibility": "public", "pack_id": pack_id}, projection).limit(250))
+    return {"pack_id": pack_id, "replay_scenarios": pack.get("replay_scenarios", []), "results": [mongo_public_doc(doc) for doc in docs]}
+
+
+@router.get("/access/entitlements")
+def access_entitlements(db: Database = Depends(get_database), enabled_packs: str | None = None) -> dict[str, Any]:
+    return pack_entitlement_summary(db, parse_enabled_packs(enabled_packs))
+
+
 def serialize_alert(document: dict[str, Any]) -> dict[str, Any]:
     alert = mongo_public_doc(document)
     alert.pop("private_notes", None)
@@ -390,8 +449,21 @@ def get_alert(alert_id: str, db: Database = Depends(get_database)) -> dict[str, 
 
 
 @router.post("/alerts/evaluate")
-def evaluate_alert_payload(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    return {"alerts": evaluate_alerts(payload)}
+def evaluate_alert_payload(
+    payload: dict[str, Any] = Body(...),
+    db: Database = Depends(get_database),
+    enabled_packs: str | None = None,
+) -> dict[str, Any]:
+    response = {"alerts": evaluate_alerts(payload)}
+    lat = payload.get("lat", payload.get("location", {}).get("lat"))
+    lon = payload.get("lon", payload.get("location", {}).get("lon"))
+    return annotate_response_with_pack(
+        response,
+        db,
+        lat=float(lat) if lat is not None else None,
+        lon=float(lon) if lon is not None else None,
+        enabled_packs=parse_enabled_packs(enabled_packs),
+    )
 
 
 @router.post("/admin/alerts/acknowledge")
@@ -515,6 +587,7 @@ def warning_payload(
     river_mouth_distance_km: float | None,
     use_open_meteo: bool,
     bypass_cache: bool = False,
+    enabled_packs: list[str] | None = None,
 ) -> dict[str, Any]:
     cache_key = cache_key_for_warning(lat, lon, radius_km, lookback_hours, month, river_mouth_distance_km)
     now = datetime.now(timezone.utc)
@@ -526,7 +599,7 @@ def warning_payload(
         if cached:
             response = dict(cached["response"])
             response["cached"] = True
-            return response
+            return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
 
     profiles = list(db[COLLECTIONS["regional_risk_profiles"]].find({"visibility": "public"}, {"private_notes": 0, "restricted": 0}))
     inputs = warning_inputs_from_mongo(db, lat, lon, radius_km)
@@ -582,7 +655,7 @@ def warning_payload(
     }
     db[COLLECTIONS["warning_snapshots"]].replace_one({"visibility": "public", "cache_key": cache_key}, snapshot, upsert=True)
     response["cached"] = False
-    return response
+    return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
 
 
 @router.get("/warnings/location")
@@ -596,6 +669,7 @@ def warning_for_location(
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
     use_open_meteo: bool = False,
     bypass_cache: bool = False,
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     return warning_payload(
         db=db,
@@ -607,6 +681,7 @@ def warning_for_location(
         river_mouth_distance_km=river_mouth_distance_km,
         use_open_meteo=use_open_meteo,
         bypass_cache=bypass_cache,
+        enabled_packs=parse_enabled_packs(enabled_packs),
     )
 
 
@@ -619,6 +694,7 @@ def warning_explain(
     lookback_hours: Annotated[int, Query(ge=1, le=168)] = 72,
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     return warning_payload(
         db=db,
@@ -629,6 +705,7 @@ def warning_explain(
         month=month,
         river_mouth_distance_km=river_mouth_distance_km,
         use_open_meteo=False,
+        enabled_packs=parse_enabled_packs(enabled_packs),
     )
 
 
@@ -679,10 +756,11 @@ def surveillance_payload(
     suspected_species: str | None,
     river_mouth_distance_km: float | None,
     month: int | None,
+    enabled_packs: list[str] | None = None,
 ) -> dict[str, Any]:
     profiles = list(db[COLLECTIONS["regional_risk_profiles"]].find({"visibility": "public"}, {"private_notes": 0, "restricted": 0}))
     inputs = surveillance_inputs_from_mongo(db, lat, lon, radius_km, lookback_hours)
-    return score_surveillance_zones(
+    response = score_surveillance_zones(
         lat=lat,
         lon=lon,
         radius_km=radius_km,
@@ -698,6 +776,7 @@ def surveillance_payload(
         reef_features=inputs["reef_features"],
         warning_inputs=inputs["warning_inputs"],
     )
+    return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
 
 
 @router.get("/surveillance/search-zones")
@@ -712,6 +791,7 @@ def surveillance_search_zones(
     suspected_species: str | None = None,
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     return surveillance_payload(
         db=db,
@@ -724,6 +804,7 @@ def surveillance_search_zones(
         suspected_species=suspected_species,
         river_mouth_distance_km=river_mouth_distance_km,
         month=month,
+        enabled_packs=parse_enabled_packs(enabled_packs),
     )
 
 
@@ -739,6 +820,7 @@ def surveillance_explain(
     suspected_species: str | None = None,
     river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     return surveillance_payload(
         db=db,
@@ -751,6 +833,7 @@ def surveillance_explain(
         suspected_species=suspected_species,
         river_mouth_distance_km=river_mouth_distance_km,
         month=month,
+        enabled_packs=parse_enabled_packs(enabled_packs),
     )
 
 
@@ -994,12 +1077,13 @@ def replay_list_scenarios() -> dict[str, Any]:
 @router.get("/replay/run")
 def replay_run(
     scenario_id: str = "florida_summer_heavy_rain",
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
-    return replay_run_scenario(scenario_id)
+    return replay_run_scenario(scenario_id, enabled_packs)
 
 
 @router.get("/replay/run/{scenario_id}")
-def replay_run_scenario(scenario_id: str) -> dict[str, Any]:
+def replay_run_scenario(scenario_id: str, enabled_packs: str | None = None) -> dict[str, Any]:
     scenario = REPLAY_SCENARIOS.get(scenario_id)
     if not scenario:
         raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
@@ -1007,7 +1091,7 @@ def replay_run_scenario(scenario_id: str) -> dict[str, Any]:
     result = runner.run_scenario(scenario)
     if result.error:
         return {"scenario_id": scenario_id, "error": result.error}
-    return _replay_response(result)
+    return _replay_response(result, parse_enabled_packs(enabled_packs))
 
 
 @router.post("/replay/run")
@@ -1063,9 +1147,10 @@ def replay_heatmap(
     activity_context: str | None = None,
     suspected_species: str | None = None,
     month: Annotated[int | None, Query(ge=1, le=12)] = None,
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
     runner = ReplayRunner()
-    return runner.run_heatmap(
+    response = runner.run_heatmap(
         lat=lat,
         lon=lon,
         radius_km=radius_km,
@@ -1074,17 +1159,19 @@ def replay_heatmap(
         suspected_species=suspected_species,
         month=month,
     )
+    return annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=parse_enabled_packs(enabled_packs))
 
 
 @router.get("/replay/compare")
 def replay_compare(
     scenario_id: str = "florida_summer_heavy_rain",
+    enabled_packs: str | None = None,
 ) -> dict[str, Any]:
-    return replay_compare_quiet_day(scenario_id)
+    return replay_compare_quiet_day(scenario_id, enabled_packs)
 
 
 @router.get("/replay/compare-quiet-day/{scenario_id}")
-def replay_compare_quiet_day(scenario_id: str) -> dict[str, Any]:
+def replay_compare_quiet_day(scenario_id: str, enabled_packs: str | None = None) -> dict[str, Any]:
     scenario = REPLAY_SCENARIOS.get(scenario_id)
     if not scenario:
         raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
@@ -1092,15 +1179,16 @@ def replay_compare_quiet_day(scenario_id: str) -> dict[str, Any]:
     result = runner.run_scenario(scenario)
     if result.error:
         return {"scenario_id": scenario_id, "error": result.error}
-    return {
+    response = {
         "scenario_id": scenario_id,
         "scenario_label": scenario.label,
         "quiet_day_comparison": result.quiet_day_comparison,
     }
+    return annotate_response_with_pack(response, None, lat=scenario.lat, lon=scenario.lon, enabled_packs=parse_enabled_packs(enabled_packs))
 
 
-def _replay_response(result: ReplayResult) -> dict[str, Any]:
-    return {
+def _replay_response(result: ReplayResult, enabled_packs: list[str] | None = None) -> dict[str, Any]:
+    response = {
         "scenario_id": result.scenario_id,
         "label": result.label,
         "timestamp": result.timestamp.isoformat(),
@@ -1122,3 +1210,7 @@ def _replay_response(result: ReplayResult) -> dict[str, Any]:
         "quiet_day_comparison": result.quiet_day_comparison,
         "confidence_decomposition": result.confidence_decomposition,
     }
+    coords = result.location.get("geo", {}).get("coordinates", [])
+    lon = coords[0] if len(coords) >= 2 else result.location.get("lon")
+    lat = coords[1] if len(coords) >= 2 else result.location.get("lat")
+    return annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=enabled_packs)

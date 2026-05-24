@@ -57,6 +57,11 @@ COLLECTIONS = {
     "alert_rules": "alert_rules",
     "alert_delivery_logs": "alert_delivery_logs",
     "alert_acknowledgements": "alert_acknowledgements",
+    "regional_packs": "regional_packs",
+    "pack_entitlements": "pack_entitlements",
+    "pack_features": "pack_features",
+    "pack_replay_scenarios": "pack_replay_scenarios",
+    "pack_species_profiles": "pack_species_profiles",
 }
 
 
@@ -176,3 +181,10 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["alert_rules"]].create_index([("alert_type", ASCENDING), ("status", ASCENDING)])
     db[COLLECTIONS["alert_delivery_logs"]].create_index([("alert_id", ASCENDING), ("created_at", DESCENDING)])
     db[COLLECTIONS["alert_acknowledgements"]].create_index([("alert_id", ASCENDING), ("created_at", DESCENDING)])
+
+    db[COLLECTIONS["regional_packs"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING)], unique=True)
+    db[COLLECTIONS["regional_packs"]].create_index([("center.geo", GEOSPHERE)])
+    db[COLLECTIONS["pack_entitlements"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("status", ASCENDING)])
+    db[COLLECTIONS["pack_features"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("feature_key", ASCENDING)])
+    db[COLLECTIONS["pack_replay_scenarios"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("scenario_id", ASCENDING)])
+    db[COLLECTIONS["pack_species_profiles"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("species", ASCENDING)])
