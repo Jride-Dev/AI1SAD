@@ -2,6 +2,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 
 from app.risk_model import REGIONAL_RISK_PROFILES
+from app.services.activity_hazard import activity_hazard_score
 from app.services.warning_engine import calculate_warning, provider_health_document
 
 
@@ -95,6 +96,32 @@ class WarningEngineTests(unittest.TestCase):
         self.assertEqual(doc["_id"], "open_meteo")
         self.assertEqual(doc["status"], "healthy")
         self.assertEqual(doc["records_ingested"], 483)
+
+    def test_activity_hazard_does_not_raise_environmental_warning_score_without_live_signals(self):
+        result = calculate_warning(
+            lat=-31.9826564,
+            lon=115.5153234,
+            activity_context="spearfishing",
+            reef_habitat=True,
+            suspected_species="white shark",
+            month=5,
+            profiles=REGIONAL_RISK_PROFILES,
+        )
+        self.assertEqual(result["warning_score"], 0)
+        self.assertEqual(result["warning_band"], "low")
+        self.assertGreaterEqual(result["activity_context_score"], 50)
+        self.assertIn("score_split", result)
+
+    def test_activity_hazard_scores_high_risk_water_activity_contexts(self):
+        profile = next(item for item in REGIONAL_RISK_PROFILES if item["region_key"] == "western_australia")
+        result = activity_hazard_score(
+            activity_context="spearfishing",
+            reef_habitat=True,
+            suspected_species="white shark",
+            regional_profile=profile,
+        )
+        self.assertGreaterEqual(result["activity_context_score"], 50)
+        self.assertIn("not attack probability", result["disclaimer"])
 
 
 if __name__ == "__main__":

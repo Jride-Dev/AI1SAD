@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from app.risk_model import band_for_score, haversine_km, nearest_profile, profile_summary
+from app.services.activity_hazard import activity_hazard_score
 from app.services.warning_engine import calculate_warning, parse_dt
 
 
@@ -113,7 +114,7 @@ def species_region_points(
 
 
 def recommended_pattern_for(activity_context: str | None, reef_count: int, river_mouth_distance_km: float | None) -> str:
-    if activity_context in {"spearfishing", "diving"} and reef_count:
+    if activity_context in {"spearfishing", "diving", "diving_with_catch", "diving with catch"} and reef_count:
         return "reef-edge expanding grid"
     if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
         return "river-mouth parallel transects"
@@ -144,6 +145,7 @@ def score_surveillance_zones(
     sightings = recent_public_docs(sighting_reports or [], now, lookback_hours)
     reefs = [doc for doc in reef_features or [] if doc.get("visibility", "public") == "public"]
     profile = nearest_profile(lat, lon, profiles) if profiles is not None else nearest_profile(lat, lon)
+    reef_habitat = bool(reefs)
 
     warning_inputs = warning_inputs or {}
     warning = calculate_warning(
@@ -157,12 +159,25 @@ def score_surveillance_zones(
         vessel_activity_index=warning_inputs.get("vessel_activity_index"),
         biological_events=warning_inputs.get("biological_events", []),
         human_exposure_index=warning_inputs.get("human_exposure_index"),
+        activity_context=activity_context,
+        reef_habitat=reef_habitat,
+        dropoff_habitat=reef_habitat,
+        bait_activity=bool(warning_inputs.get("biological_events")),
+        suspected_species=suspected_species,
         month=month,
         profiles=profiles,
         provider_status=warning_inputs.get("provider_status", {}),
     )
 
     factors: list[dict[str, Any]] = []
+    activity_hazard = activity_hazard_score(
+        activity_context=activity_context,
+        reef_habitat=reef_habitat,
+        dropoff_habitat=reef_habitat,
+        bait_activity=bool(warning_inputs.get("biological_events")),
+        suspected_species=suspected_species,
+        regional_profile=profile,
+    )
 
     interaction_points = min(28, len(interactions) * 14 + fatal_interaction_count(interactions) * 8)
     factors.append(
@@ -218,6 +233,14 @@ def score_surveillance_zones(
             "value": activity_context,
             "points": activity_points(activity_context),
             "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        }
+    )
+    factors.append(
+        {
+            "factor": "activity_hazard_score",
+            "value": activity_hazard["activity_context_score"],
+            "points": round(activity_hazard["activity_context_score"] * 0.35, 2),
+            "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
         }
     )
 
@@ -284,6 +307,13 @@ def score_surveillance_zones(
         "zone_id": zone_id,
         "priority_score": priority_score,
         "priority_band": priority_band(priority_score),
+        "surveillance_priority_score": priority_score,
+        "surveillance_priority_band": priority_band(priority_score),
+        "warning_score": warning["warning_score"],
+        "warning_band": warning["warning_band"],
+        "activity_context_score": activity_hazard["activity_context_score"],
+        "activity_context_band": activity_hazard["activity_context_band"],
+        "activity_hazard_factors": activity_hazard["factors"],
         "center": {"geo": {"type": "Point", "coordinates": [lon, lat]}},
         "radius_km": zone_radius,
         "polygon": None,
@@ -297,6 +327,11 @@ def score_surveillance_zones(
         "activity_context": activity_context,
         "suspected_species": suspected_species,
         "distance_from_request_km": 0,
+        "score_split": {
+            "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+            "surveillance_priority_score": "Where safety or drone teams should look first.",
+            "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability.",
+        },
         "disclaimer": SURVEILLANCE_DISCLAIMER,
     }
 

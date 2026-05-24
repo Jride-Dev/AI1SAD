@@ -19,6 +19,25 @@ AI1SAD intentionally starts with deterministic, explainable rules. The order is:
 | 50 to 74.99 | elevated |
 | 75 to 100 | high |
 
+## Score Split
+
+AI1SAD separates three scores:
+
+- `warning_score`: environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.
+- `surveillance_priority_score`: where safety or drone teams should look first.
+- `activity_hazard_score`: risk introduced by what the human is doing in context.
+
+Do not call any of these attack probability. The activity hazard layer can be high while the environmental warning score remains low if live environmental signals are missing or quiet.
+
+Examples of activity context:
+
+- Spearfishing
+- Diving with catch
+- Fishing near reef/dropoff
+- Swimming near bait/prey activity
+
+For Western Australia, spearfishing on reef/dropoff habitat with known or suspected white shark suitability strongly raises surveillance priority. It does not automatically raise the environmental `warning_score` unless live environmental signals also support that.
+
 ## Rule-Based Factors
 
 | Factor | Max Points | Current Rule |

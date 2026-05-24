@@ -275,6 +275,8 @@ Public response fields include:
 
 - `warning_score`
 - `warning_band`
+- `activity_context_score`
+- `activity_context_band`
 - `confidence`
 - `lookback_hours`
 - `dominant_factors`
@@ -354,6 +356,9 @@ Example response:
       "zone_id": "drone_search:25.000:-80.000:72:fishing",
       "priority_score": 74,
       "priority_band": "elevated",
+      "surveillance_priority_score": 74,
+      "warning_score": 12,
+      "activity_context_score": 38,
       "center": {"geo": {"type": "Point", "coordinates": [-80.0, 25.0]}},
       "radius_km": 2.5,
       "polygon": null,
@@ -374,6 +379,14 @@ Example response:
   ]
 }
 ```
+
+Score meanings:
+
+- `warning_score`: environmental/live-condition risk.
+- `surveillance_priority_score`: where safety/drone teams should look first.
+- `activity_hazard_score` or `activity_context_score`: risk introduced by what the human is doing in context.
+
+None of these are attack probability.
 
 `GET /api/v1/surveillance/explain`
 

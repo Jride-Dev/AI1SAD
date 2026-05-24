@@ -22,6 +22,18 @@ The engine accepts a mission location, radius, mission type, lookback window, op
 
 Every dominant factor includes points, rationale, and contribution so the score can be audited.
 
+## Score Split
+
+AI1SAD keeps these outputs separate:
+
+- `warning_score`: environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.
+- `surveillance_priority_score`: where safety or drone teams should look first.
+- `activity_hazard_score`: risk introduced by what the human is doing in context.
+
+The surveillance engine can return a high `surveillance_priority_score` because activity and habitat make a zone important to search, while `warning_score` remains low because live environmental signals are absent or quiet.
+
+Do not call these attack probability.
+
 ## First-Pass Factors
 
 - Recent fatal/nonfatal public interaction nearby
@@ -47,6 +59,8 @@ These rules prioritize search effort. They do not claim shark intent or individu
 ## Spearfishing Context
 
 Spearfishing is treated as activity context because it affects search geometry and environmental overlap. It must not be labeled automatic provocation. Public responses should describe the activity neutrally.
+
+For Western Australia, spearfishing plus reef/dropoff habitat plus known or suspected white shark suitability strongly increases `activity_hazard_score` and `surveillance_priority_score`. The environmental `warning_score` remains tied to live environmental/current-condition signals.
 
 ## Confidence And Uncertainty
 

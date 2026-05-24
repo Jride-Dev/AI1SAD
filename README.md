@@ -116,6 +116,7 @@ Useful scripts include:
 - [Risk Model](docs/RISK_MODEL.md)
 - [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
+- [Horseshoe Reef Case Study](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Signal Broker](docs/SIGNAL_BROKER.md)
 - [Species Season Profiles](docs/SPECIES_SEASON_PROFILES.md)
 - [Provider Health](docs/PROVIDER_HEALTH.md)

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from app.risk_model import RISK_DISCLAIMER, band_for_score, nearest_profile, profile_summary
+from app.services.activity_hazard import activity_hazard_score
 
 
 WARNING_DISCLAIMER = (
@@ -120,6 +121,11 @@ def calculate_warning(
     vessel_activity_index: float | None = None,
     biological_events: list[dict[str, Any]] | None = None,
     human_exposure_index: float | None = None,
+    activity_context: str | None = None,
+    reef_habitat: bool = False,
+    dropoff_habitat: bool = False,
+    bait_activity: bool = False,
+    suspected_species: str | None = None,
     month: int | None = None,
     profiles: list[dict[str, Any]] | None = None,
     provider_status: dict[str, str] | None = None,
@@ -129,6 +135,14 @@ def calculate_warning(
     data_sources_used: list[str] = []
     missing_sources: set[str] = set()
     provider_status = provider_status or {}
+    activity_hazard = activity_hazard_score(
+        activity_context=activity_context,
+        reef_habitat=reef_habitat,
+        dropoff_habitat=dropoff_habitat,
+        bait_activity=bait_activity,
+        suspected_species=suspected_species,
+        regional_profile=profile,
+    )
 
     rainfall = rainfall_72h_mm or 0
     rain_score = rainfall_intensity_score(rainfall)
@@ -212,6 +226,9 @@ def calculate_warning(
         "location": {"geo": {"type": "Point", "coordinates": [lon, lat]}},
         "warning_score": warning_score,
         "warning_band": band_for_score(warning_score),
+        "activity_context_score": activity_hazard["activity_context_score"],
+        "activity_context_band": activity_hazard["activity_context_band"],
+        "activity_hazard_factors": activity_hazard["factors"],
         "confidence": confidence,
         "lookback_hours": lookback_hours,
         "signals": {
@@ -230,6 +247,11 @@ def calculate_warning(
         "dominant_factors": dominant,
         "data_sources_used": sorted(set(data_sources_used)),
         "missing_data_sources": sorted(missing_sources),
+        "score_split": {
+            "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+            "surveillance_priority_score": "Where safety or drone teams should look first.",
+            "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability.",
+        },
         "disclaimer": WARNING_DISCLAIMER,
     }
 
