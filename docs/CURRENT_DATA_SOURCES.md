@@ -13,7 +13,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - Copernicus Marine: useful for ocean products, but requires product selection and credentials.
 - Global Fishing Watch: useful for vessel/fishing activity proxies, but requires API access and careful interpretation.
 - News/event search: useful for whale carcass, stranding, baitfish bloom, or prey event discovery, but noisy and incomplete.
-- Human exposure estimates: likely derived from beach attendance, surf reports, holidays, weekends, weather, and local proxies; uncertainty will remain high.
+- Human exposure adapter: static/offline beach exposure profiles for crowding, weekends, holidays, tourist seasons, parking pressure, and regional beach-use patterns. No live scraping or paid crowd APIs are enabled. See [Human Exposure Provider](HUMAN_EXPOSURE_PROVIDER.md).
 
 ## Biological Event Limitations
 

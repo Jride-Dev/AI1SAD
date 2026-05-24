@@ -142,6 +142,46 @@ def regional_sst_context_score(profile: dict[str, Any] | None, sea_surface_temp_
     }
 
 
+def exposure_amplification_score(
+    *,
+    human_exposure_index: float | None,
+    rain_score: float,
+    runoff: float,
+    sst_score: float,
+    regional_sst_score: float,
+    bio_score: float,
+    alert_score: float,
+    activity_context_score: float,
+    profile: dict[str, Any] | None,
+    month: int | None,
+) -> tuple[float, dict[str, Any] | None]:
+    if human_exposure_index is None or human_exposure_index < 0.55:
+        return 0, None
+    contexts = []
+    if rain_score or runoff:
+        contexts.append("rainfall_runoff")
+    if sst_score or regional_sst_score:
+        contexts.append("sst_suitability")
+    if bio_score:
+        contexts.append("biological_event")
+    if alert_score:
+        contexts.append("weather_alert")
+    if activity_context_score >= 25:
+        contexts.append("activity_hazard")
+    if profile and month and month in set(profile.get("local_summer_high_exposure_months", []) + profile.get("known_high_attention_months", [])):
+        contexts.append("species_seasonal_overlap")
+    if not contexts:
+        return 0, None
+    points = round(min(8, human_exposure_index * len(contexts) * 1.6), 2)
+    return points, {
+        "factor": "human_exposure_amplifier",
+        "value": human_exposure_index,
+        "contexts": contexts,
+        "points": points,
+        "rationale": "Human exposure amplifies other active signals; exposure alone is not treated as high shark warning.",
+    }
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -249,6 +289,21 @@ def calculate_warning(
         data_sources_used.append("human_exposure_estimates")
     factors.append({"factor": "human_exposure_score", "value": human_exposure_index, "points": human_score, "rationale": "Estimated number/intensity of people in the water."})
 
+    exposure_amp_score, exposure_amp_factor = exposure_amplification_score(
+        human_exposure_index=human_exposure_index,
+        rain_score=rain_score,
+        runoff=runoff,
+        sst_score=sst_score,
+        regional_sst_score=regional_sst_score,
+        bio_score=bio_score,
+        alert_score=alert_score,
+        activity_context_score=activity_hazard["activity_context_score"],
+        profile=profile,
+        month=month,
+    )
+    if exposure_amp_factor:
+        factors.append(exposure_amp_factor)
+
     base_score = sum(item["points"] for item in factors)
     multiplier, regional_factors = regional_seasonal_multiplier(profile, month)
     for regional_factor in regional_factors:
@@ -289,6 +344,7 @@ def calculate_warning(
             "biological_event_score": bio_score,
             "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
+            "human_exposure_amplifier_score": exposure_amp_score,
             "regional_seasonal_multiplier": multiplier,
         },
         "regional_profile": profile_summary(profile),

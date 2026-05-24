@@ -198,6 +198,12 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
     sighting_count = sum(1 for signal in signals if signal.get("signal_type") in {"sighting", "shark_sighting"})
     carcass_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "biological_event"})
     sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
+    exposure_signals = [
+        signal
+        for signal in signals
+        if signal.get("signal_type")
+        in {"human_exposure", "beach_crowd_pressure", "parking_pressure", "tourism_season", "weekend_exposure", "holiday_exposure", "event_exposure"}
+    ]
     recent_interactions = int(payload.get("recent_interactions_count", 0) or 0)
 
     if sighting_count >= 2:
@@ -261,6 +267,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 expires_hours=6,
                 now=now,
                 confidence=max(confidence - 0.02, 0.25),
+            )
+        )
+
+    if exposure_signals and (warning_score >= 55 or surveillance_score >= 60 or activity_score >= 45 or sighting_count or carcass_count or recent_interactions):
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(max(surveillance_score, warning_score, activity_score, 45), urgent_threshold=90),
+                title="Human exposure supports targeted safety review",
+                summary="Crowding, tourism, weekend, holiday, parking, or event exposure is active alongside other warning or surveillance factors.",
+                recommended_action="Use exposure context to prioritize communication, lookout coverage, or patrol review; do not treat crowding alone as a shark warning.",
+                trigger={"trigger_type": "human_exposure_context", "threshold": 1, "observed_value": len(exposure_signals)},
+                expires_hours=4,
+                now=now,
+                confidence=max(confidence - 0.03, 0.25),
             )
         )
 

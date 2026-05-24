@@ -26,6 +26,8 @@ For NOAA/NWS live lookups, `records_ingested` counts normalized active weather-a
 
 For NOAA CoastWatch SST, Phase 9C is offline/test-first. Mocked or pre-fetched SST records normalize into signals and data freshness, but live ERDDAP provider runs are not enabled yet.
 
+For human exposure, Phase 9D uses static/offline profiles. Signals include data freshness and confidence, but no live attendance, parking, web scraping, or paid crowd-provider calls are enabled yet.
+
 ## Public API
 
 `GET /api/v1/provider-health` returns provider rollups and recent failures with credentials, private notes, and restricted details excluded.

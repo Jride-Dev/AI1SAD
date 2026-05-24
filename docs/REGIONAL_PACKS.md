@@ -15,6 +15,15 @@ Regional packs are not hard billing enforcement in this phase. They are a soft e
 - `red_sea`: oceanic whitetip anomalies, carcass/feeding-event sensitivity, shipping/tourism event intelligence.
 - `us_east_coast`: nearshore baitfish, summer exposure, beach/surf/fishing context.
 
+Phase 9D adds static human-exposure profiles that can be associated with regional packs:
+
+- Florida pack: Clearwater Beach, South Beach Miami, Daytona Beach, New Smyrna Beach.
+- U.S. East Coast pack: Virginia Beach, Rehoboth Beach, Hampton Beach.
+- Red Sea pack: Hurghada, Sharm El-Sheikh.
+- Western Australia pack: Rottnest Island.
+
+These profiles are controlled static signals, not live scraped crowd estimates.
+
 ## Pack Metadata
 
 Each pack defines:

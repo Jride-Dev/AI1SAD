@@ -18,6 +18,11 @@ DEFAULT_MAX_AGE_HOURS = {
     "prey_presence": 72,
     "tourism_exposure": 168,
     "human_exposure": 24,
+    "beach_crowd_pressure": 24,
+    "parking_pressure": 24,
+    "weekend_exposure": 24,
+    "holiday_exposure": 24,
+    "event_exposure": 24,
     "weather_alert": 6,
     "sea_surface_temperature": 24,
     "flood_alert": 6,
@@ -63,6 +68,8 @@ def normalize_provider_signal(raw: ProviderSignal | dict[str, Any], *, now: date
             "value": raw.value,
             "units": raw.units,
         }
+        if hasattr(raw, "value_metadata"):
+            document["value_metadata"] = getattr(raw, "value_metadata")
     else:
         document = dict(raw)
         document.setdefault("source", {"provider": document.get("provider", "unknown")})
@@ -135,7 +142,15 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
                 "confidence": signal.get("confidence"),
             }
             inputs["biological_events"].append(event)
-        elif signal_type in {"tourism_exposure", "human_exposure"} and value is not None:
+        elif signal_type in {
+            "tourism_exposure",
+            "human_exposure",
+            "beach_crowd_pressure",
+            "parking_pressure",
+            "weekend_exposure",
+            "holiday_exposure",
+            "event_exposure",
+        } and value is not None:
             inputs["human_exposure_index"] = max(float(value), float(inputs["human_exposure_index"] or 0))
         elif signal_type in {
             "weather_alert",

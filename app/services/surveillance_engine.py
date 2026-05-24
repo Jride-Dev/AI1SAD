@@ -275,6 +275,25 @@ def score_surveillance_zones(
             "rationale": "Human activity level affects search urgency and area selection.",
         }
     )
+    exposure_contexts = []
+    if human_points and (verified_count or activity_context or interaction_points or warning["warning_score"] >= 25):
+        if verified_count:
+            exposure_contexts.append("sightings")
+        if activity_context:
+            exposure_contexts.append("activity_context")
+        if interaction_points:
+            exposure_contexts.append("recent_interactions")
+        if warning["warning_score"] >= 25:
+            exposure_contexts.append("environmental_warning_context")
+        factors.append(
+            {
+                "factor": "human_exposure_surveillance_amplifier",
+                "value": human_exposure,
+                "contexts": exposure_contexts,
+                "points": round(min(10, human_points * 0.75), 2),
+                "rationale": "Crowding/exposure can raise surveillance priority only when paired with sightings, activity context, recent interactions, or environmental signals.",
+            }
+        )
 
     raw_score = sum(float(factor.get("points", 0)) for factor in factors)
     priority_score = min(100, round(raw_score, 2))

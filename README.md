@@ -139,6 +139,7 @@ Useful scripts include:
 - [Open-Meteo Provider](docs/OPEN_METEO_PROVIDER.md)
 - [NOAA/NWS Provider](docs/NOAA_NWS_PROVIDER.md)
 - [SST Provider Adapter](docs/SST_PROVIDER.md)
+- [Human Exposure Provider](docs/HUMAN_EXPOSURE_PROVIDER.md)
 - [Risk Model](docs/RISK_MODEL.md)
 - [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
