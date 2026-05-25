@@ -1,0 +1,274 @@
+[
+  {
+    "label": "Horseshoe Reef\nspearfishing",
+    "short_label": "Horseshoe Reef",
+    "lat": -31.9826564,
+    "lon": 115.5153234,
+    "activity_context": "spearfishing",
+    "suspected_species": "white shark",
+    "reef_habitat": true,
+    "month": 5,
+    "notes": "Reported activity/site context: spearfishing on reef habitat in Western Australia white shark suitability.",
+    "warning_score": 0.0,
+    "warning_band": "low",
+    "activity_context_score": 58,
+    "activity_context_band": "elevated",
+    "surveillance_priority_score": 99.3,
+    "surveillance_priority_band": "high",
+    "confidence": 0.48,
+    "recommended_pattern": "reef-edge expanding grid",
+    "dominant_factors": [
+      {
+        "factor": "regional_species_suitability",
+        "value": "white shark",
+        "points": 26.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.2618
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 58,
+        "points": 20.3,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.2044
+      },
+      {
+        "factor": "wa_white_shark_reef_spearfishing_context",
+        "value": "spearfishing",
+        "points": 18,
+        "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+        "contribution": 0.1813
+      },
+      {
+        "factor": "activity_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.141
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 13,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.1309
+      },
+      {
+        "factor": "regional_species_match",
+        "value": "white shark",
+        "points": 8,
+        "rationale": "Suspected species is listed in the nearest public regional profile.",
+        "contribution": 0.0806
+      }
+    ],
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    }
+  },
+  {
+    "label": "Geordie Bay\nswimming",
+    "short_label": "Geordie Bay",
+    "lat": -31.9943,
+    "lon": 115.5488,
+    "activity_context": "swimming",
+    "suspected_species": "white shark",
+    "reef_habitat": false,
+    "month": 5,
+    "notes": "Nearby beach-water comparison with the same regional species context but lower activity hazard.",
+    "warning_score": 0.0,
+    "warning_band": "low",
+    "activity_context_score": 0,
+    "activity_context_band": "low",
+    "surveillance_priority_score": 20.0,
+    "surveillance_priority_band": "low",
+    "confidence": 0.43,
+    "recommended_pattern": "surf-zone ladder search",
+    "dominant_factors": [
+      {
+        "factor": "regional_species_match",
+        "value": "white shark",
+        "points": 8,
+        "rationale": "Suspected species is listed in the nearest public regional profile.",
+        "contribution": 0.4
+      },
+      {
+        "factor": "regional_species_suitability",
+        "value": "white shark",
+        "points": 8.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.4
+      },
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.2
+      },
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      }
+    ],
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    }
+  },
+  {
+    "label": "Rocky Bay\nshoreline",
+    "short_label": "Rocky Bay",
+    "lat": -32.0007,
+    "lon": 115.5231,
+    "activity_context": "swimming",
+    "suspected_species": null,
+    "reef_habitat": false,
+    "month": 5,
+    "notes": "Nearby shoreline comparison without reef/spearfishing/known species inputs.",
+    "warning_score": 0.0,
+    "warning_band": "low",
+    "activity_context_score": 0,
+    "activity_context_band": "low",
+    "surveillance_priority_score": 4.0,
+    "surveillance_priority_band": "low",
+    "confidence": 0.43,
+    "recommended_pattern": "surf-zone ladder search",
+    "dominant_factors": [
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 1.0
+      },
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "river_mouth_runoff_proximity",
+        "value": null,
+        "points": 0,
+        "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.0
+      }
+    ],
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    }
+  },
+  {
+    "label": "West End reef\ndiving",
+    "short_label": "West End Reef",
+    "lat": -32.0111,
+    "lon": 115.4525,
+    "activity_context": "diving_with_catch",
+    "suspected_species": "white shark",
+    "reef_habitat": true,
+    "month": 5,
+    "notes": "Nearby reef/dropoff comparison with catch-handling activity but not the incident coordinates.",
+    "warning_score": 0.0,
+    "warning_band": "low",
+    "activity_context_score": 36,
+    "activity_context_band": "moderate",
+    "surveillance_priority_score": 58.6,
+    "surveillance_priority_band": "elevated",
+    "confidence": 0.48,
+    "recommended_pattern": "reef-edge expanding grid",
+    "dominant_factors": [
+      {
+        "factor": "regional_species_suitability",
+        "value": "white shark",
+        "points": 18.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.3072
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 36,
+        "points": 12.6,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.215
+      },
+      {
+        "factor": "wa_white_shark_reef_context",
+        "value": 1,
+        "points": 10,
+        "rationale": "Western Australia white shark profile weights reef/dropoff habitat.",
+        "contribution": 0.1706
+      },
+      {
+        "factor": "regional_species_match",
+        "value": "white shark",
+        "points": 8,
+        "rationale": "Suspected species is listed in the nearest public regional profile.",
+        "contribution": 0.1365
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 5,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0853
+      },
+      {
+        "factor": "activity_context",
+        "value": "diving_with_catch",
+        "points": 5,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.0853
+      }
+    ],
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    }
+  }
+]

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="620" viewBox="0 0 1120 620" role="img" aria-label="AI1SAD Horseshoe Reef model replay comparison">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#17202a}.title{font-size:26px;font-weight:700}.subtitle{font-size:14px;fill:#445}.axis{stroke:#ccd;stroke-width:1}.score{font-size:13px;font-weight:700}.label{font-size:12px}.small{font-size:11px;fill:#556}.legend{font-size:13px}.callout{font-size:15px;font-weight:700}
+</style>
+<rect width="1120" height="620" fill="#fbfcfe" />
+<text x="40" y="42" class="title">AI1SAD model replay: Horseshoe Reef, May 16 2026</text>
+<text x="40" y="68" class="subtitle">Low environmental warning can coexist with high activity hazard and high drone/surveillance priority.</text>
+<line x1="60" y1="250" x2="1060" y2="250" class="axis" />
+<line x1="60" y1="50" x2="60" y2="250" class="axis" />
+<text x="40" y="254" text-anchor="end" class="small">0</text>
+<text x="40" y="154" text-anchor="end" class="small">50</text>
+<text x="40" y="54" text-anchor="end" class="small">100</text>
+<line x1="55" y1="150" x2="1060" y2="150" stroke="#eef" stroke-width="1" />
+<circle cx="70" cy="310" r="6" fill="#4c78a8" /><text x="84" y="314" class="legend">warning_score: environmental/live-condition risk</text>
+<circle cx="390" cy="310" r="6" fill="#f58518" /><text x="404" y="314" class="legend">activity_context_score: risk introduced by what the human is doing</text>
+<circle cx="790" cy="310" r="6" fill="#54a24b" /><text x="804" y="314" class="legend">surveillance_priority_score: where drone teams should look first</text>
+<rect x="110" y="249" width="42" height="1" fill="#4c78a8" rx="3" />
+<text x="131.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="131.0" y="274" text-anchor="middle" class="label">warn</text>
+<rect x="162" y="135" width="42" height="115" fill="#f58518" rx="3" />
+<text x="183.0" y="129" text-anchor="middle" class="score">58</text>
+<text x="183.0" y="274" text-anchor="middle" class="label">activity</text>
+<rect x="214" y="52" width="42" height="198" fill="#54a24b" rx="3" />
+<text x="235.0" y="46" text-anchor="middle" class="score">99</text>
+<text x="235.0" y="274" text-anchor="middle" class="label">priority</text>
+<text x="182" y="350" text-anchor="middle" class="label">Horseshoe Reef</text>
+<text x="182" y="366" text-anchor="middle" class="label">spearfishing</text>
+<text x="182" y="390" text-anchor="middle" class="small">reef-edge expanding grid</text>
+<rect x="348" y="249" width="42" height="1" fill="#4c78a8" rx="3" />
+<text x="369.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="369.0" y="274" text-anchor="middle" class="label">warn</text>
+<rect x="400" y="249" width="42" height="1" fill="#f58518" rx="3" />
+<text x="421.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="421.0" y="274" text-anchor="middle" class="label">activity</text>
+<rect x="452" y="210" width="42" height="40" fill="#54a24b" rx="3" />
+<text x="473.0" y="204" text-anchor="middle" class="score">20</text>
+<text x="473.0" y="274" text-anchor="middle" class="label">priority</text>
+<text x="420" y="350" text-anchor="middle" class="label">Geordie Bay</text>
+<text x="420" y="366" text-anchor="middle" class="label">swimming</text>
+<text x="420" y="390" text-anchor="middle" class="small">surf-zone ladder search</text>
+<rect x="586" y="249" width="42" height="1" fill="#4c78a8" rx="3" />
+<text x="607.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="607.0" y="274" text-anchor="middle" class="label">warn</text>
+<rect x="638" y="249" width="42" height="1" fill="#f58518" rx="3" />
+<text x="659.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="659.0" y="274" text-anchor="middle" class="label">activity</text>
+<rect x="690" y="242" width="42" height="8" fill="#54a24b" rx="3" />
+<text x="711.0" y="236" text-anchor="middle" class="score">4</text>
+<text x="711.0" y="274" text-anchor="middle" class="label">priority</text>
+<text x="658" y="350" text-anchor="middle" class="label">Rocky Bay</text>
+<text x="658" y="366" text-anchor="middle" class="label">shoreline</text>
+<text x="658" y="390" text-anchor="middle" class="small">surf-zone ladder search</text>
+<rect x="824" y="249" width="42" height="1" fill="#4c78a8" rx="3" />
+<text x="845.0" y="243" text-anchor="middle" class="score">0</text>
+<text x="845.0" y="274" text-anchor="middle" class="label">warn</text>
+<rect x="876" y="178" width="42" height="72" fill="#f58518" rx="3" />
+<text x="897.0" y="172" text-anchor="middle" class="score">36</text>
+<text x="897.0" y="274" text-anchor="middle" class="label">activity</text>
+<rect x="928" y="133" width="42" height="117" fill="#54a24b" rx="3" />
+<text x="949.0" y="127" text-anchor="middle" class="score">59</text>
+<text x="949.0" y="274" text-anchor="middle" class="label">priority</text>
+<text x="896" y="350" text-anchor="middle" class="label">West End reef</text>
+<text x="896" y="366" text-anchor="middle" class="label">diving</text>
+<text x="896" y="390" text-anchor="middle" class="small">reef-edge expanding grid</text>
+<rect x="40" y="430" width="1040" height="135" fill="#fff" stroke="#dde3ea" rx="8" />
+<text x="64" y="462" class="callout">Horseshoe Reef split</text>
+<text x="64" y="490" class="subtitle">warning_score 0/100 (low) stays low because no live weather/ocean/biological/vessel signals are present in this replay.</text>
+<text x="64" y="516" class="subtitle">activity_context_score 58/100 (elevated) rises from spearfishing + reef/dropoff + Western Australia white shark suitability.</text>
+<text x="64" y="542" class="subtitle">surveillance_priority_score 99/100 (high) says this is where drone/safety teams should look first.</text>
+<text x="64" y="590" class="small">Not attack probability. Deterministic replay using current AI1SAD rules and public/reported scenario context.</text>
+</svg>

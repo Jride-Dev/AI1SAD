@@ -1,0 +1,440 @@
+{
+  "scenario": {
+    "scenario_id": "queensland_spearfishing_reef_tiger_bull_2026",
+    "label": "Queensland spearfishing on tropical reef with tiger/bull shark operational context",
+    "timestamp": "2026-05-24T08:00:00+00:00",
+    "coordinates": {
+      "lat": -18.082164764,
+      "lon": 146.448303222
+    },
+    "approximate_region": "Kennedy Shoal / Great Barrier Reef, Far North Queensland, Australia",
+    "activity_context": "spearfishing",
+    "suspected_species_context": [
+      "tiger shark",
+      "bull shark"
+    ],
+    "reef_habitat": true,
+    "dropoff_habitat": true
+  },
+  "warning": {
+    "location": {
+      "geo": {
+        "type": "Point",
+        "coordinates": [
+          146.448303222,
+          -18.082164764
+        ]
+      }
+    },
+    "warning_score": 16.64,
+    "warning_band": "low",
+    "activity_context_score": 50,
+    "activity_context_band": "elevated",
+    "activity_hazard_factors": [
+      {
+        "factor": "activity_context_hazard",
+        "value": "spearfishing",
+        "points": 24,
+        "rationale": "Human activity context can increase encounter hazard; this is not attack probability or an intent claim.",
+        "contribution": 0.48
+      },
+      {
+        "factor": "catch_near_reef_or_dropoff",
+        "value": true,
+        "points": 14,
+        "rationale": "Catch handling near reef/dropoff habitat can increase search and encounter-hazard context.",
+        "contribution": 0.28
+      },
+      {
+        "factor": "bait_or_prey_activity_context",
+        "value": true,
+        "points": 12,
+        "rationale": "Bait or prey activity can increase activity-context hazard near in-water activity.",
+        "contribution": 0.24
+      }
+    ],
+    "confidence": 0.9,
+    "lookback_hours": 72,
+    "signals": {
+      "rainfall_72h_mm": 0.0,
+      "rainfall_intensity_score": 0,
+      "runoff_score": 0.0,
+      "river_mouth_proximity_score": 0,
+      "sst_score": 5,
+      "sst_anomaly_score": 0.6,
+      "fishing_vessel_activity_score": 3.5,
+      "biological_event_score": 2.75,
+      "weather_alert_score": 0.0,
+      "human_exposure_score": 3.36,
+      "human_exposure_amplifier_score": 0,
+      "regional_seasonal_multiplier": 1.08
+    },
+    "regional_profile": {
+      "region_key": "queensland_australia",
+      "name": "Queensland, Australia",
+      "local_summer_high_exposure_months": [
+        11,
+        12,
+        1,
+        2,
+        3
+      ],
+      "known_high_attention_months": [
+        5,
+        6,
+        7
+      ],
+      "dominant_species": [
+        "tiger shark",
+        "bull shark",
+        "reef shark",
+        "whaler shark"
+      ],
+      "species_weights": {
+        "tiger shark": 1.0,
+        "bull shark": 0.9,
+        "reef shark": 0.5,
+        "whaler shark": 0.6
+      },
+      "warning_cache_ttl_minutes": 45,
+      "notes": "Queensland replay profile emphasizes tropical reef context, warm water, and tiger/bull shark operational suitability.",
+      "citations": [
+        "Australian Shark-Incident Database",
+        "GSAF public incident records"
+      ]
+    },
+    "dominant_factors": [
+      {
+        "factor": "sst_score",
+        "value": 29.0,
+        "points": 5,
+        "rationale": "Sea-surface temperature suitability.",
+        "contribution": 0.3005
+      },
+      {
+        "factor": "fishing_vessel_activity_score",
+        "value": 0.35,
+        "points": 3.5,
+        "rationale": "Fishing or vessel activity signal.",
+        "contribution": 0.2103
+      },
+      {
+        "factor": "human_exposure_score",
+        "value": 0.28,
+        "points": 3.36,
+        "rationale": "Estimated number/intensity of people in the water.",
+        "contribution": 0.2019
+      },
+      {
+        "factor": "biological_event_score",
+        "value": 1,
+        "points": 2.75,
+        "rationale": "Whale carcass, stranding, baitfish, or prey event signal.",
+        "contribution": 0.1653
+      },
+      {
+        "factor": "regional_high_attention_month",
+        "value": 5,
+        "multiplier": 1.08,
+        "points": 1.23,
+        "rationale": "Regional seasonal multiplier.",
+        "contribution": 0.0739
+      }
+    ],
+    "data_sources_used": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "missing_data_sources": [],
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    },
+    "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes. It is not an attack prediction."
+  },
+  "surveillance": {
+    "zone_id": "replay_case_study:-18.082:146.448:72:spearfishing",
+    "priority_score": 96.86,
+    "priority_band": "high",
+    "surveillance_priority_score": 96.86,
+    "surveillance_priority_band": "high",
+    "warning_score": 16.64,
+    "warning_band": "low",
+    "activity_context_score": 50,
+    "activity_context_band": "elevated",
+    "activity_hazard_factors": [
+      {
+        "factor": "activity_context_hazard",
+        "value": "spearfishing",
+        "points": 24,
+        "rationale": "Human activity context can increase encounter hazard; this is not attack probability or an intent claim.",
+        "contribution": 0.48
+      },
+      {
+        "factor": "catch_near_reef_or_dropoff",
+        "value": true,
+        "points": 14,
+        "rationale": "Catch handling near reef/dropoff habitat can increase search and encounter-hazard context.",
+        "contribution": 0.28
+      },
+      {
+        "factor": "bait_or_prey_activity_context",
+        "value": true,
+        "points": 12,
+        "rationale": "Bait or prey activity can increase activity-context hazard near in-water activity.",
+        "contribution": 0.24
+      }
+    ],
+    "center": {
+      "geo": {
+        "type": "Point",
+        "coordinates": [
+          146.448303222,
+          -18.082164764
+        ]
+      }
+    },
+    "radius_km": 2.5,
+    "polygon": null,
+    "recommended_pattern": "reef-edge expanding grid",
+    "dominant_factors": [
+      {
+        "factor": "regional_species_suitability",
+        "value": "tiger shark",
+        "points": 22.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.2271
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 50,
+        "points": 17.5,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.1807
+      },
+      {
+        "factor": "activity_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.1445
+      },
+      {
+        "factor": "queensland_tiger_bull_reef_spearfishing_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Queensland profile weights tropical reef/spearfishing search context for tiger/bull operational suitability.",
+        "contribution": 0.1445
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 13,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.1342
+      },
+      {
+        "factor": "regional_species_match",
+        "value": "tiger shark",
+        "points": 8,
+        "rationale": "Suspected species is listed in the nearest public regional profile.",
+        "contribution": 0.0826
+      }
+    ],
+    "confidence": 0.78,
+    "data_sources_used": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "reef_features",
+      "regional_risk_profiles",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "missing_data_sources": [
+      "recent_interactions",
+      "sighting_reports"
+    ],
+    "regional_profile": {
+      "region_key": "queensland_australia",
+      "name": "Queensland, Australia",
+      "local_summer_high_exposure_months": [
+        11,
+        12,
+        1,
+        2,
+        3
+      ],
+      "known_high_attention_months": [
+        5,
+        6,
+        7
+      ],
+      "dominant_species": [
+        "tiger shark",
+        "bull shark",
+        "reef shark",
+        "whaler shark"
+      ],
+      "species_weights": {
+        "tiger shark": 1.0,
+        "bull shark": 0.9,
+        "reef shark": 0.5,
+        "whaler shark": 0.6
+      },
+      "warning_cache_ttl_minutes": 45,
+      "notes": "Queensland replay profile emphasizes tropical reef context, warm water, and tiger/bull shark operational suitability.",
+      "citations": [
+        "Australian Shark-Incident Database",
+        "GSAF public incident records"
+      ]
+    },
+    "mission_type": "replay_case_study",
+    "activity_context": "spearfishing",
+    "suspected_species": "tiger shark",
+    "distance_from_request_km": 0,
+    "score_split": {
+      "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+      "surveillance_priority_score": "Where safety or drone teams should look first.",
+      "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+    },
+    "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes. It is not an attack prediction. This drone/search prioritization score supports coastal safety planning and does not infer shark intent or classify a person as provoking an animal."
+  },
+  "quiet_day_comparison": {
+    "current_warning_score": 16.64,
+    "baseline_warning_score": 15.77,
+    "delta": 0.87,
+    "delta_percent": 5.52,
+    "current_band": "low",
+    "baseline_band": "low",
+    "band_change": false,
+    "current_confidence": 0.9,
+    "baseline_confidence": 0.83,
+    "missing_data_sources": [],
+    "interpretation": "Conditions near quiet-day baseline."
+  },
+  "confidence_breakdown": {
+    "overall_confidence": 0.8751,
+    "confidence_band": "high",
+    "components": {
+      "coverage_confidence": 0.7778,
+      "freshness_confidence": 1.0,
+      "completeness_confidence": 0.88,
+      "coverage_score": 0.7778,
+      "freshness_penalty": 0.0,
+      "missing_penalty": 0.12,
+      "source_details": {
+        "weather_observations": {
+          "weight": 0.15,
+          "status": "present",
+          "contribution": 0.15
+        },
+        "ocean_observations": {
+          "weight": 0.15,
+          "status": "present",
+          "contribution": 0.15
+        },
+        "vessel_activity": {
+          "weight": 0.1,
+          "status": "present",
+          "contribution": 0.1
+        },
+        "biological_events": {
+          "weight": 0.15,
+          "status": "present",
+          "contribution": 0.15
+        },
+        "human_exposure_estimates": {
+          "weight": 0.1,
+          "status": "present",
+          "contribution": 0.1
+        },
+        "recent_interactions": {
+          "weight": 0.15,
+          "status": "missing",
+          "contribution": 0.15
+        },
+        "sighting_reports": {
+          "weight": 0.1,
+          "status": "missing",
+          "contribution": 0.1
+        },
+        "reef_features": {
+          "weight": 0.05,
+          "status": "present",
+          "contribution": 0.05
+        },
+        "regional_risk_profiles": {
+          "weight": 0.05,
+          "status": "present",
+          "contribution": 0.05
+        }
+      }
+    }
+  },
+  "signal_decay": [
+    {
+      "signal_type": "spearfishing_activity",
+      "timestamp": "2026-05-24T08:00:00+00:00",
+      "value": 1.0,
+      "visibility": "public",
+      "decay_weight": 0.5946,
+      "age_hours": 6.0,
+      "decayed_value": 0.5946,
+      "decay_model": {
+        "half_life_hours": 8.0,
+        "expiry_multiplier": 3.0,
+        "expires_after_hours": 24.0
+      }
+    },
+    {
+      "signal_type": "vessel_activity",
+      "timestamp": "2026-05-24T08:00:00+00:00",
+      "value": 0.35,
+      "visibility": "public",
+      "decay_weight": 0.7071,
+      "age_hours": 6.0,
+      "decayed_value": 0.2475,
+      "decay_model": {
+        "half_life_hours": 12.0,
+        "expiry_multiplier": 3.0,
+        "expires_after_hours": 36.0
+      }
+    },
+    {
+      "signal_type": "ocean_sst",
+      "timestamp": "2026-05-24T08:00:00+00:00",
+      "value": 29.0,
+      "visibility": "public",
+      "decay_weight": 0.8409,
+      "age_hours": 6.0,
+      "decayed_value": 24.386,
+      "decay_model": {
+        "half_life_hours": 24.0,
+        "expiry_multiplier": 3.0,
+        "expires_after_hours": 72.0
+      }
+    },
+    {
+      "signal_type": "biological_event",
+      "timestamp": "2026-05-24T06:00:00+00:00",
+      "value": 0.5,
+      "visibility": "public",
+      "decay_weight": 0.9259,
+      "age_hours": 8.0,
+      "decayed_value": 0.4629,
+      "decay_model": {
+        "half_life_hours": 72.0,
+        "expiry_multiplier": 2.0,
+        "expires_after_hours": 144.0
+      }
+    }
+  ],
+  "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes. It is not an attack prediction."
+}
