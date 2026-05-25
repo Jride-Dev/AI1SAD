@@ -19,6 +19,14 @@ Sample response:
 }
 ```
 
+`GET /api/v1/demo/status`
+
+Returns deployment/demo status, including whether demo mode is enabled, whether MongoDB is configured, and whether admin writes are disabled.
+
+`GET /api/v1/demo/scenarios`
+
+Returns safe public demo scenario summaries for Horseshoe Reef, Queensland Spearfishing, Florida crowded beach/inlet, Hawaii October tiger shark context, and Red Sea anomaly context.
+
 ## List Incidents
 
 `GET /api/v1/incidents`

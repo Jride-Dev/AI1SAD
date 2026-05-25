@@ -40,6 +40,7 @@ nav:
 
   - Overview:
       - Portal Guide: MKDOCS_PORTAL.md
+      - Deployment Readiness: DEPLOYMENT_READINESS.md
       - Source Comparison: SOURCE_COMPARISON.md
       - Data Sources: DATA_SOURCES.md
       - Data Quality: DATA_QUALITY.md
@@ -90,3 +91,7 @@ nav:
 
   - Frontend:
       - Frontend Dashboard: FRONTEND_DASHBOARD.md
+
+  - Deployment:
+      - Railway Deploy: RAILWAY_DEPLOY.md
+      - Demo Environment: DEMO_ENVIRONMENT.md

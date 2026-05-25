@@ -18,6 +18,7 @@ from app.services.explainability_engine import (
     build_explanation,
     model_metadata,
 )
+from app.services.demo_environment import annotate_demo_response, demo_scenarios, demo_status
 from app.services.regional_packs import (
     annotate_response_with_pack,
     load_public_packs,
@@ -38,6 +39,10 @@ from app.replay.runner import ReplayResult, ReplayRunner
 
 
 router = APIRouter(prefix="/api/v1")
+
+
+def maybe_demo(payload: dict[str, Any]) -> dict[str, Any]:
+    return annotate_demo_response(payload, enabled=get_settings().demo_mode)
 
 
 def public_incident_filter(
@@ -416,6 +421,21 @@ def access_entitlements(db: Database = Depends(get_database), enabled_packs: str
     return pack_entitlement_summary(db, parse_enabled_packs(enabled_packs))
 
 
+@router.get("/demo/status")
+def get_demo_status() -> dict[str, Any]:
+    settings = get_settings()
+    return demo_status(
+        enabled=settings.demo_mode,
+        mongodb_configured=bool(settings.mongodb_uri),
+        database_name=settings.mongodb_database,
+    )
+
+
+@router.get("/demo/scenarios")
+def get_demo_scenarios() -> dict[str, Any]:
+    return demo_scenarios(enabled=get_settings().demo_mode)
+
+
 def serialize_alert(document: dict[str, Any]) -> dict[str, Any]:
     alert = mongo_public_doc(document)
     alert.pop("private_notes", None)
@@ -432,7 +452,7 @@ def active_alerts(
     query = {"visibility": "public", "status": "active", "expires_at": {"$gt": now}}
     projection = {"private_notes": 0, "restricted": 0}
     docs = list(db[COLLECTIONS["alerts"]].find(query, projection).limit(limit))
-    return {"results": [serialize_alert(doc) for doc in docs]}
+    return maybe_demo({"results": [serialize_alert(doc) for doc in docs]})
 
 
 @router.get("/alerts/location")
@@ -448,7 +468,7 @@ def alerts_for_location(
     query["status"] = "active"
     query["expires_at"] = {"$gt": now}
     docs = list(db[COLLECTIONS["alerts"]].find(query, {"private_notes": 0, "restricted": 0}).limit(limit))
-    return {"results": [serialize_alert(doc) for doc in docs]}
+    return maybe_demo({"results": [serialize_alert(doc) for doc in docs]})
 
 
 @router.get("/alerts/{alert_id}")
@@ -456,7 +476,7 @@ def get_alert(alert_id: str, db: Database = Depends(get_database)) -> dict[str, 
     doc = db[COLLECTIONS["alerts"]].find_one({"_id": alert_id, "visibility": "public"}, {"private_notes": 0, "restricted": 0})
     if not doc:
         raise HTTPException(status_code=404, detail="Alert not found")
-    return serialize_alert(doc)
+    return maybe_demo(serialize_alert(doc))
 
 
 @router.post("/alerts/evaluate")
@@ -521,12 +541,14 @@ def evaluate_alert_payload(
                 payload["confidence"] = max(0.25, float(payload.get("confidence", 0.5) or 0.5) - 0.15)
                 record_noaa_nws_failure(db, error=exc)
     response = {"alerts": [attach_alert_explanation_summary(alert) for alert in evaluate_alerts(payload)]}
-    return annotate_response_with_pack(
-        response,
-        db,
-        lat=float(lat) if lat is not None else None,
-        lon=float(lon) if lon is not None else None,
-        enabled_packs=parse_enabled_packs(enabled_packs),
+    return maybe_demo(
+        annotate_response_with_pack(
+            response,
+            db,
+            lat=float(lat) if lat is not None else None,
+            lon=float(lon) if lon is not None else None,
+            enabled_packs=parse_enabled_packs(enabled_packs),
+        )
     )
 
 
@@ -664,7 +686,7 @@ def warning_payload(
         if cached:
             response = dict(cached["response"])
             response["cached"] = True
-            return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
+            return maybe_demo(annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs))
 
     profiles = list(db[COLLECTIONS["regional_risk_profiles"]].find({"visibility": "public"}, {"private_notes": 0, "restricted": 0}))
     inputs = warning_inputs_from_mongo(db, lat, lon, radius_km)
@@ -749,7 +771,7 @@ def warning_payload(
     }
     db[COLLECTIONS["warning_snapshots"]].replace_one({"visibility": "public", "cache_key": cache_key}, snapshot, upsert=True)
     response["cached"] = False
-    return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
+    return maybe_demo(annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs))
 
 
 @router.get("/warnings/location")
@@ -874,7 +896,7 @@ def surveillance_payload(
         reef_features=inputs["reef_features"],
         warning_inputs=inputs["warning_inputs"],
     )
-    return annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs)
+    return maybe_demo(annotate_response_with_pack(response, db, lat=lat, lon=lon, enabled_packs=enabled_packs))
 
 
 @router.get("/surveillance/search-zones")
@@ -988,7 +1010,7 @@ def explain_location(
         "pack_features_used": surveillance.get("pack_features_used", warning.get("pack_features_used", [])),
         "pack_notice": surveillance.get("pack_notice", warning.get("pack_notice")),
     }
-    return build_explanation(combined, output_type="location", location={"geo": {"type": "Point", "coordinates": [lon, lat]}})
+    return maybe_demo(build_explanation(combined, output_type="location", location={"geo": {"type": "Point", "coordinates": [lon, lat]}}))
 
 
 @router.get("/explain/surveillance")
@@ -1018,7 +1040,7 @@ def explain_surveillance(
         month=month,
         enabled_packs=parse_enabled_packs(enabled_packs),
     )
-    return build_explanation(payload, output_type="surveillance", location={"geo": {"type": "Point", "coordinates": [lon, lat]}})
+    return maybe_demo(build_explanation(payload, output_type="surveillance", location={"geo": {"type": "Point", "coordinates": [lon, lat]}}))
 
 
 @router.get("/explain/replay")
@@ -1042,13 +1064,13 @@ def explain_replay(
         "quiet_day_comparison": result.quiet_day_comparison,
         "confidence_breakdown": result.confidence_decomposition,
     }
-    return build_explanation(payload, output_type="replay", location=response.get("location"), replay=True)
+    return maybe_demo(build_explanation(payload, output_type="replay", location=response.get("location"), replay=True))
 
 
 @router.get("/explain/alert/{alert_id}")
 def explain_alert(alert_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
     alert = get_alert(alert_id, db)
-    return build_explanation(alert, output_type="alert", location=alert.get("location") or alert.get("zone", {}).get("location"))
+    return maybe_demo(build_explanation(alert, output_type="alert", location=alert.get("location") or alert.get("zone", {}).get("location")))
 
 
 @router.get("/surveillance/recent-interactions")
@@ -1285,7 +1307,7 @@ def replay_list_scenarios() -> dict[str, Any]:
             "activity_context": scenario.activity_context,
             "tags": scenario.tags,
         }
-    return {"scenarios": summary}
+    return maybe_demo({"scenarios": summary})
 
 
 @router.get("/replay/run")
@@ -1304,7 +1326,7 @@ def replay_run_scenario(scenario_id: str, enabled_packs: str | None = None) -> d
     runner = ReplayRunner()
     result = runner.run_scenario(scenario)
     if result.error:
-        return {"scenario_id": scenario_id, "error": result.error}
+        return maybe_demo({"scenario_id": scenario_id, "error": result.error})
     return _replay_response(result, parse_enabled_packs(enabled_packs))
 
 
@@ -1332,7 +1354,7 @@ def replay_run_custom(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
     runner = ReplayRunner()
     result = runner.run_scenario(scenario)
     if result.error:
-        return {"scenario_id": scenario.scenario_id, "error": result.error}
+        return maybe_demo({"scenario_id": scenario.scenario_id, "error": result.error})
     return _replay_response(result)
 
 
@@ -1340,7 +1362,7 @@ def replay_run_custom(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
 def replay_run_all() -> dict[str, Any]:
     runner = ReplayRunner()
     results = runner.run_all()
-    return {"results": {sid: (_replay_response(res) if not res.error else {"scenario_id": sid, "error": res.error}) for sid, res in results.items()}}
+    return maybe_demo({"results": {sid: (_replay_response(res) if not res.error else {"scenario_id": sid, "error": res.error}) for sid, res in results.items()}})
 
 
 @router.get("/replay/decay-analysis/{scenario_id}")
@@ -1373,7 +1395,7 @@ def replay_heatmap(
         suspected_species=suspected_species,
         month=month,
     )
-    return annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=parse_enabled_packs(enabled_packs))
+    return maybe_demo(annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=parse_enabled_packs(enabled_packs)))
 
 
 @router.get("/replay/compare")
@@ -1398,7 +1420,7 @@ def replay_compare_quiet_day(scenario_id: str, enabled_packs: str | None = None)
         "scenario_label": scenario.label,
         "quiet_day_comparison": result.quiet_day_comparison,
     }
-    return annotate_response_with_pack(response, None, lat=scenario.lat, lon=scenario.lon, enabled_packs=parse_enabled_packs(enabled_packs))
+    return maybe_demo(annotate_response_with_pack(response, None, lat=scenario.lat, lon=scenario.lon, enabled_packs=parse_enabled_packs(enabled_packs)))
 
 
 def _replay_response(result: ReplayResult, enabled_packs: list[str] | None = None) -> dict[str, Any]:
@@ -1428,4 +1450,4 @@ def _replay_response(result: ReplayResult, enabled_packs: list[str] | None = Non
     coords = result.location.get("geo", {}).get("coordinates", [])
     lon = coords[0] if len(coords) >= 2 else result.location.get("lon")
     lat = coords[1] if len(coords) >= 2 else result.location.get("lat")
-    return annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=enabled_packs)
+    return maybe_demo(annotate_response_with_pack(response, None, lat=lat, lon=lon, enabled_packs=enabled_packs))

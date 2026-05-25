@@ -22,13 +22,24 @@ if settings.api_access_enabled:
 
 @app.on_event("startup")
 def startup() -> None:
+    current = get_settings()
+    if current.demo_mode or not current.mongodb_uri:
+        return
     ensure_mongodb_indexes(get_database())
 
 
 @app.get("/health")
 def health() -> dict[str, object]:
+    current = get_settings()
+    if current.demo_mode or not current.mongodb_uri:
+        return {
+            "status": "ok",
+            "mode": "demo" if current.demo_mode else "unconfigured",
+            "database_configured": bool(current.mongodb_uri),
+            "database": current.mongodb_database,
+        }
     try:
         get_client().admin.command("ping")
-        return {"status": "ok", "database": settings.mongodb_database}
+        return {"status": "ok", "mode": "live", "database_configured": True, "database": current.mongodb_database}
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"MongoDB unavailable: {exc}") from exc
