@@ -1,0 +1,55 @@
+site_name: AI1SAD Documentation
+site_description: Adaptive Intelligence for Integrated Shark Activity Detection
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+
+  - Overview:
+      - Source Comparison: SOURCE_COMPARISON.md
+      - Data Sources: DATA_SOURCES.md
+      - Data Quality: DATA_QUALITY.md
+      - Ethics & Limitations: ETHICS_AND_LIMITATIONS.md
+      - Disclaimer: DISCLAIMER.md
+      - Usage Policy: USAGE_POLICY.md
+
+  - API:
+      - API Reference: API.md
+      - API Access Tiers: API_ACCESS_TIERS.md
+      - Schema: SCHEMA.md
+      - Privacy: PRIVACY.md
+      - MongoDB: MONGODB.md
+
+  - Model:
+      - Risk Model: RISK_MODEL.md
+      - Regional Risk Profiles: REGIONAL_RISK_PROFILES.md
+      - Species Season Profiles: SPECIES_SEASON_PROFILES.md
+      - Surveillance Engine: SURVEILLANCE_ENGINE.md
+
+  - Regional Packs:
+      - Regional Packs: REGIONAL_PACKS.md
+      - Pack Entitlements: PACK_ENTITLEMENTS.md
+
+  - Providers:
+      - Current Data Sources: CURRENT_DATA_SOURCES.md
+      - Provider Health: PROVIDER_HEALTH.md
+      - Open-Meteo: OPEN_METEO_PROVIDER.md
+      - NOAA/NWS: NOAA_NWS_PROVIDER.md
+      - SST Provider: SST_PROVIDER.md
+      - Human Exposure: HUMAN_EXPOSURE_PROVIDER.md
+      - Biological Events: BIOLOGICAL_EVENTS_PROVIDER.md
+      - Vessel & Fishing: VESSEL_FISHING_PROVIDER.md
+
+  - Replay & Case Studies:
+      - Replay Validation: REPLAY_VALIDATION.md
+      - Horseshoe Reef 2026: CASE_STUDY_HORSESHOE_REEF_2026.md
+      - Queensland Spearfishing 2026: case_studies/queensland_spearfishing_2026.md
+
+  - Alerts & Operations:
+      - Alert Engine: ALERT_ENGINE.md
+      - Alert Levels: ALERT_LEVELS.md
+      - Human Override: HUMAN_OVERRIDE.md
+
+  - Frontend:
+      - Frontend Dashboard: FRONTEND_DASHBOARD.md
