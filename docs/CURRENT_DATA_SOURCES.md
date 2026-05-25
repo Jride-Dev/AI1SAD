@@ -8,6 +8,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - NOAA/NWS: active no-key U.S. weather-alert provider for flood, thunderstorm, rip-current, coastal flood, high surf, and marine warning context. Outside-U.S. coordinates return `not_applicable`. See [NOAA/NWS Provider](NOAA_NWS_PROVIDER.md).
 - NOAA CoastWatch SST adapter: offline/test-first adapter for mocked or pre-fetched sea-surface temperature and SST anomaly records. Live ERDDAP networking is not enabled yet. See [SST Provider Adapter](SST_PROVIDER.md).
 - Biological events adapter: static/manual/offline ecological signals for carcass, fish-kill, baitfish, pinniped, turtle, and reef/prey context. No news, social-media, agency-feed, or paid-provider scraping is enabled. See [Biological Events Provider](BIOLOGICAL_EVENTS_PROVIDER.md).
+- Vessel and fishing adapter: static/manual/offline vessel, fishing, pier, marina, spearfishing, dive-boat, and liveaboard context. No Global Fishing Watch, AIS, MarineTraffic, scraping, or paid APIs are enabled. See [Vessel And Fishing Provider](VESSEL_FISHING_PROVIDER.md).
 
 ## Limited Or Uncertain Sources
 

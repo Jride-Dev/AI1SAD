@@ -13,6 +13,13 @@ DEFAULT_MAX_AGE_HOURS = {
     "sst_anomaly": 48,
     "vessel_activity": 24,
     "fishing_activity": 24,
+    "commercial_fishing_pressure": 24,
+    "recreational_fishing_pressure": 24,
+    "spearfishing_activity": 24,
+    "pier_fishing_pressure": 168,
+    "marina_boat_pressure": 168,
+    "dive_boat_activity": 72,
+    "liveaboard_activity": 72,
     "biological_event": 336,
     "carcass": 72,
     "whale_carcass": 72,
@@ -117,6 +124,7 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
         "sea_surface_temp_c": None,
         "sst_anomaly_c": None,
         "vessel_activity_index": None,
+        "vessel_fishing_signals": [],
         "biological_events": [],
         "human_exposure_index": None,
         "weather_alerts": [],
@@ -140,8 +148,32 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
             inputs["sea_surface_temp_c"] = float(value)
         elif signal_type == "sst_anomaly" and value is not None:
             inputs["sst_anomaly_c"] = float(value)
-        elif signal_type in {"vessel_activity", "fishing_activity"} and value is not None:
+        elif signal_type in {
+            "vessel_activity",
+            "fishing_activity",
+            "commercial_fishing_pressure",
+            "recreational_fishing_pressure",
+            "spearfishing_activity",
+            "pier_fishing_pressure",
+            "marina_boat_pressure",
+            "dive_boat_activity",
+            "liveaboard_activity",
+        } and value is not None:
             inputs["vessel_activity_index"] = max(float(value), float(inputs["vessel_activity_index"] or 0))
+            inputs["vessel_fishing_signals"].append(
+                {
+                    "visibility": "public",
+                    "signal_type": signal_type,
+                    "activity_type": signal.get("activity_type", signal_type),
+                    "observed_at": signal.get("timestamp"),
+                    "expires_at": signal.get("expires_at"),
+                    "confidence": signal.get("confidence"),
+                    "value": value,
+                    "source": signal.get("source"),
+                    "risk_relevance": signal.get("risk_relevance"),
+                    "pack_id": signal.get("pack_id"),
+                }
+            )
         elif signal_type in {
             "biological_event",
             "prey_presence",

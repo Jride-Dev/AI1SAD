@@ -34,6 +34,16 @@ Phase 9E adds static/manual biological-event examples associated with regional p
 
 These biological signals are controlled offline examples and reviewed manual inputs. They are not live animal detections or scraped reports.
 
+Phase 9F adds static/manual vessel and fishing examples associated with regional packs:
+
+- Florida pack: piers, inlets, and recreational fishing context.
+- Western Australia pack: reef and spearfishing context.
+- Red Sea pack: liveaboard, dive boat, and tourism corridor context.
+- South Africa pack: fishing and seal-colony coastline context.
+- Hawaii pack: nearshore recreational fishing context.
+
+These vessel/fishing signals are controlled offline examples. They are not live AIS, MarineTraffic, Global Fishing Watch, or harbor-camera detections.
+
 ## Pack Metadata
 
 Each pack defines:

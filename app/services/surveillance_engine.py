@@ -85,6 +85,44 @@ def biological_surveillance_points(events: list[dict[str, Any]]) -> tuple[float,
     return round(min(20, points), 2), event_types
 
 
+def vessel_fishing_surveillance_points(signals: list[dict[str, Any]], *, biological_events: list[dict[str, Any]], human_exposure_index: float | None) -> tuple[float, list[str], list[str]]:
+    points = 0.0
+    signal_types: list[str] = []
+    contexts: list[str] = []
+    has_bio = bool(biological_events)
+    has_exposure = bool(human_exposure_index and human_exposure_index >= 0.55)
+    for signal in signals:
+        if signal.get("visibility", "public") != "public":
+            continue
+        signal_type = str(signal.get("signal_type", "")).lower()
+        signal_types.append(signal_type)
+        confidence = max(0.5, min(1.0, float(signal.get("confidence", 0.5) or 0.5)))
+        value = max(0.0, min(1.0, float(signal.get("value", 0) or 0)))
+        if signal_type == "spearfishing_activity":
+            candidate = 18 * confidence * max(0.6, value)
+            contexts.append("spearfishing_activity")
+        elif signal_type in {"fishing_activity", "commercial_fishing_pressure", "recreational_fishing_pressure"}:
+            candidate = 12 * confidence * max(0.5, value)
+            contexts.append("fishing_pressure")
+        elif signal_type in {"pier_fishing_pressure", "marina_boat_pressure"}:
+            candidate = 7 * confidence * max(0.4, value)
+            contexts.append("pier_marina_baseline")
+        elif signal_type in {"dive_boat_activity", "liveaboard_activity"}:
+            candidate = 9 * confidence * max(0.4, value)
+            contexts.append("dive_boat_liveaboard_context")
+        else:
+            candidate = 5 * confidence * max(0.4, value)
+            contexts.append("vessel_activity")
+        if has_bio and has_exposure and signal_type in {"spearfishing_activity", "fishing_activity", "commercial_fishing_pressure", "recreational_fishing_pressure", "pier_fishing_pressure"}:
+            candidate += 8
+            contexts.append("fishing_biological_exposure_stack")
+        elif has_bio and signal_type in {"spearfishing_activity", "fishing_activity", "commercial_fishing_pressure", "recreational_fishing_pressure"}:
+            candidate += 4
+            contexts.append("fishing_biological_stack")
+        points = max(points, candidate)
+    return round(min(24, points), 2), signal_types, sorted(set(contexts))
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -295,6 +333,21 @@ def score_surveillance_zones(
             "value": bio_event_types,
             "points": bio_points,
             "rationale": "Carcass and fish-kill events have stronger surveillance influence than broad migration or prey context.",
+        }
+    )
+
+    vessel_fishing_points, vessel_signal_types, vessel_contexts = vessel_fishing_surveillance_points(
+        warning_inputs.get("vessel_fishing_signals", []),
+        biological_events=warning_inputs.get("biological_events", []),
+        human_exposure_index=warning_inputs.get("human_exposure_index"),
+    )
+    factors.append(
+        {
+            "factor": "vessel_fishing_surveillance_context",
+            "value": vessel_signal_types,
+            "contexts": vessel_contexts,
+            "points": vessel_fishing_points,
+            "rationale": "Fishing, spearfishing, pier, marina, dive-boat, and vessel context primarily affect surveillance priority, not general warning.",
         }
     )
 

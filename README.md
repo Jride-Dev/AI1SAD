@@ -141,6 +141,7 @@ Useful scripts include:
 - [SST Provider Adapter](docs/SST_PROVIDER.md)
 - [Human Exposure Provider](docs/HUMAN_EXPOSURE_PROVIDER.md)
 - [Biological Events Provider](docs/BIOLOGICAL_EVENTS_PROVIDER.md)
+- [Vessel And Fishing Provider](docs/VESSEL_FISHING_PROVIDER.md)
 - [Risk Model](docs/RISK_MODEL.md)
 - [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)

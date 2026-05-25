@@ -217,6 +217,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
         if signal.get("signal_type")
         in {"human_exposure", "beach_crowd_pressure", "parking_pressure", "tourism_season", "weekend_exposure", "holiday_exposure", "event_exposure"}
     ]
+    vessel_fishing_signals = [
+        signal
+        for signal in signals
+        if signal.get("signal_type")
+        in {
+            "vessel_activity",
+            "fishing_activity",
+            "commercial_fishing_pressure",
+            "recreational_fishing_pressure",
+            "spearfishing_activity",
+            "pier_fishing_pressure",
+            "marina_boat_pressure",
+            "dive_boat_activity",
+            "liveaboard_activity",
+        }
+    ]
     recent_interactions = int(payload.get("recent_interactions_count", 0) or 0)
 
     if sighting_count >= 2:
@@ -293,6 +309,23 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 summary="Crowding, tourism, weekend, holiday, parking, or event exposure is active alongside other warning or surveillance factors.",
                 recommended_action="Use exposure context to prioritize communication, lookout coverage, or patrol review; do not treat crowding alone as a shark warning.",
                 trigger={"trigger_type": "human_exposure_context", "threshold": 1, "observed_value": len(exposure_signals)},
+                expires_hours=4,
+                now=now,
+                confidence=max(confidence - 0.03, 0.25),
+            )
+        )
+
+    high_context_fishing = any(signal.get("signal_type") in {"spearfishing_activity", "fishing_activity"} for signal in vessel_fishing_signals)
+    if vessel_fishing_signals and (surveillance_score >= 60 or activity_score >= 45 or carcass_count or exposure_signals or high_context_fishing):
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(max(surveillance_score, activity_score, 45), urgent_threshold=90),
+                title="Vessel or fishing context supports surveillance review",
+                summary="Fishing, spearfishing, pier, marina, dive-boat, liveaboard, or vessel-pressure signals are active alongside operational context.",
+                recommended_action="Use vessel and fishing context to prioritize targeted patrol, lookout, or drone review; do not treat vessel activity alone as an attack prediction.",
+                trigger={"trigger_type": "vessel_fishing_context", "threshold": 1, "observed_value": len(vessel_fishing_signals)},
                 expires_hours=4,
                 now=now,
                 confidence=max(confidence - 0.03, 0.25),
