@@ -17,6 +17,7 @@ class TestReplayScenarios:
     def test_predefined_scenarios_exist(self):
         assert len(REPLAY_SCENARIOS) >= 5
         assert any("south_africa" in scenario.tags for scenario in REPLAY_SCENARIOS.values())
+        assert "queensland_spearfishing_reef_tiger_bull_2026" in REPLAY_SCENARIOS
 
     def test_each_scenario_has_required_fields(self):
         for sid, scenario in REPLAY_SCENARIOS.items():
@@ -67,6 +68,18 @@ class TestReplayRunner:
         assert result.error is None
         surveillance_score = (result.surveillance or {}).get("zones", [{}])[0].get("surveillance_priority_score", 0)
         assert surveillance_score > 0
+
+    def test_run_queensland_spearfishing_case_study_scenario(self):
+        scenario = REPLAY_SCENARIOS["queensland_spearfishing_reef_tiger_bull_2026"]
+        runner = ReplayRunner()
+        result = runner.run_scenario(scenario)
+        assert result.error is None
+        zone = (result.surveillance or {}).get("zones", [{}])[0]
+        assert result.warning["warning_band"] == "low"
+        assert result.warning["activity_context_score"] >= 50
+        assert zone["surveillance_priority_score"] > result.warning["warning_score"]
+        assert any(factor["factor"] == "reef_dropoff_habitat_proximity" for factor in zone["dominant_factors"])
+        assert "attack probability" not in result.warning["disclaimer"].lower()
 
     def test_run_all_scenarios(self):
         runner = ReplayRunner()

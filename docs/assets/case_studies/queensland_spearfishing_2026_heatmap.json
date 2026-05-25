@@ -1,0 +1,828 @@
+{
+  "config": {
+    "center_lat": -18.082164764,
+    "center_lon": 146.448303222,
+    "radius_km": 18.0,
+    "grid_cells": 81
+  },
+  "cells": [
+    {
+      "lat": -18.163,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.163,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1428,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1226,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.1024,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0822,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.062,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0417,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0215,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.3675,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.3877,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.4079,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.4281,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.4483,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.4685,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.4887,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.5089,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    },
+    {
+      "lat": -18.0013,
+      "lon": 146.5292,
+      "surveillance_priority_score": 96.86,
+      "surveillance_priority_band": "high",
+      "warning_score": 16.64,
+      "warning_band": "low",
+      "activity_hazard_score": 50,
+      "activity_hazard_band": "elevated"
+    }
+  ],
+  "statistics": {
+    "min_score": 96.86,
+    "max_score": 96.86,
+    "avg_score": 96.86,
+    "median_score": 96.86
+  },
+  "score_type": "surveillance_priority_score",
+  "scenario_id": "queensland_spearfishing_reef_tiger_bull_2026"
+}

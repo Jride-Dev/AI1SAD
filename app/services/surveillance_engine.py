@@ -159,6 +159,12 @@ def species_region_points(
         if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
             add("nsw_bull_shark_river_runoff_context", river_mouth_distance_km, 18, "NSW bull shark profile weights river-mouth/runoff contexts.")
 
+    if region == "queensland_australia" and ("tiger" in species or "bull" in species or not species):
+        if activity_context in {"spearfishing", "diving", "diving_with_catch", "diving with catch"} and reef_count:
+            add("queensland_tiger_bull_reef_spearfishing_context", activity_context, 14, "Queensland profile weights tropical reef/spearfishing search context for tiger/bull operational suitability.")
+        elif reef_count:
+            add("queensland_tropical_reef_context", reef_count, 8, "Queensland profile weights tropical reef habitat for operational search planning.")
+
     if region == "hawaii" and ("tiger" in species or not species) and month == 10:
         add("hawaii_tiger_shark_october_context", month, 14, "Hawaii tiger shark profile applies October/Sharktober attention context.")
 

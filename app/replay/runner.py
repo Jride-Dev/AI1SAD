@@ -51,9 +51,24 @@ class ReplayRunner:
                 biological_events=scenario.biological_events,
                 human_exposure_index=scenario.human_exposure_index,
                 activity_context=scenario.activity_context,
+                reef_habitat=scenario.reef_habitat,
+                dropoff_habitat=scenario.dropoff_habitat,
+                bait_activity=bool(scenario.biological_events),
+                suspected_species=scenario.suspected_species,
                 month=scenario.month,
                 profiles=profiles_list,
             )
+
+            reef_features = []
+            if scenario.reef_habitat or scenario.dropoff_habitat:
+                reef_features.append(
+                    {
+                        "visibility": "public",
+                        "feature_type": "reef" if scenario.reef_habitat else "dropoff",
+                        "name": scenario.reef_feature_name or "Replay reef/dropoff habitat context",
+                        "location": {"geo": {"type": "Point", "coordinates": [scenario.lon, scenario.lat]}},
+                    }
+                )
 
             surveillance = score_surveillance_zones(
                 lat=scenario.lat,
@@ -66,6 +81,15 @@ class ReplayRunner:
                 river_mouth_distance_km=scenario.river_mouth_distance_km,
                 month=scenario.month,
                 profiles=profiles_list,
+                reef_features=reef_features,
+                warning_inputs={
+                    "rainfall_72h_mm": scenario.rainfall_72h_mm,
+                    "sea_surface_temp_c": scenario.sea_surface_temp_c,
+                    "sst_anomaly_c": scenario.sst_anomaly_c,
+                    "vessel_activity_index": scenario.vessel_activity_index,
+                    "biological_events": scenario.biological_events,
+                    "human_exposure_index": scenario.human_exposure_index,
+                },
             )
 
             quiet_day_comparison = self._quiet_day.compare(

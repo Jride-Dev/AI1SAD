@@ -51,7 +51,7 @@ def activity_hazard_score(
         add("fishing_near_reef_or_dropoff", True, 10, "Fishing near reef/dropoff habitat can add bait, scent, discards, or hooked-fish cues.")
 
     if activity in {"swimming_near_bait", "swimming near bait"} or bait_activity:
-        add("bait_activity_near_swimmers", bait_activity or activity_context, 12, "Swimming near bait/prey activity increases activity-context hazard.")
+        add("bait_or_prey_activity_context", bait_activity or activity_context, 12, "Bait or prey activity can increase activity-context hazard near in-water activity.")
 
     if region == "western_australia" and activity == "spearfishing" and (reef_habitat or dropoff_habitat):
         if "white" in species or "white shark" in dominant_species:

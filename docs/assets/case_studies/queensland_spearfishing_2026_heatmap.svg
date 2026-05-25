@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="640" viewBox="0 0 980 640" role="img" aria-label="AI1SAD Queensland spearfishing replay surveillance heatmap">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#17202a}.title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#4b5563}.label{font-size:12px;fill:#344054}.score{font-size:18px;font-weight:700}.small{font-size:11px;fill:#667085}.callout{font-size:14px;font-weight:700}
+</style>
+<rect width="980" height="640" fill="#fbfcfe" />
+<text x="46" y="42" class="title">AI1SAD replay: Queensland spearfishing incident, May 2026</text>
+<text x="46" y="68" class="subtitle">Surveillance-priority heatmap around Kennedy Shoal / Far North Queensland. Not attack probability.</text>
+<rect x="70" y="110" width="560" height="420" fill="#ffffff" stroke="#d0d5dd" />
+<circle cx="70.0" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="530.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.163, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="477.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1428, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="425.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1226, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="372.6" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.1024, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="320.1" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0822, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="267.7" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.062, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="214.9" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0417, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="162.5" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0215, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="70.0" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.3675: surveillance_priority_score 96.9</title></circle>
+<circle cx="140.0" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.3877: surveillance_priority_score 96.9</title></circle>
+<circle cx="209.9" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.4079: surveillance_priority_score 96.9</title></circle>
+<circle cx="279.9" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.4281: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.4483: surveillance_priority_score 96.9</title></circle>
+<circle cx="419.8" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.4685: surveillance_priority_score 96.9</title></circle>
+<circle cx="489.7" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.4887: surveillance_priority_score 96.9</title></circle>
+<circle cx="559.7" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.5089: surveillance_priority_score 96.9</title></circle>
+<circle cx="630.0" cy="110.0" r="13" fill="#b42318" fill-opacity="0.72"><title>-18.0013, 146.5292: surveillance_priority_score 96.9</title></circle>
+<circle cx="349.8" cy="320.0" r="7" fill="#111827" />
+<text x="361.8" y="312.0" class="callout">incident coordinates</text>
+<text x="70" y="560" class="small">Blue low, yellow moderate, orange elevated, red high surveillance priority.</text>
+<rect x="680" y="112" width="245" height="292" fill="#fff" stroke="#d0d5dd" rx="8" />
+<text x="704" y="146" class="callout">Replay score split</text>
+<text x="704" y="184" class="label">warning_score</text><text x="880" y="184" text-anchor="end" class="score">17</text>
+<text x="704" y="222" class="label">activity_hazard_score</text><text x="880" y="222" text-anchor="end" class="score">50</text>
+<text x="704" y="260" class="label">surveillance_priority_score</text><text x="880" y="260" text-anchor="end" class="score">97</text>
+<text x="704" y="304" class="label">confidence</text><text x="880" y="304" text-anchor="end" class="score">0.78</text>
+<text x="704" y="348" class="label">recommended pattern</text>
+<text x="704" y="370" class="small">reef-edge expanding grid</text>
+<text x="46" y="610" class="small">AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.</text>
+</svg>

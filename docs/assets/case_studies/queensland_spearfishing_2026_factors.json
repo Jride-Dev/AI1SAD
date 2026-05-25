@@ -1,0 +1,98 @@
+{
+  "scenario_id": "queensland_spearfishing_reef_tiger_bull_2026",
+  "score_summary": {
+    "warning_score": 16.64,
+    "warning_band": "low",
+    "activity_hazard_score": 50,
+    "activity_hazard_band": "elevated",
+    "surveillance_priority_score": 96.86,
+    "surveillance_priority_band": "high"
+  },
+  "dominant_surveillance_factors": [
+    {
+      "factor": "regional_species_suitability",
+      "value": "tiger shark",
+      "points": 22.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.2271
+    },
+    {
+      "factor": "activity_hazard_score",
+      "value": 50,
+      "points": 17.5,
+      "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+      "contribution": 0.1807
+    },
+    {
+      "factor": "activity_context",
+      "value": "spearfishing",
+      "points": 14,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.1445
+    },
+    {
+      "factor": "queensland_tiger_bull_reef_spearfishing_context",
+      "value": "spearfishing",
+      "points": 14,
+      "rationale": "Queensland profile weights tropical reef/spearfishing search context for tiger/bull operational suitability.",
+      "contribution": 0.1445
+    },
+    {
+      "factor": "reef_dropoff_habitat_proximity",
+      "value": 1,
+      "points": 13,
+      "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+      "contribution": 0.1342
+    },
+    {
+      "factor": "regional_species_match",
+      "value": "tiger shark",
+      "points": 8,
+      "rationale": "Suspected species is listed in the nearest public regional profile.",
+      "contribution": 0.0826
+    }
+  ],
+  "dominant_warning_factors": [
+    {
+      "factor": "sst_score",
+      "value": 29.0,
+      "points": 5,
+      "rationale": "Sea-surface temperature suitability.",
+      "contribution": 0.3005
+    },
+    {
+      "factor": "fishing_vessel_activity_score",
+      "value": 0.35,
+      "points": 3.5,
+      "rationale": "Fishing or vessel activity signal.",
+      "contribution": 0.2103
+    },
+    {
+      "factor": "human_exposure_score",
+      "value": 0.28,
+      "points": 3.36,
+      "rationale": "Estimated number/intensity of people in the water.",
+      "contribution": 0.2019
+    },
+    {
+      "factor": "biological_event_score",
+      "value": 1,
+      "points": 2.75,
+      "rationale": "Whale carcass, stranding, baitfish, or prey event signal.",
+      "contribution": 0.1653
+    },
+    {
+      "factor": "regional_high_attention_month",
+      "value": 5,
+      "multiplier": 1.08,
+      "points": 1.23,
+      "rationale": "Regional seasonal multiplier.",
+      "contribution": 0.0739
+    }
+  ],
+  "score_split": {
+    "warning_score": "Environmental/live-condition risk from weather, ocean, biological, vessel, and exposure signals.",
+    "surveillance_priority_score": "Where safety or drone teams should look first.",
+    "activity_hazard_score": "Risk introduced by what the human is doing in context. It is not attack probability."
+  }
+}
