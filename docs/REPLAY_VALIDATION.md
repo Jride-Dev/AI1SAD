@@ -112,3 +112,23 @@ python -m pytest tests/test_replay_engine.py -v
 - Heatmap generation recalculates scores per cell; large grids may be slow
 - Quiet-day baseline uses fixed moderate inputs, not historical averages
 - Signal decay is exponential; does not account for intermittent refresh patterns
+
+## Versioned Replay Explanations
+
+Replay validation runs deterministic historical incident and quiet-day comparisons. Replay outputs now include model/replay version metadata so case-study artifacts can be traced to the scoring revision that generated them.
+
+Replay explanation payloads include:
+
+- `model_version`
+- `scoring_revision`
+- `provider_stack_version`
+- `generated_at`
+- `replay_asset_version`
+
+Replay explanations should preserve the AI1SAD split between:
+
+- environmental/live-condition `warning_score`
+- human-context `activity_hazard_score`
+- operational `surveillance_priority_score`
+
+They must not describe replay output as attack probability.

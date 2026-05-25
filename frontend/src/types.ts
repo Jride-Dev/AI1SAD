@@ -60,6 +60,11 @@ export type Alert = {
   expires_at: string;
   zone?: { location?: { geo?: { coordinates: [number, number] } }; radius_km?: number };
   dominant_factors?: DominantFactor[];
+  explanation_summary?: {
+    operational_interpretation: string;
+    recommended_surveillance_pattern?: string;
+    dominant_factors?: DominantFactor[];
+  };
   disclaimer?: string;
 };
 
@@ -69,6 +74,40 @@ export type ProviderHealth = {
   last_success?: string | null;
   last_error?: string | null;
   records_ingested?: number;
+};
+
+export type ExplanationResponse = {
+  output_type: string;
+  location: { geo: { type: "Point"; coordinates: [number, number] } };
+  active_pack?: string;
+  pack_notice?: string;
+  pack_features_used?: string[];
+  warning_score: number;
+  activity_hazard_score: number;
+  surveillance_priority_score: number;
+  dominant_factors: DominantFactor[];
+  factor_contributions: DominantFactor[];
+  confidence_breakdown: {
+    overall_confidence?: number;
+    confidence_band?: string;
+    components?: Record<string, unknown>;
+  };
+  data_freshness: Record<string, { status?: string; last_success?: string | null; last_error?: string | null }>;
+  missing_data_sources: string[];
+  regional_rules_triggered: string[];
+  suppression_reasons: string[];
+  operational_interpretation: string;
+  recommended_action: string;
+  recommended_surveillance_pattern: string;
+  recommended_surveillance_pattern_label?: string;
+  metadata: {
+    model_version: string;
+    scoring_revision: string;
+    provider_stack_version: string;
+    generated_at: string;
+    replay_asset_version?: string;
+  };
+  disclaimer: string;
 };
 
 export type RegionalPack = {
@@ -106,6 +145,7 @@ export type ReplayResult = {
 export type DashboardData = {
   warning: WarningResponse;
   surveillance: SurveillanceResponse;
+  explanation: ExplanationResponse;
   alerts: Alert[];
   providerHealth: ProviderHealth[];
   packs: RegionalPack[];

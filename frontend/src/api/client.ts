@@ -1,5 +1,5 @@
 import { mockDashboardData } from "./mockData";
-import type { Alert, Coordinates, DashboardData, ProviderHealth, RegionalPack, ReplayResult, SurveillanceResponse, WarningResponse } from "../types";
+import type { Alert, Coordinates, DashboardData, ExplanationResponse, ProviderHealth, RegionalPack, ReplayResult, SurveillanceResponse, WarningResponse } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_AI1SAD_API_BASE_URL ?? "http://localhost:8000";
 const USE_MOCKS = import.meta.env.VITE_AI1SAD_USE_MOCKS !== "false";
@@ -49,6 +49,19 @@ export async function getSurveillance(coords: Coordinates): Promise<Surveillance
   );
 }
 
+export async function getExplanation(coords: Coordinates): Promise<ExplanationResponse> {
+  return requestJson(
+    `/api/v1/explain/location?${query({
+      lat: coords.lat,
+      lon: coords.lon,
+      radius_km: 10,
+      activity_context: "spearfishing",
+      suspected_species: "white shark",
+    })}`,
+    mockDashboardData.explanation,
+  );
+}
+
 export async function getAlerts(): Promise<Alert[]> {
   return requestJson("/api/v1/alerts/active", mockDashboardData.alerts);
 }
@@ -70,14 +83,15 @@ export async function getReplay(): Promise<ReplayResult> {
 }
 
 export async function getDashboardData(coords: Coordinates): Promise<DashboardData> {
-  const [warning, surveillance, alerts, providerHealth, packs, replay] = await Promise.all([
+  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay] = await Promise.all([
     getWarning(coords),
     getSurveillance(coords),
+    getExplanation(coords),
     getAlerts(),
     getProviderHealth(),
     getPacks(),
     getReplay(),
   ]);
 
-  return { warning, surveillance, alerts, providerHealth, packs, replay };
+  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay };
 }

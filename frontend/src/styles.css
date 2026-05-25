@@ -266,6 +266,8 @@ h3 {
 
 .factor-list div,
 .timeline div,
+.freshness-grid div,
+.factor-cards div,
 .notice {
   display: flex;
   justify-content: space-between;
@@ -276,7 +278,9 @@ h3 {
 }
 
 .factor-list span,
-.timeline span {
+.timeline span,
+.freshness-grid span,
+.factor-cards span {
   text-transform: capitalize;
 }
 
@@ -365,6 +369,48 @@ h3 {
 .pack-card,
 .provider-card {
   min-height: 190px;
+}
+
+.explain-block {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #edf2ef;
+}
+
+.explain-block.compact {
+  gap: 8px;
+}
+
+.explain-text {
+  color: #3f5148;
+  line-height: 1.5;
+}
+
+.why-zone {
+  grid-column: 1 / -1;
+  border-top: 1px solid #edf2ef;
+  padding-top: 14px;
+}
+
+.why-zone p {
+  color: #3f5148;
+  margin-top: 8px;
+}
+
+.freshness-grid,
+.factor-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+}
+
+.factor-cards div,
+.freshness-grid div {
+  border: 1px solid #edf2ef;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 @media (max-width: 980px) {

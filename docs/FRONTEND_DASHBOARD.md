@@ -25,8 +25,21 @@ It wraps existing backend routes:
 - `GET /api/v1/packs`
 - `GET /api/v1/alerts/active`
 - `GET /api/v1/provider-health`
+- `GET /api/v1/explain/location`
 
 The wrapper falls back to mock data so the interface can run before the backend is live.
+
+## Explainability Panels
+
+Phase 11 adds explanation panels to the dashboard shell:
+
+- factor contribution cards
+- confidence breakdown display
+- provider freshness display
+- Why this zone? section
+- explanation summary text for alerts when provided by the backend
+
+The frontend consumes explanation endpoint responses only. It does not calculate factor contributions, confidence, warning scores, surveillance priority, alert levels, or operational recommendations.
 
 ## Mock Mode
 

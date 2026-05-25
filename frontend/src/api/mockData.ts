@@ -59,6 +59,53 @@ export const mockDashboardData: DashboardData = {
       },
     ],
   },
+  explanation: {
+    output_type: "location",
+    location: { geo: { type: "Point", coordinates: [115.515, -31.983] } },
+    active_pack: "western_australia",
+    pack_features_used: ["white_shark_reef_spearfishing", "reef_surveillance"],
+    pack_notice: undefined,
+    warning_score: 18,
+    activity_hazard_score: 58,
+    surveillance_priority_score: 82,
+    dominant_factors: [
+      { factor: "activity_hazard_score", points: 20.3, rationale: "Activity hazard feeds surveillance priority." },
+      { factor: "wa_white_shark_reef_spearfishing_context", points: 18, rationale: "Regional reef/spearfishing rule is active." },
+      { factor: "reef_dropoff_habitat_proximity", points: 13, rationale: "Reef/dropoff context shapes drone search zones." },
+    ],
+    factor_contributions: [
+      { factor: "activity_hazard_score", points: 20.3, contribution: 0.25, rationale: "Activity hazard feeds surveillance priority." },
+      { factor: "wa_white_shark_reef_spearfishing_context", points: 18, contribution: 0.22, rationale: "Regional rule is active." },
+      { factor: "reef_dropoff_habitat_proximity", points: 13, contribution: 0.16, rationale: "Reef/dropoff context." },
+    ],
+    confidence_breakdown: {
+      overall_confidence: 0.68,
+      confidence_band: "moderate",
+      components: { coverage_confidence: 0.66, freshness_confidence: 0.72, completeness_confidence: 0.64 },
+    },
+    data_freshness: {
+      weather_observations: { status: "missing" },
+      ocean_observations: { status: "present" },
+      vessel_activity: { status: "present" },
+      reef_features: { status: "present" },
+    },
+    missing_data_sources: ["weather_observations", "recent_interactions", "sighting_reports"],
+    regional_rules_triggered: ["activity_hazard_score", "wa_white_shark_reef_spearfishing_context", "reef_dropoff_habitat_proximity"],
+    suppression_reasons: ["General environmental warning remains low because live-condition signals are not strongly stacked."],
+    operational_interpretation:
+      "AI1SAD reads this as low general environmental warning but high operational surveillance priority. That split is driven by activity, habitat, regional species suitability, or recent operational context.",
+    recommended_action: "Prioritize reef edge, dropoff, and adjacent current lines with expanding drone passes.",
+    recommended_surveillance_pattern: "reef_edge_expanding_grid",
+    recommended_surveillance_pattern_label: "Reef-edge expanding grid",
+    metadata: {
+      model_version: "0.11.0",
+      scoring_revision: "phase-11-explainability",
+      provider_stack_version: "phase-9-static-live-adapters",
+      generated_at: "2026-05-24T08:10:00Z",
+    },
+    disclaimer:
+      "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.",
+  },
   alerts: [
     {
       alert_type: "surveillance_priority",

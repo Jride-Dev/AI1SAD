@@ -2,7 +2,7 @@ import { Activity, AlertTriangle, Boxes, HeartPulse, Map, Plane, Radar, RotateCc
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
-import type { DashboardData, DominantFactor, ProviderHealth } from "./types";
+import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth } from "./types";
 
 const pages = [
   { id: "map", label: "Live Warning Map", icon: Map },
@@ -111,6 +111,7 @@ function LiveWarningMap({ data }: { data: DashboardData }) {
         <ScoreRow label="Activity Hazard" value={data.warning.activity_context_score} />
         <h3>Dominant Factors</h3>
         <FactorList factors={data.warning.dominant_factors} />
+        <ExplanationPanel explanation={data.explanation} compact />
       </section>
     </div>
   );
@@ -135,6 +136,7 @@ function SurveillanceView({ data }: { data: DashboardData }) {
               <Metric label="Confidence" value={Math.round(zone.confidence * 100)} suffix="%" />
             </div>
             <FactorList factors={zone.dominant_factors} />
+            <WhyThisZone explanation={data.explanation} />
           </section>
         );
       })}
@@ -166,6 +168,7 @@ function ReplayExplorer({ data }: { data: DashboardData }) {
             </div>
           ))}
         </div>
+        <ExplanationPanel explanation={data.explanation} />
       </section>
     </div>
   );
@@ -217,6 +220,9 @@ function AlertsView({ data }: { data: DashboardData }) {
             <Metric label="Confidence" value={Math.round(alert.confidence * 100)} suffix="%" />
             <Metric label="Expires" value={new Date(alert.expires_at).getHours()} suffix="h" />
           </div>
+          {alert.explanation_summary ? (
+            <p className="explain-text">{alert.explanation_summary.operational_interpretation}</p>
+          ) : null}
         </section>
       ))}
     </div>
@@ -234,9 +240,101 @@ function ProviderHealthView({ providers }: { providers: ProviderHealth[] }) {
           <Metric label="Records" value={provider.records_ingested ?? 0} />
         </section>
       ))}
+      <section className="panel wide">
+        <h2>Provider Freshness</h2>
+        <FreshnessGrid explanation={mockSafeExplanation(providers)} />
+      </section>
     </div>
   );
 }
+
+function ExplanationPanel({ explanation, compact = false }: { explanation: ExplanationResponse; compact?: boolean }) {
+  return (
+    <section className={compact ? "explain-block compact" : "explain-block"}>
+      <h3>Why This Output?</h3>
+      <p className="explain-text">{explanation.operational_interpretation}</p>
+      <div className="chip-row">
+        <span className="chip">{explanation.recommended_surveillance_pattern_label ?? explanation.recommended_surveillance_pattern}</span>
+        <span className="chip">Model {explanation.metadata.model_version}</span>
+      </div>
+      {!compact ? (
+        <>
+          <h3>Factor Contributions</h3>
+          <FactorList factors={explanation.factor_contributions} />
+          <ConfidenceView explanation={explanation} />
+          <FreshnessGrid explanation={explanation} />
+        </>
+      ) : null}
+    </section>
+  );
+}
+
+function WhyThisZone({ explanation }: { explanation: ExplanationResponse }) {
+  return (
+    <div className="why-zone">
+      <h3>Why This Zone?</h3>
+      <p>{explanation.recommended_action}</p>
+      <div className="factor-cards">
+        {explanation.factor_contributions.slice(0, 3).map((factor) => (
+          <div key={factor.factor}>
+            <span>{factor.factor.replaceAll("_", " ")}</span>
+            <strong>{factor.points ? `${Math.round(factor.points)} pts` : `${Math.round((factor.contribution ?? 0) * 100)}%`}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ConfidenceView({ explanation }: { explanation: ExplanationResponse }) {
+  const confidence = Math.round((explanation.confidence_breakdown.overall_confidence ?? 0) * 100);
+  return (
+    <div>
+      <h3>Confidence</h3>
+      <Progress label={explanation.confidence_breakdown.confidence_band ?? "overall"} value={confidence} suffix="%" />
+    </div>
+  );
+}
+
+function FreshnessGrid({ explanation }: { explanation: ExplanationResponse }) {
+  return (
+    <div className="freshness-grid">
+      {Object.entries(explanation.data_freshness).map(([source, info]) => (
+        <div key={source}>
+          <span>{source.replaceAll("_", " ")}</span>
+          <strong>{info?.status ?? "unknown"}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function mockSafeExplanation(providers: ProviderHealth[]): ExplanationResponse {
+  return {
+    ...mockDashboardFallbackExplanation,
+    data_freshness: Object.fromEntries(providers.map((provider) => [provider.provider, { status: provider.status, last_success: provider.last_success }])),
+  };
+}
+
+const mockDashboardFallbackExplanation: ExplanationResponse = {
+  output_type: "provider_health",
+  location: { geo: { type: "Point", coordinates: [0, 0] } },
+  warning_score: 0,
+  activity_hazard_score: 0,
+  surveillance_priority_score: 0,
+  dominant_factors: [],
+  factor_contributions: [],
+  confidence_breakdown: { overall_confidence: 0.5, confidence_band: "limited" },
+  data_freshness: {},
+  missing_data_sources: [],
+  regional_rules_triggered: [],
+  suppression_reasons: [],
+  operational_interpretation: "Provider freshness is displayed from backend health and explanation responses.",
+  recommended_action: "Review stale or missing providers before interpreting operational scores.",
+  recommended_surveillance_pattern: "low_priority_observation",
+  metadata: { model_version: "0.11.0", scoring_revision: "phase-11-explainability", provider_stack_version: "phase-9-static-live-adapters", generated_at: "" },
+  disclaimer: "",
+};
 
 function ScoreRow({ label, value }: { label: string; value: number }) {
   return <Progress label={label} value={value} />;

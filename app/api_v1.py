@@ -13,6 +13,11 @@ from app.risk_model import RISK_DISCLAIMER, RISK_FACTOR_DEFINITIONS, nearest_pro
 from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surveillance_zones
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
 from app.services.alert_engine import evaluate_alerts
+from app.services.explainability_engine import (
+    attach_alert_explanation_summary,
+    build_explanation,
+    model_metadata,
+)
 from app.services.regional_packs import (
     annotate_response_with_pack,
     load_public_packs,
@@ -415,7 +420,7 @@ def serialize_alert(document: dict[str, Any]) -> dict[str, Any]:
     alert = mongo_public_doc(document)
     alert.pop("private_notes", None)
     alert.pop("restricted", None)
-    return alert
+    return attach_alert_explanation_summary(alert)
 
 
 @router.get("/alerts/active")
@@ -515,7 +520,7 @@ def evaluate_alert_payload(
                 payload["data_freshness"] = {**payload.get("data_freshness", {}), "noaa_nws": {"status": "missing", "last_error": type(exc).__name__}}
                 payload["confidence"] = max(0.25, float(payload.get("confidence", 0.5) or 0.5) - 0.15)
                 record_noaa_nws_failure(db, error=exc)
-    response = {"alerts": evaluate_alerts(payload)}
+    response = {"alerts": [attach_alert_explanation_summary(alert) for alert in evaluate_alerts(payload)]}
     return annotate_response_with_pack(
         response,
         db,
@@ -930,6 +935,122 @@ def surveillance_explain(
     )
 
 
+@router.get("/explain/location")
+def explain_location(
+    db: Database = Depends(get_database),
+    lat: Annotated[float, Query(ge=-90, le=90)] = 0,
+    lon: Annotated[float, Query(ge=-180, le=180)] = 0,
+    radius_km: Annotated[float, Query(gt=0, le=250)] = 25,
+    lookback_hours: Annotated[int, Query(ge=1, le=168)] = 72,
+    month: Annotated[int | None, Query(ge=1, le=12)] = None,
+    activity_context: str | None = None,
+    suspected_species: str | None = None,
+    river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
+    enabled_packs: str | None = None,
+) -> dict[str, Any]:
+    enabled = parse_enabled_packs(enabled_packs)
+    warning = warning_payload(
+        db=db,
+        lat=lat,
+        lon=lon,
+        radius_km=radius_km,
+        lookback_hours=lookback_hours,
+        month=month,
+        river_mouth_distance_km=river_mouth_distance_km,
+        use_open_meteo=False,
+        use_noaa_nws=False,
+        bypass_cache=True,
+        enabled_packs=enabled,
+    )
+    surveillance = surveillance_payload(
+        db=db,
+        lat=lat,
+        lon=lon,
+        radius_km=min(radius_km, 50),
+        mission_type="explain",
+        lookback_hours=lookback_hours,
+        activity_context=activity_context,
+        suspected_species=suspected_species,
+        river_mouth_distance_km=river_mouth_distance_km,
+        month=month,
+        enabled_packs=enabled,
+    )
+    zone = surveillance.get("zones", [{}])[0]
+    combined = {
+        **warning,
+        **zone,
+        "dominant_factors": zone.get("dominant_factors") or warning.get("dominant_factors", []),
+        "data_freshness": {**warning.get("data_freshness", {}), **zone.get("data_freshness", {})},
+        "missing_data_sources": sorted(set(warning.get("missing_data_sources", [])) | set(zone.get("missing_data_sources", []))),
+        "data_sources_used": sorted(set(warning.get("data_sources_used", [])) | set(zone.get("data_sources_used", []))),
+        "active_pack": surveillance.get("active_pack", warning.get("active_pack")),
+        "available_pack": surveillance.get("available_pack", warning.get("available_pack")),
+        "pack_features_used": surveillance.get("pack_features_used", warning.get("pack_features_used", [])),
+        "pack_notice": surveillance.get("pack_notice", warning.get("pack_notice")),
+    }
+    return build_explanation(combined, output_type="location", location={"geo": {"type": "Point", "coordinates": [lon, lat]}})
+
+
+@router.get("/explain/surveillance")
+def explain_surveillance(
+    db: Database = Depends(get_database),
+    lat: Annotated[float, Query(ge=-90, le=90)] = 0,
+    lon: Annotated[float, Query(ge=-180, le=180)] = 0,
+    radius_km: Annotated[float, Query(gt=0, le=250)] = 10,
+    mission_type: str = "drone_search",
+    lookback_hours: Annotated[int, Query(ge=1, le=720)] = 72,
+    activity_context: str | None = None,
+    suspected_species: str | None = None,
+    river_mouth_distance_km: Annotated[float | None, Query(ge=0, le=500)] = None,
+    month: Annotated[int | None, Query(ge=1, le=12)] = None,
+    enabled_packs: str | None = None,
+) -> dict[str, Any]:
+    payload = surveillance_payload(
+        db=db,
+        lat=lat,
+        lon=lon,
+        radius_km=radius_km,
+        mission_type=mission_type,
+        lookback_hours=lookback_hours,
+        activity_context=activity_context,
+        suspected_species=suspected_species,
+        river_mouth_distance_km=river_mouth_distance_km,
+        month=month,
+        enabled_packs=parse_enabled_packs(enabled_packs),
+    )
+    return build_explanation(payload, output_type="surveillance", location={"geo": {"type": "Point", "coordinates": [lon, lat]}})
+
+
+@router.get("/explain/replay")
+def explain_replay(
+    scenario_id: str = "florida_summer_heavy_rain",
+    enabled_packs: str | None = None,
+) -> dict[str, Any]:
+    scenario = REPLAY_SCENARIOS.get(scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
+    runner = ReplayRunner()
+    result = runner.run_scenario(scenario)
+    if result.error:
+        return {"scenario_id": scenario_id, "error": result.error}
+    response = _replay_response(result, parse_enabled_packs(enabled_packs))
+    zone = (result.surveillance or {}).get("zones", [{}])[0]
+    payload = {
+        **response,
+        **zone,
+        "dominant_factors": zone.get("dominant_factors", result.warning.get("dominant_factors", [])),
+        "quiet_day_comparison": result.quiet_day_comparison,
+        "confidence_breakdown": result.confidence_decomposition,
+    }
+    return build_explanation(payload, output_type="replay", location=response.get("location"), replay=True)
+
+
+@router.get("/explain/alert/{alert_id}")
+def explain_alert(alert_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    alert = get_alert(alert_id, db)
+    return build_explanation(alert, output_type="alert", location=alert.get("location") or alert.get("zone", {}).get("location"))
+
+
 @router.get("/surveillance/recent-interactions")
 def surveillance_recent_interactions(
     db: Database = Depends(get_database),
@@ -1302,6 +1423,7 @@ def _replay_response(result: ReplayResult, enabled_packs: list[str] | None = Non
         },
         "quiet_day_comparison": result.quiet_day_comparison,
         "confidence_decomposition": result.confidence_decomposition,
+        "metadata": model_metadata(replay=True),
     }
     coords = result.location.get("geo", {}).get("coordinates", [])
     lon = coords[0] if len(coords) >= 2 else result.location.get("lon")

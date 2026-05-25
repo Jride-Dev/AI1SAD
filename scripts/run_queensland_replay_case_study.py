@@ -14,6 +14,7 @@ from app.replay.heatmap import HeatmapConfig, HeatmapGenerator
 from app.replay.quiet_day import QuietDayBaseline
 from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
 from app.risk_model import REGIONAL_RISK_PROFILES
+from app.services.explainability_engine import build_explanation, model_metadata
 from app.services.surveillance_engine import score_surveillance_zones
 from app.services.warning_engine import calculate_warning
 
@@ -128,7 +129,7 @@ def run_case_study(scenario: ReplayScenario) -> dict[str, Any]:
         now=decay_now,
     )
 
-    return {
+    replay = {
         "scenario": {
             "scenario_id": scenario.scenario_id,
             "label": scenario.label,
@@ -145,8 +146,24 @@ def run_case_study(scenario: ReplayScenario) -> dict[str, Any]:
         "quiet_day_comparison": quiet_comparison,
         "confidence_breakdown": confidence,
         "signal_decay": decayed_signals,
+        "metadata": model_metadata(replay=True),
         "disclaimer": warning["disclaimer"],
     }
+    replay["explanation"] = build_explanation(
+        {
+            **surveillance,
+            "dominant_factors": surveillance["dominant_factors"],
+            "data_freshness": warning.get("data_freshness", {}),
+            "missing_data_sources": surveillance.get("missing_data_sources", []),
+            "data_sources_used": surveillance.get("data_sources_used", []),
+            "quiet_day_comparison": quiet_comparison,
+            "confidence_breakdown": confidence,
+        },
+        output_type="replay",
+        location=warning["location"],
+        replay=True,
+    )
+    return replay
 
 
 def factor_summary(replay: dict[str, Any]) -> dict[str, Any]:

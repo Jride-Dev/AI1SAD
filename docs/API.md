@@ -624,3 +624,42 @@ Compatibility/helper routes:
 - `GET /api/v1/replay/run-all`
 - `GET /api/v1/replay/decay-analysis/{scenario_id}`
 - `GET /api/v1/replay/compare-quiet-day/{scenario_id}`
+
+## Explainability
+
+AI1SAD explanations describe why a warning, surveillance priority, replay, or alert output was produced. They do not predict individual shark attacks.
+
+`GET /api/v1/explain/location`
+
+Returns a combined warning/surveillance explanation for a coordinate. Query parameters mirror the warning and surveillance routes, including `lat`, `lon`, `radius_km`, `lookback_hours`, `activity_context`, `suspected_species`, `river_mouth_distance_km`, `month`, and `enabled_packs`.
+
+`GET /api/v1/explain/surveillance`
+
+Returns an explanation for the top surveillance zone generated for a coordinate and mission context.
+
+`GET /api/v1/explain/replay`
+
+Returns a replay explanation for a built-in scenario. Query parameter: `scenario_id`.
+
+`GET /api/v1/explain/alert/{alert_id}`
+
+Returns an explanation for a public active/stored alert. Private alerts and private notes are not exposed.
+
+Explanation responses include:
+
+- `location`
+- `active_pack`
+- `warning_score`
+- `activity_hazard_score`
+- `surveillance_priority_score`
+- `dominant_factors`
+- `factor_contributions`
+- `confidence_breakdown`
+- `data_freshness`
+- `missing_data_sources`
+- `regional_rules_triggered`
+- `suppression_reasons`
+- `recommended_action`
+- `recommended_surveillance_pattern`
+- `metadata`
+- `disclaimer`
