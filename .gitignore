@@ -31,3 +31,6 @@ frontend/dist/
 frontend/.vite/
 frontend/coverage/
 frontend/*.tsbuildinfo
+
+# MkDocs generated GitHub Pages output.
+site/
