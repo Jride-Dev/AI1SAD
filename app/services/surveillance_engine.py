@@ -62,6 +62,29 @@ def activity_points(activity_context: str | None) -> float:
     return ACTIVITY_WEIGHTS.get(activity_context.lower(), 5)
 
 
+def biological_surveillance_points(events: list[dict[str, Any]]) -> tuple[float, list[str]]:
+    points = 0.0
+    event_types: list[str] = []
+    for event in events:
+        if event.get("visibility", "public") != "public":
+            continue
+        event_type = str(event.get("event_type", "")).lower()
+        event_types.append(event_type)
+        confidence = max(0.5, min(1.0, float(event.get("confidence", 0.5) or 0.5)))
+        value = max(0.5, min(1.0, float(event.get("value", 1.0) or 1.0)))
+        if "whale_carcass" in event_type or ("whale" in event_type and "carcass" in event_type):
+            points = max(points, 18 * confidence * value)
+        elif "carcass" in event_type or "fish_kill" in event_type or ("fish" in event_type and "kill" in event_type):
+            points = max(points, 16 * confidence * value)
+        elif "baitfish" in event_type or "prey" in event_type:
+            points = max(points, 9 * confidence * value)
+        elif "seal" in event_type or "sea_lion" in event_type:
+            points = max(points, 8 * confidence * value)
+        elif "turtle" in event_type or "hatchling" in event_type or "migration" in event_type or "nesting" in event_type:
+            points = max(points, 6 * confidence * value)
+    return round(min(20, points), 2), event_types
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -262,6 +285,16 @@ def score_surveillance_zones(
             "value": suspected_species,
             "points": species_points,
             "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        }
+    )
+
+    bio_points, bio_event_types = biological_surveillance_points(warning_inputs.get("biological_events", []))
+    factors.append(
+        {
+            "factor": "biological_event_surveillance_context",
+            "value": bio_event_types,
+            "points": bio_points,
+            "rationale": "Carcass and fish-kill events have stronger surveillance influence than broad migration or prey context.",
         }
     )
 

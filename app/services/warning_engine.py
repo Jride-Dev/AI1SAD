@@ -65,12 +65,22 @@ def biological_event_score(events: list[dict[str, Any]], now: datetime | None = 
         if observed_at and observed_at < now - timedelta(days=max_age_days):
             continue
         event_type = str(event.get("event_type", "")).lower()
+        confidence = float(event.get("confidence", 0.5) or 0.5)
+        value = float(event.get("value", 1.0) or 1.0)
+        confidence_factor = max(0.5, min(1.0, confidence))
+        value_factor = max(0.5, min(1.0, value))
         if "whale" in event_type and "carcass" in event_type:
-            score = max(score, 20)
+            score = max(score, round(24 * confidence_factor * value_factor, 2))
+        elif "fish_kill" in event_type or ("fish" in event_type and "kill" in event_type):
+            score = max(score, round(22 * confidence_factor * value_factor, 2))
         elif "stranding" in event_type or "carcass" in event_type:
-            score = max(score, 12)
+            score = max(score, round(18 * confidence_factor * value_factor, 2))
         elif "baitfish" in event_type or "prey" in event_type:
-            score = max(score, 8)
+            score = max(score, round(10 * confidence_factor * value_factor, 2))
+        elif "seal" in event_type or "sea_lion" in event_type:
+            score = max(score, round(7 * confidence_factor * value_factor, 2))
+        elif "turtle" in event_type or "hatchling" in event_type or "migration" in event_type or "nesting" in event_type:
+            score = max(score, round(5 * confidence_factor * value_factor, 2))
     return score
 
 

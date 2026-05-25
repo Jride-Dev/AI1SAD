@@ -24,6 +24,16 @@ Phase 9D adds static human-exposure profiles that can be associated with regiona
 
 These profiles are controlled static signals, not live scraped crowd estimates.
 
+Phase 9E adds static/manual biological-event examples associated with regional packs:
+
+- Hawaii pack: turtle-season / tiger shark context.
+- Florida pack: baitfish / blacktip overlap context.
+- South Africa pack: seal colony / white shark context.
+- Red Sea pack: carcass or dumping anomaly context.
+- Western Australia pack: reef/prey context.
+
+These biological signals are controlled offline examples and reviewed manual inputs. They are not live animal detections or scraped reports.
+
 ## Pack Metadata
 
 Each pack defines:

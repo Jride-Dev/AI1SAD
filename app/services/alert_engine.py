@@ -196,7 +196,20 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
         )
 
     sighting_count = sum(1 for signal in signals if signal.get("signal_type") in {"sighting", "shark_sighting"})
-    carcass_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "biological_event"})
+    biological_signal_types = {
+        "biological_event",
+        "carcass",
+        "whale_carcass",
+        "seal_presence",
+        "sea_lion_presence",
+        "sea_turtle_nesting",
+        "sea_turtle_migration",
+        "baitfish_presence",
+        "fish_kill",
+        "seabird_hatchling_event",
+    }
+    high_impact_bio_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "fish_kill"})
+    carcass_count = sum(1 for signal in signals if signal.get("signal_type") in biological_signal_types)
     sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
     exposure_signals = [
         signal
@@ -227,9 +240,9 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
             _base_alert(
                 payload,
                 alert_type="biological_event",
-                level="advisory",
+                level="watch" if high_impact_bio_count else "advisory",
                 title="Biological event advisory",
-                summary="A carcass, prey, or biological event signal is active near this location.",
+                summary="A carcass, fish-kill, prey, migration, or biological event signal is active near this location.",
                 recommended_action="Review wildlife authority guidance and consider temporary targeted monitoring.",
                 trigger={"trigger_type": "biological_event", "threshold": 1, "observed_value": carcass_count},
                 expires_hours=12,

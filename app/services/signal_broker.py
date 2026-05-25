@@ -14,6 +14,15 @@ DEFAULT_MAX_AGE_HOURS = {
     "vessel_activity": 24,
     "fishing_activity": 24,
     "biological_event": 336,
+    "carcass": 72,
+    "whale_carcass": 72,
+    "fish_kill": 72,
+    "baitfish_presence": 96,
+    "seal_presence": 720,
+    "sea_lion_presence": 720,
+    "sea_turtle_nesting": 720,
+    "sea_turtle_migration": 720,
+    "seabird_hatchling_event": 96,
     "migration_window": 720,
     "prey_presence": 72,
     "tourism_exposure": 168,
@@ -133,13 +142,30 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
             inputs["sst_anomaly_c"] = float(value)
         elif signal_type in {"vessel_activity", "fishing_activity"} and value is not None:
             inputs["vessel_activity_index"] = max(float(value), float(inputs["vessel_activity_index"] or 0))
-        elif signal_type in {"biological_event", "prey_presence", "ecology_event"}:
+        elif signal_type in {
+            "biological_event",
+            "prey_presence",
+            "ecology_event",
+            "carcass",
+            "whale_carcass",
+            "seal_presence",
+            "sea_lion_presence",
+            "sea_turtle_nesting",
+            "sea_turtle_migration",
+            "baitfish_presence",
+            "fish_kill",
+            "seabird_hatchling_event",
+        }:
             event = {
                 "visibility": "public",
                 "event_type": signal_type,
                 "observed_at": signal.get("timestamp"),
                 "expires_at": signal.get("expires_at"),
                 "confidence": signal.get("confidence"),
+                "value": value,
+                "species": signal.get("species"),
+                "source": signal.get("source"),
+                "risk_relevance": signal.get("risk_relevance"),
             }
             inputs["biological_events"].append(event)
         elif signal_type in {
