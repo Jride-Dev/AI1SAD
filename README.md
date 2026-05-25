@@ -82,6 +82,14 @@ Run tests:
 python -m pytest -q
 ```
 
+Run the frontend dashboard shell:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
 ## API Areas
 
 - `/api/v1/incidents`
@@ -136,6 +144,7 @@ Useful scripts include:
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Data Sources](docs/DATA_SOURCES.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
+- [Frontend Dashboard](docs/FRONTEND_DASHBOARD.md)
 - [Open-Meteo Provider](docs/OPEN_METEO_PROVIDER.md)
 - [NOAA/NWS Provider](docs/NOAA_NWS_PROVIDER.md)
 - [SST Provider Adapter](docs/SST_PROVIDER.md)

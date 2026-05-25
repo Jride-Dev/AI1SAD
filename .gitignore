@@ -24,3 +24,10 @@ data/public/schema.json
 
 # Hidden, sensitive, restricted, or license-unclear data must stay local.
 data/private/
+
+# Frontend local dependencies and generated build output.
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/*.tsbuildinfo
