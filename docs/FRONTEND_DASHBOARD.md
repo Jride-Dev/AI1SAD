@@ -13,6 +13,25 @@ The dashboard is a React + Vite app. It visualizes existing API outputs and inte
 - Alerts View
 - Provider Health View
 
+## Operational Map
+
+Phase 14 replaces the static map placeholder with an interactive Leaflet map.
+
+The map displays API or mock-output layers for:
+
+- surveillance priority
+- warning score
+- activity hazard
+- active alerts
+- replay heatmap cells
+- demo scenario points
+
+The map includes a scenario selector for Horseshoe Reef 2026, Queensland Spearfishing 2026, Florida inlet/crowded beach, Hawaii October tiger shark context, and Red Sea anomaly context.
+
+Clicking a zone, heatmap cell, alert, or scenario point opens a "Why this zone?" panel showing coordinates, active pack, score split, dominant factors, factor contributions, confidence breakdown, recommended action, recommended surveillance pattern, and the API disclaimer.
+
+Low-warning/high-surveillance examples are labeled as activity/habitat-specific surveillance priority so users can understand the split without treating it as a contradiction.
+
 ## API Client
 
 The frontend client lives in `frontend/src/api/client.ts`.
@@ -40,6 +59,8 @@ Phase 11 adds explanation panels to the dashboard shell:
 - explanation summary text for alerts when provided by the backend
 
 The frontend consumes explanation endpoint responses only. It does not calculate factor contributions, confidence, warning scores, surveillance priority, alert levels, or operational recommendations.
+
+The Leaflet map follows the same rule. It renders backend or mock values but does not implement model scoring.
 
 ## Mock Mode
 

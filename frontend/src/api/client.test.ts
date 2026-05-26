@@ -11,5 +11,7 @@ describe("dashboard API client", () => {
     expect(data.alerts[0].recommended_action).toContain("drone");
     expect(data.providerHealth.some((provider) => provider.provider === "vessel_fishing_static")).toBe(true);
     expect(data.replay.signal_decay_timeline.length).toBeGreaterThan(0);
+    expect(data.replayHeatmap.cells[0].surveillance_priority_score).toBeGreaterThanOrEqual(0);
+    expect(data.demoScenarios.map((scenario) => scenario.scenario_id)).toContain("queensland_spearfishing_reef_tiger_bull_2026");
   });
 });

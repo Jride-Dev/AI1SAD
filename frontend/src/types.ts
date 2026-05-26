@@ -68,6 +68,45 @@ export type Alert = {
   disclaimer?: string;
 };
 
+export type ReplayHeatmapCell = {
+  lat: number;
+  lon: number;
+  surveillance_priority_score: number;
+  surveillance_priority_band: string;
+  warning_score?: number;
+  warning_band?: string;
+  activity_hazard_score?: number;
+  activity_hazard_band?: string;
+};
+
+export type ReplayHeatmap = {
+  score_type?: string;
+  config: {
+    center_lat: number;
+    center_lon: number;
+    radius_km: number;
+    grid_cells: number;
+  };
+  cells: ReplayHeatmapCell[];
+  statistics: {
+    min_score: number;
+    max_score: number;
+    avg_score: number;
+    median_score: number;
+  };
+};
+
+export type DemoScenario = {
+  scenario_id: string;
+  label: string;
+  region: string;
+  context: string;
+  activity_context: string;
+  lat: number;
+  lon: number;
+  public_case_study?: string | null;
+};
+
 export type ProviderHealth = {
   provider: string;
   status: string;
@@ -150,4 +189,6 @@ export type DashboardData = {
   providerHealth: ProviderHealth[];
   packs: RegionalPack[];
   replay: ReplayResult;
+  replayHeatmap: ReplayHeatmap;
+  demoScenarios: DemoScenario[];
 };

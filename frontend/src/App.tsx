@@ -2,6 +2,8 @@ import { Activity, AlertTriangle, Boxes, HeartPulse, Map, Plane, Radar, RotateCc
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
+import { scenarioCoordinates } from "./api/mockData";
+import { OperationalMap } from "./components/OperationalMap";
 import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth } from "./types";
 
 const pages = [
@@ -15,19 +17,20 @@ const pages = [
 
 type PageId = (typeof pages)[number]["id"];
 
-const target = { lat: -31.983, lon: 115.515 };
-
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>("map");
+  const [selectedScenarioId, setSelectedScenarioId] = useState("horseshoe_reef_2026");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getDashboardData(target).then((payload) => {
+    const scenario = scenarioCoordinates[selectedScenarioId] ?? scenarioCoordinates.horseshoe_reef_2026;
+    setLoading(true);
+    getDashboardData({ lat: scenario.lat, lon: scenario.lon }).then((payload) => {
       setData(payload);
       setLoading(false);
     });
-  }, []);
+  }, [selectedScenarioId]);
 
   const page = useMemo(() => pages.find((item) => item.id === activePage) ?? pages[0], [activePage]);
 
@@ -66,14 +69,24 @@ export default function App() {
           </div>
         </header>
 
-        {loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} />}
+        {loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
       </section>
     </main>
   );
 }
 
-function DashboardPage({ page, data }: { page: PageId; data: DashboardData }) {
-  if (page === "map") return <LiveWarningMap data={data} />;
+function DashboardPage({
+  page,
+  data,
+  selectedScenarioId,
+  onSelectScenario,
+}: {
+  page: PageId;
+  data: DashboardData;
+  selectedScenarioId: string;
+  onSelectScenario: (scenarioId: string) => void;
+}) {
+  if (page === "map") return <LiveWarningMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />;
   if (page === "surveillance") return <SurveillanceView data={data} />;
   if (page === "replay") return <ReplayExplorer data={data} />;
   if (page === "packs") return <RegionalPackExplorer data={data} />;
@@ -85,25 +98,13 @@ function LoadingPanel() {
   return <section className="panel loading">Loading dashboard outputs...</section>;
 }
 
-function LiveWarningMap({ data }: { data: DashboardData }) {
+function LiveWarningMap({ data, selectedScenarioId, onSelectScenario }: { data: DashboardData; selectedScenarioId: string; onSelectScenario: (scenarioId: string) => void }) {
   const [lon, lat] = data.warning.location.geo.coordinates;
   const primaryZone = data.surveillance.zones[0];
 
   return (
-    <div className="grid two">
-      <section className="map-panel">
-        <div className="map-canvas">
-          <div className="map-grid" />
-          <div className="zone zone-primary" />
-          <div className="zone zone-secondary" />
-          <div className="pin" />
-        </div>
-        <div className="coordinate-strip">
-          <span>Lat {lat.toFixed(4)}</span>
-          <span>Lon {lon.toFixed(4)}</span>
-          <span>{primaryZone.recommended_pattern}</span>
-        </div>
-      </section>
+    <div className="stack">
+      <OperationalMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />
       <section className="panel">
         <h2>Score Split</h2>
         <ScoreRow label="Warning" value={data.warning.warning_score} />
@@ -112,6 +113,14 @@ function LiveWarningMap({ data }: { data: DashboardData }) {
         <h3>Dominant Factors</h3>
         <FactorList factors={data.warning.dominant_factors} />
         <ExplanationPanel explanation={data.explanation} compact />
+      </section>
+      <section className="panel">
+        <h2>Selected Query</h2>
+        <div className="coordinate-strip inline-strip">
+          <span>Lat {lat.toFixed(4)}</span>
+          <span>Lon {lon.toFixed(4)}</span>
+          <span>{primaryZone.recommended_pattern}</span>
+        </div>
       </section>
     </div>
   );

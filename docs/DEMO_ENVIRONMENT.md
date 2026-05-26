@@ -26,6 +26,8 @@ Returns safe scenario summaries for:
 - Hawaii October tiger shark context
 - Red Sea anomaly context
 
+The frontend uses these summaries with local public coordinates to populate the operational map selector when the backend does not provide coordinates directly.
+
 ## Response Labeling
 
 When demo mode is enabled, selected public API responses include:
@@ -67,6 +69,16 @@ $env:VITE_AI1SAD_USE_MOCKS="false"
 $env:VITE_AI1SAD_API_BASE_URL="https://<demo-backend>"
 npm run dev
 ```
+
+In demo mode, the operational map can render:
+
+- demo scenario points
+- replay heatmap cells
+- surveillance zones
+- active alert markers
+- warning, activity hazard, and surveillance score markers
+
+If the backend is unavailable, mock data preserves all map states without requiring secrets, private data, or live providers.
 
 ## Safety Boundary
 

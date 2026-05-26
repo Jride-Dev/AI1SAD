@@ -86,6 +86,7 @@ nav:
   - Alerts & Operations:
       - Alert Engine: ALERT_ENGINE.md
       - Alert Levels: ALERT_LEVELS.md
+      - Operational Mapping: OPERATIONAL_MAPPING.md
       - Operational Recommendations: OPERATIONAL_RECOMMENDATIONS.md
       - Human Override: HUMAN_OVERRIDE.md
 

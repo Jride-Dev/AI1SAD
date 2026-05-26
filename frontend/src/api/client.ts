@@ -1,5 +1,17 @@
-import { mockDashboardData } from "./mockData";
-import type { Alert, Coordinates, DashboardData, ExplanationResponse, ProviderHealth, RegionalPack, ReplayResult, SurveillanceResponse, WarningResponse } from "../types";
+import { mockDashboardData, mockDemoScenarios, scenarioCoordinates } from "./mockData";
+import type {
+  Alert,
+  Coordinates,
+  DashboardData,
+  DemoScenario,
+  ExplanationResponse,
+  ProviderHealth,
+  RegionalPack,
+  ReplayHeatmap,
+  ReplayResult,
+  SurveillanceResponse,
+  WarningResponse,
+} from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_AI1SAD_API_BASE_URL ?? "http://localhost:8000";
 const USE_MOCKS = import.meta.env.VITE_AI1SAD_USE_MOCKS !== "false";
@@ -35,6 +47,7 @@ export async function getWarning(coords: Coordinates): Promise<WarningResponse> 
 }
 
 export async function getSurveillance(coords: Coordinates): Promise<SurveillanceResponse> {
+  const scenario = Object.values(scenarioCoordinates).find((item) => item.lat === coords.lat && item.lon === coords.lon);
   return requestJson(
     `/api/v1/surveillance/search-zones?${query({
       lat: coords.lat,
@@ -42,28 +55,31 @@ export async function getSurveillance(coords: Coordinates): Promise<Surveillance
       radius_km: 5,
       mission_type: "drone",
       lookback_hours: 72,
-      activity_context: "spearfishing",
-      suspected_species: "white shark",
+      activity_context: scenario?.activityContext ?? "spearfishing",
+      suspected_species: scenario?.suspectedSpecies ?? "white shark",
     })}`,
     mockDashboardData.surveillance,
   );
 }
 
 export async function getExplanation(coords: Coordinates): Promise<ExplanationResponse> {
+  const scenario = Object.values(scenarioCoordinates).find((item) => item.lat === coords.lat && item.lon === coords.lon);
   return requestJson(
     `/api/v1/explain/location?${query({
       lat: coords.lat,
       lon: coords.lon,
       radius_km: 10,
-      activity_context: "spearfishing",
-      suspected_species: "white shark",
+      activity_context: scenario?.activityContext ?? "spearfishing",
+      suspected_species: scenario?.suspectedSpecies ?? "white shark",
     })}`,
     mockDashboardData.explanation,
   );
 }
 
 export async function getAlerts(): Promise<Alert[]> {
-  return requestJson("/api/v1/alerts/active", mockDashboardData.alerts);
+  const fallback = mockDashboardData.alerts;
+  const response = await requestJson<Alert[] | { results?: Alert[] }>("/api/v1/alerts/active", fallback);
+  return Array.isArray(response) ? response : response.results ?? fallback;
 }
 
 export async function getProviderHealth(): Promise<ProviderHealth[]> {
@@ -82,8 +98,37 @@ export async function getReplay(): Promise<ReplayResult> {
   return requestJson("/api/v1/replay/run?scenario_id=wa_spearfishing_reef_white", mockDashboardData.replay);
 }
 
+export async function getReplayHeatmap(coords: Coordinates): Promise<ReplayHeatmap> {
+  const scenario = Object.values(scenarioCoordinates).find((item) => item.lat === coords.lat && item.lon === coords.lon);
+  return requestJson(
+    `/api/v1/replay/heatmap?${query({
+      lat: coords.lat,
+      lon: coords.lon,
+      radius_km: 8,
+      grid_points: 7,
+      activity_context: scenario?.activityContext ?? "spearfishing",
+      suspected_species: scenario?.suspectedSpecies ?? "white shark",
+      month: scenario?.month,
+    })}`,
+    mockDashboardData.replayHeatmap,
+  );
+}
+
+export async function getDemoScenarios(): Promise<DemoScenario[]> {
+  const response = await requestJson<DemoScenario[] | { scenarios?: DemoScenario[] }>("/api/v1/demo/scenarios", mockDemoScenarios);
+  const scenarios = Array.isArray(response) ? response : response.scenarios ?? mockDemoScenarios;
+  return scenarios.map((scenario) => {
+    const coords = scenarioCoordinates[scenario.scenario_id];
+    return {
+      ...scenario,
+      lat: scenario.lat ?? coords?.lat ?? 0,
+      lon: scenario.lon ?? coords?.lon ?? 0,
+    };
+  });
+}
+
 export async function getDashboardData(coords: Coordinates): Promise<DashboardData> {
-  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay] = await Promise.all([
+  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios] = await Promise.all([
     getWarning(coords),
     getSurveillance(coords),
     getExplanation(coords),
@@ -91,7 +136,9 @@ export async function getDashboardData(coords: Coordinates): Promise<DashboardDa
     getProviderHealth(),
     getPacks(),
     getReplay(),
+    getReplayHeatmap(coords),
+    getDemoScenarios(),
   ]);
 
-  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay };
+  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios };
 }

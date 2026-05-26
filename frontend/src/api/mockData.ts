@@ -1,4 +1,65 @@
-import type { DashboardData } from "../types";
+import type { DashboardData, DemoScenario } from "../types";
+
+export const scenarioCoordinates: Record<string, { lat: number; lon: number; activityContext: string; suspectedSpecies?: string; month?: number }> = {
+  horseshoe_reef_2026: { lat: -31.9827, lon: 115.5153, activityContext: "spearfishing", suspectedSpecies: "white shark", month: 5 },
+  queensland_spearfishing_reef_tiger_bull_2026: { lat: -18.0822, lon: 146.4483, activityContext: "spearfishing", suspectedSpecies: "tiger shark", month: 5 },
+  florida_crowded_beach_inlet: { lat: 29.0258, lon: -80.926, activityContext: "swimming/surfing/fishing", suspectedSpecies: "blacktip shark", month: 7 },
+  hawaii_october_tiger_context: { lat: 21.276, lon: -157.824, activityContext: "general water activity", suspectedSpecies: "tiger shark", month: 10 },
+  red_sea_anomaly_context: { lat: 27.2579, lon: 33.8116, activityContext: "diving/tourism corridor", suspectedSpecies: "oceanic whitetip", month: 6 },
+};
+
+export const mockDemoScenarios: DemoScenario[] = [
+  {
+    scenario_id: "horseshoe_reef_2026",
+    label: "Horseshoe Reef 2026 surveillance replay",
+    region: "Western Australia",
+    context: "Low general warning with high surveillance priority from spearfishing, reef habitat, and white shark regional context.",
+    activity_context: "spearfishing",
+    lat: -31.9827,
+    lon: 115.5153,
+    public_case_study: "docs/CASE_STUDY_HORSESHOE_REEF_2026.md",
+  },
+  {
+    scenario_id: "queensland_spearfishing_reef_tiger_bull_2026",
+    label: "Queensland Spearfishing 2026 replay",
+    region: "Far North Queensland, Australia",
+    context: "Tropical reef spearfishing context with tiger/bull shark operational suitability.",
+    activity_context: "spearfishing",
+    lat: -18.0822,
+    lon: 146.4483,
+    public_case_study: "docs/case_studies/queensland_spearfishing_2026.md",
+  },
+  {
+    scenario_id: "florida_crowded_beach_inlet",
+    label: "Florida crowded beach and inlet context",
+    region: "Florida",
+    context: "Crowding, inlet/runoff, surf/fishing exposure, and blacktip/bull regional context for operational review.",
+    activity_context: "swimming/surfing/fishing",
+    lat: 29.0258,
+    lon: -80.926,
+    public_case_study: null,
+  },
+  {
+    scenario_id: "hawaii_october_tiger_context",
+    label: "Hawaii October tiger shark context",
+    region: "Hawaii",
+    context: "October regional attention window with tiger shark context and bounded environmental interpretation.",
+    activity_context: "general water activity",
+    lat: 21.276,
+    lon: -157.824,
+    public_case_study: null,
+  },
+  {
+    scenario_id: "red_sea_anomaly_context",
+    label: "Red Sea anomaly context",
+    region: "Red Sea",
+    context: "Carcass/shipping/tourism anomaly context for advisory and surveillance review.",
+    activity_context: "diving/tourism corridor",
+    lat: 27.2579,
+    lon: 33.8116,
+    public_case_study: null,
+  },
+];
 
 export const mockDashboardData: DashboardData = {
   warning: {
@@ -184,4 +245,21 @@ export const mockDashboardData: DashboardData = {
       { signal_type: "pier_fishing_pressure", age_hours: 36, decay_weight: 0.71, decayed_value: 0.51 },
     ],
   },
+  replayHeatmap: {
+    score_type: "surveillance_priority_score",
+    config: { center_lat: -31.983, center_lon: 115.515, radius_km: 8, grid_cells: 9 },
+    cells: [
+      { lat: -31.995, lon: 115.493, surveillance_priority_score: 35, surveillance_priority_band: "moderate", warning_score: 14, warning_band: "low", activity_hazard_score: 24, activity_hazard_band: "moderate" },
+      { lat: -31.995, lon: 115.515, surveillance_priority_score: 49, surveillance_priority_band: "moderate", warning_score: 16, warning_band: "low", activity_hazard_score: 34, activity_hazard_band: "moderate" },
+      { lat: -31.995, lon: 115.537, surveillance_priority_score: 42, surveillance_priority_band: "moderate", warning_score: 12, warning_band: "low", activity_hazard_score: 26, activity_hazard_band: "moderate" },
+      { lat: -31.983, lon: 115.493, surveillance_priority_score: 58, surveillance_priority_band: "elevated", warning_score: 17, warning_band: "low", activity_hazard_score: 48, activity_hazard_band: "elevated" },
+      { lat: -31.983, lon: 115.515, surveillance_priority_score: 82, surveillance_priority_band: "high", warning_score: 18, warning_band: "low", activity_hazard_score: 58, activity_hazard_band: "elevated" },
+      { lat: -31.983, lon: 115.537, surveillance_priority_score: 61, surveillance_priority_band: "elevated", warning_score: 15, warning_band: "low", activity_hazard_score: 44, activity_hazard_band: "elevated" },
+      { lat: -31.971, lon: 115.493, surveillance_priority_score: 28, surveillance_priority_band: "low", warning_score: 10, warning_band: "low", activity_hazard_score: 12, activity_hazard_band: "low" },
+      { lat: -31.971, lon: 115.515, surveillance_priority_score: 44, surveillance_priority_band: "moderate", warning_score: 14, warning_band: "low", activity_hazard_score: 22, activity_hazard_band: "moderate" },
+      { lat: -31.971, lon: 115.537, surveillance_priority_score: 30, surveillance_priority_band: "low", warning_score: 9, warning_band: "low", activity_hazard_score: 10, activity_hazard_band: "low" },
+    ],
+    statistics: { min_score: 28, max_score: 82, avg_score: 47.67, median_score: 44 },
+  },
+  demoScenarios: mockDemoScenarios,
 };
