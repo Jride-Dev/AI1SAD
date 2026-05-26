@@ -43,6 +43,7 @@ export function OperationalMap({
   const mapNode = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Leaflet.Map | null>(null);
   const layerRef = useRef<Leaflet.LayerGroup | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<SelectedFeature>(() => buildFeatureFromExplanation(data.explanation));
   const [visibleLayers, setVisibleLayers] = useState<Record<LayerKey, boolean>>({
     surveillance: true,
@@ -76,6 +77,7 @@ export function OperationalMap({
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(mapRef.current);
       layerRef.current = L.layerGroup().addTo(mapRef.current);
+      setMapReady(true);
     }
     initializeMap();
     return () => {
@@ -88,7 +90,7 @@ export function OperationalMap({
     async function drawLayers() {
       const map = mapRef.current;
       const layers = layerRef.current;
-      if (!map || !layers) return;
+      if (!mapReady || !map || !layers) return;
       const L = await import("leaflet");
       if (cancelled) return;
 
@@ -185,7 +187,7 @@ export function OperationalMap({
     return () => {
       cancelled = true;
     };
-  }, [data, mapCenter, onSelectScenario, selectedScenarioId, visibleLayers]);
+  }, [data, mapCenter, mapReady, onSelectScenario, selectedScenarioId, visibleLayers]);
 
   return (
     <div className="operational-map-layout">

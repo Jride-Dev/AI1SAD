@@ -94,5 +94,6 @@ nav:
       - Frontend Dashboard: FRONTEND_DASHBOARD.md
 
   - Deployment:
+      - Public Demo Launch: PUBLIC_DEMO_LAUNCH.md
       - Railway Deploy: RAILWAY_DEPLOY.md
       - Demo Environment: DEMO_ENVIRONMENT.md

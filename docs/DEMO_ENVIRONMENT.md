@@ -10,6 +10,8 @@ DEMO_MODE=true
 
 Demo mode is not authentication, billing, or production access control. It is a deployment safety profile for public demos.
 
+For the public launch checklist, see [Public Demo Launch](PUBLIC_DEMO_LAUNCH.md).
+
 ## Demo Endpoints
 
 `GET /api/v1/demo/status`
@@ -79,6 +81,19 @@ In demo mode, the operational map can render:
 - warning, activity hazard, and surveillance score markers
 
 If the backend is unavailable, mock data preserves all map states without requiring secrets, private data, or live providers.
+
+The dashboard shows a demo banner when demo mode is enabled:
+
+```text
+AI1SAD Demo Environment
+Outputs are operational intelligence examples, not individual attack predictions.
+```
+
+Set `VITE_AI1SAD_DEMO_MODE=true` for public demo frontend builds. Use `VITE_AI1SAD_USE_MOCKS=true` for a standalone demo shell, or `VITE_AI1SAD_USE_MOCKS=false` with `VITE_AI1SAD_API_BASE_URL` for a hosted backend.
+
+## Provider Failure Behavior
+
+Public demo routes should not expose raw provider failures, stack traces, credentials, or response bodies. Missing or stale provider data should appear as freshness/confidence context where implemented.
 
 ## Safety Boundary
 

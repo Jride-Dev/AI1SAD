@@ -107,6 +107,15 @@ export type DemoScenario = {
   public_case_study?: string | null;
 };
 
+export type DemoStatus = {
+  demo_mode: boolean;
+  mode: string;
+  database_configured?: boolean;
+  admin_writes_enabled?: boolean | string;
+  private_internal_data_exposed?: boolean;
+  disclaimer?: string;
+};
+
 export type ProviderHealth = {
   provider: string;
   status: string;
@@ -191,4 +200,5 @@ export type DashboardData = {
   replay: ReplayResult;
   replayHeatmap: ReplayHeatmap;
   demoScenarios: DemoScenario[];
+  demoStatus: DemoStatus;
 };

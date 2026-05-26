@@ -4,6 +4,7 @@ import type {
   Coordinates,
   DashboardData,
   DemoScenario,
+  DemoStatus,
   ExplanationResponse,
   ProviderHealth,
   RegionalPack,
@@ -15,6 +16,7 @@ import type {
 
 const API_BASE_URL = import.meta.env.VITE_AI1SAD_API_BASE_URL ?? "http://localhost:8000";
 const USE_MOCKS = import.meta.env.VITE_AI1SAD_USE_MOCKS !== "false";
+const DEMO_MODE = import.meta.env.VITE_AI1SAD_DEMO_MODE === "true";
 
 async function requestJson<T>(path: string, fallback: T): Promise<T> {
   if (USE_MOCKS) {
@@ -127,8 +129,13 @@ export async function getDemoScenarios(): Promise<DemoScenario[]> {
   });
 }
 
+export async function getDemoStatus(): Promise<DemoStatus> {
+  const fallback = { ...mockDashboardData.demoStatus, demo_mode: DEMO_MODE || mockDashboardData.demoStatus.demo_mode };
+  return requestJson("/api/v1/demo/status", fallback);
+}
+
 export async function getDashboardData(coords: Coordinates): Promise<DashboardData> {
-  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios] = await Promise.all([
+  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios, demoStatus] = await Promise.all([
     getWarning(coords),
     getSurveillance(coords),
     getExplanation(coords),
@@ -138,7 +145,8 @@ export async function getDashboardData(coords: Coordinates): Promise<DashboardDa
     getReplay(),
     getReplayHeatmap(coords),
     getDemoScenarios(),
+    getDemoStatus(),
   ]);
 
-  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios };
+  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios, demoStatus };
 }

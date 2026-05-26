@@ -82,6 +82,23 @@ npm run dev
 
 If a backend request fails, the client falls back to mock data instead of crashing.
 
+## Demo Banner
+
+When demo mode is enabled, the dashboard shows:
+
+```text
+AI1SAD Demo Environment
+Outputs are operational intelligence examples, not individual attack predictions.
+```
+
+Use:
+
+```powershell
+$env:VITE_AI1SAD_DEMO_MODE="true"
+```
+
+The banner is a public-context label only. It does not add authentication, billing, or scoring behavior.
+
 ## Boundaries
 
 The frontend must not implement or fork model logic. Scores, warning bands, surveillance priority, alert levels, confidence, provider freshness, and pack notices should come from backend API responses.

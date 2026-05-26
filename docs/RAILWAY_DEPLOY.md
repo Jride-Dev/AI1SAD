@@ -25,6 +25,14 @@ ADMIN_ALERTS_ENABLED=false
 API_ACCESS_ENABLED=false
 ```
 
+Recommended public demo frontend variables:
+
+```text
+VITE_AI1SAD_DEMO_MODE=true
+VITE_AI1SAD_USE_MOCKS=false
+VITE_AI1SAD_API_BASE_URL=https://<demo-backend>
+```
+
 Live MongoDB-backed environment:
 
 ```text
@@ -48,6 +56,8 @@ Admin write endpoints are disabled by default. In demo mode they remain disabled
 
 This phase does not add providers, scraping, paid APIs, billing, or authentication. Existing live provider adapters remain opt-in where already implemented.
 
+Provider failures should not crash public demo responses or expose stack traces, credentials, API keys, tokens, or raw provider response bodies. Missing or stale providers should be represented through freshness and confidence fields where available.
+
 ## Smoke Checks
 
 After deploy:
@@ -58,3 +68,11 @@ GET /api/v1/demo/status
 GET /api/v1/demo/scenarios
 GET /api/v1/explain/replay?scenario_id=queensland_spearfishing_reef_tiger_bull_2026
 ```
+
+Or run:
+
+```text
+python scripts/smoke_demo.py --base-url https://<demo-backend>
+```
+
+See [Public Demo Launch](PUBLIC_DEMO_LAUNCH.md) for the full launch checklist.

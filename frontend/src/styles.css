@@ -81,8 +81,28 @@ button {
 .workspace {
   padding: 28px;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   gap: 20px;
+}
+
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #e2c16f;
+  border-radius: 8px;
+  background: #fff8e7;
+  color: #5f4713;
+  padding: 12px 14px;
+}
+
+.demo-banner strong {
+  font-size: 15px;
+}
+
+.demo-banner span {
+  line-height: 1.4;
 }
 
 .topbar {
@@ -593,6 +613,7 @@ h3 {
   }
 
   .topbar,
+  .demo-banner,
   .score-cluster {
     align-items: flex-start;
     justify-content: flex-start;

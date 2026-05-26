@@ -58,6 +58,7 @@ export default function App() {
       </aside>
 
       <section className="workspace">
+        {data?.demoStatus.demo_mode ? <DemoBanner /> : null}
         <header className="topbar">
           <div>
             <p className="eyebrow">Mock mode dashboard shell</p>
@@ -72,6 +73,15 @@ export default function App() {
         {loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
       </section>
     </main>
+  );
+}
+
+function DemoBanner() {
+  return (
+    <section className="demo-banner" aria-label="Demo environment notice">
+      <strong>AI1SAD Demo Environment</strong>
+      <span>Outputs are operational intelligence examples, not individual attack predictions.</span>
+    </section>
   );
 }
 

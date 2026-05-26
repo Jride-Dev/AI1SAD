@@ -262,4 +262,13 @@ export const mockDashboardData: DashboardData = {
     statistics: { min_score: 28, max_score: 82, avg_score: 47.67, median_score: 44 },
   },
   demoScenarios: mockDemoScenarios,
+  demoStatus: {
+    demo_mode: true,
+    mode: "demo",
+    database_configured: false,
+    admin_writes_enabled: false,
+    private_internal_data_exposed: false,
+    disclaimer:
+      "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.",
+  },
 };
