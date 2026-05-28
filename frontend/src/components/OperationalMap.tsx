@@ -128,8 +128,8 @@ export function OperationalMap({
         if (visibleLayers.warning) {
           L.circleMarker([lat, lon], {
             radius: Math.max(6, zone.warning_score / 5),
-            color: "#377b8a",
-            fillColor: "#377b8a",
+            color: "#00a6c8",
+            fillColor: "#00a6c8",
             fillOpacity: 0.72,
             weight: 1,
           })
@@ -139,8 +139,8 @@ export function OperationalMap({
         if (visibleLayers.activity) {
           L.circleMarker([lat, lon], {
             radius: Math.max(6, zone.activity_context_score / 5),
-            color: "#9b5c1e",
-            fillColor: "#d68a3c",
+            color: "#6f63ff",
+            fillColor: "#9a8cff",
             fillOpacity: 0.72,
             weight: 1,
           })
@@ -156,8 +156,8 @@ export function OperationalMap({
           const [lon, lat] = coords;
           L.circleMarker([lat, lon], {
             radius: 13,
-            color: "#a7352a",
-            fillColor: "#e04b39",
+            color: "#245b73",
+            fillColor: "#f0c86a",
             fillOpacity: 0.82,
             weight: 2,
           })
@@ -170,8 +170,8 @@ export function OperationalMap({
         data.demoScenarios.forEach((scenario) => {
           L.circleMarker([scenario.lat, scenario.lon], {
             radius: scenario.scenario_id === selectedScenarioId ? 11 : 8,
-            color: "#1d4f43",
-            fillColor: scenario.scenario_id === selectedScenarioId ? "#2da77b" : "#dcefe8",
+            color: "#06324a",
+            fillColor: scenario.scenario_id === selectedScenarioId ? "#2bbf9f" : "#d8fbff",
             fillOpacity: 0.92,
             weight: 2,
           })
@@ -193,8 +193,8 @@ export function OperationalMap({
     <div className="operational-map-layout">
       <section className="map-panel leaflet-panel">
         <div className="map-toolbar">
-          <label>
-            <span>Scenario</span>
+          <label className="scenario-picker">
+            <span>Demo scenario</span>
             <select value={selectedScenarioId} onChange={(event) => onSelectScenario(event.target.value)}>
               {data.demoScenarios.map((scenario) => (
                 <option key={scenario.scenario_id} value={scenario.scenario_id}>
@@ -202,6 +202,7 @@ export function OperationalMap({
                 </option>
               ))}
             </select>
+            <small>Changing this reloads the backend query coordinates and map context.</small>
           </label>
           <div className="layer-toggle-group" aria-label="Map layers">
             {layerOptions.map((layer) => (
@@ -240,7 +241,7 @@ export function OperationalMap({
           <ScoreBadge label="Surveillance Priority" value={selectedFeature.surveillance_priority_score ?? 0} />
         </div>
         {isLowWarningHighSurveillance(selectedFeature) ? (
-          <p className="split-note">Low general warning with high activity/habitat-specific surveillance priority.</p>
+          <p className="split-note">Low warning can coexist with high surveillance priority when the backend sees location-specific activity, habitat, freshness, or mission context that is useful for operators.</p>
         ) : null}
         <h3>Dominant Factors</h3>
         <FactorMiniList factors={selectedFeature.dominant_factors} />
@@ -330,11 +331,11 @@ function buildFeatureFromAlert(alert: Alert, explanation: ExplanationResponse): 
 }
 
 function bandColor(band: string | undefined): string {
-  if (band === "urgent_surveillance" || band === "high") return "#c43d2c";
-  if (band === "elevated") return "#d6872e";
-  if (band === "moderate") return "#d5b23f";
-  if (band === "low") return "#32886f";
-  return "#5d7370";
+  if (band === "urgent_surveillance" || band === "high") return "#7c4dff";
+  if (band === "elevated") return "#00a6c8";
+  if (band === "moderate") return "#f0c86a";
+  if (band === "low") return "#2bbf9f";
+  return "#6e7f91";
 }
 
 function isLowWarningHighSurveillance(feature: SelectedFeature): boolean {
@@ -343,15 +344,16 @@ function isLowWarningHighSurveillance(feature: SelectedFeature): boolean {
 
 function MapLegend() {
   const items = [
-    ["low", "#32886f"],
-    ["moderate", "#d5b23f"],
-    ["elevated", "#d6872e"],
-    ["high", "#c43d2c"],
-    ["urgent surveillance", "#7f1d1d"],
+    ["low observation", "#2bbf9f"],
+    ["moderate context", "#f0c86a"],
+    ["elevated watch", "#00a6c8"],
+    ["high priority", "#7c4dff"],
+    ["urgent surveillance", "#5b2cc9"],
   ];
   return (
     <div className="map-legend">
       <Layers size={16} aria-hidden="true" />
+      <strong>Priority bands</strong>
       {items.map(([label, color]) => (
         <span key={label}>
           <i style={{ background: color }} />

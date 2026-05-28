@@ -92,6 +92,7 @@ nav:
 
   - Frontend:
       - Frontend Dashboard: FRONTEND_DASHBOARD.md
+      - Local Visual QA: LOCAL_VISUAL_QA.md
 
   - Deployment:
       - Public Demo Launch: PUBLIC_DEMO_LAUNCH.md

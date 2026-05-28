@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, Boxes, HeartPulse, Map, Plane, Radar, RotateCcw } from "lucide-react";
+import { Activity, AlertTriangle, Boxes, ExternalLink, HeartPulse, Map, Plane, Radar, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
@@ -7,12 +7,12 @@ import { OperationalMap } from "./components/OperationalMap";
 import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth } from "./types";
 
 const pages = [
-  { id: "map", label: "Live Warning Map", icon: Map },
-  { id: "surveillance", label: "Surveillance Priority", icon: Plane },
-  { id: "replay", label: "Replay Explorer", icon: RotateCcw },
-  { id: "packs", label: "Regional Packs", icon: Boxes },
+  { id: "map", label: "Live Map", icon: Map },
+  { id: "surveillance", label: "Surveillance", icon: Plane },
+  { id: "replay", label: "Replay", icon: RotateCcw },
   { id: "alerts", label: "Alerts", icon: AlertTriangle },
   { id: "health", label: "Provider Health", icon: HeartPulse },
+  { id: "packs", label: "Regional Packs", icon: Boxes },
 ] as const;
 
 type PageId = (typeof pages)[number]["id"];
@@ -22,14 +22,28 @@ export default function App() {
   const [selectedScenarioId, setSelectedScenarioId] = useState("horseshoe_reef_2026");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const scenario = scenarioCoordinates[selectedScenarioId] ?? scenarioCoordinates.horseshoe_reef_2026;
     setLoading(true);
-    getDashboardData({ lat: scenario.lat, lon: scenario.lon }).then((payload) => {
-      setData(payload);
-      setLoading(false);
-    });
+    setError(null);
+    getDashboardData({ lat: scenario.lat, lon: scenario.lon })
+      .then((payload) => {
+        if (cancelled) return;
+        setData(payload);
+      })
+      .catch((reason: unknown) => {
+        if (cancelled) return;
+        setError(reason instanceof Error ? reason.message : "Dashboard data could not be loaded.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [selectedScenarioId]);
 
   const page = useMemo(() => pages.find((item) => item.id === activePage) ?? pages[0], [activePage]);
@@ -54,6 +68,10 @@ export default function App() {
               </button>
             );
           })}
+          <a href="http://localhost:8001" target="_blank" rel="noreferrer">
+            <ExternalLink size={18} aria-hidden="true" />
+            <span>Docs</span>
+          </a>
         </nav>
       </aside>
 
@@ -70,7 +88,7 @@ export default function App() {
           </div>
         </header>
 
-        {loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
+        {error ? <ErrorPanel message={error} /> : loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
       </section>
     </main>
   );
@@ -80,7 +98,7 @@ function DemoBanner() {
   return (
     <section className="demo-banner" aria-label="Demo environment notice">
       <strong>AI1SAD Demo Environment</strong>
-      <span>Outputs are operational intelligence examples, not individual attack predictions.</span>
+      <span>Outputs are local operational intelligence examples, not beach closure or personal safety directives.</span>
     </section>
   );
 }
@@ -105,7 +123,28 @@ function DashboardPage({
 }
 
 function LoadingPanel() {
-  return <section className="panel loading">Loading dashboard outputs...</section>;
+  return (
+    <section className="panel state-panel" aria-live="polite">
+      <Activity size={22} aria-hidden="true" />
+      <div>
+        <h2>Loading AI1SAD demo outputs</h2>
+        <p>Fetching the selected scenario, map layers, replay data, and provider health.</p>
+      </div>
+    </section>
+  );
+}
+
+function ErrorPanel({ message }: { message: string }) {
+  return (
+    <section className="panel state-panel error-state" role="alert">
+      <AlertTriangle size={22} aria-hidden="true" />
+      <div>
+        <h2>Demo data unavailable</h2>
+        <p>{message}</p>
+        <p>Check the FastAPI service or enable frontend mock mode for local visual QA.</p>
+      </div>
+    </section>
+  );
 }
 
 function LiveWarningMap({ data, selectedScenarioId, onSelectScenario }: { data: DashboardData; selectedScenarioId: string; onSelectScenario: (scenarioId: string) => void }) {
@@ -117,6 +156,7 @@ function LiveWarningMap({ data, selectedScenarioId, onSelectScenario }: { data: 
       <OperationalMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />
       <section className="panel">
         <h2>Score Split</h2>
+        <ScoreExplainer />
         <ScoreRow label="Warning" value={data.warning.warning_score} />
         <ScoreRow label="Surveillance" value={primaryZone.surveillance_priority_score} />
         <ScoreRow label="Activity Hazard" value={data.warning.activity_context_score} />
@@ -159,6 +199,7 @@ function SurveillanceView({ data }: { data: DashboardData }) {
           </section>
         );
       })}
+      {!data.surveillance.zones.length ? <EmptyState title="No surveillance zones" body="The backend returned no zones for this scenario." /> : null}
     </div>
   );
 }
@@ -244,6 +285,7 @@ function AlertsView({ data }: { data: DashboardData }) {
           ) : null}
         </section>
       ))}
+      {!data.alerts.length ? <EmptyState title="No active alerts" body="No public operational alerts were returned for the current demo scenario." /> : null}
     </div>
   );
 }
@@ -259,11 +301,43 @@ function ProviderHealthView({ providers }: { providers: ProviderHealth[] }) {
           <Metric label="Records" value={provider.records_ingested ?? 0} />
         </section>
       ))}
+      {!providers.length ? <EmptyState title="No provider health rows" body="Provider health did not return any adapters for this local run." /> : null}
       <section className="panel wide">
         <h2>Provider Freshness</h2>
         <FreshnessGrid explanation={mockSafeExplanation(providers)} />
       </section>
     </div>
+  );
+}
+
+function ScoreExplainer() {
+  return (
+    <div className="score-explainer">
+      <div>
+        <strong>warning_score</strong>
+        <span>General public-facing warning signal for the selected location.</span>
+      </div>
+      <div>
+        <strong>activity_hazard_score</strong>
+        <span>Activity, habitat, season, species, and exposure context used by the backend.</span>
+      </div>
+      <div>
+        <strong>surveillance_priority_score</strong>
+        <span>Operational priority for where to look next with patrol or drone coverage.</span>
+      </div>
+      <p>Low warning with high surveillance priority means the public warning can remain calm while operators still have a focused reason to observe a zone.</p>
+    </div>
+  );
+}
+
+function EmptyState({ title, body }: { title: string; body: string }) {
+  return (
+    <section className="panel state-panel empty-state">
+      <div>
+        <h2>{title}</h2>
+        <p>{body}</p>
+      </div>
+    </section>
   );
 }
 

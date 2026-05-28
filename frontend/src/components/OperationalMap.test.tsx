@@ -14,6 +14,6 @@ describe("OperationalMap", () => {
     expect(markup).toContain("Horseshoe Reef 2026");
     expect(markup).toContain("Replay heatmap");
     expect(markup).toContain("Surveillance Priority");
-    expect(markup).toContain("Low general warning with high activity/habitat-specific surveillance priority");
+    expect(markup).toContain("Low warning can coexist with high surveillance priority");
   });
 });
