@@ -1,12 +1,12 @@
 :root {
-  color: #102232;
-  background: #edf7f8;
-  --ocean: #061a2f;
-  --ocean-2: #0b2f4a;
-  --teal: #2bbf9f;
-  --cyan: #00a6c8;
-  --purple: #7c4dff;
-  --amber: #f0c86a;
+  color: #1b2a41;
+  background: #d9f0ff;
+  --ocean: #06263a;
+  --ocean-2: #1b2a41;
+  --teal: #0f8b8d;
+  --cyan: #2ec4d6;
+  --purple: #7b2cbf;
+  --amber: #d9f0ff;
   --surface: #ffffff;
   --line: #d8e8ed;
   --muted: #5f7182;
@@ -48,6 +48,11 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
 }
 
 .brand strong {
@@ -102,10 +107,10 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border: 1px solid rgba(43, 191, 159, 0.35);
+  border: 1px solid rgba(15, 139, 141, 0.35);
   border-radius: 8px;
-  background: #e7fbf7;
-  color: #0b4051;
+  background: linear-gradient(90deg, #e8f9ff, #d9f0ff);
+  color: #1b2a41;
   padding: 12px 14px;
 }
 
@@ -122,6 +127,20 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.topbar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 139, 141, 0.35);
+  background: #fff;
 }
 
 h1,
@@ -155,7 +174,7 @@ h3 {
   border-radius: 999px;
   padding: 7px 10px;
   background: #e7f5f7;
-  color: #123a4d;
+  color: #1b2a41;
   font-size: 13px;
   white-space: nowrap;
 }
@@ -188,7 +207,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 18px;
-  box-shadow: 0 12px 30px rgba(6, 26, 47, 0.08);
+  box-shadow: 0 12px 30px rgba(6, 38, 58, 0.1);
 }
 
 .state-panel {
@@ -218,6 +237,7 @@ h3 {
 .map-panel {
   padding: 0;
   overflow: hidden;
+  border-color: rgba(15, 139, 141, 0.32);
 }
 
 .operational-map-layout {

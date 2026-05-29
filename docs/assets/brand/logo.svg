@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AI1SAD logo">
+  <rect width="512" height="512" fill="#D9F0FF"/>
+  <circle cx="256" cy="256" r="186" fill="none" stroke="#06263A" stroke-width="24"/>
+  <circle cx="256" cy="256" r="132" fill="none" stroke="#0F8B8D" stroke-width="16"/>
+  <circle cx="256" cy="256" r="72" fill="#2EC4D6" opacity="0.22"/>
+  <path d="M256 110 L272 240 L402 256 L272 272 L256 402 L240 272 L110 256 L240 240 Z" fill="#7B2CBF"/>
+  <text x="256" y="470" font-family="Arial, sans-serif" font-size="34" text-anchor="middle" fill="#1B2A41">AI1SAD</text>
+</svg>

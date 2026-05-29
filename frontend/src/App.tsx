@@ -52,10 +52,10 @@ export default function App() {
     <main className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <Radar size={26} aria-hidden="true" />
+          <img src="/brand/logo-mark.svg" alt="AI1SAD logo" className="brand-mark" />
           <div>
             <strong>AI1SAD</strong>
-            <span>Encounter warning ops</span>
+            <span>Marine intelligence operations</span>
           </div>
         </div>
         <nav className="nav" aria-label="Dashboard views">
@@ -78,9 +78,12 @@ export default function App() {
       <section className="workspace">
         {data?.demoStatus.demo_mode ? <DemoBanner /> : null}
         <header className="topbar">
-          <div>
+          <div className="topbar-title">
+            <img src="/brand/avatar.svg" alt="" aria-hidden="true" className="topbar-avatar" />
+            <div>
             <p className="eyebrow">Mock mode dashboard shell</p>
             <h1>{page.label}</h1>
+            </div>
           </div>
           <div className="status-pill">
             <Activity size={16} aria-hidden="true" />
