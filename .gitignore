@@ -32,5 +32,10 @@ frontend/.vite/
 frontend/coverage/
 frontend/*.tsbuildinfo
 
+# Local editor and demo-server scratch files.
+.vscode/
+*.code-workspace
+.mkdocs-demo.*
+
 # MkDocs generated GitHub Pages output.
 site/

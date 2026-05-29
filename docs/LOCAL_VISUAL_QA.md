@@ -10,6 +10,16 @@ Use this checklist for the AI1SAD local demo polish pass.
 
 FretTrack may already occupy port `5173`, so run the AI1SAD frontend on `5174` for local visual checks.
 
+## Local Startup Script
+
+Windows users can start the local demo with:
+
+```powershell
+.\start_ai1sad_demo.ps1 -Docs
+```
+
+The `start_ai1sad_demo.bat` wrapper calls the PowerShell script for double-click or Command Prompt usage. The script starts FastAPI on `127.0.0.1:8000`, Vite on `127.0.0.1:5174`, and MkDocs on `127.0.0.1:8001` when `-Docs` is passed. It prefers `F:\Python310\python.exe` when present and falls back to `python`; pass `-Python <path>` to override the interpreter.
+
 ## Demo Notes
 
 - The frontend demo banner must be visible when demo mode is enabled.
