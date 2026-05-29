@@ -1,0 +1,28 @@
+:root {
+  --md-primary-fg-color: #06263a;
+  --md-primary-fg-color--light: #1b2a41;
+  --md-primary-fg-color--dark: #06263a;
+  --md-accent-fg-color: #0f8b8d;
+}
+
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #d9f0ff;
+  --md-typeset-color: #1b2a41;
+}
+
+.md-header,
+.md-tabs {
+  background: linear-gradient(90deg, #06263a, #1b2a41);
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  color: #06263a;
+}
+
+.md-typeset img[alt*="AI1SAD Marine Intelligence Hero"] {
+  border-radius: 10px;
+  border: 1px solid rgba(15, 139, 141, 0.35);
+  box-shadow: 0 12px 24px rgba(6, 38, 58, 0.14);
+}

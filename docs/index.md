@@ -1,5 +1,7 @@
 # AI1SAD
 
+![AI1SAD Marine Intelligence Hero](assets/brand/docs-hero.svg)
+
 ## All in 1 Shark Attack Data
 
 AI1SAD is a global shark encounter warning and environmental risk analysis platform.
@@ -28,7 +30,7 @@ The system is designed to be deterministic, explainable, privacy-preserving, and
 
 - Not an individual attack predictor.
 - Not a beach closure authority.
-- Not shark-intent inference.
+- Not individual intent inference.
 - Not a substitute for local lifeguards, emergency services, wildlife agencies, marine agencies, weather offices, or beach managers.
 - Not a safety guarantee for entering the water.
 - Not a source for publishing victim names, private notes, restricted data, or unreviewed operational records.
