@@ -1,6 +1,15 @@
 # AI1SAD
 
-![AI1SAD Marine Intelligence Hero](assets/brand/docs-hero.svg)
+<section class="ai1sad-hero">
+  <img src="assets/brand/ai1sad-social-banner.png" alt="AI1SAD operational ocean intelligence banner">
+  <div class="ai1sad-hero-copy">
+    <img src="assets/brand/ai1sad-emblem.png" alt="AI1SAD emblem">
+    <div>
+      <h2>Environmental &amp; Operational Marine Intelligence</h2>
+      <p>Replay • Explain • Observe</p>
+    </div>
+  </div>
+</section>
 
 ## All in 1 Shark Attack Data
 
@@ -17,6 +26,21 @@ AI1SAD helps researchers, drone operators, beach managers, public-safety teams, 
 The system is designed to be deterministic, explainable, privacy-preserving, and careful about uncertainty. It separates general environmental warning from activity hazard and operational surveillance priority.
 
 ## What AI1SAD Does
+
+<div class="ai1sad-card-grid">
+  <a class="ai1sad-card" href="REPLAY_LIBRARY/">
+    <strong>Replay Library</strong>
+    <span>Evidence-backed historical and demo scenarios with quiet-day comparisons.</span>
+  </a>
+  <a class="ai1sad-card" href="OPERATIONAL_MAPPING/">
+    <strong>Operational Mapping</strong>
+    <span>Map-first review of surveillance zones, heatmap cells, and regional context.</span>
+  </a>
+  <a class="ai1sad-card" href="EXPLAINABILITY_ENGINE/">
+    <strong>Explainability</strong>
+    <span>Factor contributions, confidence, freshness, and recommended operating patterns.</span>
+  </a>
+</div>
 
 - Normalizes public shark incident records into a privacy-preserving data model.
 - Combines public environmental, regional, biological, vessel/fishing, and human-exposure signals.

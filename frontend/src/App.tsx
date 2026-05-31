@@ -53,10 +53,10 @@ export default function App() {
     <main className="shell">
       <aside className="sidebar">
         <div className="brand">
-          <img src="/brand/logo-mark.svg" alt="AI1SAD logo" className="brand-mark" />
+          <img src="/brand/ai1sad-emblem.png" alt="AI1SAD emblem" className="brand-mark" />
           <div>
             <strong>AI1SAD</strong>
-            <span>Marine intelligence operations</span>
+            <span>Marine Intelligence Platform</span>
           </div>
         </div>
         <nav className="nav" aria-label="Dashboard views">
@@ -80,9 +80,9 @@ export default function App() {
         {data?.demoStatus.demo_mode ? <DemoBanner /> : null}
         <header className="topbar">
           <div className="topbar-title">
-            <img src="/brand/avatar.svg" alt="" aria-hidden="true" className="topbar-avatar" />
+            <img src="/brand/ai1sad-avatar.jpg" alt="" aria-hidden="true" className="topbar-avatar" />
             <div>
-            <p className="eyebrow">Mock mode dashboard shell</p>
+            <p className="eyebrow">Replay • Explain • Observe</p>
             <h1>{page.label}</h1>
             </div>
           </div>
@@ -91,6 +91,7 @@ export default function App() {
             Existing API outputs only
           </div>
         </header>
+        <BrandHero />
 
         {error ? <ErrorPanel message={error} /> : loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
       </section>
@@ -101,8 +102,20 @@ export default function App() {
 function DemoBanner() {
   return (
     <section className="demo-banner" aria-label="Demo environment notice">
+      <img src="/brand/ai1sad-emblem.png" alt="" aria-hidden="true" />
       <strong>AI1SAD Demo Environment</strong>
       <span>Outputs are local operational intelligence examples, not beach closure or personal safety directives.</span>
+    </section>
+  );
+}
+
+function BrandHero() {
+  return (
+    <section className="brand-hero" aria-label="AI1SAD marine intelligence identity">
+      <div>
+        <strong>Environmental &amp; Operational Marine Intelligence</strong>
+        <span>Radar-informed replay, explainability, and observation workflows for local demo review.</span>
+      </div>
     </section>
   );
 }
@@ -253,6 +266,7 @@ function ReplayLibraryView({ items }: { items: ReplayLibraryItem[] }) {
         <h2>Case Studies</h2>
         {items.map((item) => (
           <button className={item.id === selected.id ? "replay-card active" : "replay-card"} key={item.id} onClick={() => setSelectedId(item.id)} type="button">
+            <span className="replay-thumb" aria-hidden="true" />
             <span>{item.region}</span>
             <strong>{item.title}</strong>
             <small>{item.activity_context}</small>
@@ -261,6 +275,9 @@ function ReplayLibraryView({ items }: { items: ReplayLibraryItem[] }) {
       </section>
 
       <section className="panel replay-detail">
+        <div className="case-study-visual" aria-hidden="true">
+          <img src="/brand/ai1sad-social-banner.png" alt="" />
+        </div>
         <p className="eyebrow">{selected.region}</p>
         <h2>{selected.title}</h2>
         <p className="explain-text">{selected.explanation_summary}</p>

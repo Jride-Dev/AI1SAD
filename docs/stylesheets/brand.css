@@ -10,9 +10,23 @@
   --md-typeset-color: #1b2a41;
 }
 
+.md-main {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(46, 196, 214, 0.22), transparent 24rem),
+    repeating-linear-gradient(90deg, rgba(15, 139, 141, 0.06) 0 1px, transparent 1px 4rem),
+    linear-gradient(180deg, #d9f0ff 0%, #f7fcff 34%, #ffffff 100%);
+}
+
 .md-header,
 .md-tabs {
   background: linear-gradient(90deg, #06263a, #1b2a41);
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg,
+.md-nav__title .md-nav__button.md-logo img {
+  border-radius: 50%;
+  box-shadow: 0 0 16px rgba(46, 196, 214, 0.34);
 }
 
 .md-typeset h1,
@@ -21,8 +35,97 @@
   color: #06263a;
 }
 
-.md-typeset img[alt*="AI1SAD Marine Intelligence Hero"] {
+.md-typeset .ai1sad-hero {
+  position: relative;
+  overflow: hidden;
   border-radius: 10px;
   border: 1px solid rgba(15, 139, 141, 0.35);
-  box-shadow: 0 12px 24px rgba(6, 38, 58, 0.14);
+  box-shadow: 0 18px 40px rgba(6, 38, 58, 0.18);
+  background: #06263a;
+}
+
+.md-typeset .ai1sad-hero > img {
+  display: block;
+  width: 100%;
+  min-height: 240px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.md-typeset .ai1sad-hero-copy {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  color: #ffffff;
+  background: linear-gradient(90deg, rgba(3, 25, 40, 0.92), rgba(3, 25, 40, 0.66), transparent);
+}
+
+.md-typeset .ai1sad-hero-copy img {
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(46, 196, 214, 0.5);
+}
+
+.md-typeset .ai1sad-hero-copy h2 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.md-typeset .ai1sad-hero-copy p {
+  margin: 0.25rem 0 0;
+  color: #d9f0ff;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.md-typeset .ai1sad-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0 1.4rem;
+}
+
+.md-typeset .ai1sad-card {
+  display: grid;
+  gap: 0.45rem;
+  min-height: 8.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #1b2a41;
+  border: 1px solid rgba(15, 139, 141, 0.22);
+  background:
+    radial-gradient(circle at 100% 0, rgba(46, 196, 214, 0.2), transparent 3.5rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(217, 240, 255, 0.74));
+  box-shadow: 0 10px 24px rgba(6, 38, 58, 0.1);
+}
+
+.md-typeset .ai1sad-card:hover {
+  border-color: #2ec4d6;
+  text-decoration: none;
+}
+
+.md-typeset .ai1sad-card strong {
+  color: #06263a;
+  font-size: 1.05rem;
+}
+
+.md-typeset .ai1sad-card span {
+  color: #405464;
+  line-height: 1.45;
+}
+
+@media screen and (max-width: 56rem) {
+  .md-typeset .ai1sad-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .md-typeset .ai1sad-hero-copy {
+    position: static;
+    background: #06263a;
+  }
 }

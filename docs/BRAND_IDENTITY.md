@@ -18,6 +18,7 @@ The canonical source artwork location is `images/branding/`.
 - Alternate avatar source: `images/branding/avatar-alt.jpeg`
 - Reddit banner source: `images/branding/banner-reddit.jpg`
 - GitHub/social banner source: `images/branding/banner-github.png`
+- Brand concept board: `images/branding/branding_asset_collection.png`
 
 `docs/assets/brand/` and `frontend/public/brand/` are deployment copies for MkDocs and frontend runtime surfaces.
 
@@ -46,22 +47,25 @@ The canonical source artwork location is `images/branding/`.
 
 ## Logo Usage
 
-- MkDocs deployment logo: [logo.svg](assets/brand/logo.svg)
+- MkDocs deployment logo: [ai1sad-emblem.png](assets/brand/ai1sad-emblem.png)
+- Frontend deployment logo: `frontend/public/brand/ai1sad-emblem.png`
 - Use on white or Soft Ice backgrounds
 - Maintain clear space equal to one logo ring width on all sides
 - Do not stretch, rotate, recolor outside palette, or add glow effects
 
 ## Avatar and Icon Usage
 
-- Deployment avatar (frontend/docs): [avatar.svg](assets/brand/avatar.svg)
-- MkDocs deployment favicon: [favicon.svg](assets/brand/favicon.svg)
+- Deployment avatar (frontend/docs): [ai1sad-avatar.jpg](assets/brand/ai1sad-avatar.jpg)
+- MkDocs deployment favicon: [favicon.png](assets/brand/favicon.png)
+- Frontend deployment favicon: `frontend/public/brand/favicon.png`
 - Keep line weight and ring geometry consistent with logo system
 
 ## Banner Usage
 
 - Canonical Reddit banner: `images/branding/banner-reddit.jpg`
 - Canonical GitHub/social banner: `images/branding/banner-github.png`
-- MkDocs deployment hero: [docs-hero.svg](assets/brand/docs-hero.svg)
+- MkDocs homepage/social deployment banner: [ai1sad-social-banner.png](assets/brand/ai1sad-social-banner.png)
+- Frontend dashboard banner: `frontend/public/brand/ai1sad-social-banner.png`
 
 ## What To Avoid
 

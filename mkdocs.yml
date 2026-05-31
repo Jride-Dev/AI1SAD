@@ -5,8 +5,8 @@ repo_url: https://github.com/Jride-Dev/AI1SAD
 repo_name: Jride-Dev/AI1SAD
 theme:
   name: material
-  logo: assets/brand/logo.svg
-  favicon: assets/brand/favicon.svg
+  logo: assets/brand/ai1sad-emblem.png
+  favicon: assets/brand/favicon.png
   palette:
     - scheme: default
       primary: custom
@@ -23,6 +23,9 @@ theme:
 
 plugins:
   - search
+
+extra:
+  social_preview_image: assets/brand/ai1sad-social-banner.png
 
 extra_css:
   - stylesheets/brand.css
@@ -50,6 +53,7 @@ nav:
   - Overview:
       - Brand Identity: BRAND_IDENTITY.md
       - Asset Checklist: ASSET_CHECKLIST.md
+      - Brand Deployment Map: BRAND_DEPLOYMENT_MAP.md
       - Portal Guide: MKDOCS_PORTAL.md
       - Deployment Readiness: DEPLOYMENT_READINESS.md
       - Source Comparison: SOURCE_COMPARISON.md

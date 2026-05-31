@@ -12,15 +12,19 @@
   - Topbar avatar
   - Demo banner support mark (optional)
 
-## Placeholder Asset Paths
+## Current Asset Paths
 
 - Canonical source folder: `images/branding/`
 - Canonical Reddit avatar: `images/branding/reddit-avatar-under-500kb.jpg`
 - Canonical primary avatar: `images/branding/avatar-primary.png`
 - Canonical Reddit banner: `images/branding/banner-reddit.jpg`
 - Canonical GitHub/social banner: `images/branding/banner-github.png`
-- Deployment copy for MkDocs logo: [docs/assets/brand/logo.svg](assets/brand/logo.svg)
-- Deployment copy for MkDocs favicon: [docs/assets/brand/favicon.svg](assets/brand/favicon.svg)
-- Deployment copy for MkDocs hero: [docs/assets/brand/docs-hero.svg](assets/brand/docs-hero.svg)
-- Deployment copy for frontend logo mark: `frontend/public/brand/logo-mark.svg`
-- Deployment copy for frontend avatar: `frontend/public/brand/avatar.svg`
+- Canonical concept board: `images/branding/branding_asset_collection.png`
+- Deployment copy for MkDocs logo: [docs/assets/brand/ai1sad-emblem.png](assets/brand/ai1sad-emblem.png)
+- Deployment copy for MkDocs favicon: [docs/assets/brand/favicon.png](assets/brand/favicon.png)
+- Deployment copy for MkDocs homepage/social banner: [docs/assets/brand/ai1sad-social-banner.png](assets/brand/ai1sad-social-banner.png)
+- Deployment copy for MkDocs Reddit banner reference: [docs/assets/brand/ai1sad-reddit-banner.jpg](assets/brand/ai1sad-reddit-banner.jpg)
+- Deployment copy for frontend logo mark: `frontend/public/brand/ai1sad-emblem.png`
+- Deployment copy for frontend avatar: `frontend/public/brand/ai1sad-avatar.jpg`
+- Deployment copy for frontend favicon: `frontend/public/brand/favicon.png`
+- Deployment copy for frontend banner/social preview: `frontend/public/brand/ai1sad-social-banner.png`
