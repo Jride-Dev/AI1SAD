@@ -10,15 +10,73 @@ Use this checklist for the AI1SAD local demo polish pass.
 
 FretTrack may already occupy port `5173`, so run the AI1SAD frontend on `5174` for local visual checks.
 
-## Local Startup Script
+## One-Click Local Launcher
 
-Windows users can start the local demo with:
+Windows users can start the full local demo by double-clicking:
 
-```powershell
-.\start_ai1sad_demo.ps1 -Docs
+```text
+start_ai1sad_demo.bat
 ```
 
-The `start_ai1sad_demo.bat` wrapper calls the PowerShell script for double-click or Command Prompt usage. The script starts FastAPI on `127.0.0.1:8000`, Vite on `127.0.0.1:5174`, and MkDocs on `127.0.0.1:8001` when `-Docs` is passed. It prefers `F:\Python310\python.exe` when present and falls back to `python`; pass `-Python <path>` to override the interpreter.
+The launcher starts:
+
+- Backend: <http://localhost:8000>
+- FastAPI docs: <http://localhost:8000/docs>
+- Frontend: <http://localhost:5174>
+- MkDocs: <http://localhost:8001>
+
+It also opens browser tabs for the frontend, FastAPI docs, and MkDocs portal.
+
+The batch wrapper calls the PowerShell launcher:
+
+```powershell
+.\start_ai1sad_demo.ps1
+```
+
+The launcher warns if ports `8000`, `5174`, or `8001` are already in use. It does not silently replace existing processes.
+
+## Stop Script
+
+Stop the local demo by double-clicking:
+
+```text
+stop_ai1sad_demo.bat
+```
+
+Or run:
+
+```powershell
+.\stop_ai1sad_demo.ps1
+```
+
+The stop script terminates processes bound to ports `8000`, `5174`, and `8001`.
+
+## Manual Fallback Commands
+
+Backend:
+
+```powershell
+python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Windows Python fallback:
+
+```powershell
+F:\Python310\python.exe -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm run dev -- --host 0.0.0.0 --port 5174
+```
+
+MkDocs:
+
+```powershell
+mkdocs serve --dev-addr 0.0.0.0:8001
+```
 
 ## Demo Notes
 
