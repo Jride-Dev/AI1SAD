@@ -192,6 +192,10 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.replay-library-grid {
+  grid-template-columns: minmax(260px, 0.35fr) minmax(0, 1fr);
+}
+
 .wide {
   grid-column: 1 / -1;
 }
@@ -573,6 +577,45 @@ h3 {
   margin-top: 12px;
 }
 
+.replay-card-list {
+  align-content: start;
+  display: grid;
+  gap: 10px;
+}
+
+.replay-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fdfe;
+  color: #1b2a41;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  text-align: left;
+}
+
+.replay-card.active,
+.replay-card:hover {
+  border-color: var(--cyan);
+  box-shadow: inset 4px 0 0 var(--teal);
+}
+
+.replay-card span,
+.replay-card small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.replay-detail {
+  display: grid;
+  gap: 12px;
+}
+
+.detail-score-cluster {
+  justify-content: flex-start;
+}
+
 .timeline small {
   color: var(--muted);
 }
@@ -702,6 +745,7 @@ h3 {
 
   .grid.two,
   .grid.three,
+  .replay-library-grid,
   .operational-map-layout,
   .zone-card,
   .alert-card {

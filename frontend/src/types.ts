@@ -190,6 +190,40 @@ export type ReplayResult = {
   pack_notice?: string;
 };
 
+export type ReplayLibraryItem = {
+  id: string;
+  title: string;
+  region: string;
+  coordinates: Coordinates;
+  observed_at?: string | null;
+  activity_context: string;
+  species_context: string;
+  replay_output: {
+    warning_score: number;
+    warning_band: string;
+    activity_hazard_score: number;
+    activity_hazard_band: string;
+    surveillance_priority_score: number;
+    surveillance_priority_band: string;
+    confidence: number;
+  };
+  quiet_day_comparison: {
+    warning_score: number;
+    activity_hazard_score: number;
+    surveillance_priority_score: number;
+    confidence: number;
+    summary: string;
+  };
+  factor_summary: DominantFactor[];
+  explanation_summary: string;
+  heatmap_asset?: string | null;
+  model_version: string;
+  scoring_revision: string;
+  provider_stack_version: string;
+  generated_at: string;
+  disclaimer: string;
+};
+
 export type DashboardData = {
   warning: WarningResponse;
   surveillance: SurveillanceResponse;
@@ -198,6 +232,7 @@ export type DashboardData = {
   providerHealth: ProviderHealth[];
   packs: RegionalPack[];
   replay: ReplayResult;
+  replayLibrary: ReplayLibraryItem[];
   replayHeatmap: ReplayHeatmap;
   demoScenarios: DemoScenario[];
   demoStatus: DemoStatus;

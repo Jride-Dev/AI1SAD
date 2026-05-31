@@ -1,4 +1,4 @@
-import { mockDashboardData, mockDemoScenarios, scenarioCoordinates } from "./mockData";
+import { mockDashboardData, mockDemoScenarios, mockReplayLibrary, scenarioCoordinates } from "./mockData";
 import type {
   Alert,
   Coordinates,
@@ -8,6 +8,7 @@ import type {
   ExplanationResponse,
   ProviderHealth,
   RegionalPack,
+  ReplayLibraryItem,
   ReplayHeatmap,
   ReplayResult,
   SurveillanceResponse,
@@ -100,6 +101,11 @@ export async function getReplay(): Promise<ReplayResult> {
   return requestJson("/api/v1/replay/run?scenario_id=wa_spearfishing_reef_white", mockDashboardData.replay);
 }
 
+export async function getReplayLibrary(): Promise<ReplayLibraryItem[]> {
+  const response = await requestJson<ReplayLibraryItem[] | { results?: ReplayLibraryItem[] }>("/api/v1/replay/library", mockReplayLibrary);
+  return Array.isArray(response) ? response : response.results ?? mockReplayLibrary;
+}
+
 export async function getReplayHeatmap(coords: Coordinates): Promise<ReplayHeatmap> {
   const scenario = Object.values(scenarioCoordinates).find((item) => item.lat === coords.lat && item.lon === coords.lon);
   return requestJson(
@@ -135,7 +141,7 @@ export async function getDemoStatus(): Promise<DemoStatus> {
 }
 
 export async function getDashboardData(coords: Coordinates): Promise<DashboardData> {
-  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios, demoStatus] = await Promise.all([
+  const [warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayLibrary, replayHeatmap, demoScenarios, demoStatus] = await Promise.all([
     getWarning(coords),
     getSurveillance(coords),
     getExplanation(coords),
@@ -143,10 +149,11 @@ export async function getDashboardData(coords: Coordinates): Promise<DashboardDa
     getProviderHealth(),
     getPacks(),
     getReplay(),
+    getReplayLibrary(),
     getReplayHeatmap(coords),
     getDemoScenarios(),
     getDemoStatus(),
   ]);
 
-  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayHeatmap, demoScenarios, demoStatus };
+  return { warning, surveillance, explanation, alerts, providerHealth, packs, replay, replayLibrary, replayHeatmap, demoScenarios, demoStatus };
 }

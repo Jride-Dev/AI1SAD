@@ -36,6 +36,7 @@ from app.providers.noaa_nws import (
 from providers.manual_events import build_manual_event
 from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
 from app.replay.runner import ReplayResult, ReplayRunner
+from app.replay.library import get_replay_library_item, list_replay_library
 
 
 router = APIRouter(prefix="/api/v1")
@@ -1308,6 +1309,19 @@ def replay_list_scenarios() -> dict[str, Any]:
             "tags": scenario.tags,
         }
     return maybe_demo({"scenarios": summary})
+
+
+@router.get("/replay/library")
+def replay_library() -> dict[str, Any]:
+    return maybe_demo({"results": list_replay_library()})
+
+
+@router.get("/replay/library/{replay_id}")
+def replay_library_detail(replay_id: str) -> dict[str, Any]:
+    item = get_replay_library_item(replay_id)
+    if not item:
+        raise HTTPException(status_code=404, detail=f"Replay library item '{replay_id}' not found")
+    return maybe_demo(item)
 
 
 @router.get("/replay/run")

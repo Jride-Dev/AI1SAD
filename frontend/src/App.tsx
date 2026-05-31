@@ -1,15 +1,16 @@
-import { Activity, AlertTriangle, Boxes, ExternalLink, HeartPulse, Map, Plane, Radar, RotateCcw } from "lucide-react";
+import { Activity, AlertTriangle, BookOpen, Boxes, ExternalLink, HeartPulse, Map, Plane, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
 import { scenarioCoordinates } from "./api/mockData";
 import { OperationalMap } from "./components/OperationalMap";
-import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth } from "./types";
+import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth, ReplayLibraryItem } from "./types";
 
 const pages = [
   { id: "map", label: "Live Map", icon: Map },
   { id: "surveillance", label: "Surveillance", icon: Plane },
   { id: "replay", label: "Replay", icon: RotateCcw },
+  { id: "replayLibrary", label: "Replay Library", icon: BookOpen },
   { id: "alerts", label: "Alerts", icon: AlertTriangle },
   { id: "health", label: "Provider Health", icon: HeartPulse },
   { id: "packs", label: "Regional Packs", icon: Boxes },
@@ -120,6 +121,7 @@ function DashboardPage({
   if (page === "map") return <LiveWarningMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />;
   if (page === "surveillance") return <SurveillanceView data={data} />;
   if (page === "replay") return <ReplayExplorer data={data} />;
+  if (page === "replayLibrary") return <ReplayLibraryView items={data.replayLibrary} />;
   if (page === "packs") return <RegionalPackExplorer data={data} />;
   if (page === "alerts") return <AlertsView data={data} />;
   return <ProviderHealthView providers={data.providerHealth} />;
@@ -232,6 +234,71 @@ function ReplayExplorer({ data }: { data: DashboardData }) {
           ))}
         </div>
         <ExplanationPanel explanation={data.explanation} />
+      </section>
+    </div>
+  );
+}
+
+function ReplayLibraryView({ items }: { items: ReplayLibraryItem[] }) {
+  const [selectedId, setSelectedId] = useState(items[0]?.id ?? "");
+  const selected = items.find((item) => item.id === selectedId) ?? items[0];
+
+  if (!selected) {
+    return <EmptyState title="No replay library entries" body="The backend returned no replay scenarios for this local run." />;
+  }
+
+  return (
+    <div className="grid replay-library-grid">
+      <section className="panel replay-card-list">
+        <h2>Case Studies</h2>
+        {items.map((item) => (
+          <button className={item.id === selected.id ? "replay-card active" : "replay-card"} key={item.id} onClick={() => setSelectedId(item.id)} type="button">
+            <span>{item.region}</span>
+            <strong>{item.title}</strong>
+            <small>{item.activity_context}</small>
+          </button>
+        ))}
+      </section>
+
+      <section className="panel replay-detail">
+        <p className="eyebrow">{selected.region}</p>
+        <h2>{selected.title}</h2>
+        <p className="explain-text">{selected.explanation_summary}</p>
+        <div className="coordinate-strip inline-strip">
+          <span>Lat {selected.coordinates.lat.toFixed(4)}</span>
+          <span>Lon {selected.coordinates.lon.toFixed(4)}</span>
+          <span>{selected.observed_at ? new Date(selected.observed_at).toISOString().slice(0, 10) : "demo context"}</span>
+        </div>
+
+        <div className="score-cluster detail-score-cluster">
+          <Metric label="Warning" value={selected.replay_output.warning_score} />
+          <Metric label="Activity" value={selected.replay_output.activity_hazard_score} />
+          <Metric label="Priority" value={selected.replay_output.surveillance_priority_score} />
+          <Metric label="Confidence" value={Math.round(selected.replay_output.confidence * 100)} suffix="%" />
+        </div>
+
+        <h3>Quiet-Day Comparison</h3>
+        <div className="comparison">
+          <Progress label="Replay warning" value={selected.replay_output.warning_score} />
+          <Progress label="Quiet warning" value={selected.quiet_day_comparison.warning_score} />
+          <Progress label="Replay surveillance" value={selected.replay_output.surveillance_priority_score} />
+          <Progress label="Quiet surveillance" value={selected.quiet_day_comparison.surveillance_priority_score} />
+          <Progress label="Replay activity" value={selected.replay_output.activity_hazard_score} />
+          <Progress label="Quiet activity" value={selected.quiet_day_comparison.activity_hazard_score} />
+        </div>
+        <p className="explain-text">{selected.quiet_day_comparison.summary}</p>
+
+        <h3>Factor Summary</h3>
+        <FactorList factors={selected.factor_summary} />
+
+        <h3>Assets And Metadata</h3>
+        <div className="freshness-grid">
+          <div><span>Heatmap</span><strong>{selected.heatmap_asset ?? "not available"}</strong></div>
+          <div><span>Model</span><strong>{selected.model_version}</strong></div>
+          <div><span>Scoring</span><strong>{selected.scoring_revision}</strong></div>
+          <div><span>Provider stack</span><strong>{selected.provider_stack_version}</strong></div>
+        </div>
+        <p className="disclaimer-text">{selected.disclaimer}</p>
       </section>
     </div>
   );
