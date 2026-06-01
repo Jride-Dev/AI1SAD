@@ -9,6 +9,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - NOAA CoastWatch SST adapter: offline/test-first adapter for mocked or pre-fetched sea-surface temperature and SST anomaly records. Live ERDDAP networking is not enabled yet. See [SST Provider Adapter](SST_PROVIDER.md).
 - Biological events adapter: static/manual/offline ecological signals for carcass, fish-kill, baitfish, pinniped, turtle, and reef/prey context. No news, social-media, agency-feed, or paid-provider scraping is enabled. See [Biological Events Provider](BIOLOGICAL_EVENTS_PROVIDER.md).
 - Vessel and fishing adapter: static/manual/offline vessel, fishing, pier, marina, spearfishing, dive-boat, and liveaboard context. No Global Fishing Watch, AIS, MarineTraffic, scraping, or paid APIs are enabled. See [Vessel And Fishing Provider](VESSEL_FISHING_PROVIDER.md).
+- Kelp forest adapter: static/manual/offline kelp presence, density, edge habitat, prey overlap, and white shark kelp-context signals. No live canopy API, satellite feed, map scraping, or paid habitat provider is enabled. See [Kelp Forest Provider](KELP_FOREST_PROVIDER.md).
 
 ## Limited Or Uncertain Sources
 
@@ -82,6 +83,7 @@ The warning engine estimates current encounter conditions from available signals
 - fishing/vessel activity
 - biological events
 - human exposure
+- kelp forest habitat context
 - regional seasonal multipliers
 
 The warning score does not predict attacks. It is not a safety guarantee and should not replace official beach, lifeguard, weather, wildlife, or emergency guidance.

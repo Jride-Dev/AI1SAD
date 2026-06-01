@@ -18,6 +18,10 @@ RECOMMENDATION_PATTERNS = {
         "label": "Reef-edge expanding grid",
         "recommended_action": "Prioritize reef edge, dropoff, and adjacent current lines with expanding drone passes.",
     },
+    "kelp_edge_expanding_grid": {
+        "label": "Kelp-edge expanding grid",
+        "recommended_action": "Prioritize kelp edges, adjacent open-water lanes, and prey-overlap boundaries with bounded observation passes.",
+    },
     "inlet_surf_zone_scan": {
         "label": "Inlet surf-zone scan",
         "recommended_action": "Scan inlet outflow, surf zone, and adjacent sandbars with repeated parallel passes.",
@@ -151,13 +155,15 @@ def suppression_reasons(payload: dict[str, Any]) -> list[str]:
 
 
 def recommendation_key(payload: dict[str, Any]) -> str:
-    factors = {str(item.get("factor", "")).lower() for item in payload.get("dominant_factors", [])}
+    factors = {str(item.get("factor", "")).lower() for item in payload.get("dominant_factors", []) if float(item.get("points", 0) or 0) > 0}
     pattern = str(payload.get("recommended_pattern", "")).lower()
     alert_type = str(payload.get("alert_type", "")).lower()
     if "carcass" in " ".join(factors) or alert_type == "biological_event":
         return "carcass_event_buffer_zone"
     if "sighting" in " ".join(factors) or alert_type == "sighting_cluster":
         return "post_sighting_focus_area"
+    if "kelp" in " ".join(factors) or "kelp-edge" in pattern:
+        return "kelp_edge_expanding_grid"
     if "reef" in pattern or any("reef" in factor or "dropoff" in factor for factor in factors):
         return "reef_edge_expanding_grid"
     if "inlet" in " ".join(factors) or "river" in " ".join(factors) or "surf-zone" in pattern:

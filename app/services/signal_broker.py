@@ -30,6 +30,11 @@ DEFAULT_MAX_AGE_HOURS = {
     "sea_turtle_nesting": 720,
     "sea_turtle_migration": 720,
     "seabird_hatchling_event": 96,
+    "kelp_forest_presence": 2160,
+    "kelp_density_context": 2160,
+    "kelp_edge_habitat": 2160,
+    "kelp_prey_overlap": 2160,
+    "white_shark_kelp_hunting_context": 2160,
     "migration_window": 720,
     "prey_presence": 72,
     "tourism_exposure": 168,
@@ -126,6 +131,7 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
         "vessel_activity_index": None,
         "vessel_fishing_signals": [],
         "biological_events": [],
+        "kelp_habitat_signals": [],
         "human_exposure_index": None,
         "weather_alerts": [],
         "weather_alert_score": 0,
@@ -200,6 +206,36 @@ def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]
                 "risk_relevance": signal.get("risk_relevance"),
             }
             inputs["biological_events"].append(event)
+        elif signal_type in {
+            "kelp_forest_presence",
+            "kelp_density_context",
+            "kelp_edge_habitat",
+            "kelp_prey_overlap",
+            "white_shark_kelp_hunting_context",
+        }:
+            inputs["kelp_habitat_signals"].append(
+                {
+                    "visibility": "public",
+                    "signal_type": signal_type,
+                    "observed_at": signal.get("timestamp"),
+                    "expires_at": signal.get("expires_at"),
+                    "confidence": signal.get("confidence"),
+                    "value": value,
+                    "species": signal.get("species"),
+                    "source": signal.get("source"),
+                    "risk_relevance": signal.get("risk_relevance"),
+                    "density_class": signal.get("density_class"),
+                    "canopy_confidence": signal.get("canopy_confidence"),
+                    "pinniped_presence": signal.get("pinniped_presence"),
+                    "pinniped_context": signal.get("pinniped_context"),
+                    "human_activity_overlap": signal.get("human_activity_overlap"),
+                    "known_prey_association": signal.get("known_prey_association"),
+                    "pack_id": signal.get("pack_id"),
+                    "visibility_effect": signal.get("visibility_effect"),
+                    "profile_id": signal.get("profile_id"),
+                    "profile_name": signal.get("profile_name"),
+                }
+            )
         elif signal_type in {
             "tourism_exposure",
             "human_exposure",

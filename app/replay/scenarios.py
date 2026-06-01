@@ -19,6 +19,7 @@ class ReplayScenario:
     vessel_activity_index: float | None = None
     human_exposure_index: float | None = None
     biological_events: list[dict[str, Any]] = field(default_factory=list)
+    kelp_habitat_signals: list[dict[str, Any]] = field(default_factory=list)
     month: int | None = None
     activity_context: str | None = None
     suspected_species: str | None = None

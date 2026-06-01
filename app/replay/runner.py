@@ -49,6 +49,7 @@ class ReplayRunner:
                 sst_anomaly_c=scenario.sst_anomaly_c,
                 vessel_activity_index=scenario.vessel_activity_index,
                 biological_events=scenario.biological_events,
+                kelp_habitat_signals=scenario.kelp_habitat_signals,
                 human_exposure_index=scenario.human_exposure_index,
                 activity_context=scenario.activity_context,
                 reef_habitat=scenario.reef_habitat,
@@ -88,6 +89,7 @@ class ReplayRunner:
                     "sst_anomaly_c": scenario.sst_anomaly_c,
                     "vessel_activity_index": scenario.vessel_activity_index,
                     "biological_events": scenario.biological_events,
+                    "kelp_habitat_signals": scenario.kelp_habitat_signals,
                     "human_exposure_index": scenario.human_exposure_index,
                 },
             )
@@ -145,6 +147,13 @@ class ReplayRunner:
                     "value": 1.0,
                     "visibility": "public",
                 })
+        for signal in scenario.kelp_habitat_signals:
+            signals.append({
+                "signal_type": signal.get("signal_type", "kelp_forest_presence"),
+                "timestamp": signal.get("observed_at", scenario.timestamp.isoformat()),
+                "value": signal.get("value", 0.4),
+                "visibility": "public",
+            })
         if scenario.sea_surface_temp_c is not None:
             signals.append({
                 "signal_type": "ocean_sst",

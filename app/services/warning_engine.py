@@ -192,6 +192,36 @@ def exposure_amplification_score(
     }
 
 
+def kelp_warning_context_score(
+    signals: list[dict[str, Any]],
+    *,
+    activity_context: str | None,
+) -> tuple[float, dict[str, Any] | None, bool]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, None, False
+    density_order = {"sparse": 0, "moderate": 1, "dense": 2, "optimal_edge": 3}
+    primary = max(public, key=lambda signal: density_order.get(str(signal.get("density_class", "sparse")), 0))
+    density = str(primary.get("density_class", "sparse"))
+    confidence = max(0.3, min(1.0, float(primary.get("confidence", primary.get("canopy_confidence", 0.45)) or 0.45)))
+    base = {"sparse": 0.5, "moderate": 1.5, "dense": 1.8, "optimal_edge": 2.5}.get(density, 0.5)
+    contexts = [density]
+    if any(signal.get("pinniped_presence") for signal in public):
+        base += 0.8
+        contexts.append("pinniped_prey_context")
+    if (activity_context or "").lower() in {"spearfishing", "diving", "diving_with_catch", "diving with catch", "surfing"}:
+        base += 0.7
+        contexts.append("human_activity_overlap")
+    points = round(min(4, base * confidence), 2)
+    return points, {
+        "factor": "kelp_forest_habitat_context",
+        "value": density,
+        "contexts": contexts,
+        "points": points,
+        "rationale": "Static kelp habitat is bounded environmental context; kelp alone is not treated as a high general warning driver.",
+    }, density == "dense"
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -203,6 +233,7 @@ def calculate_warning(
     sst_anomaly_c: float | None = None,
     vessel_activity_index: float | None = None,
     biological_events: list[dict[str, Any]] | None = None,
+    kelp_habitat_signals: list[dict[str, Any]] | None = None,
     weather_alerts: list[dict[str, Any]] | None = None,
     weather_alert_score: float | None = None,
     human_exposure_index: float | None = None,
@@ -285,6 +316,13 @@ def calculate_warning(
         missing_sources.add("biological_events")
     factors.append({"factor": "biological_event_score", "value": len(bio_events), "points": bio_score, "rationale": "Whale carcass, stranding, baitfish, or prey event signal."})
 
+    kelp_signals = kelp_habitat_signals or []
+    kelp_score, kelp_factor, dense_kelp_visibility = kelp_warning_context_score(kelp_signals, activity_context=activity_context)
+    if kelp_signals:
+        data_sources_used.append("kelp_forest_static")
+    if kelp_factor:
+        factors.append(kelp_factor)
+
     alert_events = [event for event in weather_alerts or [] if event.get("visibility", "public") == "public"]
     alert_score = min(10, float(weather_alert_score or 0))
     if alert_events:
@@ -334,7 +372,7 @@ def calculate_warning(
     for factor in factors:
         factor["contribution"] = round((factor.get("points", 0) / warning_score), 4) if warning_score else 0
     dominant = sorted(factors, key=lambda item: item.get("points", 0), reverse=True)[:5]
-    return {
+    result = {
         "location": {"geo": {"type": "Point", "coordinates": [lon, lat]}},
         "warning_score": warning_score,
         "warning_band": band_for_score(warning_score),
@@ -352,6 +390,7 @@ def calculate_warning(
             "sst_anomaly_score": round(anomaly_score, 2),
             "fishing_vessel_activity_score": vessel_score,
             "biological_event_score": bio_score,
+            "kelp_forest_context_score": kelp_score,
             "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
             "human_exposure_amplifier_score": exposure_amp_score,
@@ -368,6 +407,10 @@ def calculate_warning(
         },
         "disclaimer": WARNING_DISCLAIMER,
     }
+    if dense_kelp_visibility:
+        result["confidence"] = round(max(0.25, result["confidence"] - 0.04), 2)
+        result["signals"]["kelp_visibility_confidence_modifier"] = -0.04
+    return result
 
 
 def provider_health_document(provider: str, *, status: str, records_ingested: int = 0, last_success: str | None = None) -> dict[str, Any]:

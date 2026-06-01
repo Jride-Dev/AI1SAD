@@ -92,6 +92,7 @@ nav:
       - Human Exposure: HUMAN_EXPOSURE_PROVIDER.md
       - Biological Events: BIOLOGICAL_EVENTS_PROVIDER.md
       - Vessel & Fishing: VESSEL_FISHING_PROVIDER.md
+      - Kelp Forest: KELP_FOREST_PROVIDER.md
 
   - Replay & Case Studies:
       - Replay Library: REPLAY_LIBRARY.md

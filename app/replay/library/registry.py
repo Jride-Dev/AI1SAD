@@ -77,8 +77,9 @@ REPLAY_LIBRARY: dict[str, dict[str, Any]] = {
             {"factor": "activity_hazard_score", "points": 20.3},
             {"factor": "wa_white_shark_reef_spearfishing_context", "points": 18},
             {"factor": "reef_dropoff_habitat_proximity", "points": 13},
+            {"factor": "kelp_forest_surveillance_context", "points": 2.5},
         ],
-        explanation_summary="Low general warning with high operational surveillance priority for reef-edge review.",
+        explanation_summary="Low general warning with high operational surveillance priority for reef-edge review, with sparse kelp context treated as bounded supporting habitat information.",
         heatmap_asset="docs/assets/horseshoe_reef_2026_model_replay.svg",
     ),
     "queensland_spearfishing_reef_tiger_bull_2026": _item(

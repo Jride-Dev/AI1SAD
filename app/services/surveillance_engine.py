@@ -123,6 +123,44 @@ def vessel_fishing_surveillance_points(signals: list[dict[str, Any]], *, biologi
     return round(min(24, points), 2), signal_types, sorted(set(contexts))
 
 
+def kelp_surveillance_points(
+    signals: list[dict[str, Any]],
+    *,
+    activity_context: str | None,
+    biological_events: list[dict[str, Any]],
+    human_exposure_index: float | None,
+    suspected_species: str | None,
+) -> tuple[float, list[str], list[str], bool, float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], [], False, 0.0
+    density_rank = {"sparse": 0, "moderate": 1, "dense": 2, "optimal_edge": 3}
+    primary = max(public, key=lambda signal: density_rank.get(str(signal.get("density_class", "sparse")), 0))
+    density = str(primary.get("density_class", "sparse"))
+    signal_types = sorted({str(signal.get("signal_type", "")) for signal in public if signal.get("signal_type")})
+    contexts = [density]
+    confidence = max(0.3, min(1.0, float(primary.get("confidence", primary.get("canopy_confidence", 0.45)) or 0.45)))
+    optimal_kelpedge_score = {"sparse": 0, "moderate": 3, "dense": 1, "optimal_edge": 7}.get(density, 0) * confidence
+    points = {"sparse": 2, "moderate": 6, "dense": 7, "optimal_edge": 11}.get(density, 2) * confidence
+    pinniped = any(signal.get("pinniped_presence") for signal in public)
+    if pinniped:
+        points += 5
+        contexts.append("pinniped_prey_overlap")
+    if any(str(event.get("event_type", "")).lower() in {"seal_presence", "sea_lion_presence", "prey_presence", "baitfish_presence"} for event in biological_events):
+        points += 3
+        contexts.append("biological_prey_stack")
+    if (activity_context or "").lower() in {"spearfishing", "diving", "diving_with_catch", "diving with catch", "surfing"}:
+        points += 5
+        contexts.append("kelp_human_activity_overlap")
+    if "white" in (suspected_species or "").lower() and any(signal.get("signal_type") == "white_shark_kelp_hunting_context" for signal in public):
+        points += 3
+        contexts.append("white_shark_kelp_context")
+    if human_exposure_index and human_exposure_index >= 0.55 and (pinniped or activity_context):
+        points += 2
+        contexts.append("exposure_overlap")
+    return round(min(22, points), 2), signal_types, sorted(set(contexts)), density == "dense", round(min(7.0, optimal_kelpedge_score), 2)
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -182,7 +220,9 @@ def species_region_points(
     return min(points, 35), factors
 
 
-def recommended_pattern_for(activity_context: str | None, reef_count: int, river_mouth_distance_km: float | None) -> str:
+def recommended_pattern_for(activity_context: str | None, reef_count: int, river_mouth_distance_km: float | None, kelp_contexts: list[str] | None = None) -> str:
+    if kelp_contexts and any(context in kelp_contexts for context in {"optimal_edge", "kelp_human_activity_overlap", "pinniped_prey_overlap"}):
+        return "kelp-edge expanding grid"
     if activity_context in {"spearfishing", "diving", "diving_with_catch", "diving with catch"} and reef_count:
         return "reef-edge expanding grid"
     if river_mouth_distance_km is not None and river_mouth_distance_km <= 5:
@@ -227,6 +267,7 @@ def score_surveillance_zones(
         sst_anomaly_c=warning_inputs.get("sst_anomaly_c"),
         vessel_activity_index=warning_inputs.get("vessel_activity_index"),
         biological_events=warning_inputs.get("biological_events", []),
+        kelp_habitat_signals=warning_inputs.get("kelp_habitat_signals", []),
         human_exposure_index=warning_inputs.get("human_exposure_index"),
         activity_context=activity_context,
         reef_habitat=reef_habitat,
@@ -357,6 +398,24 @@ def score_surveillance_zones(
         }
     )
 
+    kelp_points, kelp_signal_types, kelp_contexts, dense_kelp_visibility, optimal_kelpedge_score = kelp_surveillance_points(
+        warning_inputs.get("kelp_habitat_signals", []),
+        activity_context=activity_context,
+        biological_events=warning_inputs.get("biological_events", []),
+        human_exposure_index=warning_inputs.get("human_exposure_index"),
+        suspected_species=suspected_species,
+    )
+    factors.append(
+        {
+            "factor": "kelp_forest_surveillance_context",
+            "value": kelp_signal_types,
+            "contexts": kelp_contexts,
+            "points": kelp_points,
+            "optimal_kelpedge_score": optimal_kelpedge_score,
+            "rationale": "Kelp forest context is bounded habitat information; it raises surveillance attention only when paired with edge habitat, prey, activity, or white shark regional context.",
+        }
+    )
+
     human_exposure = warning_inputs.get("human_exposure_index")
     human_points = round(min(12, max(0, float(human_exposure or 0)) * 12), 2)
     factors.append(
@@ -407,12 +466,16 @@ def score_surveillance_zones(
         data_sources_used.add("reef_features")
     else:
         missing_sources.add("reef_features")
+    if warning_inputs.get("kelp_habitat_signals"):
+        data_sources_used.add("kelp_forest_static")
     if profile:
         data_sources_used.add("regional_risk_profiles")
     else:
         missing_sources.add("regional_risk_profiles")
 
     confidence = round(max(0.25, min(0.92, 0.88 - len(missing_sources) * 0.05)), 2)
+    if dense_kelp_visibility:
+        confidence = round(max(0.25, confidence - 0.04), 2)
     zone_radius = round(max(0.5, min(radius_km, 2.5 if priority_score >= 50 else 4.0)), 2)
     zone_id = f"{mission_type}:{lat:.3f}:{lon:.3f}:{lookback_hours}:{activity_context or 'general'}"
 
@@ -430,7 +493,7 @@ def score_surveillance_zones(
         "center": {"geo": {"type": "Point", "coordinates": [lon, lat]}},
         "radius_km": zone_radius,
         "polygon": None,
-        "recommended_pattern": recommended_pattern_for(activity_context, len(reefs), river_mouth_distance_km),
+        "recommended_pattern": recommended_pattern_for(activity_context, len(reefs), river_mouth_distance_km, kelp_contexts),
         "dominant_factors": dominant_factors,
         "confidence": confidence,
         "data_sources_used": sorted(data_sources_used),

@@ -208,8 +208,16 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
         "fish_kill",
         "seabird_hatchling_event",
     }
+    kelp_signal_types = {
+        "kelp_forest_presence",
+        "kelp_density_context",
+        "kelp_edge_habitat",
+        "kelp_prey_overlap",
+        "white_shark_kelp_hunting_context",
+    }
     high_impact_bio_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "fish_kill"})
     carcass_count = sum(1 for signal in signals if signal.get("signal_type") in biological_signal_types)
+    kelp_signal_count = sum(1 for signal in signals if signal.get("signal_type") in kelp_signal_types)
     sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
     exposure_signals = [
         signal
@@ -329,6 +337,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 expires_hours=4,
                 now=now,
                 confidence=max(confidence - 0.03, 0.25),
+            )
+        )
+
+    if kelp_signal_count and (surveillance_score >= 60 or activity_score >= 45 or carcass_count or exposure_signals or high_context_fishing):
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(max(surveillance_score, activity_score, 45), urgent_threshold=90),
+                title="Kelp habitat supports surveillance review",
+                summary="Kelp forest, kelp edge, prey overlap, or canopy context is active alongside operational activity or surveillance factors.",
+                recommended_action="Use kelp habitat as supporting context for targeted observation; do not treat kelp presence alone as a public warning.",
+                trigger={"trigger_type": "kelp_habitat_context", "threshold": 1, "observed_value": kelp_signal_count},
+                expires_hours=12,
+                now=now,
+                confidence=max(confidence - 0.04, 0.25),
             )
         )
 

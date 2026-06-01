@@ -4,6 +4,8 @@ Phase 11 adds a deterministic explanation layer for AI1SAD warning, surveillance
 
 The explanation layer does not predict attacks. It explains why environmental, biological, human-exposure, activity, and regional signals produced a warning or surveillance-priority output.
 
+Kelp forest factors may appear when static/offline kelp habitat signals are active. Explanation text treats kelp as bounded habitat and observation-planning context, especially where kelp edge, pinniped prey context, and human activity overlap.
+
 ## Outputs
 
 Each explanation includes:
@@ -19,6 +21,13 @@ Each explanation includes:
 - `operational_interpretation`: concise field-facing explanation
 - `recommended_action`: operational recommendation text
 - `metadata`: model, scoring, provider stack, and generation version fields
+
+Kelp explanations can include:
+
+- `kelp_forest_habitat_context` in warning factors with small bounded points
+- `kelp_forest_surveillance_context` in surveillance factors when habitat stacks with prey, activity, or white shark regional context
+- stale/static freshness in `data_freshness`
+- confidence reduction when dense kelp affects open-water visibility
 
 ## API Routes
 

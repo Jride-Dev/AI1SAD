@@ -44,6 +44,16 @@ Phase 9F adds static/manual vessel and fishing examples associated with regional
 
 These vessel/fishing signals are controlled offline examples. They are not live AIS, MarineTraffic, Global Fishing Watch, or harbor-camera detections.
 
+Phase 20 adds static/manual kelp forest habitat examples associated with regional packs:
+
+- Central California / U.S. East Coast-style demo pack context: kelp edge, pinniped prey association, surfing/diving overlap.
+- Monterey Bay / Central Coast demo context: moderate kelp and nearshore recreation overlap.
+- South Africa pack: False Bay / Seal Island kelp-edge and pinniped context.
+- Western Australia pack: sparse reef/kelp context near reef and spearfishing workflows.
+- Core pack: a clearly synthetic golden-rule kelp bed profile for bounded QA.
+
+These kelp signals are controlled offline habitat examples. They are not live canopy detections, animal detections, satellite feeds, or scraped map layers.
+
 ## Pack Metadata
 
 Each pack defines:

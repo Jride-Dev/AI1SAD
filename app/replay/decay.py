@@ -50,6 +50,11 @@ SIGNAL_TYPE_DECAY_PARAMS: dict[str, dict[str, float]] = {
     "carcass": {"half_life_hours": 72.0, "expiry_multiplier": 2.0},
     "whale_carcass": {"half_life_hours": 72.0, "expiry_multiplier": 2.0},
     "human_exposure": {"half_life_hours": 24.0, "expiry_multiplier": 3.0},
+    "kelp_forest_presence": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
+    "kelp_density_context": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
+    "kelp_edge_habitat": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
+    "kelp_prey_overlap": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
+    "white_shark_kelp_hunting_context": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
 }
 
 
