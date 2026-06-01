@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
 from pymongo.database import Database
 
 from app.config import get_settings
@@ -44,6 +45,13 @@ router = APIRouter(prefix="/api/v1")
 
 def maybe_demo(payload: dict[str, Any]) -> dict[str, Any]:
     return annotate_demo_response(payload, enabled=get_settings().demo_mode)
+
+
+def safe_regex_term(value: str, *, field: str) -> str:
+    text = value.strip()
+    if not text:
+        raise HTTPException(status_code=422, detail=f"{field} must not be empty")
+    return re.escape(text)
 
 
 def public_incident_filter(
@@ -595,14 +603,16 @@ def signals_for_location(
 
 @router.get("/signals/species")
 def signals_for_species(
-    species: str,
+    species: Annotated[str, Query(min_length=1, max_length=80)],
     db: Database = Depends(get_database),
     limit: Annotated[int, Query(ge=1, le=500)] = 100,
 ) -> dict[str, Any]:
+    # Partial matching is intentional for species lookups, but user input is escaped.
+    species_term = safe_regex_term(species, field="species")
     projection = {"private_notes": 0, "restricted": 0}
     docs = list(
         db[COLLECTIONS["signals"]]
-        .find({"visibility": "public", "species": {"$regex": species, "$options": "i"}}, projection)
+        .find({"visibility": "public", "species": {"$regex": species_term, "$options": "i"}}, projection)
         .limit(limit)
     )
     return {"results": active_public_signals([mongo_public_doc(doc) for doc in docs])}
@@ -618,45 +628,64 @@ def active_signals(
     return {"results": active_public_signals([mongo_public_doc(doc) for doc in docs])}
 
 
+def _coarse_failure(doc: dict[str, Any]) -> dict[str, Any]:
+    public = mongo_public_doc(doc)
+    if public.get("last_error") or public.get("error") or public.get("error_summary"):
+        public["error_summary"] = "fetch_failed"
+    public.pop("last_error", None)
+    public.pop("error", None)
+    return public
+
+
 @router.get("/provider-health")
 def provider_health(db: Database = Depends(get_database)) -> dict[str, Any]:
     projection = {"private_notes": 0, "restricted": 0, "credentials": 0, "api_key": 0}
     health = list(db[COLLECTIONS["provider_health"]].find({}, projection).limit(500))
     recent_failures = list(db[COLLECTIONS["provider_failures"]].find({}, projection).limit(100))
-    return {"providers": [mongo_public_doc(doc) for doc in health], "recent_failures": [mongo_public_doc(doc) for doc in recent_failures]}
+    return {"providers": [mongo_public_doc(doc) for doc in health], "recent_failures": [_coarse_failure(doc) for doc in recent_failures]}
 
 
 @router.get("/regions/{region}/season-profile")
-def region_season_profile(region: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+def region_season_profile(
+    region: Annotated[str, Path(min_length=1, max_length=80)],
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    # Partial matching is intentional for region text, but user input is escaped.
+    region_term = safe_regex_term(region, field="region")
     projection = {"private_notes": 0, "restricted": 0}
     docs = list(
         db[COLLECTIONS["species_season_profiles"]]
-        .find({"visibility": "public", "region": {"$regex": region, "$options": "i"}}, projection)
+        .find({"visibility": "public", "region": {"$regex": region_term, "$options": "i"}}, projection)
         .limit(100)
     )
-    return {"region": region, "results": [mongo_public_doc(doc) for doc in docs]}
+    return {"region": region.strip(), "results": [mongo_public_doc(doc) for doc in docs]}
 
 
 @router.get("/species/{species}/risk-profile")
-def species_risk_profile(species: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+def species_risk_profile(
+    species: Annotated[str, Path(min_length=1, max_length=80)],
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    # Partial species matching is intentional here to support common-name fragments.
+    species_term = safe_regex_term(species, field="species")
     projection = {"private_notes": 0, "restricted": 0}
     season_profiles = list(
         db[COLLECTIONS["species_season_profiles"]]
-        .find({"visibility": "public", "species": {"$regex": species, "$options": "i"}}, projection)
+        .find({"visibility": "public", "species": {"$regex": species_term, "$options": "i"}}, projection)
         .limit(100)
     )
     migration = list(
         db[COLLECTIONS["migration_windows"]]
-        .find({"visibility": "public", "species": {"$regex": species, "$options": "i"}}, projection)
+        .find({"visibility": "public", "species": {"$regex": species_term, "$options": "i"}}, projection)
         .limit(100)
     )
     signals = list(
         db[COLLECTIONS["signals"]]
-        .find({"visibility": "public", "species": {"$regex": species, "$options": "i"}}, projection)
+        .find({"visibility": "public", "species": {"$regex": species_term, "$options": "i"}}, projection)
         .limit(100)
     )
     return {
-        "species": species,
+        "species": species.strip(),
         "season_profiles": [mongo_public_doc(doc) for doc in season_profiles],
         "migration_windows": [mongo_public_doc(doc) for doc in migration],
         "active_signals": active_public_signals([mongo_public_doc(doc) for doc in signals]),

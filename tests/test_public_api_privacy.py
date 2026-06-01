@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import unittest
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
@@ -84,8 +85,11 @@ def matches(document: dict[str, Any], query: dict[str, Any]) -> bool:
                 return False
             if "$gt" in expected and value <= expected["$gt"]:
                 return False
-            if "$regex" in expected and expected["$regex"].lower() not in str(value or "").lower():
-                return False
+            if "$regex" in expected:
+                flags = re.IGNORECASE if "i" in str(expected.get("$options", "")) else 0
+                pattern = re.compile(str(expected["$regex"]), flags)
+                if not pattern.search(str(value or "")):
+                    return False
             continue
         if value != expected:
             return False
@@ -681,6 +685,52 @@ class PublicApiPrivacyTests(unittest.TestCase):
         self.assertEqual(species.status_code, 200)
         self.assertNotIn("private", str(season.json()).lower())
         self.assertNotIn("private", str(species.json()).lower())
+
+    def test_species_regex_metacharacters_are_escaped(self):
+        response = self.client.get("/api/v1/species/bull.*shark/risk-profile")
+        self.assertEqual(response.status_code, 200)
+        query = self.db[COLLECTIONS["species_season_profiles"]].last_find_query
+        assert query is not None
+        self.assertEqual(query["species"]["$regex"], re.escape("bull.*shark"))
+
+    def test_region_regex_metacharacters_are_escaped(self):
+        response = self.client.get("/api/v1/regions/Flor.*da/season-profile")
+        self.assertEqual(response.status_code, 200)
+        query = self.db[COLLECTIONS["species_season_profiles"]].last_find_query
+        assert query is not None
+        self.assertEqual(query["region"]["$regex"], re.escape("Flor.*da"))
+
+    def test_empty_or_whitespace_search_is_rejected(self):
+        species = self.client.get("/api/v1/signals/species?species=%20%20")
+        region = self.client.get("/api/v1/regions/%20/season-profile")
+        self.assertEqual(species.status_code, 422)
+        self.assertEqual(region.status_code, 422)
+
+    def test_overly_long_species_or_region_is_rejected(self):
+        long_value = "a" * 81
+        species = self.client.get(f"/api/v1/signals/species?species={long_value}")
+        region = self.client.get(f"/api/v1/regions/{long_value}/season-profile")
+        self.assertEqual(species.status_code, 422)
+        self.assertEqual(region.status_code, 422)
+
+    def test_intentional_partial_search_still_works(self):
+        species = self.client.get("/api/v1/species/bull/risk-profile")
+        region = self.client.get("/api/v1/regions/Flor/season-profile")
+        self.assertEqual(species.status_code, 200)
+        self.assertEqual(region.status_code, 200)
+        self.assertGreaterEqual(len(species.json().get("season_profiles", [])), 1)
+        self.assertGreaterEqual(len(region.json().get("results", [])), 1)
+
+    def test_public_provider_failures_use_coarse_error_summary(self):
+        self.db[COLLECTIONS["provider_failures"]].docs = [
+            {"_id": "failure-1", "provider": "open_meteo", "status": "failed", "last_error": "Traceback...secret details"}
+        ]
+        response = self.client.get("/api/v1/provider-health")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["recent_failures"][0]["error_summary"], "fetch_failed")
+        self.assertNotIn("Traceback", str(payload))
+        self.assertNotIn("secret details", str(payload))
 
     def test_provider_failure_does_not_crash_warning_endpoint(self):
         self.db[COLLECTIONS["provider_failures"]].docs = [
