@@ -1,9 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getDashboardData } from "./client";
+import { __setMockModeForTests, getAlerts, getDashboardData, getWarning } from "./client";
 
 describe("dashboard API client", () => {
+  const fetchMock = vi.fn();
+
+  beforeEach(() => {
+    vi.stubGlobal("fetch", fetchMock);
+  });
+
+  afterEach(() => {
+    __setMockModeForTests(null);
+    fetchMock.mockReset();
+    vi.unstubAllGlobals();
+  });
+
   it("returns mock dashboard data without a backend", async () => {
+    __setMockModeForTests(true);
     const data = await getDashboardData({ lat: -31.983, lon: 115.515 });
 
     expect(data.warning.warning_score).toBeGreaterThanOrEqual(0);
@@ -15,5 +28,32 @@ describe("dashboard API client", () => {
     expect(data.replayHeatmap.cells[0].surveillance_priority_score).toBeGreaterThanOrEqual(0);
     expect(data.demoScenarios.map((scenario) => scenario.scenario_id)).toContain("queensland_spearfishing_reef_tiger_bull_2026");
     expect(data.demoStatus.demo_mode).toBe(true);
+    expect(data.data_source).toBe("mock");
+  });
+
+  it("surfaces an error when mock mode is disabled and fetch fails", async () => {
+    __setMockModeForTests(false);
+    fetchMock.mockRejectedValueOnce(new Error("network down"));
+    await expect(getWarning({ lat: -31.983, lon: 115.515 })).rejects.toThrow("network down");
+  });
+
+  it("does not silently use mock fallback on backend 500", async () => {
+    __setMockModeForTests(false);
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: async () => ({}),
+    });
+    await expect(getWarning({ lat: -31.983, lon: 115.515 })).rejects.toThrow("Request failed (500)");
+  });
+
+  it("does not silently use mock fallback on malformed payload", async () => {
+    __setMockModeForTests(false);
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ unexpected: true }),
+    });
+    await expect(getAlerts()).rejects.toThrow("Malformed API payload");
   });
 });

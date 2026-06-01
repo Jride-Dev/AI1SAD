@@ -236,4 +236,5 @@ export type DashboardData = {
   replayHeatmap: ReplayHeatmap;
   demoScenarios: DemoScenario[];
   demoStatus: DemoStatus;
+  data_source?: "mock" | "live";
 };

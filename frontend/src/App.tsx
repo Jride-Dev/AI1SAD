@@ -18,6 +18,12 @@ const pages = [
 
 type PageId = (typeof pages)[number]["id"];
 
+export function resolveReplaySelectionId(currentId: string, items: ReplayLibraryItem[]): string {
+  if (!items.length) return "";
+  if (items.some((item) => item.id === currentId)) return currentId;
+  return items[0].id;
+}
+
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>("map");
   const [selectedScenarioId, setSelectedScenarioId] = useState("horseshoe_reef_2026");
@@ -82,13 +88,13 @@ export default function App() {
           <div className="topbar-title">
             <img src="/brand/ai1sad-avatar.jpg" alt="" aria-hidden="true" className="topbar-avatar" />
             <div>
-            <p className="eyebrow">Replay • Explain • Observe</p>
+            <p className="eyebrow">Replay | Explain | Observe</p>
             <h1>{page.label}</h1>
             </div>
           </div>
           <div className="status-pill">
             <Activity size={16} aria-hidden="true" />
-            Existing API outputs only
+            {data?.data_source === "mock" ? "Mock demo data source" : "Live backend data source"}
           </div>
         </header>
         <BrandHero />
@@ -159,7 +165,8 @@ function ErrorPanel({ message }: { message: string }) {
       <div>
         <h2>Demo data unavailable</h2>
         <p>{message}</p>
-        <p>Check the FastAPI service or enable frontend mock mode for local visual QA.</p>
+        <p>Backend data could not be loaded in live mode. Check the FastAPI service, CORS, and local URLs.</p>
+        <p>Enable frontend mock mode only when you intentionally want demo fallback data.</p>
       </div>
     </section>
   );
@@ -254,6 +261,12 @@ function ReplayExplorer({ data }: { data: DashboardData }) {
 
 function ReplayLibraryView({ items }: { items: ReplayLibraryItem[] }) {
   const [selectedId, setSelectedId] = useState(items[0]?.id ?? "");
+  useEffect(() => {
+    const resolved = resolveReplaySelectionId(selectedId, items);
+    if (resolved !== selectedId) {
+      setSelectedId(resolved);
+    }
+  }, [items, selectedId]);
   const selected = items.find((item) => item.id === selectedId) ?? items[0];
 
   if (!selected) {
