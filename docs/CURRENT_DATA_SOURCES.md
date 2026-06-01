@@ -91,3 +91,18 @@ The warning score does not predict attacks. It is not a safety guarantee and sho
 The project deliberately starts with deterministic, explainable rules. A Bayesian/statistical layer may come later, and any ML ensemble belongs after the data contracts, source freshness, and explainability layer are stable.
 
 Provider API keys and external-provider configuration must stay in `.env` or deployment secrets only.
+
+## Hawaii Signal Coverage Notes
+
+The Cromwell's Beach 2026 replay documented a strict timeline-separated Hawaii pre-incident gap profile where surveillance remained low before later warning ingestion.
+
+Primary Hawaii improvement priorities are signal-coverage expansions, not score-weight tuning:
+
+- live sightings ingestion with strict source timestamps
+- surf-line/lifeguard observation ingestion
+- tide/current context
+- water clarity/turbidity context
+- higher-resolution reef-channel habitat mapping
+- Hawaii time-of-day exposure profiles
+
+See [Hawaii Signal Gap Analysis](HAWAII_SIGNAL_GAP_ANALYSIS.md) for the full matrix and implementation roadmap.

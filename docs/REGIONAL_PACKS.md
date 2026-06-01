@@ -54,6 +54,20 @@ Phase 20 adds static/manual kelp forest habitat examples associated with regiona
 
 These kelp signals are controlled offline habitat examples. They are not live canopy detections, animal detections, satellite feeds, or scraped map layers.
 
+## Hawaii Pack Coverage Gaps
+
+The Cromwell's Beach replay analysis shows that Hawaii operational awareness is currently limited most by early observational ingestion gaps and missing ocean-state layers, not by pack-weight tuning.
+
+High-value next additions for the Hawaii pack:
+
+- finer reef-channel habitat mapping
+- tide/current context adapter
+- turbidity/clarity context adapter
+- local live sightings/lifeguard signal ingestion
+- time-sliced human exposure timing profiles
+
+Reference: [Hawaii Signal Gap Analysis](HAWAII_SIGNAL_GAP_ANALYSIS.md).
+
 ## Pack Metadata
 
 Each pack defines:
