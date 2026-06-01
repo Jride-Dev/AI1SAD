@@ -51,6 +51,8 @@ nav:
   - Home: index.md
 
   - Overview:
+      - Project Status: PROJECT_STATUS.md
+      - Next Phase: NEXT_PHASE.md
       - Brand Identity: BRAND_IDENTITY.md
       - Asset Checklist: ASSET_CHECKLIST.md
       - Brand Deployment Map: BRAND_DEPLOYMENT_MAP.md
