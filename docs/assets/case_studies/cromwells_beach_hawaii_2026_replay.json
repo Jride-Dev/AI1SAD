@@ -1,0 +1,794 @@
+{
+  "case_id": "cromwells_beach_hawaii_2026",
+  "title": "Cromwell's Beach shark incident replay, Honolulu, Hawaii (2026-05-30)",
+  "location": {
+    "name": "Cromwell's Beach near Diamond Head, Honolulu, Oahu, Hawaii",
+    "coordinates": {
+      "lat": 21.255,
+      "lon": -157.81
+    }
+  },
+  "timeline": {
+    "incident_date": "2026-05-30",
+    "sensitivity_window_hst": "2026-05-30T06:15:00-10:00 through 2026-05-30T06:30:00-10:00",
+    "ems_response_hst": "approximately 06:30",
+    "ala_moana_warning_hst": "approximately 07:20"
+  },
+  "species_context": {
+    "confirmed_species": null,
+    "reported_size_feet": "6 to 8",
+    "note": "Species is unidentified; any species context is uncertain regional suitability only."
+  },
+  "runs": {
+    "swimming_across_channel": {
+      "scenario_id": "cromwells_beach_hawaii_2026_pre_swimming",
+      "label": "Cromwell's Beach May 30 2026 pre-incident replay (swimming across channel)",
+      "timestamp": "2026-05-30T16:20:00+00:00",
+      "activity_variant": "swimming_across_channel",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 15.0,
+      "surveillance_priority_band": "low",
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 5,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.3333
+        },
+        {
+          "factor": "activity_context",
+          "value": "swimming",
+          "points": 4,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.2667
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.2
+        },
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 3.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.2
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_data_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles"
+      ],
+      "regional_rules_triggered": [],
+      "recommended_surveillance_pattern": "surf-zone ladder search",
+      "quiet_day_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 15.33,
+        "delta": -15.33,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "operational_interpretation": "See case study narrative for timeline-separated interpretation."
+    },
+    "surfing_or_paddling_out": {
+      "scenario_id": "cromwells_beach_hawaii_2026_pre_surfing",
+      "label": "Cromwell's Beach May 30 2026 pre-incident replay (surfing or paddling out)",
+      "timestamp": "2026-05-30T16:20:00+00:00",
+      "activity_variant": "surfing_or_paddling_out",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 18.0,
+      "surveillance_priority_band": "low",
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "activity_context",
+          "value": "surfing",
+          "points": 7,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.3889
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 5,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.2778
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.1667
+        },
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 3.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.1667
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_data_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles"
+      ],
+      "regional_rules_triggered": [],
+      "recommended_surveillance_pattern": "surf-zone ladder search",
+      "quiet_day_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 15.33,
+        "delta": -15.33,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "operational_interpretation": "See case study narrative for timeline-separated interpretation."
+    },
+    "post_incident_update": {
+      "scenario_id": "cromwells_beach_hawaii_2026_post_update",
+      "label": "Cromwell's Beach May 30 2026 post-incident surveillance update",
+      "timestamp": "2026-05-30T17:25:00+00:00",
+      "activity_variant": "post_incident_update",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 40.0,
+      "surveillance_priority_band": "moderate",
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 2,
+          "points": 22,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.55
+        },
+        {
+          "factor": "activity_context",
+          "value": "surfing",
+          "points": 7,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.175
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 5,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.125
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.075
+        },
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 3.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.075
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_data_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles",
+        "sighting_reports"
+      ],
+      "regional_rules_triggered": [],
+      "recommended_surveillance_pattern": "surf-zone ladder search",
+      "quiet_day_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 15.33,
+        "delta": -15.33,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "operational_interpretation": "See case study narrative for timeline-separated interpretation."
+    },
+    "hypothetical_earlier_sighting_available": {
+      "scenario_id": "cromwells_beach_hawaii_2026_hypothetical_early_sighting",
+      "label": "Cromwell's Beach May 30 2026 hypothetical early sighting ingestion",
+      "timestamp": "2026-05-30T16:20:00+00:00",
+      "activity_variant": "hypothetical_earlier_sighting_available",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 29.0,
+      "surveillance_priority_band": "moderate",
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 1,
+          "points": 11,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.3793
+        },
+        {
+          "factor": "activity_context",
+          "value": "surfing",
+          "points": 7,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.2414
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 5,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.1724
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.1034
+        },
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 3.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.1034
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_data_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles",
+        "sighting_reports"
+      ],
+      "regional_rules_triggered": [],
+      "recommended_surveillance_pattern": "surf-zone ladder search",
+      "quiet_day_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 15.33,
+        "delta": -15.33,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "operational_interpretation": "See case study narrative for timeline-separated interpretation."
+    }
+  },
+  "comparisons": {
+    "pre_incident_variant_delta": 3.0,
+    "post_vs_pre_surveillance_delta": 22.0,
+    "hypothetical_earlier_sighting_vs_pre_surveillance_delta": 11.0
+  },
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "generated_at": "2026-06-01T02:08:12.478693+00:00",
+    "replay_asset_version": "2026.05"
+  },
+  "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or infer shark intent.",
+  "generated_at": "2026-06-01T02:08:12.478693+00:00"
+}

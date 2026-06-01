@@ -61,6 +61,47 @@ class TestReplayRunner:
         assert result.error is None
         assert result.warning.get("warning_score", 0) >= 0
 
+    def test_cromwells_pre_incident_excludes_hindsight_sightings(self):
+        scenario = REPLAY_SCENARIOS["cromwells_beach_hawaii_2026_pre_surfing"]
+        runner = ReplayRunner()
+        result = runner.run_scenario(scenario)
+        assert result.error is None
+        zone = (result.surveillance or {}).get("zones", [{}])[0]
+        assert scenario.sighting_reports == []
+        factors = zone.get("dominant_factors", [])
+        sightings_factor = next(
+            (f for f in factors if f.get("factor") == "verified_sightings_nearby"),
+            None,
+        )
+        assert sightings_factor is not None
+        assert sightings_factor.get("points") == 0
+
+    def test_cromwells_post_incident_update_separated_from_pre_incident(self):
+        pre = REPLAY_SCENARIOS["cromwells_beach_hawaii_2026_pre_surfing"]
+        post = REPLAY_SCENARIOS["cromwells_beach_hawaii_2026_post_update"]
+        runner = ReplayRunner()
+        pre_result = runner.run_scenario(pre)
+        post_result = runner.run_scenario(post)
+        assert pre_result.error is None
+        assert post_result.error is None
+        pre_zone = (pre_result.surveillance or {}).get("zones", [{}])[0]
+        post_zone = (post_result.surveillance or {}).get("zones", [{}])[0]
+        assert len(post.sighting_reports) >= 2
+        assert post_zone.get("surveillance_priority_score", 0) > pre_zone.get("surveillance_priority_score", 0)
+        assert any(item.get("factor") == "verified_sightings_nearby" for item in post_zone.get("dominant_factors", []))
+
+    def test_cromwells_hypothetical_early_sighting_increases_priority(self):
+        base = REPLAY_SCENARIOS["cromwells_beach_hawaii_2026_pre_surfing"]
+        early = REPLAY_SCENARIOS["cromwells_beach_hawaii_2026_hypothetical_early_sighting"]
+        runner = ReplayRunner()
+        base_result = runner.run_scenario(base)
+        early_result = runner.run_scenario(early)
+        assert base_result.error is None
+        assert early_result.error is None
+        base_zone = (base_result.surveillance or {}).get("zones", [{}])[0]
+        early_zone = (early_result.surveillance or {}).get("zones", [{}])[0]
+        assert early_zone.get("surveillance_priority_score", 0) > base_zone.get("surveillance_priority_score", 0)
+
     def test_run_wa_spearfishing_scenario(self):
         scenario = REPLAY_SCENARIOS["wa_spearfishing_reef_white"]
         runner = ReplayRunner()

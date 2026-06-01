@@ -82,6 +82,8 @@ class ReplayRunner:
                 river_mouth_distance_km=scenario.river_mouth_distance_km,
                 month=scenario.month,
                 profiles=profiles_list,
+                recent_interactions=scenario.recent_interactions,
+                sighting_reports=scenario.sighting_reports,
                 reef_features=reef_features,
                 warning_inputs={
                     "rainfall_72h_mm": scenario.rainfall_72h_mm,

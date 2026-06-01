@@ -19,12 +19,14 @@ GET /api/v1/replay/library/{replay_id}
 | `queensland_spearfishing_reef_tiger_bull_2026` | Queensland Spearfishing 2026 | Far North Queensland, Australia | Tropical reef spearfishing with tiger/bull shark operational context |
 | `florida_crowded_inlet_demo` | Florida Crowded Inlet Demo | Florida | Crowding, inlet exposure, surf/fishing activity, and regional species context |
 | `hawaii_october_tiger_context_demo` | Hawaii October Tiger Shark Context Demo | Hawaii | October regional context and calm monitoring workflow |
+| `cromwells_beach_hawaii_2026` | Cromwell's Beach Hawaii 2026 | Honolulu, Oahu, Hawaii | Timeline-separated pre-incident, quiet-day, post-incident update, and hypothetical early-sighting sensitivity |
 | `red_sea_anomaly_demo` | Red Sea Anomaly Demo | Red Sea | Biological anomaly and tourism corridor operational review |
 
 ## Linked Case Studies
 
 - [Horseshoe Reef 2026](CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Queensland Spearfishing 2026](case_studies/queensland_spearfishing_2026.md)
+- [Cromwell's Beach Hawaii 2026](case_studies/cromwells_beach_hawaii_2026.md)
 
 ## Required Fields
 

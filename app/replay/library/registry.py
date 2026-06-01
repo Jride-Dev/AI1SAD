@@ -210,6 +210,39 @@ REPLAY_LIBRARY: dict[str, dict[str, Any]] = {
         explanation_summary="Demo scenario for anomaly review, advisory context, and surveillance planning.",
         heatmap_asset=None,
     ),
+    "cromwells_beach_hawaii_2026": _item(
+        replay_id="cromwells_beach_hawaii_2026",
+        title="Cromwell's Beach Hawaii 2026",
+        region="Honolulu, Oahu, Hawaii",
+        coordinates={"lat": 21.255, "lon": -157.81},
+        observed_at="2026-05-30T16:30:00+00:00",
+        activity_context="swimming across channel and surfing/paddling variants",
+        species_context="species unidentified; regional suitability context only",
+        replay_output={
+            "warning_score": 0.0,
+            "warning_band": "low",
+            "activity_hazard_score": 0,
+            "activity_hazard_band": "low",
+            "surveillance_priority_score": 40.0,
+            "surveillance_priority_band": "moderate",
+            "confidence": 0.51,
+        },
+        quiet_day_comparison={
+            "warning_score": 15.33,
+            "activity_hazard_score": 0,
+            "surveillance_priority_score": 18.0,
+            "confidence": 0.83,
+            "summary": "Pre-incident replay remains weak with substantial missing live sources; post-incident sighting ingestion raises surveillance attention to moderate.",
+        },
+        factor_summary=[
+            {"factor": "verified_sightings_nearby", "points": 22.0},
+            {"factor": "activity_context", "points": 7},
+            {"factor": "reef_dropoff_habitat_proximity", "points": 5},
+            {"factor": "regional_sst_species_context", "points": 3},
+        ],
+        explanation_summary="Case-study library entry tracks strict pre-incident replay, quiet-day baseline, post-incident update, and a clearly hypothetical earlier-sighting sensitivity run.",
+        heatmap_asset="docs/assets/case_studies/cromwells_beach_hawaii_2026_heatmap.svg",
+    ),
 }
 
 
