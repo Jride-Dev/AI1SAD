@@ -215,9 +215,21 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
         "kelp_prey_overlap",
         "white_shark_kelp_hunting_context",
     }
+    habitat_signal_types = {
+        "reef_channel_habitat",
+        "shallow_reef_habitat",
+        "reef_edge_habitat",
+        "hardbottom_habitat",
+        "submerged_vegetation_habitat",
+        "sandy_bottom_habitat",
+        "dropoff_habitat",
+        "nearshore_structure_context",
+        "habitat_visibility_context",
+    }
     high_impact_bio_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "fish_kill"})
     carcass_count = sum(1 for signal in signals if signal.get("signal_type") in biological_signal_types)
     kelp_signal_count = sum(1 for signal in signals if signal.get("signal_type") in kelp_signal_types)
+    habitat_signal_count = sum(1 for signal in signals if signal.get("signal_type") in habitat_signal_types)
     sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
     exposure_signals = [
         signal
@@ -350,6 +362,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 summary="Kelp forest, kelp edge, prey overlap, or canopy context is active alongside operational activity or surveillance factors.",
                 recommended_action="Use kelp habitat as supporting context for targeted observation; do not treat kelp presence alone as a public warning.",
                 trigger={"trigger_type": "kelp_habitat_context", "threshold": 1, "observed_value": kelp_signal_count},
+                expires_hours=12,
+                now=now,
+                confidence=max(confidence - 0.04, 0.25),
+            )
+        )
+
+    if habitat_signal_count and (surveillance_score >= 60 or activity_score >= 45 or sighting_count or carcass_count or exposure_signals):
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(max(surveillance_score, activity_score, 45), urgent_threshold=90),
+                title="Baseline habitat context supports surveillance review",
+                summary="Historic reef-channel, reef-edge, hardbottom, sandy-bottom, or nearshore structure context is active alongside other operational signals.",
+                recommended_action="Use baseline habitat maps as bounded structural context for targeted observation; do not treat historical habitat layers as live shark conditions.",
+                trigger={"trigger_type": "hawaii_habitat_context", "threshold": 1, "observed_value": habitat_signal_count},
                 expires_hours=12,
                 now=now,
                 confidence=max(confidence - 0.04, 0.25),

@@ -119,6 +119,19 @@ D. Live sightings ingestion adapter
 E. Hawaii replay cohort buildout  
 F. Calibration review (post-cohort only)
 
+## Phase 22 Status
+
+Phase 22 adds a static/offline Hawaii habitat mapping adapter and baseline Oahu demo profiles for:
+
+- Cromwell's Beach / Diamond Head
+- Kaikoo / Hale Mano channel context
+- Waikiki / Ala Moana south-shore context
+- reef-channel demo baseline
+- shallow-reef edge demo baseline
+- sandy-bottom quiet-day baseline
+
+These are historic/static habitat baselines with source-date metadata, not live habitat observations.
+
 ## Operational Bottom Line
 
 For Cromwell's Beach pre-incident conditions, AI1SAD behaved as a bounded low-confidence, low-surveillance system because key short-latency Hawaii observational layers were unavailable. The highest-value improvement path is better early local signal ingestion and habitat/ocean-state coverage, not weight tuning to one event.

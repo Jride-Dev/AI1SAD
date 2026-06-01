@@ -55,6 +55,15 @@ SIGNAL_TYPE_DECAY_PARAMS: dict[str, dict[str, float]] = {
     "kelp_edge_habitat": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
     "kelp_prey_overlap": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
     "white_shark_kelp_hunting_context": {"half_life_hours": 720.0, "expiry_multiplier": 3.0},
+    "reef_channel_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "shallow_reef_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "reef_edge_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "hardbottom_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "submerged_vegetation_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "sandy_bottom_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "dropoff_habitat": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "nearshore_structure_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "habitat_visibility_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
 }
 
 

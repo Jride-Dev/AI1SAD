@@ -161,6 +161,57 @@ def kelp_surveillance_points(
     return round(min(22, points), 2), signal_types, sorted(set(contexts)), density == "dense", round(min(7.0, optimal_kelpedge_score), 2)
 
 
+def hawaii_habitat_surveillance_points(
+    signals: list[dict[str, Any]],
+    *,
+    activity_context: str | None,
+) -> tuple[float, list[str], list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], [], 0.0
+
+    signal_types = sorted({str(signal.get("signal_type", "")) for signal in public if signal.get("signal_type")})
+    factors: list[dict[str, Any]] = []
+    points = 0.0
+
+    has_channel = "reef_channel_habitat" in signal_types
+    has_edge = "reef_edge_habitat" in signal_types
+    has_shallow = "shallow_reef_habitat" in signal_types
+    has_hardbottom = "hardbottom_habitat" in signal_types
+    has_sandy = "sandy_bottom_habitat" in signal_types
+    has_visibility = "habitat_visibility_context" in signal_types
+
+    if has_channel:
+        points += 5
+        factors.append({"factor": "reef_channel_context", "value": True, "points": 5, "rationale": "Baseline reef-channel structure can modestly increase surveillance attention."})
+    if has_edge:
+        points += 4
+        factors.append({"factor": "reef_edge_context", "value": True, "points": 4, "rationale": "Baseline reef-edge structure can support bounded operational mapping attention."})
+    if has_shallow:
+        points += 3
+        factors.append({"factor": "shallow_reef_context", "value": True, "points": 3, "rationale": "Shallow reef baseline adds low-weight context for nearshore monitoring."})
+    if has_hardbottom:
+        points += 2
+        factors.append({"factor": "hardbottom_context", "value": True, "points": 2, "rationale": "Hardbottom baseline provides small structural context."})
+    if has_visibility:
+        points += 2
+        factors.append({"factor": "habitat_visibility_context", "value": True, "points": 2, "rationale": "Visibility-related habitat context supports operational confidence bounds."})
+    if has_sandy:
+        points -= 1
+        factors.append({"factor": "sandy_bottom_context", "value": True, "points": -1, "rationale": "Sandy-bottom baseline generally carries lower structural relevance."})
+
+    if has_channel and (activity_context or "").lower() in {"surfing", "swimming", "diving", "spearfishing"}:
+        points += 4
+        factors.append({"factor": "channel_activity_stack_context", "value": activity_context, "points": 4, "rationale": "Channel context plus active nearshore activity raises operational attention more than habitat alone."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale")
+    freshness_penalty = -0.04 if stale_count else 0.0
+    if freshness_penalty:
+        factors.append({"factor": "baseline_habitat_freshness", "value": "stale_static_baseline", "points": 0, "rationale": "Historic baseline habitat context is stale and reduces confidence."})
+
+    return round(min(18, max(0, points)), 2), signal_types, factors, freshness_penalty
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -416,6 +467,20 @@ def score_surveillance_zones(
         }
     )
 
+    habitat_points_score, habitat_signal_types, habitat_factors, habitat_confidence_penalty = hawaii_habitat_surveillance_points(
+        warning_inputs.get("hawaii_habitat_signals", []),
+        activity_context=activity_context,
+    )
+    factors.extend(habitat_factors)
+    factors.append(
+        {
+            "factor": "hawaii_habitat_baseline_context",
+            "value": habitat_signal_types,
+            "points": habitat_points_score,
+            "rationale": "Historic Hawaii habitat baselines are bounded structural context and do not represent live observations.",
+        }
+    )
+
     human_exposure = warning_inputs.get("human_exposure_index")
     human_points = round(min(12, max(0, float(human_exposure or 0)) * 12), 2)
     factors.append(
@@ -468,6 +533,8 @@ def score_surveillance_zones(
         missing_sources.add("reef_features")
     if warning_inputs.get("kelp_habitat_signals"):
         data_sources_used.add("kelp_forest_static")
+    if warning_inputs.get("hawaii_habitat_signals"):
+        data_sources_used.add("hawaii_habitat_static")
     if profile:
         data_sources_used.add("regional_risk_profiles")
     else:
@@ -476,6 +543,8 @@ def score_surveillance_zones(
     confidence = round(max(0.25, min(0.92, 0.88 - len(missing_sources) * 0.05)), 2)
     if dense_kelp_visibility:
         confidence = round(max(0.25, confidence - 0.04), 2)
+    if habitat_confidence_penalty:
+        confidence = round(max(0.25, confidence + habitat_confidence_penalty), 2)
     zone_radius = round(max(0.5, min(radius_km, 2.5 if priority_score >= 50 else 4.0)), 2)
     zone_id = f"{mission_type}:{lat:.3f}:{lon:.3f}:{lookback_hours}:{activity_context or 'general'}"
 

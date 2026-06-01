@@ -35,6 +35,7 @@ from app.providers.noaa_nws import (
     record_provider_success as record_noaa_nws_success,
 )
 from app.providers.kelp_forest import normalize_static_kelp_forest_signals
+from app.providers.hawaii_habitat import normalize_static_hawaii_habitat_signals
 from providers.manual_events import build_manual_event
 from app.replay.scenarios import REPLAY_SCENARIOS, ReplayScenario
 from app.replay.runner import ReplayResult, ReplayRunner
@@ -147,8 +148,10 @@ def warning_inputs_from_mongo(db: Database, lat: float, lon: float, radius_km: f
     exposure_docs = latest_public_docs(db, COLLECTIONS["human_exposure_estimates"], lat, lon, radius_km)
     signal_docs = latest_public_docs(db, COLLECTIONS["signals"], lat, lon, radius_km, limit=200)
     kelp_signals = normalize_static_kelp_forest_signals(lat=lat, lon=lon, radius_km=radius_km, lookback_hours=720)
+    habitat_signals = normalize_static_hawaii_habitat_signals(lat=lat, lon=lon, radius_km=radius_km, lookback_hours=2160)
     signal_inputs = warning_inputs_from_signals(signal_docs)
     kelp_inputs = warning_inputs_from_signals(kelp_signals)
+    habitat_inputs = warning_inputs_from_signals(habitat_signals)
 
     rainfall = None
     if weather_docs:
@@ -165,9 +168,10 @@ def warning_inputs_from_mongo(db: Database, lat: float, lon: float, radius_km: f
         "vessel_activity_index": vessel.get("activity_index") or signal_inputs["vessel_activity_index"],
         "biological_events": event_docs + signal_inputs["biological_events"],
         "kelp_habitat_signals": kelp_inputs["kelp_habitat_signals"] + signal_inputs.get("kelp_habitat_signals", []),
+        "hawaii_habitat_signals": habitat_inputs["hawaii_habitat_signals"] + signal_inputs.get("hawaii_habitat_signals", []),
         "human_exposure_index": exposure.get("exposure_index") or signal_inputs["human_exposure_index"],
-        "signal_provider_status": {**signal_inputs["provider_status"], **kelp_inputs["provider_status"]},
-        "signal_data_freshness": {**signal_inputs["data_freshness"], **kelp_inputs["data_freshness"]},
+        "signal_provider_status": {**signal_inputs["provider_status"], **kelp_inputs["provider_status"], **habitat_inputs["provider_status"]},
+        "signal_data_freshness": {**signal_inputs["data_freshness"], **kelp_inputs["data_freshness"], **habitat_inputs["data_freshness"]},
         "data_presence": {
             "weather_observations": bool(weather_docs),
             "ocean_observations": bool(ocean_docs),
@@ -781,6 +785,7 @@ def warning_payload(
         vessel_activity_index=inputs["vessel_activity_index"],
         biological_events=inputs["biological_events"],
         kelp_habitat_signals=inputs.get("kelp_habitat_signals", []),
+        hawaii_habitat_signals=inputs.get("hawaii_habitat_signals", []),
         weather_alerts=inputs.get("weather_alerts", []),
         weather_alert_score=inputs.get("weather_alert_score", 0),
         human_exposure_index=inputs["human_exposure_index"],
@@ -1396,6 +1401,7 @@ def replay_run_custom(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         sighting_reports=payload.get("sighting_reports", []),
         recent_interactions=payload.get("recent_interactions", []),
         kelp_habitat_signals=payload.get("kelp_habitat_signals", []),
+        hawaii_habitat_signals=payload.get("hawaii_habitat_signals", []),
         month=payload.get("month"),
         activity_context=payload.get("activity_context"),
         suspected_species=payload.get("suspected_species"),

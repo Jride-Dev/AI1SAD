@@ -28,6 +28,7 @@ GET /api/v1/replay/library/{replay_id}
 - [Queensland Spearfishing 2026](case_studies/queensland_spearfishing_2026.md)
 - [Cromwell's Beach Hawaii 2026](case_studies/cromwells_beach_hawaii_2026.md)
 - [Hawaii Signal Gap Analysis](HAWAII_SIGNAL_GAP_ANALYSIS.md)
+- [Hawaii Habitat Provider](HAWAII_HABITAT_PROVIDER.md)
 
 ## Required Fields
 

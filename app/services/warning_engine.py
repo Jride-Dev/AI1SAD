@@ -222,6 +222,56 @@ def kelp_warning_context_score(
     }, density == "dense"
 
 
+def hawaii_habitat_warning_context_score(signals: list[dict[str, Any]]) -> tuple[float, list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], 0.0
+
+    points = 0.0
+    factors: list[dict[str, Any]] = []
+    baseline_freshness_points = 0.0
+
+    has_channel = any(signal.get("signal_type") == "reef_channel_habitat" for signal in public)
+    has_edge = any(signal.get("signal_type") == "reef_edge_habitat" for signal in public)
+    has_shallow = any(signal.get("signal_type") == "shallow_reef_habitat" for signal in public)
+    has_hardbottom = any(signal.get("signal_type") == "hardbottom_habitat" for signal in public)
+    has_sandy = any(signal.get("signal_type") == "sandy_bottom_habitat" for signal in public)
+    has_visibility = any(signal.get("signal_type") == "habitat_visibility_context" for signal in public)
+
+    if has_channel:
+        points += 1.2
+        factors.append({"factor": "reef_channel_context", "value": True, "points": 1.2, "rationale": "Static reef-channel baseline can modestly inform surveillance-relevant habitat interpretation."})
+    if has_edge:
+        points += 1.0
+        factors.append({"factor": "reef_edge_context", "value": True, "points": 1.0, "rationale": "Static reef-edge baseline provides bounded structural context."})
+    if has_shallow:
+        points += 0.8
+        factors.append({"factor": "shallow_reef_context", "value": True, "points": 0.8, "rationale": "Shallow reef baseline context is included as a low-weight supporting signal."})
+    if has_hardbottom:
+        points += 0.6
+        factors.append({"factor": "hardbottom_context", "value": True, "points": 0.6, "rationale": "Hardbottom baseline contributes modestly to habitat context only."})
+    if has_sandy:
+        points -= 0.2
+        factors.append({"factor": "sandy_bottom_context", "value": True, "points": -0.2, "rationale": "Sandy-bottom baseline generally indicates lower structural complexity."})
+    if has_visibility:
+        points += 0.5
+        factors.append({"factor": "habitat_visibility_context", "value": True, "points": 0.5, "rationale": "Habitat visibility context is baseline-only and bounded."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale")
+    if stale_count:
+        baseline_freshness_points = -0.4
+        factors.append(
+            {
+                "factor": "baseline_habitat_freshness",
+                "value": "stale_static_baseline",
+                "points": baseline_freshness_points,
+                "rationale": "Historic baseline habitat metadata is stale and should reduce confidence in habitat interpretation.",
+            }
+        )
+
+    return round(max(0.0, min(3.5, points + baseline_freshness_points)), 2), factors, baseline_freshness_points
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -234,6 +284,7 @@ def calculate_warning(
     vessel_activity_index: float | None = None,
     biological_events: list[dict[str, Any]] | None = None,
     kelp_habitat_signals: list[dict[str, Any]] | None = None,
+    hawaii_habitat_signals: list[dict[str, Any]] | None = None,
     weather_alerts: list[dict[str, Any]] | None = None,
     weather_alert_score: float | None = None,
     human_exposure_index: float | None = None,
@@ -323,6 +374,13 @@ def calculate_warning(
     if kelp_factor:
         factors.append(kelp_factor)
 
+    habitat_signals = hawaii_habitat_signals or []
+    habitat_score, habitat_factors, habitat_freshness_penalty = hawaii_habitat_warning_context_score(habitat_signals)
+    if habitat_signals:
+        data_sources_used.append("hawaii_habitat_static")
+    for habitat_factor in habitat_factors:
+        factors.append(habitat_factor)
+
     alert_events = [event for event in weather_alerts or [] if event.get("visibility", "public") == "public"]
     alert_score = min(10, float(weather_alert_score or 0))
     if alert_events:
@@ -391,6 +449,7 @@ def calculate_warning(
             "fishing_vessel_activity_score": vessel_score,
             "biological_event_score": bio_score,
             "kelp_forest_context_score": kelp_score,
+            "hawaii_habitat_context_score": habitat_score,
             "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
             "human_exposure_amplifier_score": exposure_amp_score,
@@ -410,6 +469,9 @@ def calculate_warning(
     if dense_kelp_visibility:
         result["confidence"] = round(max(0.25, result["confidence"] - 0.04), 2)
         result["signals"]["kelp_visibility_confidence_modifier"] = -0.04
+    if habitat_freshness_penalty < 0:
+        result["confidence"] = round(max(0.25, result["confidence"] + habitat_freshness_penalty), 2)
+        result["signals"]["baseline_habitat_freshness_confidence_modifier"] = habitat_freshness_penalty
     return result
 
 

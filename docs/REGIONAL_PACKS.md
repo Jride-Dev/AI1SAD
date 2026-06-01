@@ -54,6 +54,17 @@ Phase 20 adds static/manual kelp forest habitat examples associated with regiona
 
 These kelp signals are controlled offline habitat examples. They are not live canopy detections, animal detections, satellite feeds, or scraped map layers.
 
+Phase 22 adds static/manual Hawaii habitat baseline examples associated with the Hawaii pack:
+
+- Cromwell's Beach / Diamond Head nearshore baseline context
+- Kaikoo / Hale Mano channel baseline context
+- Waikiki / Ala Moana south-shore baseline context
+- Oahu reef-channel demo baseline context
+- Oahu shallow-reef edge demo baseline context
+- Oahu sandy-bottom quiet-day baseline context
+
+These Hawaii habitat signals are historic/static structural baselines. They are not live observations and must be interpreted as bounded context only.
+
 ## Hawaii Pack Coverage Gaps
 
 The Cromwell's Beach replay analysis shows that Hawaii operational awareness is currently limited most by early observational ingestion gaps and missing ocean-state layers, not by pack-weight tuning.

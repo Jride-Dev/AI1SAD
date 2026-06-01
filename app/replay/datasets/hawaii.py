@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from app.providers.hawaii_habitat import normalize_static_hawaii_habitat_signals
 from app.replay.scenarios import ReplayScenario
 
 
@@ -32,6 +33,15 @@ def _post_incident_sighting_reports() -> list[dict]:
             "summary": "Separate Ala Moana Bowls warning around 7:20 a.m. HST; reported two aggressive sharks.",
         },
     ]
+
+
+def _cromwells_habitat_baseline_signals() -> list[dict]:
+    return normalize_static_hawaii_habitat_signals(
+        lat=_CROMWELLS_LAT,
+        lon=_CROMWELLS_LON,
+        radius_km=10.0,
+        lookback_hours=2160,
+    )
 
 
 SCENARIOS = {
@@ -69,6 +79,7 @@ SCENARIOS = {
         reef_habitat=True,
         dropoff_habitat=True,
         reef_feature_name="South-shore channel and nearshore reef context",
+        hawaii_habitat_signals=_cromwells_habitat_baseline_signals(),
         radius_km=8.0,
         lookback_hours=72,
         expected_warning_band="low",
@@ -90,6 +101,7 @@ SCENARIOS = {
         reef_habitat=True,
         dropoff_habitat=True,
         reef_feature_name="South-shore channel and nearshore reef context",
+        hawaii_habitat_signals=_cromwells_habitat_baseline_signals(),
         radius_km=8.0,
         lookback_hours=72,
         expected_warning_band="low",
@@ -111,6 +123,7 @@ SCENARIOS = {
         reef_habitat=True,
         dropoff_habitat=True,
         reef_feature_name="South-shore channel and nearshore reef context",
+        hawaii_habitat_signals=_cromwells_habitat_baseline_signals(),
         sighting_reports=_post_incident_sighting_reports(),
         radius_km=10.0,
         lookback_hours=72,
@@ -133,6 +146,7 @@ SCENARIOS = {
         reef_habitat=True,
         dropoff_habitat=True,
         reef_feature_name="South-shore channel and nearshore reef context",
+        hawaii_habitat_signals=_cromwells_habitat_baseline_signals(),
         sighting_reports=[
             {
                 "visibility": "public",

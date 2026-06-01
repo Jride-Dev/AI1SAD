@@ -34,6 +34,8 @@ For vessel and fishing activity, Phase 9F uses static/manual/offline signals. Si
 
 For kelp forest habitat, Phase 20 uses static/manual/offline profiles. Signals include stale/static data freshness, canopy confidence, density class, pinniped context, human activity overlap notes, and pack association. Live kelp canopy APIs, satellite feeds, map scraping, and paid habitat providers are not enabled yet.
 
+For Hawaii benthic habitat, Phase 22 uses static/manual/offline baseline profiles. Signals include habitat type, geomorphology, biological cover type, depth band, edge/channel context, visibility context, source date, and baseline-only metadata. Historic baseline layers are structural context only and must not be interpreted as current habitat-state observations.
+
 ## Public API
 
 `GET /api/v1/provider-health` returns provider rollups and recent failures with credentials, private notes, and restricted details excluded.
@@ -46,6 +48,7 @@ For kelp forest habitat, Phase 20 uses static/manual/offline profiles. Signals i
 - Static biological-event provider output should expire stale carcass/fish-kill records instead of silently carrying old high-impact signals forward.
 - Static vessel/fishing provider output should expire active fishing and spearfishing quickly while allowing pier, marina, liveaboard, and dive-route context to remain lower-impact background signals for longer.
 - Static kelp provider output should remain bounded habitat context, with stale freshness lowering confidence and dense kelp affecting visibility confidence rather than automatically creating high warning.
+- Static Hawaii habitat provider output should remain bounded baseline context; stale baseline metadata should reduce confidence and must never be represented as live conditions.
 - Failed providers should lower confidence through missing or stale data freshness.
 - Error summaries must not include API keys, passwords, tokens, or full raw response dumps.
 - Placeholder providers should fail closed with clear messages until terms, credentials, and data contracts are reviewed.

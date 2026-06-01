@@ -29,6 +29,17 @@ Kelp explanations can include:
 - stale/static freshness in `data_freshness`
 - confidence reduction when dense kelp affects open-water visibility
 
+Hawaii habitat explanations can include:
+
+- `reef_channel_context`
+- `reef_edge_context`
+- `shallow_reef_context`
+- `hardbottom_context`
+- `baseline_habitat_freshness`
+- `habitat_visibility_context`
+
+These factors are bounded baseline-structure context and must not be described as live habitat-state observation.
+
 ## API Routes
 
 - `GET /api/v1/explain/location`
