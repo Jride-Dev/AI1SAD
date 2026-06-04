@@ -4,8 +4,8 @@
 
 - Current phase number: Phase 23 (planned)
 - Latest completed phase: Phase 22 (Hawaii Habitat Mapping Adapter)
-- Latest commit hash: `ce1373a` Add durable project status and next-phase handoff
-- Repo status: working tree in review with WA Plumpudding Beach carcass replay artifacts; no staging or commit performed yet
+- Latest commit hash: `a03cc7b` Add Plumpudding Beach whale-carcass replay case study
+- Repo status: working tree in review with targeted frontend Vitest security patch; no staging or commit performed yet
 
 ## Major Completed Systems
 
@@ -102,8 +102,9 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Validation Counts (Latest Review Run)
 
-- Focused biological-event tests: `11 passed`
-- Focused replay regression tests: `35 passed`
+- Frontend tests: `3 passed`, `8 tests passed`
+- Frontend build: passed
+- Frontend npm audit high+: `0 vulnerabilities`
 - Full backend tests: `197 passed, 2 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
@@ -111,13 +112,15 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- WA Plumpudding Beach / Esperance whale-carcass operational replay added as an active biological-event case study.
-- Initial report uses official carcass context with no confirmed shark sighting.
-- Sensitivity run adds a clearly hypothetical nearby sighting to show surveillance-priority lift.
-- Validation rerun completed; no staging or commit performed.
+- Targeted frontend Vitest security patch updated `vitest` from `3.2.4` to `4.1.8`.
+- Patch scope is frontend dev tooling only: `frontend/package.json`, `frontend/package-lock.json`, and docs.
+- No runtime application code changed.
+- No `npm audit fix --force` command was used.
 
 ## Recent Important Commits
 
+- `a03cc7b` Add Plumpudding Beach whale-carcass replay case study
+- `02b7138` Fix replay sighting evaluation against scenario timestamps
 - `ce1373a` Add durable project status and next-phase handoff
 - `e880846` Add Hawaii habitat mapping adapter
 - `5d5aa79` Add Hawaii signal gap analysis

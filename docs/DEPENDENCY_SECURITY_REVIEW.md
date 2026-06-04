@@ -1,0 +1,183 @@
+# Dependency Security Review
+
+Review date: 2026-06-03
+
+Scope: two open GitHub Dependabot critical alerts reported after the latest push. The first review documented the issue without changing dependencies. The follow-up patch applied a targeted Vitest-only upgrade.
+
+## Executive Summary
+
+Both open critical Dependabot alerts point to the same vulnerable package and advisory:
+
+- Package: `vitest`
+- Advisory: `GHSA-5xrq-8626-4rwp` / `CVE-2026-47429`
+- Severity: critical
+- Affected range: `<4.1.0`
+- Patched range: `>=4.1.0`
+- Pre-upgrade project version: `vitest@3.2.4`
+- Target and installed patched version: `vitest@4.1.8`
+
+Dependabot shows two alerts because it tracks the same direct dependency in both `frontend/package.json` and `frontend/package-lock.json`.
+
+## Affected Package And Dependency Paths
+
+| Alert | Manifest | Package | Ecosystem | Scope | Relationship | Current | Vulnerable Range | First Patched |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dependabot #2 | `frontend/package.json` | `vitest` | npm | development | direct | `^3.2.4` before patch; `^4.1.8` after patch | `<4.1.0` | `4.1.0` |
+| Dependabot #1 | `frontend/package-lock.json` | `vitest` | npm | development | direct | `3.2.4` before patch; `4.1.8` after patch | `<4.1.0` | `4.1.0` |
+
+Local dependency path:
+
+```text
+frontend root project
+└── vitest@4.1.8 (devDependency)
+```
+
+## Impact Classification
+
+| Area | Affected? | Notes |
+| --- | --- | --- |
+| Frontend | Yes, dev/test tooling only | `frontend/package.json` uses `vitest` for `npm run test`. |
+| Backend | No | Python backend dependencies are not involved in this advisory. |
+| MkDocs | No | MkDocs Python documentation stack is not involved. |
+| Dev-only tooling | Yes | The vulnerable dependency is a direct frontend `devDependency`. |
+| Runtime production code | No known direct impact | The React/Vite production bundle does not include Vitest test tooling. Production exposure would require shipping or running Vitest UI/API/browser-mode tooling in an exposed environment. |
+
+## Advisory Summary
+
+The advisory describes arbitrary file read and possible file write/execution paths when the Vitest UI/API server or Browser Mode is listening, especially on Windows or when exposed beyond localhost. The current project test script is:
+
+```text
+npm run test -> vitest run
+```
+
+No project script currently starts Vitest UI, Browser Mode, or a network-exposed Vitest API server. That lowers practical production exposure, but the package remains a critical dev-tooling issue because contributors run on Windows and the advisory's affected conditions include Windows UI/browser-mode usage.
+
+## Patched Versions
+
+Patched versions exist.
+
+- First patched version: `vitest@4.1.0`
+- Latest checked patched version: `vitest@4.1.8`
+
+`npm audit` reports:
+
+```text
+vitest <4.1.0
+fix available: vitest@4.1.8
+semver-major: true
+```
+
+## Breaking-Change Assessment
+
+Upgrading from `vitest@3.2.4` to `vitest@4.1.x` is a major-version upgrade.
+
+Observed package metadata:
+
+| Version | Node engine | Vite peer range |
+| --- | --- | --- |
+| `vitest@3.2.4` | `^18.0.0 || ^20.0.0 || >=22.0.0` | `^5.0.0 || ^6.0.0 || ^7.0.0-0` |
+| `vitest@4.1.0` | `^20.0.0 || ^22.0.0 || >=24.0.0` | `^6.0.0 || ^7.0.0 || ^8.0.0-0` |
+| `vitest@4.1.8` | `^20.0.0 || ^22.0.0 || >=24.0.0` | `^6.0.0 || ^7.0.0 || ^8.0.0` |
+
+Current local environment checked during review:
+
+```text
+node v24.16.0
+npm 11.13.0
+```
+
+Current frontend Vite dependency is compatible with Vitest 4's peer range:
+
+```text
+vite ^7.1.12
+```
+
+The likely breaking-change risk is moderate:
+
+- Node 18 would no longer be supported for frontend tests after upgrading.
+- Vitest 4 may contain API, snapshot, mock, coverage, or reporter changes.
+- Current test usage appears simple (`describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`), so migration risk is probably manageable.
+- No `@vitest/ui`, Browser Mode, jsdom, happy-dom, or custom Vitest config was found in the project scan.
+
+## Patch Applied
+
+Targeted command used from `frontend/`:
+
+```text
+npm install --save-dev vitest@^4.1.8
+```
+
+No `npm audit fix --force` command was used. The intended dependency files changed:
+
+- `frontend/package.json`
+- `frontend/package-lock.json`
+
+The lockfile changed within Vitest's own dependency graph as part of the 4.x major upgrade. No runtime application code changed.
+
+Post-upgrade package resolution:
+
+```text
+ai1sad-dashboard@0.1.0 F:\shark-attack-api\frontend
+`-- vitest@4.1.8
+```
+
+Post-upgrade audit:
+
+```text
+npm audit --audit-level=high
+found 0 vulnerabilities
+```
+
+Validation after the targeted upgrade:
+
+- Frontend tests: `3 passed`, `8 tests passed`
+- Frontend build: passed
+- Backend tests: `197 passed, 2 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- Secret scan: no matches
+
+## Recommendation
+
+Recommended action: safe patch now, with normal validation, not `npm audit fix --force`.
+
+Proposed manual follow-up:
+
+```text
+cd frontend
+npm install -D vitest@^4.1.8
+npm test
+npm run build
+```
+
+Then run the normal repo validation:
+
+```text
+backend tests
+mkdocs build
+secret scan
+prohibited-language scan
+```
+
+Rationale:
+
+- The package is direct and dev-only, so the patch scope is isolated to frontend test tooling.
+- A patched version exists.
+- The project already uses Node 24 locally, which satisfies Vitest 4's engine requirement.
+- Vite 7 is within Vitest 4's peer range.
+- The current tests use basic Vitest APIs and should be relatively low-risk to validate.
+
+Do not use `npm audit fix --force` as the primary path because it may apply broader lockfile changes than necessary. The applied patch followed the explicit Vitest-only update path.
+
+## Deferral Criteria
+
+Defer only if the active CI or deployment environment is pinned to Node 18 and cannot be moved to Node 20+ immediately. If deferred:
+
+- keep `vitest run` local-only
+- do not run Vitest UI or Browser Mode
+- do not expose any Vitest API/UI server to the network
+- document the Node 20+ migration blocker
+- monitor the advisory for any 3.x backport, although none is currently indicated by Dependabot
+
+## Replace Or Monitor
+
+Replacement is not recommended at this time. Vitest is already aligned with the Vite-based frontend stack, and the patched 4.x line addresses the advisory. Monitor upstream only if a Node 18 test environment blocks the upgrade.

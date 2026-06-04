@@ -71,6 +71,7 @@ nav:
       - Schema: SCHEMA.md
       - Privacy: PRIVACY.md
       - MongoDB: MONGODB.md
+      - Dependency Security Review: DEPENDENCY_SECURITY_REVIEW.md
 
   - Model:
       - Risk Model: RISK_MODEL.md
