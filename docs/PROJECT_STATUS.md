@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 23 (implemented locally; pending review/commit)
-- Latest completed committed phase: Phase 22 (Hawaii Habitat Mapping Adapter)
+- Current phase number: Recife replay case-study work (not a numbered adapter phase)
+- Latest completed committed phase: Phase 23 (Hawaii Tide, Current & Nearshore Water-Movement Adapter)
 - Latest completed local phase: Phase 23 (Hawaii Tide, Current & Nearshore Water-Movement Adapter)
-- Latest commit hash: `363c359` Patch frontend Vitest security advisory
-- Repo status: working tree in review with Phase 23 tide/current adapter changes; no staging or commit performed yet
+- Latest commit hash: `c50441a` Add Hawaii tide and current context adapter
+- Repo status: working tree in review with Greater Recife paired replay case-study changes; no staging or commit performed yet
 
 ## Major Completed Systems
 
@@ -43,6 +43,7 @@
 - Live sightings ingestion pipeline still limited
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
+- Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
 
 ## Next Planned Phase
 
@@ -106,20 +107,23 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 - Focused tide/current tests: `11 passed`
 - Focused Cromwell replay regression tests: `35 passed`
-- Full backend tests: `208 passed, 2 warnings`
+- Focused replay tests: `38 passed`
+- Replay library tests: `4 passed, 2 warnings`
+- Full backend tests: `211 passed, 2 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
 - Prohibited-language scan: safety-rule/guardrail-only matches
 
 ## Current Review Item
 
-- Phase 23 Hawaii tide/current adapter added as static/offline baseline context.
-- Preferred future source order: PacIOOS South Shore Oahu ROMS, PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, NOAA CO-OPS support.
-- Cromwell's Beach replay includes baseline water-movement context while preserving strict timeline separation.
-- No live scraping, auth/billing, provider credentials, scoring-weight retuning, or runtime frontend changes were added.
+- Greater Recife paired replay case study added locally for Piedade and Boa Viagem, pending review.
+- Piedade strict pre-incident replay remains weak/low with missing live signals.
+- Boa Viagem strict pre-incident replay includes the previous day's Piedade incident as timeline-valid recent-interaction context.
+- No Recife scoring profile, provider, live scraping, auth/billing, or scoring-weight retuning was added.
 
 ## Recent Important Commits
 
+- `c50441a` Add Hawaii tide and current context adapter
 - `363c359` Patch frontend Vitest security advisory
 - `a03cc7b` Add Plumpudding Beach whale-carcass replay case study
 - `02b7138` Fix replay sighting evaluation against scenario timestamps

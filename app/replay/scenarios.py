@@ -34,6 +34,7 @@ class ReplayScenario:
     reef_habitat: bool = False
     dropoff_habitat: bool = False
     reef_feature_name: str | None = None
+    use_regional_profiles: bool = True
     tags: list[str] = field(default_factory=list)
 
 
@@ -44,9 +45,10 @@ def load_region_scenarios() -> dict[str, ReplayScenario]:
     from app.replay.datasets.red_sea import SCENARIOS as RED_SEA
     from app.replay.datasets.south_africa import SCENARIOS as SOUTH_AFRICA
     from app.replay.datasets.western_australia import SCENARIOS as WESTERN_AUSTRALIA
+    from app.replay.datasets.brazil import SCENARIOS as BRAZIL
 
     scenarios: dict[str, ReplayScenario] = {}
-    for region_pack in [FLORIDA, WESTERN_AUSTRALIA, QUEENSLAND, HAWAII, SOUTH_AFRICA, RED_SEA]:
+    for region_pack in [FLORIDA, WESTERN_AUSTRALIA, QUEENSLAND, HAWAII, SOUTH_AFRICA, RED_SEA, BRAZIL]:
         scenarios.update(region_pack)
     return scenarios
 

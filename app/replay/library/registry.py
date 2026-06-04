@@ -275,6 +275,38 @@ REPLAY_LIBRARY: dict[str, dict[str, Any]] = {
         explanation_summary="Timeline-safe WA carcass replay with official initial report and clearly hypothetical nearby-sighting sensitivity run.",
         heatmap_asset="docs/assets/case_studies/plumpudding_beach_esperance_whale_carcass_2026_heatmap.svg",
     ),
+    "piedade_boa_viagem_recife_2026": _item(
+        replay_id="piedade_boa_viagem_recife_2026",
+        title="Piedade and Boa Viagem Recife 2026",
+        region="Greater Recife, Pernambuco, Brazil",
+        coordinates={"lat": -8.1485, "lon": -34.9065},
+        observed_at="2026-05-31T13:40:00-03:00 / 2026-06-01T15:10:00-03:00",
+        activity_context="bathing/swimming with reef-barrier baseline context",
+        species_context="Piedade: CEMIT preliminary adult bull shark / tubarao-cabeca-chata; Boa Viagem: CEMIT preliminary adult tiger shark / tubarao-tigre; source-attributed only, no same-individual assumption",
+        replay_output={
+            "warning_score": 0.0,
+            "warning_band": "low",
+            "activity_hazard_score": 0,
+            "activity_hazard_band": "low",
+            "surveillance_priority_score": 23.0,
+            "surveillance_priority_band": "low",
+            "confidence": 0.48,
+        },
+        quiet_day_comparison={
+            "warning_score": 0.0,
+            "activity_hazard_score": 0,
+            "surveillance_priority_score": 9.0,
+            "confidence": 0.43,
+            "summary": "Boa Viagem strict pre-incident replay rises 14.0 surveillance points over its quiet-day comparison because the Piedade incident is timeline-valid recent-interaction context.",
+        },
+        factor_summary=[
+            {"factor": "recent_interactions_nearby", "points": 14.0},
+            {"factor": "reef_dropoff_habitat_proximity", "points": 5.0},
+            {"factor": "activity_context", "points": 4.0},
+        ],
+        explanation_summary="Paired Recife replay keeps Piedade strict pre-incident low and shows the Boa Viagem lift from the previous day's Piedade interaction without adding a Recife scoring retune.",
+        heatmap_asset="docs/assets/case_studies/piedade_boa_viagem_recife_2026_heatmap.svg",
+    ),
 }
 
 

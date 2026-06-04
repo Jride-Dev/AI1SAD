@@ -102,6 +102,7 @@ nav:
   - Replay & Case Studies:
       - Replay Library: REPLAY_LIBRARY.md
       - Hawaii Signal Gap Analysis: HAWAII_SIGNAL_GAP_ANALYSIS.md
+      - Recife Signal Gap Analysis: RECIFE_SIGNAL_GAP_ANALYSIS.md
       - Hawaii Habitat Data Plan: HAWAII_HABITAT_DATA_PLAN.md
       - Hawaii Tide And Current Data Plan: HAWAII_TIDE_CURRENT_DATA_PLAN.md
       - Replay Validation: REPLAY_VALIDATION.md
@@ -109,6 +110,7 @@ nav:
       - Queensland Spearfishing 2026: case_studies/queensland_spearfishing_2026.md
       - Cromwell's Beach Hawaii 2026: case_studies/cromwells_beach_hawaii_2026.md
       - Plumpudding Beach Whale Carcass 2026: case_studies/plumpudding_beach_esperance_whale_carcass_2026.md
+      - Piedade And Boa Viagem Recife 2026: case_studies/piedade_boa_viagem_recife_2026.md
 
   - Alerts & Operations:
       - Alert Engine: ALERT_ENGINE.md

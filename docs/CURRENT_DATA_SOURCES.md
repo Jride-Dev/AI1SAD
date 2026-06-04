@@ -12,6 +12,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - Kelp forest adapter: static/manual/offline kelp presence, density, edge habitat, prey overlap, and white shark kelp-context signals. No live canopy API, satellite feed, map scraping, or paid habitat provider is enabled. See [Kelp Forest Provider](KELP_FOREST_PROVIDER.md).
 - Hawaii habitat adapter: static/manual/offline benthic and nearshore structure baseline context (reef-channel, reef-edge, shallow reef, hardbottom, sandy-bottom, and visibility context) with retained historic source dates. No live GIS scraping or runtime external habitat calls are enabled. See [Hawaii Habitat Provider](HAWAII_HABITAT_PROVIDER.md).
 - Hawaii tide/current adapter: static/manual/offline tide-window, nearshore-current, channel-flow, and tidal-exchange baseline context. PacIOOS South Shore Oahu ROMS is the preferred future source, with PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, and NOAA CO-OPS as fallback/supporting candidates. No live ocean-model or station calls are enabled. See [Hawaii Tide And Current Provider](HAWAII_TIDE_CURRENT_PROVIDER.md).
+- Greater Recife replay inputs: the Piedade / Boa Viagem case study uses source-attributed incident records and existing replay fields only. Recife tide, current, turbidity, rainfall, SST, human-exposure, telemetry, and regional-pack sources remain missing or future candidates. See [Recife Signal Gap Analysis](RECIFE_SIGNAL_GAP_ANALYSIS.md).
 
 ## Limited Or Uncertain Sources
 

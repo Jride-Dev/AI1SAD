@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -140,6 +142,65 @@ class TestReplayRunner:
         assert stacked.sighting_reports[0]["hypothetical"] is True
         assert stacked_zone["surveillance_priority_score"] > initial_zone["surveillance_priority_score"]
         assert "sighting_reports" not in stacked_zone["missing_data_sources"]
+
+    def test_recife_piedade_pre_incident_excludes_boa_viagem_and_hindsight(self):
+        scenario = REPLAY_SCENARIOS["piedade_beach_recife_2026_pre_incident"]
+        runner = ReplayRunner()
+        result = runner.run_scenario(scenario)
+        zone = (result.surveillance or {}).get("zones", [{}])[0]
+
+        assert result.error is None
+        assert scenario.recent_interactions == []
+        assert scenario.sighting_reports == []
+        assert scenario.suspected_species is None
+        assert scenario.use_regional_profiles is False
+        assert result.warning["warning_band"] == "low"
+        assert zone["surveillance_priority_score"] == 9.0
+        assert "regional_risk_profiles" in zone["missing_data_sources"]
+        assert all("Boa Viagem" not in str(factor) for factor in zone["dominant_factors"])
+
+    def test_recife_boa_viagem_pre_incident_uses_only_prior_piedade_interaction(self):
+        pre = REPLAY_SCENARIOS["boa_viagem_recife_2026_pre_incident"]
+        quiet = REPLAY_SCENARIOS["boa_viagem_recife_2026_quiet_day"]
+        runner = ReplayRunner()
+        pre_result = runner.run_scenario(pre)
+        quiet_result = runner.run_scenario(quiet)
+
+        assert pre_result.error is None
+        assert quiet_result.error is None
+        assert len(pre.recent_interactions) == 1
+        assert pre.recent_interactions[0]["observed_at"] == "2026-05-31T13:40:00-03:00"
+        assert pre.recent_interactions[0]["source_attributed_species_assessment"]["classification_status"] == "preliminary_source_attributed"
+        assert pre.recent_interactions[0]["source_attributed_species_assessment"]["taxon"] == "adult bull shark"
+        assert pre.recent_interactions[0]["source_attributed_species_assessment"]["portuguese_source_term"] == "tubarão-cabeça-chata"
+        assert pre.recent_interactions[0]["source_attributed_species_assessment"]["model_input_for_strict_preincident"] is False
+        assert pre.recent_interactions[0]["same_individual_assumption"] is False
+        assert pre.suspected_species is None
+        assert quiet.recent_interactions == []
+
+        pre_zone = (pre_result.surveillance or {}).get("zones", [{}])[0]
+        quiet_zone = (quiet_result.surveillance or {}).get("zones", [{}])[0]
+        assert pre_zone["surveillance_priority_score"] - quiet_zone["surveillance_priority_score"] == 14.0
+        assert any(factor["factor"] == "recent_interactions_nearby" for factor in pre_zone["dominant_factors"])
+        assert "recent_interactions" in pre_zone["data_sources_used"]
+
+    def test_recife_species_specific_explainability_keeps_incidents_distinct(self):
+        replay = json.loads(Path("docs/assets/case_studies/piedade_boa_viagem_recife_2026_replay.json").read_text(encoding="utf-8"))
+        summary = json.loads(Path("docs/assets/case_studies/piedade_boa_viagem_recife_2026_factor_summary.json").read_text(encoding="utf-8"))
+
+        piedade_species = replay["source_record"]["piedade"]["source_attributed_species_assessment"]
+        boa_species = replay["source_record"]["boa_viagem"]["source_attributed_species_assessment"]
+        assert piedade_species["taxon"] == "adult bull shark"
+        assert piedade_species["portuguese_source_term"] == "tubarão-cabeça-chata"
+        assert boa_species["taxon"] == "adult tiger shark"
+        assert boa_species["portuguese_source_term"] == "tubarão-tigre"
+        assert replay["species_context_tests"]["same_individual_assumption"] is False
+
+        factors = {item["factor"]: item for item in summary["species_specific_explainability_factors"]}
+        assert factors["piedade_source_attributed_bull_shark_suitability"]["points"] == 0
+        assert factors["boa_viagem_source_attributed_tiger_shark_suitability"]["points"] == 0
+        assert factors["species_agnostic_recent_interaction_lift"]["points"] == 14.0
+        assert factors["species_agnostic_recent_interaction_lift"]["same_individual_assumption"] is False
 
     def test_run_queensland_spearfishing_case_study_scenario(self):
         scenario = REPLAY_SCENARIOS["queensland_spearfishing_reef_tiger_bull_2026"]

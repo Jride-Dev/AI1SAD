@@ -90,4 +90,4 @@ Do not commit until review.
 
 ## Current Interruption Note
 
-Phase 23 is implemented locally and pending review/commit. Phase 24 should not begin until the Phase 23 tide/current adapter is reviewed, committed, and pushed.
+Phase 23 is reviewed, committed, and pushed. A Greater Recife paired replay case study is currently in review and should be completed before Phase 24 begins.

@@ -36,8 +36,8 @@ class ReplayRunner:
     def run_scenario(self, scenario: ReplayScenario) -> ReplayResult:
         try:
             now = scenario.timestamp
-            profile = nearest_profile(scenario.lat, scenario.lon, self.profiles)
-            profiles_list = self.profiles
+            profiles_list = self.profiles if scenario.use_regional_profiles else [{"visibility": "private"}]
+            profile = nearest_profile(scenario.lat, scenario.lon, profiles_list)
 
             warning = calculate_warning(
                 lat=scenario.lat,
