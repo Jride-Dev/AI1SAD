@@ -17,7 +17,7 @@ The replay uses four runs:
 | Replay coordinates | `-8.171, -34.914` approximate operational point | `-8.126, -34.899` approximate operational point |
 | Date | `2026-05-31` | `2026-06-01` |
 | Approximate local time | `13:40` | `15:10` |
-| Victim context | Bather, age 11 | Bather, age 19 |
+| Victim context | Child bather, age 11 | Teenage / young-adult woman bather, age 19 |
 | Outcome | Serious injuries with left-leg amputation | Serious injuries with right-leg amputation |
 | Source-attributed species assessment | CEMIT preliminary adult bull shark, Portuguese source term `tubarão-cabeça-chata`, approximately 2.5 m if retained from source | CEMIT preliminary adult tiger shark, Portuguese source term `tubarão-tigre`, approximately 3 m |
 
@@ -82,7 +82,22 @@ The replay explicitly marks these gaps:
 
 Recommended patterns:
 
+- baseline drone patrol windows:
+  - morning
+  - midday
+  - late afternoon / dusk
+- adaptive surge monitoring after:
+  - recent severe incident
+  - nearby sighting
+  - tagged-shark receiver detection later
+  - high human exposure
+  - tide/current overlap later
+  - turbidity/runoff overlap later
+- `shoreline_parallel_sweep`
 - `reef_barrier_parallel_sweep`
+- `reef_gap_focus_scan`
+- `channel_mouth_pass`
+- `post_sighting_focus_area`
 - `nearshore_channel_ladder_search`
 - posted-swim-zone observation focus
 - future tide/current and turbidity-informed corridor once supported

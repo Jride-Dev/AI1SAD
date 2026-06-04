@@ -45,6 +45,8 @@ A future Recife / Pernambuco pack should cover:
 
 The first version should be static/offline and source-dated. It should label habitat and historical layers as baseline context, not current observations.
 
+Baseline Recife / Pernambuco surveillance planning should include drone patrol windows for morning, midday, and late afternoon / dusk. Adaptive surge monitoring should be triggered after a recent severe incident, nearby sighting, future tagged-shark receiver detection, high human exposure, future tide/current overlap, or future turbidity/runoff overlap. Recommended operator patterns include `shoreline_parallel_sweep`, `reef_gap_focus_scan`, `channel_mouth_pass`, and `post_sighting_focus_area`.
+
 ## Do Not Tune Yet
 
 These two incidents are important for replay and gap analysis, but they are not enough to justify broad scoring changes. Recommended order:

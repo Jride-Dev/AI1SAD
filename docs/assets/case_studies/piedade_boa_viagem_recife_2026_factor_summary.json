@@ -77,6 +77,27 @@
     "human exposure estimates",
     "future telemetry ingestion"
   ],
+  "operational_recommendation_factors": {
+    "baseline_drone_patrol_windows": [
+      "morning",
+      "midday",
+      "late afternoon / dusk"
+    ],
+    "adaptive_surge_monitoring_after": [
+      "recent severe incident",
+      "nearby sighting",
+      "tagged-shark receiver detection later",
+      "high human exposure",
+      "tide/current overlap later",
+      "turbidity/runoff overlap later"
+    ],
+    "recommended_patterns": [
+      "shoreline_parallel_sweep",
+      "reef_gap_focus_scan",
+      "channel_mouth_pass",
+      "post_sighting_focus_area"
+    ]
+  },
   "species_handling": {
     "piedade": "CEMIT preliminary adult bull shark assessment, Portuguese source term tubarão-cabeça-chata, approximately 2.5 m if retained from source; source-attributed only.",
     "boa_viagem": "CEMIT preliminary adult tiger shark assessment, Portuguese source term tubarão-tigre, approximately 3 m; source-attributed only.",

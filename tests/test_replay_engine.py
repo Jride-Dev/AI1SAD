@@ -202,6 +202,26 @@ class TestReplayRunner:
         assert factors["species_agnostic_recent_interaction_lift"]["points"] == 14.0
         assert factors["species_agnostic_recent_interaction_lift"]["same_individual_assumption"] is False
 
+        assert {
+            "shoreline_parallel_sweep",
+            "reef_gap_focus_scan",
+            "channel_mouth_pass",
+            "post_sighting_focus_area",
+        } <= set(replay["recommended_surveillance_patterns"])
+        assert {
+            "morning",
+            "midday",
+            "late afternoon / dusk",
+        } <= set(summary["operational_recommendation_factors"]["baseline_drone_patrol_windows"])
+        assert {
+            "recent severe incident",
+            "nearby sighting",
+            "tagged-shark receiver detection later",
+            "high human exposure",
+            "tide/current overlap later",
+            "turbidity/runoff overlap later",
+        } <= set(replay["adaptive_surge_monitoring_triggers"])
+
     def test_run_queensland_spearfishing_case_study_scenario(self):
         scenario = REPLAY_SCENARIOS["queensland_spearfishing_reef_tiger_bull_2026"]
         runner = ReplayRunner()

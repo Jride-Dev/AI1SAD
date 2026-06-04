@@ -32,7 +32,7 @@
       },
       "event_date": "2026-06-01",
       "approximate_time_local": "15:10",
-      "victim_context": "Bather, age 19",
+      "victim_context": "Teenage / young-adult woman bather, age 19",
       "outcome": "Serious injuries with right-leg amputation",
       "source_attributed_species_assessment": {
         "assessing_body": "CEMIT",
@@ -159,10 +159,25 @@
     }
   },
   "recommended_surveillance_patterns": [
+    "baseline_drone_patrol_window_morning",
+    "baseline_drone_patrol_window_midday",
+    "baseline_drone_patrol_window_late_afternoon_dusk",
     "reef_barrier_parallel_sweep",
+    "shoreline_parallel_sweep",
+    "reef_gap_focus_scan",
+    "channel_mouth_pass",
+    "post_sighting_focus_area",
     "nearshore_channel_ladder_search",
     "posted-swim-zone observation focus",
     "future tide/current and turbidity-informed corridor once supported"
+  ],
+  "adaptive_surge_monitoring_triggers": [
+    "recent severe incident",
+    "nearby sighting",
+    "tagged-shark receiver detection later",
+    "high human exposure",
+    "tide/current overlap later",
+    "turbidity/runoff overlap later"
   ],
   "model_metadata": {
     "model_version": "0.11.0",
