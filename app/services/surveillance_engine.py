@@ -299,8 +299,9 @@ def score_surveillance_zones(
     sighting_reports: list[dict[str, Any]] | None = None,
     reef_features: list[dict[str, Any]] | None = None,
     warning_inputs: dict[str, Any] | None = None,
+    as_of: datetime | None = None,
 ) -> dict[str, Any]:
-    now = datetime.now(timezone.utc)
+    now = as_of or datetime.now(timezone.utc)
     interactions = recent_public_docs(recent_interactions or [], now, lookback_hours)
     sightings = recent_public_docs(sighting_reports or [], now, lookback_hours)
     reefs = [doc for doc in reef_features or [] if doc.get("visibility", "public") == "public"]

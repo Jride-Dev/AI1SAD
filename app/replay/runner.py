@@ -86,6 +86,7 @@ class ReplayRunner:
                 recent_interactions=scenario.recent_interactions,
                 sighting_reports=scenario.sighting_reports,
                 reef_features=reef_features,
+                as_of=scenario.timestamp,
                 warning_inputs={
                     "rainfall_72h_mm": scenario.rainfall_72h_mm,
                     "sea_surface_temp_c": scenario.sea_surface_temp_c,
