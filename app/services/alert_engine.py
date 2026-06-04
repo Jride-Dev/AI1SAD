@@ -226,10 +226,20 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
         "nearshore_structure_context",
         "habitat_visibility_context",
     }
+    tide_current_signal_types = {
+        "tide_state_context",
+        "tide_window_context",
+        "nearshore_current_context",
+        "current_direction_context",
+        "current_speed_context",
+        "channel_flow_context",
+        "tidal_exchange_context",
+    }
     high_impact_bio_count = sum(1 for signal in signals if signal.get("signal_type") in {"carcass", "whale_carcass", "fish_kill"})
     carcass_count = sum(1 for signal in signals if signal.get("signal_type") in biological_signal_types)
     kelp_signal_count = sum(1 for signal in signals if signal.get("signal_type") in kelp_signal_types)
     habitat_signal_count = sum(1 for signal in signals if signal.get("signal_type") in habitat_signal_types)
+    tide_current_signal_count = sum(1 for signal in signals if signal.get("signal_type") in tide_current_signal_types)
     sst_context_count = sum(1 for signal in signals if signal.get("signal_type") in {"sea_surface_temperature", "sst_anomaly", "ocean_temperature_context"})
     exposure_signals = [
         signal
@@ -378,6 +388,22 @@ def evaluate_alerts(payload: dict[str, Any], *, now: datetime | None = None) -> 
                 summary="Historic reef-channel, reef-edge, hardbottom, sandy-bottom, or nearshore structure context is active alongside other operational signals.",
                 recommended_action="Use baseline habitat maps as bounded structural context for targeted observation; do not treat historical habitat layers as live shark conditions.",
                 trigger={"trigger_type": "hawaii_habitat_context", "threshold": 1, "observed_value": habitat_signal_count},
+                expires_hours=12,
+                now=now,
+                confidence=max(confidence - 0.04, 0.25),
+            )
+        )
+
+    if tide_current_signal_count and (surveillance_score >= 60 or activity_score >= 45 or sighting_count or carcass_count or exposure_signals):
+        alerts.append(
+            _base_alert(
+                payload,
+                alert_type="surveillance_priority",
+                level=_level_for(max(surveillance_score, activity_score, 45), urgent_threshold=90),
+                title="Tide and current context supports surveillance review",
+                summary="Static tide-window, nearshore-current, or channel-flow context is active alongside other operational signals.",
+                recommended_action="Use tide and current baselines as bounded observation-planning context; confirm live PacIOOS or NOAA CO-OPS conditions before operational escalation.",
+                trigger={"trigger_type": "hawaii_tide_current_context", "threshold": 1, "observed_value": tide_current_signal_count},
                 expires_hours=12,
                 now=now,
                 confidence=max(confidence - 0.04, 0.25),

@@ -11,6 +11,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - Vessel and fishing adapter: static/manual/offline vessel, fishing, pier, marina, spearfishing, dive-boat, and liveaboard context. No Global Fishing Watch, AIS, MarineTraffic, scraping, or paid APIs are enabled. See [Vessel And Fishing Provider](VESSEL_FISHING_PROVIDER.md).
 - Kelp forest adapter: static/manual/offline kelp presence, density, edge habitat, prey overlap, and white shark kelp-context signals. No live canopy API, satellite feed, map scraping, or paid habitat provider is enabled. See [Kelp Forest Provider](KELP_FOREST_PROVIDER.md).
 - Hawaii habitat adapter: static/manual/offline benthic and nearshore structure baseline context (reef-channel, reef-edge, shallow reef, hardbottom, sandy-bottom, and visibility context) with retained historic source dates. No live GIS scraping or runtime external habitat calls are enabled. See [Hawaii Habitat Provider](HAWAII_HABITAT_PROVIDER.md).
+- Hawaii tide/current adapter: static/manual/offline tide-window, nearshore-current, channel-flow, and tidal-exchange baseline context. PacIOOS South Shore Oahu ROMS is the preferred future source, with PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, and NOAA CO-OPS as fallback/supporting candidates. No live ocean-model or station calls are enabled. See [Hawaii Tide And Current Provider](HAWAII_TIDE_CURRENT_PROVIDER.md).
 
 ## Limited Or Uncertain Sources
 

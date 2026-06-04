@@ -109,9 +109,11 @@ class TestReplayRunner:
         assert result.error is None
         assert result.warning["warning_band"] == "low"
         assert result.warning["warning_score"] < 25
+        assert result.warning["signals"]["hawaii_tide_current_context_score"] <= 2.5
         zone = (result.surveillance or {}).get("zones", [{}])[0]
         factors = {item.get("factor") for item in zone.get("dominant_factors", [])}
         assert "hawaii_habitat_baseline_context" in factors or "reef_channel_context" in factors
+        assert "hawaii_tide_current_static" in zone["data_sources_used"]
 
     def test_run_wa_spearfishing_scenario(self):
         scenario = REPLAY_SCENARIOS["wa_spearfishing_reef_white"]

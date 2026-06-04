@@ -51,6 +51,7 @@ class ReplayRunner:
                 biological_events=scenario.biological_events,
                 kelp_habitat_signals=scenario.kelp_habitat_signals,
                 hawaii_habitat_signals=scenario.hawaii_habitat_signals,
+                hawaii_tide_current_signals=scenario.hawaii_tide_current_signals,
                 human_exposure_index=scenario.human_exposure_index,
                 activity_context=scenario.activity_context,
                 reef_habitat=scenario.reef_habitat,
@@ -95,6 +96,7 @@ class ReplayRunner:
                     "biological_events": scenario.biological_events,
                     "kelp_habitat_signals": scenario.kelp_habitat_signals,
                     "hawaii_habitat_signals": scenario.hawaii_habitat_signals,
+                    "hawaii_tide_current_signals": scenario.hawaii_tide_current_signals,
                     "human_exposure_index": scenario.human_exposure_index,
                 },
             )
@@ -163,6 +165,15 @@ class ReplayRunner:
             signals.append(
                 {
                     "signal_type": signal.get("signal_type", "reef_channel_habitat"),
+                    "timestamp": signal.get("observed_at", scenario.timestamp.isoformat()),
+                    "value": signal.get("value", 0.35),
+                    "visibility": "public",
+                }
+            )
+        for signal in scenario.hawaii_tide_current_signals:
+            signals.append(
+                {
+                    "signal_type": signal.get("signal_type", "nearshore_current_context"),
                     "timestamp": signal.get("observed_at", scenario.timestamp.isoformat()),
                     "value": signal.get("value", 0.35),
                     "visibility": "public",

@@ -23,6 +23,7 @@ class ReplayScenario:
     recent_interactions: list[dict[str, Any]] = field(default_factory=list)
     kelp_habitat_signals: list[dict[str, Any]] = field(default_factory=list)
     hawaii_habitat_signals: list[dict[str, Any]] = field(default_factory=list)
+    hawaii_tide_current_signals: list[dict[str, Any]] = field(default_factory=list)
     month: int | None = None
     activity_context: str | None = None
     suspected_species: str | None = None

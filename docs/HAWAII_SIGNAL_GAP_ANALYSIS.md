@@ -43,8 +43,8 @@ Status keys used below:
 | NOAA/NWS alerts | `available` + `unavailable` | Provider exists for U.S. alerts; no decisive pre-incident alert signal was active in this replay input. |
 | Surf conditions | `missing_provider` | No dedicated live surf-state ingestion adapter yet (period/height/energy by spot/time). |
 | Channel / reef-edge habitat | `available` | Baseline habitat context (reef/dropoff/channel) supported and used. |
-| Tidal state | `missing_provider` | No tide-state signal adapter currently wired into replay runs. |
-| Current direction | `missing_provider` | No nearshore current-direction/speed adapter currently wired. |
+| Tidal state | `static_baseline_support` | Phase 23 adds static/offline tide-window context; no live tide-state ingestion is enabled yet. |
+| Current direction | `static_baseline_support` | Phase 23 adds static/offline nearshore current-direction/speed and channel-flow context; no live current feed is enabled yet. |
 | Water clarity / turbidity | `missing_provider` | No turbidity/visibility adapter currently wired. |
 | Human exposure | `available` + `low_confidence` | Static exposure profiles exist, but no high-resolution time-of-day local occupancy feed in this run. |
 | Early-morning surf/swim overlap | `available` + `low_confidence` | Activity variant is modeled, but overlap intensity by minute/spot is not live-ingested. |
@@ -61,8 +61,8 @@ Status keys used below:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Live sightings ingestion | Structured replay/provider fields exist | Low (none ingested pre-window) | High | High | Add low-latency verified sightings adapter with strict timestamps/source attribution | Honolulu Ocean Safety / lifeguard dispatch-compatible feed (if policy/permitted) | high |
 | Surf-line / lifeguard observations | Partial manual/context only | Low | High | High | Add structured observation ingest for patrol/lifeguard reports | Lifeguard ops log ingestion adapter (manual/API bridge) | high |
-| Tide state | Missing adapter | None | Medium | High | Add tide-phase/height signal layer | NOAA CO-OPS or equivalent tide dataset | high |
-| Current direction/speed | Missing adapter | None | Medium | High | Add nearshore current context layer | NOAA currents/local ocean model feed | high |
+| Tide state | Static/offline baseline adapter | Partial baseline only | Medium | High | Add live or pre-fetched tide-phase/height ingestion after static validation | NOAA CO-OPS, PacIOOS South Shore Oahu ROMS | high |
+| Current direction/speed | Static/offline baseline adapter | Partial baseline only | Medium | High | Add live or pre-fetched nearshore current context ingestion | PacIOOS South Shore Oahu ROMS, PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, NOAA CO-OPS currents | high |
 | Turbidity / water clarity | Missing adapter | None | Medium | High | Add bounded visibility/turbidity contextual signal | Satellite/nearshore turbidity products where allowed | high |
 | Reef-channel habitat mapping | Baseline habitat flags | Partial | Medium | High | Increase granularity from boolean habitat to mapped reef-channel zones | Static Hawaii habitat map pack | high |
 | Hawaii human exposure timing | Static profiles | Partial | Medium | High | Add time-sliced exposure curves (weekday/weekend/time-of-day) | Local beach-use schedule/profile dataset | high |
@@ -76,7 +76,7 @@ Status keys used below:
 
 1. Live sightings ingestion
 2. Surf-line / lifeguard observation ingestion
-3. Tide/current context
+3. Tide/current context: static/offline baseline support added in Phase 23; live PacIOOS/NOAA ingestion remains future work.
 4. Water clarity / turbidity context
 5. Reef-channel habitat mapping granularity
 6. Hawaii-specific human exposure timing
@@ -113,7 +113,7 @@ Evaluation outputs for cohort review:
 ## Recommended Implementation Roadmap
 
 A. Hawaii habitat mapping adapter  
-B. Tide/current adapter  
+B. Tide/current adapter: Phase 23 static/offline baseline complete; future work should add source-timestamped ingestion.  
 C. Water clarity/turbidity adapter  
 D. Live sightings ingestion adapter  
 E. Hawaii replay cohort buildout  

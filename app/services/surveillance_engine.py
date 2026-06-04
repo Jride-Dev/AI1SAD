@@ -212,6 +212,78 @@ def hawaii_habitat_surveillance_points(
     return round(min(18, max(0, points)), 2), signal_types, factors, freshness_penalty
 
 
+def hawaii_tide_current_surveillance_points(
+    signals: list[dict[str, Any]],
+    *,
+    activity_context: str | None,
+    biological_events: list[dict[str, Any]],
+    human_exposure_index: float | None,
+    verified_sighting_count: int,
+) -> tuple[float, list[str], list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], [], 0.0
+
+    signal_types = sorted({str(signal.get("signal_type", "")) for signal in public if signal.get("signal_type")})
+    factors: list[dict[str, Any]] = []
+    points = 0.0
+    has_tide = bool({"tide_state_context", "tide_window_context"} & set(signal_types))
+    has_current = bool({"nearshore_current_context", "current_direction_context", "current_speed_context"} & set(signal_types))
+    has_channel = "channel_flow_context" in signal_types
+    has_exchange = "tidal_exchange_context" in signal_types
+    water_activity = (activity_context or "").lower() in {"surfing", "swimming", "diving", "spearfishing", "paddling"}
+    convergence_context = next(
+        (
+            signal.get("current_convergence_context")
+            for signal in public
+            if str(signal.get("current_convergence_context") or "").lower() not in {"", "none", "not_location_specific"}
+        ),
+        None,
+    )
+    model_resolution = next((signal.get("nearshore_model_resolution") for signal in public if signal.get("nearshore_model_resolution")), None)
+    forecast_freshness = next((signal.get("forecast_freshness") for signal in public if signal.get("forecast_freshness")), None)
+    station_gap = next((signal.get("station_coverage_gap") for signal in public if signal.get("station_coverage_gap")), None)
+    regional_fallback_used = any(bool(signal.get("regional_fallback_used")) for signal in public)
+
+    if has_tide:
+        points += 2
+        factors.append({"factor": "tide_state_context", "value": True, "points": 1, "rationale": "Static tide-state context can modestly support observation timing."})
+        factors.append({"factor": "tide_window_context", "value": True, "points": 1, "rationale": "Static tide-window context can modestly support observation timing."})
+    if has_current:
+        points += 3
+        factors.append({"factor": "nearshore_current_context", "value": True, "points": 2, "rationale": "Static nearshore-current baseline supports bounded operational mapping."})
+        factors.append({"factor": "current_speed_context", "value": True, "points": 1, "rationale": "Static current-speed class is baseline context, not a live measurement."})
+    if has_channel:
+        points += 4
+        factors.append({"factor": "channel_flow_context", "value": True, "points": 4, "rationale": "Static reef-channel flow context can modestly raise surveillance attention."})
+    if has_exchange:
+        points += 2
+        factors.append({"factor": "tidal_exchange_context", "value": True, "points": 2, "rationale": "Tidal-exchange baseline provides supporting observation context."})
+    if water_activity and (has_current or has_channel):
+        points += 4
+        factors.append({"factor": "current_activity_stack_context", "value": activity_context, "points": 4, "rationale": "Current/channel baseline plus water activity raises operational attention more than water movement alone."})
+    if verified_sighting_count or biological_events or (human_exposure_index and human_exposure_index >= 0.55):
+        points += 2
+        factors.append({"factor": "water_movement_signal_stack_context", "value": "stacked_operational_context", "points": 2, "rationale": "Water-movement context is stronger only when paired with sightings, biological events, or human exposure."})
+    if convergence_context:
+        factors.append({"factor": "current_convergence_context", "value": convergence_context, "points": 0, "rationale": "Convergence context is source metadata only until live current ingestion exists."})
+    if model_resolution:
+        factors.append({"factor": "nearshore_model_resolution", "value": model_resolution, "points": 0, "rationale": "Model-resolution metadata explains how local or coarse the static baseline is."})
+    if forecast_freshness:
+        factors.append({"factor": "forecast_freshness", "value": forecast_freshness, "points": 0, "rationale": "Forecast freshness is static/not-live for this adapter."})
+    if station_gap:
+        factors.append({"factor": "station_coverage_gap", "value": station_gap, "points": 0, "rationale": "Station coverage gaps limit confidence in local surf-line conditions."})
+    if regional_fallback_used:
+        factors.append({"factor": "regional_fallback_used", "value": True, "points": 0, "rationale": "Regional fallback metadata indicates lower-resolution source context."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale" or "static" in str(signal.get("data_freshness_label", "")))
+    freshness_penalty = -0.03 if stale_count else 0.0
+    if freshness_penalty:
+        factors.append({"factor": "baseline_tide_current_freshness", "value": "static_baseline", "points": 0, "rationale": "Static tide/current context is not a live observation and reduces confidence."})
+
+    return round(min(14, max(0, points)), 2), signal_types, factors, freshness_penalty
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -320,6 +392,7 @@ def score_surveillance_zones(
         vessel_activity_index=warning_inputs.get("vessel_activity_index"),
         biological_events=warning_inputs.get("biological_events", []),
         kelp_habitat_signals=warning_inputs.get("kelp_habitat_signals", []),
+        hawaii_tide_current_signals=warning_inputs.get("hawaii_tide_current_signals", []),
         human_exposure_index=warning_inputs.get("human_exposure_index"),
         activity_context=activity_context,
         reef_habitat=reef_habitat,
@@ -482,6 +555,23 @@ def score_surveillance_zones(
         }
     )
 
+    tide_current_points, tide_current_signal_types, tide_current_factors, tide_current_confidence_penalty = hawaii_tide_current_surveillance_points(
+        warning_inputs.get("hawaii_tide_current_signals", []),
+        activity_context=activity_context,
+        biological_events=warning_inputs.get("biological_events", []),
+        human_exposure_index=warning_inputs.get("human_exposure_index"),
+        verified_sighting_count=verified_count,
+    )
+    factors.extend(tide_current_factors)
+    factors.append(
+        {
+            "factor": "hawaii_tide_current_baseline_context",
+            "value": tide_current_signal_types,
+            "points": tide_current_points,
+            "rationale": "Static PacIOOS/NOAA tide-current baselines are bounded water-movement context and do not represent live observations.",
+        }
+    )
+
     human_exposure = warning_inputs.get("human_exposure_index")
     human_points = round(min(12, max(0, float(human_exposure or 0)) * 12), 2)
     factors.append(
@@ -536,6 +626,8 @@ def score_surveillance_zones(
         data_sources_used.add("kelp_forest_static")
     if warning_inputs.get("hawaii_habitat_signals"):
         data_sources_used.add("hawaii_habitat_static")
+    if warning_inputs.get("hawaii_tide_current_signals"):
+        data_sources_used.add("hawaii_tide_current_static")
     if profile:
         data_sources_used.add("regional_risk_profiles")
     else:
@@ -546,6 +638,8 @@ def score_surveillance_zones(
         confidence = round(max(0.25, confidence - 0.04), 2)
     if habitat_confidence_penalty:
         confidence = round(max(0.25, confidence + habitat_confidence_penalty), 2)
+    if tide_current_confidence_penalty:
+        confidence = round(max(0.25, confidence + tide_current_confidence_penalty), 2)
     zone_radius = round(max(0.5, min(radius_km, 2.5 if priority_score >= 50 else 4.0)), 2)
     zone_id = f"{mission_type}:{lat:.3f}:{lon:.3f}:{lookback_hours}:{activity_context or 'general'}"
 

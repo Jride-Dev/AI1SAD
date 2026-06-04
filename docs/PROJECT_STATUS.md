@@ -2,10 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 23 (planned)
-- Latest completed phase: Phase 22 (Hawaii Habitat Mapping Adapter)
-- Latest commit hash: `a03cc7b` Add Plumpudding Beach whale-carcass replay case study
-- Repo status: working tree in review with targeted frontend Vitest security patch; no staging or commit performed yet
+- Current phase number: Phase 23 (implemented locally; pending review/commit)
+- Latest completed committed phase: Phase 22 (Hawaii Habitat Mapping Adapter)
+- Latest completed local phase: Phase 23 (Hawaii Tide, Current & Nearshore Water-Movement Adapter)
+- Latest commit hash: `363c359` Patch frontend Vitest security advisory
+- Repo status: working tree in review with Phase 23 tide/current adapter changes; no staging or commit performed yet
 
 ## Major Completed Systems
 
@@ -19,6 +20,7 @@
   - Human exposure
   - Kelp forest habitat context
   - Hawaii benthic habitat baseline context
+  - Hawaii tide/current baseline context
 - Frontend trust hardening (fail-closed live mode, explicit mock mode)
 - Brand identity integration and docs portal branding
 - One-click local launcher scripts
@@ -34,8 +36,8 @@
 
 ## Current Known Gaps
 
-- Tide-state adapter not yet integrated
-- Current-direction/speed adapter not yet integrated
+- Tide-state adapter has static/offline baseline support; live ingestion not yet integrated
+- Current-direction/speed adapter has static/offline baseline support; live ingestion not yet integrated
 - Turbidity/water-clarity adapter not yet integrated
 - Live surf-line/lifeguard observation ingestion not yet integrated
 - Live sightings ingestion pipeline still limited
@@ -44,7 +46,7 @@
 
 ## Next Planned Phase
 
-- Phase 23: Tide, Current & Nearshore Water-Movement Adapter
+- Phase 24: Water Clarity & Turbidity Adapter
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Exact Next Codex Resume Prompt
@@ -52,13 +54,13 @@
 Use this as the next prompt anchor:
 
 ```text
-Phase 23: Tide, Current & Nearshore Water-Movement Adapter
+Phase 24: Water Clarity & Turbidity Adapter
 
 Repo:
 F:\shark-attack-api
 
 Goal:
-Add a static/offline-first tide and nearshore current adapter for AI1SAD as bounded environmental context.
+Add static/offline-first water clarity and turbidity context for AI1SAD as bounded environmental/visibility information.
 
 Constraints:
 - do not tune scoring weights
@@ -102,23 +104,23 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Validation Counts (Latest Review Run)
 
-- Frontend tests: `3 passed`, `8 tests passed`
-- Frontend build: passed
-- Frontend npm audit high+: `0 vulnerabilities`
-- Full backend tests: `197 passed, 2 warnings`
+- Focused tide/current tests: `11 passed`
+- Focused Cromwell replay regression tests: `35 passed`
+- Full backend tests: `208 passed, 2 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
-- Prohibited-language scan: safety-rule/guardrail-only matches; new WA case-study artifacts clean
+- Prohibited-language scan: safety-rule/guardrail-only matches
 
 ## Current Review Item
 
-- Targeted frontend Vitest security patch updated `vitest` from `3.2.4` to `4.1.8`.
-- Patch scope is frontend dev tooling only: `frontend/package.json`, `frontend/package-lock.json`, and docs.
-- No runtime application code changed.
-- No `npm audit fix --force` command was used.
+- Phase 23 Hawaii tide/current adapter added as static/offline baseline context.
+- Preferred future source order: PacIOOS South Shore Oahu ROMS, PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, NOAA CO-OPS support.
+- Cromwell's Beach replay includes baseline water-movement context while preserving strict timeline separation.
+- No live scraping, auth/billing, provider credentials, scoring-weight retuning, or runtime frontend changes were added.
 
 ## Recent Important Commits
 
+- `363c359` Patch frontend Vitest security advisory
 - `a03cc7b` Add Plumpudding Beach whale-carcass replay case study
 - `02b7138` Fix replay sighting evaluation against scenario timestamps
 - `ce1373a` Add durable project status and next-phase handoff

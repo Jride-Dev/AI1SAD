@@ -272,6 +272,69 @@ def hawaii_habitat_warning_context_score(signals: list[dict[str, Any]]) -> tuple
     return round(max(0.0, min(3.5, points + baseline_freshness_points)), 2), factors, baseline_freshness_points
 
 
+def hawaii_tide_current_warning_context_score(signals: list[dict[str, Any]], *, activity_context: str | None = None) -> tuple[float, list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], 0.0
+
+    signal_types = {str(signal.get("signal_type", "")) for signal in public}
+    points = 0.0
+    factors: list[dict[str, Any]] = []
+
+    has_tide = bool(signal_types & {"tide_state_context", "tide_window_context"})
+    has_current = bool(signal_types & {"nearshore_current_context", "current_direction_context", "current_speed_context"})
+    has_channel = "channel_flow_context" in signal_types
+    has_exchange = "tidal_exchange_context" in signal_types
+    water_activity = (activity_context or "").lower() in {"surfing", "swimming", "diving", "spearfishing", "paddling"}
+    convergence_context = next(
+        (
+            signal.get("current_convergence_context")
+            for signal in public
+            if str(signal.get("current_convergence_context") or "").lower() not in {"", "none", "not_location_specific"}
+        ),
+        None,
+    )
+    model_resolution = next((signal.get("nearshore_model_resolution") for signal in public if signal.get("nearshore_model_resolution")), None)
+    forecast_freshness = next((signal.get("forecast_freshness") for signal in public if signal.get("forecast_freshness")), None)
+    station_gap = next((signal.get("station_coverage_gap") for signal in public if signal.get("station_coverage_gap")), None)
+    regional_fallback_used = any(bool(signal.get("regional_fallback_used")) for signal in public)
+
+    if has_tide:
+        points += 0.5
+        factors.append({"factor": "tide_state_context", "value": True, "points": 0.2, "rationale": "Static tide-state context is low-weight environmental context only."})
+        factors.append({"factor": "tide_window_context", "value": True, "points": 0.3, "rationale": "Static tide-window context is low-weight environmental context only."})
+    if has_current:
+        points += 0.7
+        factors.append({"factor": "nearshore_current_context", "value": True, "points": 0.4, "rationale": "Static nearshore current baseline informs context without representing live current conditions."})
+        factors.append({"factor": "current_speed_context", "value": True, "points": 0.3, "rationale": "Static current-speed class is baseline context, not a live measurement."})
+    if has_channel:
+        points += 0.8
+        factors.append({"factor": "channel_flow_context", "value": True, "points": 0.8, "rationale": "Static channel-flow baseline can support bounded interpretation around reef-channel areas."})
+    if has_exchange:
+        points += 0.4
+        factors.append({"factor": "tidal_exchange_context", "value": True, "points": 0.4, "rationale": "Static tidal-exchange context is supporting background only."})
+    if water_activity and (has_current or has_channel):
+        points += 0.4
+        factors.append({"factor": "water_movement_activity_stack_context", "value": activity_context, "points": 0.4, "rationale": "Water-movement baseline plus nearshore activity slightly increases operational context without changing core weights."})
+    if convergence_context:
+        factors.append({"factor": "current_convergence_context", "value": convergence_context, "points": 0, "rationale": "Convergence context is source metadata only until live current ingestion exists."})
+    if model_resolution:
+        factors.append({"factor": "nearshore_model_resolution", "value": model_resolution, "points": 0, "rationale": "Model-resolution metadata explains how local or coarse the static baseline is."})
+    if forecast_freshness:
+        factors.append({"factor": "forecast_freshness", "value": forecast_freshness, "points": 0, "rationale": "Forecast freshness is static/not-live for this adapter."})
+    if station_gap:
+        factors.append({"factor": "station_coverage_gap", "value": station_gap, "points": 0, "rationale": "Station coverage gaps limit confidence in local surf-line conditions."})
+    if regional_fallback_used:
+        factors.append({"factor": "regional_fallback_used", "value": True, "points": 0, "rationale": "Regional fallback metadata indicates lower-resolution source context."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale" or "static" in str(signal.get("data_freshness_label", "")))
+    freshness_penalty = -0.03 if stale_count else 0.0
+    if freshness_penalty:
+        factors.append({"factor": "baseline_tide_current_freshness", "value": "static_baseline", "points": 0, "rationale": "Static tide/current baselines reduce confidence because they are not live observations."})
+
+    return round(max(0.0, min(2.5, points)), 2), factors, freshness_penalty
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -285,6 +348,7 @@ def calculate_warning(
     biological_events: list[dict[str, Any]] | None = None,
     kelp_habitat_signals: list[dict[str, Any]] | None = None,
     hawaii_habitat_signals: list[dict[str, Any]] | None = None,
+    hawaii_tide_current_signals: list[dict[str, Any]] | None = None,
     weather_alerts: list[dict[str, Any]] | None = None,
     weather_alert_score: float | None = None,
     human_exposure_index: float | None = None,
@@ -381,6 +445,13 @@ def calculate_warning(
     for habitat_factor in habitat_factors:
         factors.append(habitat_factor)
 
+    tide_current_signals = hawaii_tide_current_signals or []
+    tide_current_score, tide_current_factors, tide_current_freshness_penalty = hawaii_tide_current_warning_context_score(tide_current_signals, activity_context=activity_context)
+    if tide_current_signals:
+        data_sources_used.append("hawaii_tide_current_static")
+    for tide_current_factor in tide_current_factors:
+        factors.append(tide_current_factor)
+
     alert_events = [event for event in weather_alerts or [] if event.get("visibility", "public") == "public"]
     alert_score = min(10, float(weather_alert_score or 0))
     if alert_events:
@@ -450,6 +521,7 @@ def calculate_warning(
             "biological_event_score": bio_score,
             "kelp_forest_context_score": kelp_score,
             "hawaii_habitat_context_score": habitat_score,
+            "hawaii_tide_current_context_score": tide_current_score,
             "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
             "human_exposure_amplifier_score": exposure_amp_score,
@@ -472,6 +544,9 @@ def calculate_warning(
     if habitat_freshness_penalty < 0:
         result["confidence"] = round(max(0.25, result["confidence"] + habitat_freshness_penalty), 2)
         result["signals"]["baseline_habitat_freshness_confidence_modifier"] = habitat_freshness_penalty
+    if tide_current_freshness_penalty < 0:
+        result["confidence"] = round(max(0.25, result["confidence"] + tide_current_freshness_penalty), 2)
+        result["signals"]["baseline_tide_current_freshness_confidence_modifier"] = tide_current_freshness_penalty
     return result
 
 

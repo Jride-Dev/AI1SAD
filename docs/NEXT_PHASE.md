@@ -1,10 +1,10 @@
 # Next Phase
 
-## Phase 23: Tide, Current & Nearshore Water-Movement Adapter
+## Phase 24: Water Clarity & Turbidity Adapter
 
 ## Objective
 
-Add bounded, static/offline-first tide and nearshore water-movement context so AI1SAD can improve operational surveillance interpretation without changing scoring weights to fit one incident.
+Add bounded, static/offline-first water clarity and turbidity context so AI1SAD can improve visibility and confidence interpretation without changing scoring weights to fit one incident.
 
 Hawaii-first direction:
 
@@ -20,13 +20,27 @@ Hawaii-first direction:
 - Do not change auth/billing
 - Do not commit until review
 
+## Phase 23 Completion Note
+
+Phase 23 added static/offline Hawaii tide/current baseline support:
+
+- PacIOOS South Shore Oahu ROMS as preferred future nearshore source metadata
+- PacIOOS Oahu ROMS fallback metadata
+- PacIOOS Main Hawaiian Islands ROMS fallback metadata
+- NOAA CO-OPS supporting station metadata
+- bounded warning/surveillance/explainability/alert/replay integration
+- Cromwell replay regression coverage
+
+Live PacIOOS/NOAA ingestion is still future work.
+
 ## Planned Scope
 
-1. Add tide/current provider adapter (static/offline profiles first)
+1. Add water clarity/turbidity provider adapter (static/offline profiles first)
 2. Add signal types for:
-   - tide state/window context
-   - nearshore current direction/speed context
-   - channel flow context
+   - water clarity context
+   - turbidity context
+   - sediment/runoff visibility context
+   - surf-zone visibility context
 3. Keep contributions bounded and stack-dependent
 4. Add explainability factors and confidence freshness caveats
 5. Add focused tests and replay regression checks
@@ -34,19 +48,19 @@ Hawaii-first direction:
 
 ## Official/Public Source Candidates
 
-- PacIOOS South Shore Oahu ROMS
-- PacIOOS Oahu ROMS
-- PacIOOS Main Hawaiian Islands ROMS
-- NOAA CO-OPS
+- NOAA CoastWatch / ocean color products where applicable
+- PacIOOS water-quality or visibility-relevant products where available
+- Hawaii beach water-quality or turbidity datasets where policy/terms allow
+- Static reef-channel and runoff visibility notes from existing baseline packs
 
 All source integration should begin as static/offline baseline ingestion first, with source dates and freshness caveats retained.
 
 ## Bounded Behavior Rules
 
-- Tide/current context alone must not create high warning.
-- Channel-flow context may modestly raise surveillance attention.
+- Turbidity/clarity context alone must not create high warning.
+- Reduced visibility may lower confidence or raise surveillance attention modestly.
 - Stronger effects require stacked activity, sightings, prey, SST, weather, or exposure signals.
-- Historic/static current layers must be labeled as baseline context, not live operational conditions.
+- Historic/static clarity layers must be labeled as baseline context, not live operational conditions.
 - No scoring-weight tuning around Cromwell's or any single case.
 
 ## Recommended Execution Order
@@ -61,7 +75,7 @@ All source integration should begin as static/offline baseline ingestion first, 
 
 ## Validation Expectations
 
-- focused tide/current adapter tests
+- focused water clarity/turbidity adapter tests
 - focused Cromwell timeline-regression tests
 - full backend test suite
 - mkdocs build
@@ -76,4 +90,4 @@ Do not commit until review.
 
 ## Current Interruption Note
 
-Before Phase 23 begins, the WA Plumpudding Beach / Esperance whale-carcass replay is in review as a documentation and replay-library case-study update. Phase 23 should still remain tide/current and nearshore water-movement support, with carcass drift corridors treated as a future beneficiary of that adapter rather than a reason to tune existing scoring weights.
+Phase 23 is implemented locally and pending review/commit. Phase 24 should not begin until the Phase 23 tide/current adapter is reviewed, committed, and pushed.

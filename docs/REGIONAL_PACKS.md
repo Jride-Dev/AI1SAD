@@ -65,6 +65,15 @@ Phase 22 adds static/manual Hawaii habitat baseline examples associated with the
 
 These Hawaii habitat signals are historic/static structural baselines. They are not live observations and must be interpreted as bounded context only.
 
+Phase 23 adds static/manual Hawaii tide and current baseline examples associated with the Hawaii pack:
+
+- Cromwell's Beach / Diamond Head south-shore water-movement baseline
+- Waikiki / Ala Moana south-shore water-movement baseline
+- Oahu sandy-bottom quiet-day tide/current baseline
+- Main Hawaiian Islands ROMS fallback baseline
+
+These Hawaii tide/current signals are static water-movement baselines. PacIOOS South Shore Oahu ROMS is the preferred future nearshore source, with PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, and NOAA CO-OPS as fallback/supporting candidates. They are not live ocean observations.
+
 ## Hawaii Pack Coverage Gaps
 
 The Cromwell's Beach replay analysis shows that Hawaii operational awareness is currently limited most by early observational ingestion gaps and missing ocean-state layers, not by pack-weight tuning.

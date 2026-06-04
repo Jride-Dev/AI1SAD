@@ -40,6 +40,23 @@ Hawaii habitat explanations can include:
 
 These factors are bounded baseline-structure context and must not be described as live habitat-state observation.
 
+Hawaii tide/current explanations can include:
+
+- `tide_window_context`
+- `nearshore_current_context`
+- `channel_flow_context`
+- `current_speed_context`
+- `current_convergence_context`
+- `nearshore_model_resolution`
+- `forecast_freshness`
+- `station_coverage_gap`
+- `regional_fallback_used`
+- `tidal_exchange_context`
+- `baseline_tide_current_freshness`
+- `hawaii_tide_current_baseline_context`
+
+These factors are bounded water-movement context and must not be described as live PacIOOS, ROMS, or NOAA CO-OPS observations unless a future adapter ingests source-timestamped live or pre-fetched records.
+
 ## API Routes
 
 - `GET /api/v1/explain/location`

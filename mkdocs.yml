@@ -97,11 +97,13 @@ nav:
       - Vessel & Fishing: VESSEL_FISHING_PROVIDER.md
       - Kelp Forest: KELP_FOREST_PROVIDER.md
       - Hawaii Habitat: HAWAII_HABITAT_PROVIDER.md
+      - Hawaii Tide And Current: HAWAII_TIDE_CURRENT_PROVIDER.md
 
   - Replay & Case Studies:
       - Replay Library: REPLAY_LIBRARY.md
       - Hawaii Signal Gap Analysis: HAWAII_SIGNAL_GAP_ANALYSIS.md
       - Hawaii Habitat Data Plan: HAWAII_HABITAT_DATA_PLAN.md
+      - Hawaii Tide And Current Data Plan: HAWAII_TIDE_CURRENT_DATA_PLAN.md
       - Replay Validation: REPLAY_VALIDATION.md
       - Horseshoe Reef 2026: CASE_STUDY_HORSESHOE_REEF_2026.md
       - Queensland Spearfishing 2026: case_studies/queensland_spearfishing_2026.md
