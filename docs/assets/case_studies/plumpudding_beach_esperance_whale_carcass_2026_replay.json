@@ -1,0 +1,148 @@
+{
+  "case_id": "plumpudding_beach_esperance_whale_carcass_2026",
+  "title": "Plumpudding Beach Esperance whale carcass operational replay (2026-05-29)",
+  "source_record": {
+    "official_source": "WA SharkSmart Shark ADVICE for Plumpudding Beach, west of Esperance",
+    "location": "Plumpudding Beach near Butty Head, Shire of Esperance, Western Australia",
+    "coordinates": {
+      "lat": -33.9,
+      "lon": 121.65,
+      "coordinate_note": "Approximate replay point for Plumpudding Beach / Butty Head operational area."
+    },
+    "event_date": "2026-05-29",
+    "earliest_source_attributed_sighting_time": "2026-05-29T14:00:00+08:00",
+    "reported_times": {
+      "sharksmart_member_of_public_report": "approximately 2026-05-29T14:30:00+08:00",
+      "slswa_sighted_at": "2026-05-29T14:00:00+08:00",
+      "slswa_logged_at": "2026-05-29T15:04:00+08:00"
+    }
+  },
+  "taxonomy": {
+    "official_species_identification": null,
+    "whale_taxon": "Kogia sp.",
+    "possible_species": "Kogia breviceps",
+    "taxonomy_status": "provisional",
+    "taxonomy_confidence": "provisional_unverified",
+    "note": "Official alert did not identify whale species; provisional taxonomy is not treated as verified fact."
+  },
+  "carcass_metadata": {
+    "estimated_length_m": null,
+    "carcass_mass_class": "small_whale",
+    "decomposition_state": "not_reported",
+    "distance_to_shore_m": 1,
+    "drift_direction": "not_reported",
+    "drift_speed": "not_reported",
+    "residue_present": "unknown",
+    "removal_status": "not_reported",
+    "last_verified_at": "2026-05-29T15:04:00+08:00"
+  },
+  "runs": {
+    "initial_report": {
+      "scenario_id": "plumpudding_beach_esperance_whale_carcass_2026_initial",
+      "timestamp": "2026-05-29T06:00:00+00:00",
+      "warning_score": 19.68,
+      "warning_band": "low",
+      "activity_hazard_score": 12,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 24.96,
+      "surveillance_priority_band": "low",
+      "confidence": 0.55,
+      "confidence_breakdown": {
+        "overall_confidence": 0.5724,
+        "confidence_band": "low"
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "biological_event_score",
+          "points": 19.68,
+          "rationale": "Whale carcass, stranding, baitfish, or prey event signal."
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "biological_event_surveillance_context",
+          "value": ["whale carcass"],
+          "points": 14.76
+        },
+        {
+          "factor": "activity_hazard_score",
+          "points": 4.2
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "points": 3
+        },
+        {
+          "factor": "regional_species_suitability",
+          "points": 3
+        }
+      ],
+      "missing_signal_sources": [
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "reef_features",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": ["biological_events", "regional_risk_profiles"],
+      "active_regional_pack": "western_australia",
+      "engine_recommended_pattern": "coastal expanding square",
+      "recommended_carcass_event_buffer": "carcass_event_buffer_zone",
+      "recommended_surveillance_pattern": ["carcass_event_buffer_zone", "shoreline_parallel_sweep"],
+      "future_pattern_when_available": "down-current drift corridor once tide/current support exists",
+      "operational_interpretation": "Official initial report creates low general warning with carcass-driven surveillance context. Missing live weather, SST, vessel, exposure, current, and sighting signals limit confidence."
+    },
+    "hypothetical_nearby_sighting": {
+      "scenario_id": "plumpudding_beach_esperance_whale_carcass_2026_hypothetical_sighting",
+      "timestamp": "2026-05-29T07:10:00+00:00",
+      "hypothetical": true,
+      "hypothetical_label": "Nearby verified shark sighting ingestion sensitivity only; not a historical fact.",
+      "warning_score": 19.68,
+      "warning_band": "low",
+      "activity_hazard_score": 12,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 35.96,
+      "surveillance_priority_band": "moderate",
+      "surveillance_priority_delta_vs_initial": 11.0,
+      "confidence": 0.55,
+      "dominant_surveillance_factors": [
+        {
+          "factor": "biological_event_surveillance_context",
+          "value": ["whale carcass"],
+          "points": 14.76
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 1,
+          "points": 11
+        }
+      ],
+      "missing_signal_sources": [
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "reef_features",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": ["biological_events", "regional_risk_profiles", "sighting_reports"],
+      "operational_interpretation": "A hypothetical verified nearby sighting raises surveillance priority to moderate while keeping warning score unchanged."
+    }
+  },
+  "quiet_day_comparison": {
+    "baseline_warning_score": 18.6,
+    "delta": 1.08,
+    "interpretation": "Near quiet-day baseline with limited data."
+  },
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "replay_asset_version": "2026.05"
+  },
+  "disclaimer": "AI1SAD provides bounded environmental and surveillance-relevant operational context. It is not a safety guarantee and does not replace official beach, wildlife, weather, or emergency guidance."
+}

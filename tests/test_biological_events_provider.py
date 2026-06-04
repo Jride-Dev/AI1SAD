@@ -12,6 +12,7 @@ from app.services.alert_engine import evaluate_alerts
 from app.services.signal_broker import warning_inputs_from_signals
 from app.services.surveillance_engine import score_surveillance_zones
 from app.services.warning_engine import calculate_warning
+from app.replay.scenarios import REPLAY_SCENARIOS
 
 
 def test_static_biological_examples_cover_required_regions():
@@ -174,3 +175,32 @@ def test_provider_health_shape():
     assert health["status"] == "healthy"
     assert health["records_ingested"] == 3
     assert health["mode"] == "static_manual_offline"
+
+
+def test_plumpudding_carcass_metadata_preserves_provisional_taxonomy():
+    scenario = REPLAY_SCENARIOS["plumpudding_beach_esperance_whale_carcass_2026_initial"]
+    event = scenario.biological_events[0]
+
+    assert event["event_type"] == "whale carcass"
+    assert event["signal_type"] == "whale_carcass"
+    assert event["whale_taxon"] == "Kogia sp."
+    assert event["possible_species"] == "Kogia breviceps"
+    assert event["taxonomy_status"] == "provisional"
+    assert event["taxonomy_confidence"] == "provisional_unverified"
+    assert event["official_species_identification"] is None
+    assert event["distance_to_shore_m"] == 1
+    assert event["reported_times"]["slswa_logged_at"] == "2026-05-29T15:04:00+08:00"
+
+
+def test_plumpudding_carcass_warning_is_bounded():
+    scenario = REPLAY_SCENARIOS["plumpudding_beach_esperance_whale_carcass_2026_initial"]
+    result = calculate_warning(
+        lat=scenario.lat,
+        lon=scenario.lon,
+        biological_events=scenario.biological_events,
+        month=scenario.month,
+    )
+
+    assert result["signals"]["biological_event_score"] > 0
+    assert result["warning_score"] < 45
+    assert result["warning_band"] == "low"

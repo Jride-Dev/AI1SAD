@@ -243,6 +243,38 @@ REPLAY_LIBRARY: dict[str, dict[str, Any]] = {
         explanation_summary="Case-study library entry tracks strict pre-incident replay, quiet-day baseline, post-incident update, and a clearly hypothetical earlier-sighting sensitivity run.",
         heatmap_asset="docs/assets/case_studies/cromwells_beach_hawaii_2026_heatmap.svg",
     ),
+    "plumpudding_beach_esperance_whale_carcass_2026": _item(
+        replay_id="plumpudding_beach_esperance_whale_carcass_2026",
+        title="Plumpudding Beach Esperance Whale Carcass 2026",
+        region="Western Australia",
+        coordinates={"lat": -33.9, "lon": 121.65},
+        observed_at="2026-05-29T14:00:00+08:00",
+        activity_context="nearshore whale carcass operational advice",
+        species_context="whale species not officially identified; Kogia sp. provisional context only",
+        replay_output={
+            "warning_score": 19.68,
+            "warning_band": "low",
+            "activity_hazard_score": 12,
+            "activity_hazard_band": "low",
+            "surveillance_priority_score": 24.96,
+            "surveillance_priority_band": "low",
+            "confidence": 0.55,
+        },
+        quiet_day_comparison={
+            "warning_score": 18.6,
+            "activity_hazard_score": 0,
+            "surveillance_priority_score": 0,
+            "confidence": 0.83,
+            "summary": "Initial report stays low-warning and near quiet-day baseline because weather, current, SST, vessel, exposure, and confirmed sighting sources are missing.",
+        },
+        factor_summary=[
+            {"factor": "biological_event_surveillance_context", "points": 14.76},
+            {"factor": "biological_event_score", "points": 19.68},
+            {"factor": "hypothetical_verified_sighting_delta", "points": 11.0},
+        ],
+        explanation_summary="Timeline-safe WA carcass replay with official initial report and clearly hypothetical nearby-sighting sensitivity run.",
+        heatmap_asset="docs/assets/case_studies/plumpudding_beach_esperance_whale_carcass_2026_heatmap.svg",
+    ),
 }
 
 

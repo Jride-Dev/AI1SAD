@@ -121,6 +121,24 @@ class TestReplayRunner:
         surveillance_score = (result.surveillance or {}).get("zones", [{}])[0].get("surveillance_priority_score", 0)
         assert surveillance_score > 0
 
+    def test_plumpudding_whale_carcass_replay_is_bounded_and_lifts_with_hypothetical_sighting(self):
+        initial = REPLAY_SCENARIOS["plumpudding_beach_esperance_whale_carcass_2026_initial"]
+        stacked = REPLAY_SCENARIOS["plumpudding_beach_esperance_whale_carcass_2026_hypothetical_sighting"]
+        runner = ReplayRunner()
+        initial_result = runner.run_scenario(initial)
+        stacked_result = runner.run_scenario(stacked)
+
+        assert initial_result.error is None
+        assert stacked_result.error is None
+        assert initial_result.warning["warning_band"] == "low"
+        assert initial_result.warning["warning_score"] < 45
+
+        initial_zone = (initial_result.surveillance or {}).get("zones", [{}])[0]
+        stacked_zone = (stacked_result.surveillance or {}).get("zones", [{}])[0]
+        assert stacked.sighting_reports[0]["hypothetical"] is True
+        assert stacked_zone["surveillance_priority_score"] > initial_zone["surveillance_priority_score"]
+        assert "sighting_reports" not in stacked_zone["missing_data_sources"]
+
     def test_run_queensland_spearfishing_case_study_scenario(self):
         scenario = REPLAY_SCENARIOS["queensland_spearfishing_reef_tiger_bull_2026"]
         runner = ReplayRunner()

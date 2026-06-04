@@ -20,6 +20,7 @@ GET /api/v1/replay/library/{replay_id}
 | `florida_crowded_inlet_demo` | Florida Crowded Inlet Demo | Florida | Crowding, inlet exposure, surf/fishing activity, and regional species context |
 | `hawaii_october_tiger_context_demo` | Hawaii October Tiger Shark Context Demo | Hawaii | October regional context and calm monitoring workflow |
 | `cromwells_beach_hawaii_2026` | Cromwell's Beach Hawaii 2026 | Honolulu, Oahu, Hawaii | Timeline-separated pre-incident, quiet-day, post-incident update, and hypothetical early-sighting sensitivity |
+| `plumpudding_beach_esperance_whale_carcass_2026` | Plumpudding Beach Esperance Whale Carcass 2026 | Western Australia | Official WA carcass advice replay with bounded initial report and hypothetical sighting sensitivity |
 | `red_sea_anomaly_demo` | Red Sea Anomaly Demo | Red Sea | Biological anomaly and tourism corridor operational review |
 
 ## Linked Case Studies
@@ -27,6 +28,7 @@ GET /api/v1/replay/library/{replay_id}
 - [Horseshoe Reef 2026](CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Queensland Spearfishing 2026](case_studies/queensland_spearfishing_2026.md)
 - [Cromwell's Beach Hawaii 2026](case_studies/cromwells_beach_hawaii_2026.md)
+- [Plumpudding Beach Esperance Whale Carcass 2026](case_studies/plumpudding_beach_esperance_whale_carcass_2026.md)
 - [Hawaii Signal Gap Analysis](HAWAII_SIGNAL_GAP_ANALYSIS.md)
 - [Hawaii Habitat Provider](HAWAII_HABITAT_PROVIDER.md)
 

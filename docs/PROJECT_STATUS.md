@@ -4,8 +4,8 @@
 
 - Current phase number: Phase 23 (planned)
 - Latest completed phase: Phase 22 (Hawaii Habitat Mapping Adapter)
-- Latest commit hash: `e880846623b9b45a5891c6f2264dea60070e6790`
-- Repo status: clean working tree on `main`
+- Latest commit hash: `ce1373a` Add durable project status and next-phase handoff
+- Repo status: working tree in review with WA Plumpudding Beach carcass replay artifacts; no staging or commit performed yet
 
 ## Major Completed Systems
 
@@ -40,6 +40,7 @@
 - Live surf-line/lifeguard observation ingestion not yet integrated
 - Live sightings ingestion pipeline still limited
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
+- WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 
 ## Next Planned Phase
 
@@ -99,17 +100,25 @@ Stop scripts:
 
 Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
-## Validation Counts (Latest Phase 22 Run)
+## Validation Counts (Latest Review Run)
 
-- Focused habitat tests: `9 passed`
-- Focused replay regression tests: `34 passed`
-- Full backend tests: `194 passed`
-- MkDocs build: passed
+- Focused biological-event tests: `11 passed`
+- Focused replay regression tests: `35 passed`
+- Full backend tests: `197 passed, 2 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
-- Prohibited-language scan: guardrail/disclaimer-only matches
+- Prohibited-language scan: safety-rule/guardrail-only matches; new WA case-study artifacts clean
+
+## Current Review Item
+
+- WA Plumpudding Beach / Esperance whale-carcass operational replay added as an active biological-event case study.
+- Initial report uses official carcass context with no confirmed shark sighting.
+- Sensitivity run adds a clearly hypothetical nearby sighting to show surveillance-priority lift.
+- Validation rerun completed; no staging or commit performed.
 
 ## Recent Important Commits
 
+- `ce1373a` Add durable project status and next-phase handoff
 - `e880846` Add Hawaii habitat mapping adapter
 - `5d5aa79` Add Hawaii signal gap analysis
 - `941416c` Add Cromwells Beach Hawaii replay case study

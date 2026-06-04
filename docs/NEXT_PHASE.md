@@ -73,3 +73,7 @@ Frontend tests/build can remain skipped if frontend files are unchanged.
 ## Review Gate
 
 Do not commit until review.
+
+## Current Interruption Note
+
+Before Phase 23 begins, the WA Plumpudding Beach / Esperance whale-carcass replay is in review as a documentation and replay-library case-study update. Phase 23 should still remain tide/current and nearshore water-movement support, with carcass drift corridors treated as a future beneficiary of that adapter rather than a reason to tune existing scoring weights.

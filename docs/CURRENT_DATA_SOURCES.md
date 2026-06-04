@@ -31,6 +31,8 @@ Biological events can be high-signal but sparse:
 - Stale biological events expire from scoring.
 - Manual events must be reviewed before being marked public.
 
+Case-study biological events may carry carcass-specific metadata when source-attributed, including distance to shore, reported sighting/log times, residue/removal status, last verification time, and provisional taxonomy fields. Provisional whale taxonomy, such as `Kogia sp.` context in the Plumpudding Beach 2026 replay, is stored as unverified context and is not treated as an official species identification.
+
 ## Provider Freshness
 
 Provider ingestion is tracked separately from public warning responses:
