@@ -204,3 +204,32 @@ def test_plumpudding_carcass_warning_is_bounded():
     assert result["signals"]["biological_event_score"] > 0
     assert result["warning_score"] < 45
     assert result["warning_band"] == "low"
+
+
+def test_lovers_point_carcass_metadata_preserves_humpback_and_closure():
+    scenario = REPLAY_SCENARIOS["lovers_point_pacific_grove_whale_carcass_2026_initial"]
+    event = scenario.biological_events[0]
+
+    assert event["signal_type"] == "whale_carcass"
+    assert event["official_species_identification"] == "humpback whale"
+    assert event["taxonomy_status"] == "official_city_follow_up"
+    assert event["beach_closure"] is True
+    assert event["closure_monitoring_through"] == "2026-06-05"
+    assert event["drift_direction"] == "unavailable"
+    assert event["drift_speed"] == "unavailable"
+    assert event["tide_current_support"] == "not_available_for_this_fixture"
+
+
+def test_lovers_point_carcass_warning_is_bounded():
+    scenario = REPLAY_SCENARIOS["lovers_point_pacific_grove_whale_carcass_2026_initial"]
+    result = calculate_warning(
+        lat=scenario.lat,
+        lon=scenario.lon,
+        biological_events=scenario.biological_events,
+        kelp_habitat_signals=scenario.kelp_habitat_signals,
+        month=scenario.month,
+    )
+
+    assert result["signals"]["biological_event_score"] > 0
+    assert result["warning_score"] < 45
+    assert result["warning_band"] == "low"

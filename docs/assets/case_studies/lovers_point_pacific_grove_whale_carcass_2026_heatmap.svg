@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Lovers Point Whale Carcass Replay</title>
+  <desc id="desc">Carcass response, drift planning, and hypothetical sighting sensitivity</desc>
+  <defs>
+    <linearGradient id="ocean" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06263A"/>
+      <stop offset="1" stop-color="#1B2A41"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#2EC4D6" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #D9F0FF; }
+      .subtitle { font: 15px Arial, sans-serif; fill: #9BD8E6; }
+      .label { font: 700 15px Arial, sans-serif; fill: #D9F0FF; }
+      .muted { font: 13px Arial, sans-serif; fill: #A9C5D5; }
+      .score { font: 700 14px Arial, sans-serif; fill: #D9F0FF; }
+      .track { fill: #D9F0FF; opacity: 0.14; }
+      .ring { fill: none; stroke: #2EC4D6; stroke-width: 2; stroke-opacity: 0.25; }
+    </style>
+  </defs>
+  <rect width="900" height="520" fill="url(#ocean)"/>
+  <rect width="900" height="520" fill="url(#grid)"/>
+  <circle cx="720" cy="162" r="62" class="ring"/>
+  <circle cx="720" cy="162" r="104" class="ring"/>
+  <path d="M720 162 L812 116" stroke="#7B2CBF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+  <text x="36" y="44" class="title">Lovers Point Whale Carcass Replay</text>
+  <text x="38" y="70" class="subtitle">Carcass response, drift planning, and hypothetical sighting sensitivity</text>
+  <text x="38" y="92" class="label">Initial carcass response surveillance</text><rect x="250" y="76" width="260" height="16" rx="3" class="track"/><rect x="250" y="76" width="73.2" height="16" rx="3" fill="#0F8B8D"/><text x="525" y="89" class="score">28.16</text><text x="38" y="114" class="muted">Nearshore carcass and closure context; no shark sightings invented.</text><text x="38" y="158" class="label">Drift planning surveillance</text><rect x="250" y="142" width="260" height="16" rx="3" class="track"/><rect x="250" y="142" width="73.2" height="16" rx="3" fill="#0F8B8D"/><text x="525" y="155" class="score">28.16</text><text x="38" y="180" class="muted">Drift direction unavailable until tide/current support exists.</text><text x="38" y="224" class="label">Hypothetical sighting surveillance</text><rect x="250" y="208" width="260" height="16" rx="3" class="track"/><rect x="250" y="208" width="101.8" height="16" rx="3" fill="#7B2CBF"/><text x="525" y="221" class="score">39.16</text><text x="38" y="246" class="muted">Clearly hypothetical nearby sighting sensitivity.</text>
+  <text x="38" y="486" class="muted">Static replay artifact. Missing tide/current/drift/weather/sighting values are not filled.</text>
+</svg>

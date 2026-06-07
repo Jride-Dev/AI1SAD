@@ -1,0 +1,268 @@
+{
+  "case_id": "michaelmas_island_albany_wa_2026",
+  "strict_pre_incident": {
+    "top_surveillance_factors": [
+      {
+        "factor": "regional_species_suitability",
+        "value": null,
+        "points": 21.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.2352
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 58,
+        "points": 20.3,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.2273
+      },
+      {
+        "factor": "wa_white_shark_reef_spearfishing_context",
+        "value": "spearfishing",
+        "points": 18,
+        "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+        "contribution": 0.2016
+      },
+      {
+        "factor": "activity_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.1568
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 13,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.1456
+      },
+      {
+        "factor": "regional_sst_species_context",
+        "value": 0.0,
+        "points": 3,
+        "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+        "contribution": 0.0336
+      }
+    ],
+    "top_warning_factors": [
+      {
+        "factor": "rainfall_intensity_score",
+        "value": 0,
+        "points": 0,
+        "rationale": "Rainfall in the previous 72 hours.",
+        "contribution": 0
+      },
+      {
+        "factor": "runoff_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Rainfall/runoff proxy near coastal water.",
+        "contribution": 0
+      },
+      {
+        "factor": "river_mouth_proximity_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature suitability.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_anomaly_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature anomaly magnitude.",
+        "contribution": 0
+      }
+    ]
+  },
+  "quiet_day_comparison": {
+    "top_surveillance_factors": [
+      {
+        "factor": "regional_species_suitability",
+        "value": null,
+        "points": 21.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.2352
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 58,
+        "points": 20.3,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.2273
+      },
+      {
+        "factor": "wa_white_shark_reef_spearfishing_context",
+        "value": "spearfishing",
+        "points": 18,
+        "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+        "contribution": 0.2016
+      },
+      {
+        "factor": "activity_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.1568
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 13,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.1456
+      },
+      {
+        "factor": "regional_sst_species_context",
+        "value": 0.0,
+        "points": 3,
+        "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+        "contribution": 0.0336
+      }
+    ],
+    "top_warning_factors": [
+      {
+        "factor": "rainfall_intensity_score",
+        "value": 0,
+        "points": 0,
+        "rationale": "Rainfall in the previous 72 hours.",
+        "contribution": 0
+      },
+      {
+        "factor": "runoff_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Rainfall/runoff proxy near coastal water.",
+        "contribution": 0
+      },
+      {
+        "factor": "river_mouth_proximity_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature suitability.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_anomaly_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature anomaly magnitude.",
+        "contribution": 0
+      }
+    ]
+  },
+  "post_incident_operational_update": {
+    "top_surveillance_factors": [
+      {
+        "factor": "activity_hazard_score",
+        "value": 70,
+        "points": 24.5,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.245
+      },
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 1,
+        "points": 22,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.22
+      },
+      {
+        "factor": "regional_species_suitability",
+        "value": null,
+        "points": 21.0,
+        "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+        "contribution": 0.21
+      },
+      {
+        "factor": "wa_white_shark_reef_spearfishing_context",
+        "value": "spearfishing",
+        "points": 18,
+        "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+        "contribution": 0.18
+      },
+      {
+        "factor": "activity_context",
+        "value": "spearfishing",
+        "points": 14,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.14
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 1,
+        "points": 13,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.13
+      }
+    ],
+    "top_warning_factors": [
+      {
+        "factor": "rainfall_intensity_score",
+        "value": 0,
+        "points": 0,
+        "rationale": "Rainfall in the previous 72 hours.",
+        "contribution": 0
+      },
+      {
+        "factor": "runoff_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Rainfall/runoff proxy near coastal water.",
+        "contribution": 0
+      },
+      {
+        "factor": "river_mouth_proximity_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature suitability.",
+        "contribution": 0
+      },
+      {
+        "factor": "sst_anomaly_score",
+        "value": null,
+        "points": 0,
+        "rationale": "Sea-surface temperature anomaly magnitude.",
+        "contribution": 0
+      }
+    ]
+  },
+  "classification_handling": {
+    "taxon": "suspected white shark",
+    "classification_status": "source_attributed_unconfirmed",
+    "estimated_length_m": 4.5
+  },
+  "same_individual_assumption": false,
+  "local_corridor_exclusions": [
+    "Rottnest Island fatality not modeled as same local corridor",
+    "Queensland fatality not modeled as same local corridor"
+  ],
+  "recommended_surveillance_patterns": [
+    "offshore_island_focus_scan",
+    "shoreline_return_route_monitoring",
+    "spearfishing_activity_buffer",
+    "post_incident_focus_area"
+  ]
+}

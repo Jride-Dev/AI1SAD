@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree
 
 import pytest
 
@@ -142,6 +143,99 @@ class TestReplayRunner:
         assert stacked.sighting_reports[0]["hypothetical"] is True
         assert stacked_zone["surveillance_priority_score"] > initial_zone["surveillance_priority_score"]
         assert "sighting_reports" not in stacked_zone["missing_data_sources"]
+
+    def test_michaelmas_strict_chronology_excludes_post_incident_context(self):
+        pre = REPLAY_SCENARIOS["michaelmas_island_albany_wa_2026_pre_incident"]
+        quiet = REPLAY_SCENARIOS["michaelmas_island_albany_wa_2026_quiet_day"]
+        post = REPLAY_SCENARIOS["michaelmas_island_albany_wa_2026_post_update"]
+        runner = ReplayRunner()
+        pre_result = runner.run_scenario(pre)
+        quiet_result = runner.run_scenario(quiet)
+        post_result = runner.run_scenario(post)
+
+        assert pre_result.error is None
+        assert quiet_result.error is None
+        assert post_result.error is None
+        assert pre.sighting_reports == []
+        assert pre.recent_interactions == []
+        assert pre.biological_events == []
+        assert pre.suspected_species is None
+        assert quiet.sighting_reports == []
+        assert quiet.recent_interactions == []
+
+        pre_zone = (pre_result.surveillance or {}).get("zones", [{}])[0]
+        quiet_zone = (quiet_result.surveillance or {}).get("zones", [{}])[0]
+        post_zone = (post_result.surveillance or {}).get("zones", [{}])[0]
+        assert pre_zone["surveillance_priority_score"] == quiet_zone["surveillance_priority_score"]
+        assert post_zone["surveillance_priority_score"] > pre_zone["surveillance_priority_score"]
+        assert "recent_interactions" not in pre_zone["data_sources_used"]
+        assert "recent_interactions" in post_zone["data_sources_used"]
+
+    def test_michaelmas_white_shark_classification_is_provisional_metadata(self):
+        post = REPLAY_SCENARIOS["michaelmas_island_albany_wa_2026_post_update"]
+        interaction = post.recent_interactions[0]
+        assessment = interaction["source_attributed_species_assessment"]
+
+        assert assessment["taxon"] == "suspected white shark"
+        assert assessment["classification_status"] == "secondary_source_attributed_unconfirmed"
+        assert assessment["official_wording"] == "suspected 4.5 m shark"
+        assert assessment["model_input_for_strict_preincident"] is False
+        assert interaction["same_individual_assumption"] is False
+
+    def test_lovers_point_artifacts_preserve_humpback_closure_and_no_drift_values(self):
+        replay = json.loads(Path("docs/assets/case_studies/lovers_point_pacific_grove_whale_carcass_2026_replay.json").read_text(encoding="utf-8"))
+        summary = json.loads(Path("docs/assets/case_studies/lovers_point_pacific_grove_whale_carcass_2026_factor_summary.json").read_text(encoding="utf-8"))
+
+        assert replay["source_record"]["official_species_identification"] == "humpback whale"
+        assert replay["source_record"]["taxonomy_status"] == "official_city_follow_up"
+        assert "source-attributed historical metadata" in replay["source_record"]["historical_conflicting_identification_handling"]
+        assert replay["carcass_metadata"]["active_beach_closure"] is True
+        assert replay["carcass_metadata"]["drift_direction"] == "unavailable"
+        assert replay["carcass_metadata"]["drift_speed"] == "unavailable"
+        assert replay["runs"]["drift_corridor_planning"]["drift_direction"] == "unavailable"
+        assert summary["closure_metadata"]["active_beach_closure"] is True
+        assert summary["drift_corridor_planning"]["drift_direction"] == "unavailable"
+
+    def test_lovers_point_carcass_warning_is_bounded_and_hypothetical_sighting_is_separate(self):
+        initial = REPLAY_SCENARIOS["lovers_point_pacific_grove_whale_carcass_2026_initial"]
+        drift = REPLAY_SCENARIOS["lovers_point_pacific_grove_whale_carcass_2026_drift_planning"]
+        hypothetical = REPLAY_SCENARIOS["lovers_point_pacific_grove_whale_carcass_2026_hypothetical_sighting"]
+        runner = ReplayRunner()
+        initial_result = runner.run_scenario(initial)
+        drift_result = runner.run_scenario(drift)
+        hypothetical_result = runner.run_scenario(hypothetical)
+
+        assert initial_result.error is None
+        assert drift_result.error is None
+        assert hypothetical_result.error is None
+        assert initial.sighting_reports == []
+        assert drift.sighting_reports == []
+        assert hypothetical.sighting_reports[0]["hypothetical"] is True
+        assert initial.biological_events[0]["official_species_identification"] == "humpback whale"
+        assert initial.biological_events[0]["beach_closure"] is True
+        assert initial.biological_events[0]["drift_direction"] == "unavailable"
+
+        initial_zone = (initial_result.surveillance or {}).get("zones", [{}])[0]
+        drift_zone = (drift_result.surveillance or {}).get("zones", [{}])[0]
+        hypothetical_zone = (hypothetical_result.surveillance or {}).get("zones", [{}])[0]
+        assert initial_result.warning["warning_band"] == "low"
+        assert initial_result.warning["warning_score"] < 45
+        assert drift_zone["surveillance_priority_score"] == initial_zone["surveillance_priority_score"]
+        assert hypothetical_zone["surveillance_priority_score"] > initial_zone["surveillance_priority_score"]
+
+    def test_active_event_replay_json_and_svg_artifacts_parse(self):
+        artifact_stems = [
+            "michaelmas_island_albany_wa_2026",
+            "lovers_point_pacific_grove_whale_carcass_2026",
+        ]
+        for stem in artifact_stems:
+            replay = json.loads(Path(f"docs/assets/case_studies/{stem}_replay.json").read_text(encoding="utf-8"))
+            summary = json.loads(Path(f"docs/assets/case_studies/{stem}_factor_summary.json").read_text(encoding="utf-8"))
+            svg_root = ElementTree.parse(f"docs/assets/case_studies/{stem}_heatmap.svg").getroot()
+
+            assert replay["case_id"] == stem
+            assert summary["case_id"] == stem
+            assert svg_root.tag.endswith("svg")
 
     def test_recife_piedade_pre_incident_excludes_boa_viagem_and_hindsight(self):
         scenario = REPLAY_SCENARIOS["piedade_beach_recife_2026_pre_incident"]

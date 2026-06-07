@@ -7,6 +7,8 @@ from app.replay.scenarios import ReplayScenario
 
 _PLUMPUDDING_LAT = -33.90
 _PLUMPUDDING_LON = 121.65
+_MICHAELMAS_LAT = -35.05
+_MICHAELMAS_LON = 118.02
 
 
 def _plumpudding_carcass_event() -> dict:
@@ -55,6 +57,43 @@ def _hypothetical_nearby_sighting() -> dict:
         "observed_at": "2026-05-29T15:10:00+08:00",
         "location": {"geo": {"type": "Point", "coordinates": [_PLUMPUDDING_LON, _PLUMPUDDING_LAT]}},
         "summary": "Hypothetical only: nearby shark sighting used to test surveillance-priority sensitivity.",
+    }
+
+
+def _michaelmas_fatal_interaction() -> dict:
+    return {
+        "visibility": "public",
+        "observed_at": "2026-06-06T11:25:00+08:00",
+        "reported_at": "2026-06-06T11:30:00+08:00",
+        "confidence": "official",
+        "fatal": True,
+        "activity_context": "spearfishing with family",
+        "source": "WA Police / DPIRD source-attributed incident record",
+        "location": {"geo": {"type": "Point", "coordinates": [_MICHAELMAS_LON, _MICHAELMAS_LAT]}},
+        "summary": "Fatal diver incident near Michaelmas Island; official wording described a suspected 4.5 m shark.",
+        "source_attributed_species_assessment": {
+            "taxon": "suspected white shark",
+            "classification_status": "secondary_source_attributed_unconfirmed",
+            "estimated_length_m": 4.5,
+            "official_wording": "suspected 4.5 m shark",
+            "model_input_for_strict_preincident": False,
+        },
+        "same_individual_assumption": False,
+    }
+
+
+def _michaelmas_closure_guidance_event() -> dict:
+    return {
+        "visibility": "public",
+        "event_type": "official_caution_closure_guidance",
+        "signal_type": "beach_closure",
+        "observed_at": "2026-06-06T11:30:00+08:00",
+        "confidence": 0.78,
+        "value": 0.6,
+        "source": "DPIRD / local-authority post-incident caution guidance",
+        "location": {"geo": {"type": "Point", "coordinates": [_MICHAELMAS_LON, _MICHAELMAS_LAT]}},
+        "location_name": "Michaelmas Island, City of Albany, Western Australia",
+        "notes": "Post-incident operational guidance only; excluded from strict pre-incident replay.",
     }
 
 
@@ -120,5 +159,76 @@ SCENARIOS = {
         lookback_hours=168,
         expected_warning_band="low",
         tags=["western_australia", "esperance", "whale_carcass", "hypothetical", "sighting_sensitivity"],
+    ),
+    "michaelmas_island_albany_wa_2026_pre_incident": ReplayScenario(
+        scenario_id="michaelmas_island_albany_wa_2026_pre_incident",
+        label="Michaelmas Island Albany WA strict pre-incident replay",
+        lat=_MICHAELMAS_LAT,
+        lon=_MICHAELMAS_LON,
+        timestamp=datetime(2026, 6, 6, 3, 25, 0, tzinfo=timezone.utc),
+        rainfall_72h_mm=None,
+        river_mouth_distance_km=None,
+        sea_surface_temp_c=None,
+        sst_anomaly_c=None,
+        vessel_activity_index=None,
+        human_exposure_index=None,
+        month=6,
+        activity_context="spearfishing",
+        suspected_species=None,
+        radius_km=12.0,
+        lookback_hours=72,
+        reef_habitat=False,
+        dropoff_habitat=True,
+        reef_feature_name="Michaelmas Island offshore structure baseline",
+        expected_warning_band="low",
+        tags=["western_australia", "albany", "michaelmas_island", "pre_incident", "timeline_strict", "spearfishing"],
+    ),
+    "michaelmas_island_albany_wa_2026_quiet_day": ReplayScenario(
+        scenario_id="michaelmas_island_albany_wa_2026_quiet_day",
+        label="Michaelmas Island Albany WA quiet-day spearfishing comparison",
+        lat=_MICHAELMAS_LAT,
+        lon=_MICHAELMAS_LON,
+        timestamp=datetime(2026, 6, 6, 3, 25, 0, tzinfo=timezone.utc),
+        rainfall_72h_mm=None,
+        river_mouth_distance_km=None,
+        sea_surface_temp_c=None,
+        sst_anomaly_c=None,
+        vessel_activity_index=None,
+        human_exposure_index=None,
+        month=6,
+        activity_context="spearfishing",
+        suspected_species=None,
+        radius_km=12.0,
+        lookback_hours=72,
+        reef_habitat=False,
+        dropoff_habitat=True,
+        reef_feature_name="Michaelmas Island offshore structure baseline",
+        expected_warning_band="low",
+        tags=["western_australia", "albany", "michaelmas_island", "quiet_day", "timeline_strict", "spearfishing"],
+    ),
+    "michaelmas_island_albany_wa_2026_post_update": ReplayScenario(
+        scenario_id="michaelmas_island_albany_wa_2026_post_update",
+        label="Michaelmas Island Albany WA post-incident operational update",
+        lat=_MICHAELMAS_LAT,
+        lon=_MICHAELMAS_LON,
+        timestamp=datetime(2026, 6, 6, 3, 30, 0, tzinfo=timezone.utc),
+        rainfall_72h_mm=None,
+        river_mouth_distance_km=None,
+        sea_surface_temp_c=None,
+        sst_anomaly_c=None,
+        vessel_activity_index=None,
+        human_exposure_index=None,
+        biological_events=[_michaelmas_closure_guidance_event()],
+        recent_interactions=[_michaelmas_fatal_interaction()],
+        month=6,
+        activity_context="spearfishing",
+        suspected_species=None,
+        radius_km=12.0,
+        lookback_hours=72,
+        reef_habitat=False,
+        dropoff_habitat=True,
+        reef_feature_name="Michaelmas Island offshore structure baseline",
+        expected_warning_band="low",
+        tags=["western_australia", "albany", "michaelmas_island", "post_incident", "timeline_strict", "spearfishing"],
     ),
 }

@@ -86,4 +86,4 @@ Do not commit until review.
 
 ## Current Interruption Note
 
-Phase 24 is reviewed and committed locally. Begin Phase 25 only when explicitly requested.
+Phase 24 and the active-event replay case-study package are reviewed and committed. Begin Phase 25 only when explicitly requested.

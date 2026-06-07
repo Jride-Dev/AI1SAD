@@ -5,8 +5,8 @@
 - Current phase number: Phase 25 (Live Sightings & Surf-Line Observation Ingestion Adapter)
 - Latest completed committed phase: Phase 24 (Water Clarity & Turbidity Adapter)
 - Latest completed local phase: Phase 24 (Water Clarity & Turbidity Adapter)
-- Latest commit hash: current `HEAD` after the Phase 24 commit; verify with `git log --oneline -1`
-- Repo status: clean after Phase 24 commit; push pending
+- Latest commit hash: `10d4dd6` Add Hawaii water clarity and turbidity adapter
+- Repo status: clean after active-event replay package commit; verify with `git status`
 
 ## Major Completed Systems
 
@@ -45,6 +45,8 @@
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
+- Michaelmas Island replay shows high WA spearfishing/offshore surveillance context even before post-incident signals, with missing live weather/ocean/sighting sources.
+- Lovers Point replay shows carcass and closure surveillance context while drift direction remains unavailable until tide/current fixture support exists.
 
 ## Next Planned Phase
 
@@ -104,25 +106,27 @@ Stop scripts:
 
 Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
-## Validation Counts (Latest Phase 24 Run)
+## Validation Counts (Latest Active-Event Replay Run)
 
-- Focused water clarity/turbidity tests: `11 passed`
-- Focused Cromwell replay regression tests: `38 passed`
-- Full backend tests: `222 passed, 2 warnings`
+- Focused replay tests: `43 passed`
+- Focused biological-event tests: `13 passed`
+- Replay library tests: `4 passed, 3 warnings`
+- Full backend tests: `229 passed, 3 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
-- Prohibited-language scan: safety-rule/guardrail-only matches
+- Prohibited-language scan: safety-rule/guardrail/test-only matches
+- JSON/SVG parse checks: passed for Michaelmas Island and Lovers Point artifacts
 
 ## Current Review Item
 
-- Phase 24 Hawaii water clarity/turbidity adapter is committed locally.
-- Static/offline Oahu visibility baselines are wired through warning, surveillance, alerts, explainability, replay, and docs.
-- Cromwell replay remains timeline-safe and is treated as a regression case only.
-- No live scraping, scoring-weight retuning, auth/billing, or frontend runtime changes were added.
+- Michaelmas Island Albany WA 2026 active-event replay reviewed and committed.
+- Lovers Point Pacific Grove Whale Carcass 2026 active-event replay reviewed and committed.
+- Both case studies use existing replay/provider layers only and do not add scoring-weight retunes, live scraping, auth/billing, or frontend runtime changes.
+- Phase 25 remains the next planned phase.
 
 ## Recent Important Commits
 
-- `HEAD` Add Hawaii water clarity and turbidity adapter
+- `10d4dd6` Add Hawaii water clarity and turbidity adapter
 - `3ece14a` Add paired Recife shark-incident replay case study
 - `1fcdf62` Add Greater Recife paired replay case study
 - `c50441a` Add Hawaii tide and current context adapter
