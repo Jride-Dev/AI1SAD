@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Recife replay case-study work (not a numbered adapter phase)
-- Latest completed committed phase: Phase 23 (Hawaii Tide, Current & Nearshore Water-Movement Adapter)
-- Latest completed local phase: Phase 23 (Hawaii Tide, Current & Nearshore Water-Movement Adapter)
-- Latest commit hash: `c50441a` Add Hawaii tide and current context adapter
-- Repo status: working tree in review with Greater Recife paired replay case-study changes; no staging or commit performed yet
+- Current phase number: Phase 25 (Live Sightings & Surf-Line Observation Ingestion Adapter)
+- Latest completed committed phase: Phase 24 (Water Clarity & Turbidity Adapter)
+- Latest completed local phase: Phase 24 (Water Clarity & Turbidity Adapter)
+- Latest commit hash: current `HEAD` after the Phase 24 commit; verify with `git log --oneline -1`
+- Repo status: clean after Phase 24 commit; push pending
 
 ## Major Completed Systems
 
@@ -21,6 +21,7 @@
   - Kelp forest habitat context
   - Hawaii benthic habitat baseline context
   - Hawaii tide/current baseline context
+  - Hawaii water clarity/turbidity baseline context
 - Frontend trust hardening (fail-closed live mode, explicit mock mode)
 - Brand identity integration and docs portal branding
 - One-click local launcher scripts
@@ -38,7 +39,7 @@
 
 - Tide-state adapter has static/offline baseline support; live ingestion not yet integrated
 - Current-direction/speed adapter has static/offline baseline support; live ingestion not yet integrated
-- Turbidity/water-clarity adapter not yet integrated
+- Water clarity/turbidity adapter has static/offline baseline support; live ingestion not yet integrated
 - Live surf-line/lifeguard observation ingestion not yet integrated
 - Live sightings ingestion pipeline still limited
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
@@ -47,21 +48,21 @@
 
 ## Next Planned Phase
 
-- Phase 24: Water Clarity & Turbidity Adapter
+- Phase 25: Live Sightings & Surf-Line Observation Ingestion Adapter
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Exact Next Codex Resume Prompt
 
-Use this as the next prompt anchor:
+Use this as the next prompt anchor after Phase 24 review/commit:
 
 ```text
-Phase 24: Water Clarity & Turbidity Adapter
+Phase 25: Live Sightings & Surf-Line Observation Ingestion Adapter
 
 Repo:
 F:\shark-attack-api
 
 Goal:
-Add static/offline-first water clarity and turbidity context for AI1SAD as bounded environmental/visibility information.
+Add reviewed, source-attributed sightings and surf-line/lifeguard observation ingestion for AI1SAD as bounded operational observation context.
 
 Constraints:
 - do not tune scoring weights
@@ -103,26 +104,27 @@ Stop scripts:
 
 Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
-## Validation Counts (Latest Review Run)
+## Validation Counts (Latest Phase 24 Run)
 
-- Focused tide/current tests: `11 passed`
-- Focused Cromwell replay regression tests: `35 passed`
-- Focused replay tests: `38 passed`
-- Replay library tests: `4 passed, 2 warnings`
-- Full backend tests: `211 passed, 2 warnings`
+- Focused water clarity/turbidity tests: `11 passed`
+- Focused Cromwell replay regression tests: `38 passed`
+- Full backend tests: `222 passed, 2 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan: no matches
 - Prohibited-language scan: safety-rule/guardrail-only matches
 
 ## Current Review Item
 
-- Greater Recife paired replay case study added locally for Piedade and Boa Viagem, pending review.
-- Piedade strict pre-incident replay remains weak/low with missing live signals.
-- Boa Viagem strict pre-incident replay includes the previous day's Piedade incident as timeline-valid recent-interaction context.
-- No Recife scoring profile, provider, live scraping, auth/billing, or scoring-weight retuning was added.
+- Phase 24 Hawaii water clarity/turbidity adapter is committed locally.
+- Static/offline Oahu visibility baselines are wired through warning, surveillance, alerts, explainability, replay, and docs.
+- Cromwell replay remains timeline-safe and is treated as a regression case only.
+- No live scraping, scoring-weight retuning, auth/billing, or frontend runtime changes were added.
 
 ## Recent Important Commits
 
+- `HEAD` Add Hawaii water clarity and turbidity adapter
+- `3ece14a` Add paired Recife shark-incident replay case study
+- `1fcdf62` Add Greater Recife paired replay case study
 - `c50441a` Add Hawaii tide and current context adapter
 - `363c359` Patch frontend Vitest security advisory
 - `a03cc7b` Add Plumpudding Beach whale-carcass replay case study

@@ -335,6 +335,46 @@ def hawaii_tide_current_warning_context_score(signals: list[dict[str, Any]], *, 
     return round(max(0.0, min(2.5, points)), 2), factors, freshness_penalty
 
 
+def hawaii_water_clarity_warning_context_score(signals: list[dict[str, Any]], *, activity_context: str | None = None) -> tuple[float, list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], 0.0
+
+    signal_types = {str(signal.get("signal_type", "")) for signal in public}
+    factors: list[dict[str, Any]] = []
+    points = 0.0
+    has_clarity = "water_clarity_context" in signal_types
+    has_turbidity = "turbidity_context" in signal_types
+    has_runoff_visibility = "sediment_runoff_visibility_context" in signal_types
+    has_surf_visibility = "surf_zone_visibility_context" in signal_types
+    water_activity = (activity_context or "").lower() in {"surfing", "swimming", "diving", "spearfishing", "paddling"}
+    turbidity_class = next((signal.get("turbidity_class") for signal in public if signal.get("turbidity_class")), None)
+    clarity_class = next((signal.get("clarity_class") for signal in public if signal.get("clarity_class")), None)
+
+    if has_clarity:
+        points += 0.2
+        factors.append({"factor": "water_clarity_context", "value": clarity_class or True, "points": 0.2, "rationale": "Static clarity baseline is low-weight visibility context only."})
+    if has_turbidity:
+        points += 0.4
+        factors.append({"factor": "turbidity_context", "value": turbidity_class or True, "points": 0.4, "rationale": "Static turbidity baseline informs confidence but is not a live observation."})
+    if has_runoff_visibility:
+        points += 0.3
+        factors.append({"factor": "sediment_runoff_visibility_context", "value": True, "points": 0.3, "rationale": "Static sediment/runoff visibility context is bounded background only."})
+    if has_surf_visibility:
+        points += 0.2
+        factors.append({"factor": "surf_zone_visibility_context", "value": True, "points": 0.2, "rationale": "Surf-zone visibility baseline can inform observation confidence."})
+    if water_activity and (has_turbidity or has_surf_visibility):
+        points += 0.3
+        factors.append({"factor": "visibility_activity_stack_context", "value": activity_context, "points": 0.3, "rationale": "Reduced-visibility baseline plus water activity slightly increases context without changing core weights."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale" or "static" in str(signal.get("data_freshness_label", "")))
+    freshness_penalty = -0.03 if stale_count else 0.0
+    if freshness_penalty:
+        factors.append({"factor": "baseline_visibility_freshness", "value": "static_baseline", "points": 0, "rationale": "Static clarity/turbidity baselines reduce confidence because they are not live observations."})
+
+    return round(max(0.0, min(1.8, points)), 2), factors, freshness_penalty
+
+
 def calculate_warning(
     *,
     lat: float,
@@ -349,6 +389,7 @@ def calculate_warning(
     kelp_habitat_signals: list[dict[str, Any]] | None = None,
     hawaii_habitat_signals: list[dict[str, Any]] | None = None,
     hawaii_tide_current_signals: list[dict[str, Any]] | None = None,
+    hawaii_water_clarity_signals: list[dict[str, Any]] | None = None,
     weather_alerts: list[dict[str, Any]] | None = None,
     weather_alert_score: float | None = None,
     human_exposure_index: float | None = None,
@@ -452,6 +493,13 @@ def calculate_warning(
     for tide_current_factor in tide_current_factors:
         factors.append(tide_current_factor)
 
+    water_clarity_signals = hawaii_water_clarity_signals or []
+    water_clarity_score, water_clarity_factors, water_clarity_freshness_penalty = hawaii_water_clarity_warning_context_score(water_clarity_signals, activity_context=activity_context)
+    if water_clarity_signals:
+        data_sources_used.append("hawaii_water_clarity_static")
+    for water_clarity_factor in water_clarity_factors:
+        factors.append(water_clarity_factor)
+
     alert_events = [event for event in weather_alerts or [] if event.get("visibility", "public") == "public"]
     alert_score = min(10, float(weather_alert_score or 0))
     if alert_events:
@@ -522,6 +570,7 @@ def calculate_warning(
             "kelp_forest_context_score": kelp_score,
             "hawaii_habitat_context_score": habitat_score,
             "hawaii_tide_current_context_score": tide_current_score,
+            "hawaii_water_clarity_context_score": water_clarity_score,
             "weather_alert_score": alert_score,
             "human_exposure_score": human_score,
             "human_exposure_amplifier_score": exposure_amp_score,
@@ -547,6 +596,9 @@ def calculate_warning(
     if tide_current_freshness_penalty < 0:
         result["confidence"] = round(max(0.25, result["confidence"] + tide_current_freshness_penalty), 2)
         result["signals"]["baseline_tide_current_freshness_confidence_modifier"] = tide_current_freshness_penalty
+    if water_clarity_freshness_penalty < 0:
+        result["confidence"] = round(max(0.25, result["confidence"] + water_clarity_freshness_penalty), 2)
+        result["signals"]["baseline_visibility_freshness_confidence_modifier"] = water_clarity_freshness_penalty
     return result
 
 

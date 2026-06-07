@@ -45,7 +45,7 @@ Status keys used below:
 | Channel / reef-edge habitat | `available` | Baseline habitat context (reef/dropoff/channel) supported and used. |
 | Tidal state | `static_baseline_support` | Phase 23 adds static/offline tide-window context; no live tide-state ingestion is enabled yet. |
 | Current direction | `static_baseline_support` | Phase 23 adds static/offline nearshore current-direction/speed and channel-flow context; no live current feed is enabled yet. |
-| Water clarity / turbidity | `missing_provider` | No turbidity/visibility adapter currently wired. |
+| Water clarity / turbidity | `static_baseline_support` | Phase 24 adds static/offline Oahu visibility baselines; no live clarity/turbidity ingestion is enabled yet. |
 | Human exposure | `available` + `low_confidence` | Static exposure profiles exist, but no high-resolution time-of-day local occupancy feed in this run. |
 | Early-morning surf/swim overlap | `available` + `low_confidence` | Activity variant is modeled, but overlap intensity by minute/spot is not live-ingested. |
 | Shark sightings | `available` + `unavailable` | Sighting field supported, but strict pre-incident run intentionally had no verified pre-06:30 ingestion. |
@@ -63,7 +63,7 @@ Status keys used below:
 | Surf-line / lifeguard observations | Partial manual/context only | Low | High | High | Add structured observation ingest for patrol/lifeguard reports | Lifeguard ops log ingestion adapter (manual/API bridge) | high |
 | Tide state | Static/offline baseline adapter | Partial baseline only | Medium | High | Add live or pre-fetched tide-phase/height ingestion after static validation | NOAA CO-OPS, PacIOOS South Shore Oahu ROMS | high |
 | Current direction/speed | Static/offline baseline adapter | Partial baseline only | Medium | High | Add live or pre-fetched nearshore current context ingestion | PacIOOS South Shore Oahu ROMS, PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, NOAA CO-OPS currents | high |
-| Turbidity / water clarity | Missing adapter | None | Medium | High | Add bounded visibility/turbidity contextual signal | Satellite/nearshore turbidity products where allowed | high |
+| Turbidity / water clarity | Static/offline baseline adapter | Partial baseline only | Medium | High | Add source-timestamped prefetch after static validation | NOAA CoastWatch, PacIOOS water quality, Hawaii beach water-quality datasets | high |
 | Reef-channel habitat mapping | Baseline habitat flags | Partial | Medium | High | Increase granularity from boolean habitat to mapped reef-channel zones | Static Hawaii habitat map pack | high |
 | Hawaii human exposure timing | Static profiles | Partial | Medium | High | Add time-sliced exposure curves (weekday/weekend/time-of-day) | Local beach-use schedule/profile dataset | high |
 | Biological prey context | Static/manual biology adapter | Low | Medium | Medium | Expand verification workflow and freshness decay for prey-context signals | Curated biological event registry with expiry | medium |
@@ -77,7 +77,7 @@ Status keys used below:
 1. Live sightings ingestion
 2. Surf-line / lifeguard observation ingestion
 3. Tide/current context: static/offline baseline support added in Phase 23; live PacIOOS/NOAA ingestion remains future work.
-4. Water clarity / turbidity context
+4. Live water clarity / turbidity context beyond static baselines
 5. Reef-channel habitat mapping granularity
 6. Hawaii-specific human exposure timing
 7. Biological prey-context freshness/verification

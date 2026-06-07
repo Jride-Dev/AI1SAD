@@ -38,6 +38,8 @@ For Hawaii benthic habitat, Phase 22 uses static/manual/offline baseline profile
 
 For Hawaii tide/current context, Phase 23 uses static/manual/offline baseline profiles. Signals include tide state, tide window, nearshore current direction/speed class, channel-flow context, tidal-exchange context, preferred PacIOOS source metadata, fallback source metadata, NOAA CO-OPS support notes, source date, and baseline-only metadata. Static profiles are not live ocean-model or station observations.
 
+For Hawaii water clarity context, Phase 24 uses static/manual/offline baseline profiles. Signals include clarity class, turbidity class, sediment/runoff visibility context, surf-zone visibility context, NOAA CoastWatch/PacIOOS/Hawaii beach water-quality source candidates, source date, and baseline-only metadata. Static profiles are not live water-quality, ocean-color, camera, or beach observations.
+
 ## Public API
 
 `GET /api/v1/provider-health` returns provider rollups and recent failures with credentials, private notes, and restricted details excluded.
@@ -52,6 +54,7 @@ For Hawaii tide/current context, Phase 23 uses static/manual/offline baseline pr
 - Static kelp provider output should remain bounded habitat context, with stale freshness lowering confidence and dense kelp affecting visibility confidence rather than automatically creating high warning.
 - Static Hawaii habitat provider output should remain bounded baseline context; stale baseline metadata should reduce confidence and must never be represented as live conditions.
 - Static Hawaii tide/current provider output should remain bounded water-movement context; stale/static metadata should reduce confidence and must never be represented as live PacIOOS or NOAA CO-OPS conditions.
+- Static Hawaii water-clarity provider output should remain bounded visibility context; stale/static metadata should reduce confidence and must never be represented as live water-quality, ocean-color, camera, or beach observations.
 - Failed providers should lower confidence through missing or stale data freshness.
 - Error summaries must not include API keys, passwords, tokens, or full raw response dumps.
 - Placeholder providers should fail closed with clear messages until terms, credentials, and data contracts are reviewed.

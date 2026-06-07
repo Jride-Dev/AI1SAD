@@ -57,6 +57,19 @@ Hawaii tide/current explanations can include:
 
 These factors are bounded water-movement context and must not be described as live PacIOOS, ROMS, or NOAA CO-OPS observations unless a future adapter ingests source-timestamped live or pre-fetched records.
 
+Hawaii water clarity explanations can include:
+
+- `water_clarity_context`
+- `turbidity_context`
+- `sediment_runoff_visibility_context`
+- `surf_zone_visibility_context`
+- `visibility_activity_stack_context`
+- `visibility_signal_stack_context`
+- `baseline_visibility_freshness`
+- `hawaii_water_clarity_baseline_context`
+
+These factors are bounded visibility context and must not be described as live NOAA CoastWatch, PacIOOS, camera, beach, or water-quality observations unless a future adapter ingests source-timestamped records.
+
 ## API Routes
 
 - `GET /api/v1/explain/location`

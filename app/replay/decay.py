@@ -71,6 +71,10 @@ SIGNAL_TYPE_DECAY_PARAMS: dict[str, dict[str, float]] = {
     "current_speed_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
     "channel_flow_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
     "tidal_exchange_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "water_clarity_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "turbidity_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "sediment_runoff_visibility_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
+    "surf_zone_visibility_context": {"half_life_hours": 1440.0, "expiry_multiplier": 3.0},
 }
 
 

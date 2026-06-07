@@ -284,6 +284,56 @@ def hawaii_tide_current_surveillance_points(
     return round(min(14, max(0, points)), 2), signal_types, factors, freshness_penalty
 
 
+def hawaii_water_clarity_surveillance_points(
+    signals: list[dict[str, Any]],
+    *,
+    activity_context: str | None,
+    biological_events: list[dict[str, Any]],
+    human_exposure_index: float | None,
+    verified_sighting_count: int,
+) -> tuple[float, list[str], list[dict[str, Any]], float]:
+    public = [signal for signal in signals if signal.get("visibility", "public") == "public"]
+    if not public:
+        return 0, [], [], 0.0
+
+    signal_types = sorted({str(signal.get("signal_type", "")) for signal in public if signal.get("signal_type")})
+    factors: list[dict[str, Any]] = []
+    points = 0.0
+    has_clarity = "water_clarity_context" in signal_types
+    has_turbidity = "turbidity_context" in signal_types
+    has_runoff_visibility = "sediment_runoff_visibility_context" in signal_types
+    has_surf_visibility = "surf_zone_visibility_context" in signal_types
+    water_activity = (activity_context or "").lower() in {"surfing", "swimming", "diving", "spearfishing", "paddling"}
+    turbidity_class = next((signal.get("turbidity_class") for signal in public if signal.get("turbidity_class")), None)
+    clarity_class = next((signal.get("clarity_class") for signal in public if signal.get("clarity_class")), None)
+
+    if has_clarity:
+        points += 0.5
+        factors.append({"factor": "water_clarity_context", "value": clarity_class or True, "points": 0.5, "rationale": "Static clarity baseline modestly informs visibility planning."})
+    if has_turbidity:
+        points += 1
+        factors.append({"factor": "turbidity_context", "value": turbidity_class or True, "points": 1, "rationale": "Static turbidity baseline can reduce confidence and support observation review."})
+    if has_runoff_visibility:
+        points += 1
+        factors.append({"factor": "sediment_runoff_visibility_context", "value": True, "points": 1, "rationale": "Static sediment/runoff visibility context supports bounded observation planning."})
+    if has_surf_visibility:
+        points += 1
+        factors.append({"factor": "surf_zone_visibility_context", "value": True, "points": 1, "rationale": "Surf-zone visibility baseline helps define patrol observation constraints."})
+    if water_activity and (has_turbidity or has_surf_visibility):
+        points += 2
+        factors.append({"factor": "visibility_activity_stack_context", "value": activity_context, "points": 2, "rationale": "Reduced visibility plus water activity raises operational attention more than visibility alone."})
+    if verified_sighting_count or biological_events or (human_exposure_index and human_exposure_index >= 0.55):
+        points += 1
+        factors.append({"factor": "visibility_signal_stack_context", "value": "stacked_operational_context", "points": 1, "rationale": "Visibility context is stronger only when paired with sightings, biological events, or human exposure."})
+
+    stale_count = sum(1 for signal in public if (signal.get("data_freshness") or {}).get("status") == "stale" or "static" in str(signal.get("data_freshness_label", "")))
+    freshness_penalty = -0.04 if stale_count else 0.0
+    if freshness_penalty:
+        factors.append({"factor": "baseline_visibility_freshness", "value": "static_baseline", "points": 0, "rationale": "Static clarity/turbidity context is not a live observation and reduces confidence."})
+
+    return round(min(6, max(0, points)), 2), signal_types, factors, freshness_penalty
+
+
 def species_region_points(
     profile: dict[str, Any] | None,
     *,
@@ -393,6 +443,7 @@ def score_surveillance_zones(
         biological_events=warning_inputs.get("biological_events", []),
         kelp_habitat_signals=warning_inputs.get("kelp_habitat_signals", []),
         hawaii_tide_current_signals=warning_inputs.get("hawaii_tide_current_signals", []),
+        hawaii_water_clarity_signals=warning_inputs.get("hawaii_water_clarity_signals", []),
         human_exposure_index=warning_inputs.get("human_exposure_index"),
         activity_context=activity_context,
         reef_habitat=reef_habitat,
@@ -572,6 +623,23 @@ def score_surveillance_zones(
         }
     )
 
+    water_clarity_points, water_clarity_signal_types, water_clarity_factors, water_clarity_confidence_penalty = hawaii_water_clarity_surveillance_points(
+        warning_inputs.get("hawaii_water_clarity_signals", []),
+        activity_context=activity_context,
+        biological_events=warning_inputs.get("biological_events", []),
+        human_exposure_index=warning_inputs.get("human_exposure_index"),
+        verified_sighting_count=verified_count,
+    )
+    factors.extend(water_clarity_factors)
+    factors.append(
+        {
+            "factor": "hawaii_water_clarity_baseline_context",
+            "value": water_clarity_signal_types,
+            "points": water_clarity_points,
+            "rationale": "Static water clarity and turbidity baselines are bounded visibility context and do not represent live observations.",
+        }
+    )
+
     human_exposure = warning_inputs.get("human_exposure_index")
     human_points = round(min(12, max(0, float(human_exposure or 0)) * 12), 2)
     factors.append(
@@ -628,6 +696,8 @@ def score_surveillance_zones(
         data_sources_used.add("hawaii_habitat_static")
     if warning_inputs.get("hawaii_tide_current_signals"):
         data_sources_used.add("hawaii_tide_current_static")
+    if warning_inputs.get("hawaii_water_clarity_signals"):
+        data_sources_used.add("hawaii_water_clarity_static")
     if profile:
         data_sources_used.add("regional_risk_profiles")
     else:
@@ -640,6 +710,8 @@ def score_surveillance_zones(
         confidence = round(max(0.25, confidence + habitat_confidence_penalty), 2)
     if tide_current_confidence_penalty:
         confidence = round(max(0.25, confidence + tide_current_confidence_penalty), 2)
+    if water_clarity_confidence_penalty:
+        confidence = round(max(0.25, confidence + water_clarity_confidence_penalty), 2)
     zone_radius = round(max(0.5, min(radius_km, 2.5 if priority_score >= 50 else 4.0)), 2)
     zone_id = f"{mission_type}:{lat:.3f}:{lon:.3f}:{lookback_hours}:{activity_context or 'general'}"
 

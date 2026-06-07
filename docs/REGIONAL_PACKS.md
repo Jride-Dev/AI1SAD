@@ -74,6 +74,14 @@ Phase 23 adds static/manual Hawaii tide and current baseline examples associated
 
 These Hawaii tide/current signals are static water-movement baselines. PacIOOS South Shore Oahu ROMS is the preferred future nearshore source, with PacIOOS Oahu ROMS, PacIOOS Main Hawaiian Islands ROMS, and NOAA CO-OPS as fallback/supporting candidates. They are not live ocean observations.
 
+Phase 24 adds static/manual Hawaii water clarity and turbidity baseline examples associated with the Hawaii pack:
+
+- Cromwell's Beach / Diamond Head visibility baseline
+- Waikiki / Ala Moana visibility baseline
+- Oahu sandy-bottom quiet-day visibility baseline
+
+These Hawaii water-clarity signals are static visibility baselines. NOAA CoastWatch, PacIOOS water-quality products, Hawaii beach water-quality datasets, and reviewed runoff notes are future source candidates. They are not live water-quality, ocean-color, camera, or beach observations.
+
 ## Hawaii Pack Coverage Gaps
 
 The Cromwell's Beach replay analysis shows that Hawaii operational awareness is currently limited most by early observational ingestion gaps and missing ocean-state layers, not by pack-weight tuning.
@@ -82,7 +90,7 @@ High-value next additions for the Hawaii pack:
 
 - finer reef-channel habitat mapping
 - tide/current context adapter
-- turbidity/clarity context adapter
+- live turbidity/clarity ingestion beyond static baselines
 - local live sightings/lifeguard signal ingestion
 - time-sliced human exposure timing profiles
 
