@@ -1,54 +1,260 @@
 # AI1SAD
+
 ## All in 1 Shark Attack Data
 
-AI1SAD is a global shark encounter warning and environmental risk analysis platform.
+<p align="center">
+  <img src="images/branding/banner-github.png" alt="AI1SAD marine intelligence banner" width="100%">
+</p>
 
-The project combines:
-- Historical shark incident data
-- Environmental/ocean conditions
-- Regional seasonality
-- Weather and rainfall patterns
-- Vessel and fishing activity
-- Biological event signals
-- Human exposure estimates
+AI1SAD is a marine intelligence platform for shark-encounter data, environmental context, replay analysis, and operational surveillance planning.
 
-AI1SAD does not predict individual shark attacks.
+It combines historical incidents, regional profiles, environmental signals, habitat context, biological events, human exposure, replay case studies, and human-operated drone observation intake into a single FastAPI, frontend, and documentation workspace.
 
-Instead, it estimates stacked environmental and behavioral conditions historically associated with elevated shark encounter risk.
+AI1SAD does not predict individual incidents or infer shark intent. It separates calm public warning posture from operational surveillance-priority context for human review.
 
-## Project Status
+## Current Status
 
-AI1SAD is in active development. The current repo includes:
+Current development checkpoint:
 
-- A FastAPI application backed by MongoDB Atlas
-- Public shark incident endpoints with privacy filtering
-- Regional encounter-risk profiles
-- Current-condition warning signals
-- Deterministic warning-score explanations
-- Surveillance search-zone prioritization for coastal safety planning
-- Alert generation for drone operators, lifeguards, beach managers, researchers, and API users
-- Regional pack metadata for optional higher-resolution local intelligence
-- Provider-based signal broker for normalized environmental/ecology/activity inputs
-- Seed and ingestion scripts for normalized public data
+- Latest completed phase: Phase 25A, Drone Observation Intake MVP
+- Next planned phase: Phase 25B, MAVLink Telemetry Bridge
+- Local demo frontend: <http://localhost:5174>
+- FastAPI docs: <http://localhost:8000/docs>
+- MkDocs portal: <http://localhost:8001>
+
+See:
+
+- [Project Status](docs/PROJECT_STATUS.md)
+- [Next Phase](docs/NEXT_PHASE.md)
+- [Local Visual QA](docs/LOCAL_VISUAL_QA.md)
+
+## Visual Preview
+
+### Brand System
+
+<p align="center">
+  <img src="images/branding/branding_asset_collection.png" alt="AI1SAD brand asset collection" width="78%">
+</p>
+
+Canonical source artwork lives in [images/branding](images/branding). Deployment copies for the docs portal and frontend live under [docs/assets/brand](docs/assets/brand) and [frontend/public/brand](frontend/public/brand).
+
+### Replay And Operational Heatmaps
+
+| Cromwell's Beach, Hawaii | NSA Panama City Drone Fixture |
+| --- | --- |
+| ![Cromwell's Beach Hawaii replay heatmap](docs/assets/case_studies/cromwells_beach_hawaii_2026_heatmap.svg) | ![NSA Panama City drone replay heatmap](docs/assets/case_studies/nsa_panama_city_florida_2026_heatmap.svg) |
+
+| Michaelmas Island, WA | Lovers Point Whale Carcass |
+| --- | --- |
+| ![Michaelmas Island WA replay heatmap](docs/assets/case_studies/michaelmas_island_albany_wa_2026_heatmap.svg) | ![Lovers Point whale carcass replay heatmap](docs/assets/case_studies/lovers_point_pacific_grove_whale_carcass_2026_heatmap.svg) |
+
+Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_studies).
+
+## What Is Included
+
+- FastAPI backend with public API routes and privacy filtering
+- MongoDB collection/index definitions for incidents, signals, alerts, replay, regional packs, and drone observation intake
+- React/Vite frontend dashboard for the local AI1SAD demo
+- MkDocs documentation portal with branded theme and case-study pages
+- Replay library with timeline-separated historical and demo scenarios
+- Explainability engine and confidence decomposition
+- Warning, activity-hazard, surveillance-priority, and alert outputs
+- Regional packs for Florida, Hawaii, Western Australia, Queensland, South Africa, Red Sea, New South Wales, U.S. East Coast, California, and Brazil/Recife planning
+- Static/offline adapters for biological events, vessel/fishing context, human exposure, kelp forest habitat, Hawaii habitat, Hawaii tide/current context, and Hawaii water clarity/turbidity context
+- Vendor-neutral human-operated drone observation ingestion MVP
+- One-click Windows local demo launcher and stop scripts
+
+## Local Demo
+
+### One-Click Windows Launcher
+
+From the repo root, double-click:
+
+```text
+start_ai1sad_demo.bat
+```
+
+This starts:
+
+- Backend: <http://localhost:8000>
+- FastAPI docs: <http://localhost:8000/docs>
+- Frontend: <http://localhost:5174>
+- MkDocs: <http://localhost:8001>
+
+It also opens browser tabs for the frontend, FastAPI docs, and docs portal. FretTrack may occupy `5173`, so AI1SAD uses `5174` for the frontend.
+
+Stop the local demo with:
+
+```text
+stop_ai1sad_demo.bat
+```
+
+### Manual Run
+
+Backend:
+
+```powershell
+python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Windows fallback:
+
+```powershell
+F:\Python310\python.exe -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm install
+npm run dev -- --host 0.0.0.0 --port 5174
+```
+
+MkDocs:
+
+```powershell
+mkdocs serve --dev-addr 0.0.0.0:8001
+```
+
+## Core API Areas
+
+- `/api/v1/incidents`
+- `/api/v1/stats/yearly`
+- `/api/v1/stats/by-country`
+- `/api/v1/stats/by-region`
+- `/api/v1/stats/by-activity`
+- `/api/v1/stats/by-species`
+- `/api/v1/locations/nearby`
+- `/api/v1/sources`
+- `/api/v1/risk/location`
+- `/api/v1/warnings/location`
+- `/api/v1/warnings/explain`
+- `/api/v1/surveillance/search-zones`
+- `/api/v1/surveillance/explain`
+- `/api/v1/alerts/active`
+- `/api/v1/alerts/evaluate`
+- `/api/v1/packs`
+- `/api/v1/signals/location`
+- `/api/v1/provider-health`
+- `/api/v1/replay/library`
+- `/api/v1/replay/run/{scenario_id}`
+- `/api/v1/drone/active-observations`
+- `/api/v1/drone/surveillance-feed`
+
+Drone write endpoints are disabled by default unless `DRONE_INGEST_ENABLED=true`.
+
+## Replay Library
+
+The replay library presents evidence-backed operational scenarios with:
+
+- strict timeline separation
+- quiet-day comparisons
+- factor summaries
+- confidence breakdowns
+- model/version metadata
+- replay JSON artifacts
+- heatmap SVG assets
+- disclaimers and missing-data notes
+
+Current case-study coverage includes:
+
+- [Cromwell's Beach Hawaii 2026](docs/case_studies/cromwells_beach_hawaii_2026.md)
+- [Plumpudding Beach Esperance Whale Carcass 2026](docs/case_studies/plumpudding_beach_esperance_whale_carcass_2026.md)
+- [Piedade and Boa Viagem Recife 2026](docs/case_studies/piedade_boa_viagem_recife_2026.md)
+- [Michaelmas Island Albany WA 2026](docs/case_studies/michaelmas_island_albany_wa_2026.md)
+- [Lovers Point Pacific Grove Whale Carcass 2026](docs/case_studies/lovers_point_pacific_grove_whale_carcass_2026.md)
+- [NSA Panama City Florida 2026 Drone Observation Fixture](docs/case_studies/nsa_panama_city_florida_2026.md)
+- [Queensland Spearfishing 2026](docs/case_studies/queensland_spearfishing_2026.md)
+- [Horseshoe Reef 2026](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
+
+See the full [Replay Library](docs/REPLAY_LIBRARY.md).
+
+## Drone Observation Intake
+
+Phase 25A adds a vendor-neutral observation-ingestion path for human-operated coastal-surveillance drones:
+
+- mission records
+- telemetry points
+- source-attributed observations
+- review status
+- probable species metadata with provenance
+- no-sighting patrol semantics
+- public-safe active-observation feed
+- surveillance-feed integration
+- replay fixture support
+
+It does not add:
+
+- autonomous takeoff or landing
+- waypoint execution
+- offboard flight control
+- MAVLink support yet
+- DJI-specific dependencies
+- computer vision inference
+- file upload or image hosting
+
+See:
+
+- [Drone Observation Ingestion](docs/DRONE_OBSERVATION_INGESTION.md)
+- [Drone Mission Workflow](docs/DRONE_MISSION_WORKFLOW.md)
+- [Drone Data Contract](docs/DRONE_DATA_CONTRACT.md)
+- [Drone Operations Safety](docs/DRONE_OPERATIONS_SAFETY.md)
 
 ## Safety And Privacy
 
-AI1SAD is not an attack-prediction system and must not be presented as one. Scores estimate environmental and behavioral conditions associated with elevated shark encounter likelihood.
-
-AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
+AI1SAD is designed for research, documentation, replay analysis, and operational planning. It is not a replacement for official beach, lifeguard, maritime, wildlife, or emergency guidance.
 
 Public API responses must not expose:
 
-- Victim names
-- Private notes
-- Restricted-source content
-- Exact street addresses
-- MongoDB credentials or provider API keys
-- Unreviewed operational or surveillance notes
+- victim names
+- private notes
+- internal analyst notes
+- restricted-source content
+- exact sensitive addresses
+- MongoDB credentials
+- provider API keys
+- private media paths
+- raw exception details
 
-All public endpoints are expected to filter MongoDB records with `visibility="public"`.
+Operational recommendations require human review. Scores support interpretation and prioritization; they do not guarantee safety outcomes.
 
-## Local Setup
+## Validation Snapshot
+
+Latest Phase 25A validation recorded in [Project Status](docs/PROJECT_STATUS.md):
+
+- Focused drone-ingestion tests: `10 passed`
+- Focused Panama City replay and replay-library tests: `7 passed`
+- Full backend tests: `242 passed`
+- Direct MkDocs build: passed
+- Secret scan on changed files: no matches
+- JSON/SVG parse checks: passed
+
+Frontend tests/build are available under `frontend/` when frontend runtime files are touched.
+
+## Documentation Map
+
+- [API](docs/API.md)
+- [Schema](docs/SCHEMA.md)
+- [Privacy](docs/PRIVACY.md)
+- [Usage Policy](docs/USAGE_POLICY.md)
+- [Disclaimer](docs/DISCLAIMER.md)
+- [Data Quality](docs/DATA_QUALITY.md)
+- [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
+- [Replay Library](docs/REPLAY_LIBRARY.md)
+- [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
+- [Explainability Engine](docs/EXPLAINABILITY_ENGINE.md)
+- [Alert Engine](docs/ALERT_ENGINE.md)
+- [Regional Packs](docs/REGIONAL_PACKS.md)
+- [Provider Health](docs/PROVIDER_HEALTH.md)
+- [Frontend Dashboard](docs/FRONTEND_DASHBOARD.md)
+- [Brand Identity](docs/BRAND_IDENTITY.md)
+- [Brand Deployment Map](docs/BRAND_DEPLOYMENT_MAP.md)
+- [Dependency Security Review](docs/DEPENDENCY_SECURITY_REVIEW.md)
+
+## Development Notes
+
+Install backend dependencies:
 
 ```powershell
 python -m venv .venv
@@ -57,9 +263,7 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Edit `.env` with local settings and secrets. Do not commit `.env`.
-
-Required environment variables:
+Required local environment values:
 
 ```text
 MONGODB_URI=<your-mongodb-atlas-connection-string>
@@ -68,103 +272,29 @@ SHARK_ATTACK_API_TITLE=AI1SAD Shark Attack Data API
 ADMIN_EVENTS_ENABLED=false
 ADMIN_SURVEILLANCE_ENABLED=false
 ADMIN_ALERTS_ENABLED=false
+DRONE_INGEST_ENABLED=false
 ```
 
-Run the API:
-
-```powershell
-uvicorn app.main:app --reload
-```
-
-Run tests:
+Run backend tests:
 
 ```powershell
 python -m pytest -q
 ```
 
-Run the frontend dashboard shell:
+Run frontend tests/build:
 
 ```powershell
 cd frontend
-npm install
-npm run dev
+npm test
+npm run build
 ```
 
-## API Areas
+Build docs:
 
-- `/api/v1/incidents`
-- `/api/v1/stats/yearly`
-- `/api/v1/stats/by-country`
-- `/api/v1/stats/by-region`
-- `/api/v1/stats/by-activity`
-- `/api/v1/stats/by-species`
-- `/api/v1/stats/fatality-rate`
-- `/api/v1/locations/nearby`
-- `/api/v1/sources`
-- `/api/v1/risk/location`
-- `/api/v1/warnings/location`
-- `/api/v1/surveillance/search-zones`
-- `/api/v1/alerts/active`
-- `/api/v1/packs`
-- `/api/v1/access/entitlements`
-- `/api/v1/signals/location`
-- `/api/v1/provider-health`
-
-Admin ingestion endpoints are disabled by default.
-
-## API Access
-
-The repository includes placeholder API key validation, rate-limit hooks, and monetization data models for future hosted deployments. Access control is disabled by default for local development.
-
-Initial access tiers are documented in [API Access Tiers](docs/API_ACCESS_TIERS.md):
-
-- Free
-- Developer
-- Research
-- Government/Enterprise
-
-## Data And Ingestion
-
-Raw and private source material should stay out of public API responses. Keep original files under `data/raw` and sensitive material under ignored/private paths.
-
-Useful scripts include:
-
-- `scripts/load_mongodb.py`
-- `scripts/seed_regional_risk_profiles.py`
-- `scripts/seed_regional_packs.py`
-
-## Documentation
-
-- [API](docs/API.md)
-- [API Access Tiers](docs/API_ACCESS_TIERS.md)
-- [Usage Policy](docs/USAGE_POLICY.md)
-- [Disclaimer](docs/DISCLAIMER.md)
-- [Schema](docs/SCHEMA.md)
-- [Privacy](docs/PRIVACY.md)
-- [Data Quality](docs/DATA_QUALITY.md)
-- [Data Sources](docs/DATA_SOURCES.md)
-- [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
-- [Frontend Dashboard](docs/FRONTEND_DASHBOARD.md)
-- [Open-Meteo Provider](docs/OPEN_METEO_PROVIDER.md)
-- [NOAA/NWS Provider](docs/NOAA_NWS_PROVIDER.md)
-- [SST Provider Adapter](docs/SST_PROVIDER.md)
-- [Human Exposure Provider](docs/HUMAN_EXPOSURE_PROVIDER.md)
-- [Biological Events Provider](docs/BIOLOGICAL_EVENTS_PROVIDER.md)
-- [Vessel And Fishing Provider](docs/VESSEL_FISHING_PROVIDER.md)
-- [Risk Model](docs/RISK_MODEL.md)
-- [Regional Risk Profiles](docs/REGIONAL_RISK_PROFILES.md)
-- [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
-- [Alert Engine](docs/ALERT_ENGINE.md)
-- [Alert Levels](docs/ALERT_LEVELS.md)
-- [Human Override](docs/HUMAN_OVERRIDE.md)
-- [Regional Packs](docs/REGIONAL_PACKS.md)
-- [Pack Entitlements](docs/PACK_ENTITLEMENTS.md)
-- [Horseshoe Reef Case Study](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
-- [Signal Broker](docs/SIGNAL_BROKER.md)
-- [Species Season Profiles](docs/SPECIES_SEASON_PROFILES.md)
-- [Provider Health](docs/PROVIDER_HEALTH.md)
-- [Ethics And Limitations](docs/ETHICS_AND_LIMITATIONS.md)
+```powershell
+mkdocs build
+```
 
 ## License
 
-AI1SAD code is licensed under the [Apache License 2.0](LICENSE). Data sources may have separate licenses, terms, and privacy restrictions.
+AI1SAD code is licensed under the [Apache License 2.0](LICENSE). Data sources, incident records, public advisories, imagery, and third-party datasets may have separate licenses, terms, attribution requirements, and privacy restrictions.
