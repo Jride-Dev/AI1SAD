@@ -40,9 +40,9 @@ Canonical source artwork lives in [images/branding](images/branding). Deployment
 
 ### Replay And Operational Heatmaps
 
-| Cromwell's Beach, Hawaii | NSA Panama City Drone Fixture |
+| Horseshoe Reef, Western Australia | NSA Panama City Drone Fixture |
 | --- | --- |
-| ![Cromwell's Beach Hawaii replay heatmap](docs/assets/case_studies/cromwells_beach_hawaii_2026_heatmap.svg) | ![NSA Panama City drone replay heatmap](docs/assets/case_studies/nsa_panama_city_florida_2026_heatmap.svg) |
+| ![Horseshoe Reef Western Australia replay dashboard](docs/assets/case_studies/horseshoe_reef_demo_Scenario.jpg) | ![NSA Panama City drone replay heatmap](docs/assets/case_studies/nsa_panama_city_florida_2026_heatmap.svg) |
 
 | Michaelmas Island, WA | Lovers Point Whale Carcass |
 | --- | --- |
@@ -159,14 +159,13 @@ The replay library presents evidence-backed operational scenarios with:
 
 Current case-study coverage includes:
 
-- [Cromwell's Beach Hawaii 2026](docs/case_studies/cromwells_beach_hawaii_2026.md)
+- [Horseshoe Reef 2026](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Plumpudding Beach Esperance Whale Carcass 2026](docs/case_studies/plumpudding_beach_esperance_whale_carcass_2026.md)
 - [Piedade and Boa Viagem Recife 2026](docs/case_studies/piedade_boa_viagem_recife_2026.md)
 - [Michaelmas Island Albany WA 2026](docs/case_studies/michaelmas_island_albany_wa_2026.md)
 - [Lovers Point Pacific Grove Whale Carcass 2026](docs/case_studies/lovers_point_pacific_grove_whale_carcass_2026.md)
 - [NSA Panama City Florida 2026 Drone Observation Fixture](docs/case_studies/nsa_panama_city_florida_2026.md)
 - [Queensland Spearfishing 2026](docs/case_studies/queensland_spearfishing_2026.md)
-- [Horseshoe Reef 2026](docs/CASE_STUDY_HORSESHOE_REEF_2026.md)
 
 See the full [Replay Library](docs/REPLAY_LIBRARY.md).
 
