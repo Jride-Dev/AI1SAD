@@ -4,6 +4,8 @@ Phase 25A adds a vendor-neutral intake path for human-operated coastal-surveilla
 
 This is an observation-ingestion layer. AI1SAD records mission, telemetry, and observation metadata, then converts eligible public observations into existing signal, surveillance, explainability, alert, and replay flows. It does not command aircraft.
 
+Phase 25B adds a read-only MAVLink telemetry bridge that can replay telemetry into the existing telemetry endpoint. It does not add aircraft command/control or create observations from telemetry alone.
+
 ## Scope
 
 - Human operator mission records
@@ -23,6 +25,8 @@ This is an observation-ingestion layer. AI1SAD records mission, telemetry, and o
 - Image hosting
 - Auth or billing
 - Broad scoring-weight changes
+
+Phase 25B keeps MAVLink dependency support out of runtime code; fixture replay uses normalized JSONL records.
 
 ## Observation Semantics
 

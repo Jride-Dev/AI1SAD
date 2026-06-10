@@ -11,6 +11,7 @@ AI1SAD drone integration is strictly advisory and observational.
 - No offboard flight control
 - No aircraft-control commands in public or internal API responses
 - No vendor-specific command dependencies
+- MAVLink bridge support is telemetry-only and must not transmit MAVLink commands.
 
 ## Interpretation Rules
 

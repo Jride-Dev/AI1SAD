@@ -26,6 +26,8 @@ Every mission is recorded as `human_approved=true` and `autonomous_flight_contro
 
 AI1SAD can recommend a patrol pattern, but it does not issue flight-control commands or route execution instructions.
 
+The MAVLink telemetry bridge may post read-only telemetry points into the mission workflow when explicitly enabled. It does not create or modify missions beyond the existing human-approved mission record.
+
 ## Review Status
 
 - `unreviewed`
@@ -35,4 +37,3 @@ AI1SAD can recommend a patrol pattern, but it does not issue flight-control comm
 - `rejected`
 
 Rejected observations are not used in public active-observation or feed outputs.
-

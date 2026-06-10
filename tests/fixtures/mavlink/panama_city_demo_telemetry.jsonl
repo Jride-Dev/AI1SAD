@@ -1,0 +1,5 @@
+{"timestamp":"2026-06-08T17:01:00Z","latitude":30.1826,"longitude":-85.7539,"altitude_m":35.0,"heading_deg":92.0,"groundspeed_mps":7.2,"battery_percent":96,"gps_fix_quality":"3d","camera_heading_deg":95.0,"camera_pitch_deg":-28.0}
+{"timestamp":"2026-06-08T17:01:10Z","latitude":30.1828,"longitude":-85.7535,"altitude_m":36.0,"heading_deg":94.0,"groundspeed_mps":7.4,"battery_percent":95,"gps_fix_quality":"3d","camera_heading_deg":98.0,"camera_pitch_deg":-30.0}
+{"timestamp":"2026-06-08T17:01:20Z","latitude":30.1830,"longitude":-85.7531,"altitude_m":35.5,"heading_deg":96.0,"groundspeed_mps":7.1,"battery_percent":95,"gps_fix_quality":"3d","camera_heading_deg":101.0,"camera_pitch_deg":-29.0}
+{"timestamp":"2026-06-08T17:01:30Z","latitude":30.1832,"longitude":-85.7527,"altitude_m":34.8,"heading_deg":98.0,"groundspeed_mps":6.9,"battery_percent":94,"gps_fix_quality":"3d","camera_heading_deg":104.0,"camera_pitch_deg":-31.0}
+{"timestamp":"2026-06-08T17:01:40Z","latitude":30.1834,"longitude":-85.7523,"altitude_m":35.2,"heading_deg":100.0,"groundspeed_mps":7.0,"battery_percent":94,"gps_fix_quality":"3d","camera_heading_deg":107.0,"camera_pitch_deg":-30.0}

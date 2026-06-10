@@ -101,6 +101,9 @@ nav:
       - Hawaii Water Clarity: HAWAII_WATER_CLARITY_PROVIDER.md
       - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
       - Drone Data Contract: DRONE_DATA_CONTRACT.md
+      - MAVLink Telemetry Bridge: MAVLINK_TELEMETRY_BRIDGE.md
+      - MAVLink Local Demo: MAVLINK_LOCAL_DEMO.md
+      - MAVLink Safety Boundaries: MAVLINK_SAFETY_BOUNDARIES.md
 
   - Replay & Case Studies:
       - Replay Library: REPLAY_LIBRARY.md

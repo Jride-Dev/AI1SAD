@@ -27,6 +27,8 @@ Internal mission notes are stored privately and removed from public responses.
 
 ## DroneTelemetryPoint
 
+Read-only bridge records use the same telemetry contract as operator-submitted points.
+
 - `mission_id`
 - `drone_id`
 - `timestamp`
@@ -42,6 +44,8 @@ Internal mission notes are stored privately and removed from public responses.
 - `source`
 - `source_type`
 - `public_visibility`
+- bridge source: `mavlink_bridge`
+- bridge source types: `fixture_replay`, `tlog_replay`, `udp_live`
 
 Validation bounds:
 
