@@ -2,10 +2,10 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25 (Live Sightings & Surf-Line Observation Ingestion Adapter)
+- Current phase number: Phase 25A (Drone Observation Intake MVP)
 - Latest completed committed phase: Phase 24 (Water Clarity & Turbidity Adapter)
-- Latest completed local phase: Phase 24 (Water Clarity & Turbidity Adapter)
-- Latest commit hash: `10d4dd6` Add Hawaii water clarity and turbidity adapter
+- Latest completed local phase: Phase 25A in progress, uncommitted (Drone Observation Intake MVP)
+- Latest commit hash: `2f9c305` Add Michaelmas Island and Lovers Point replay case studies
 - Repo status: clean after active-event replay package commit; verify with `git status`
 
 ## Major Completed Systems
@@ -25,6 +25,7 @@
 - Frontend trust hardening (fail-closed live mode, explicit mock mode)
 - Brand identity integration and docs portal branding
 - One-click local launcher scripts
+- Phase 25A vendor-neutral drone observation intake MVP in local review: mission records, telemetry ingestion, observation ingestion, map-ready feed, replay fixture support
 
 ## Active Safety Rules
 
@@ -42,6 +43,7 @@
 - Water clarity/turbidity adapter has static/offline baseline support; live ingestion not yet integrated
 - Live surf-line/lifeguard observation ingestion not yet integrated
 - Live sightings ingestion pipeline still limited
+- Drone intake is vendor-neutral observation ingestion only; it does not provide aircraft control, image hosting, or computer-vision inference.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -50,27 +52,29 @@
 
 ## Next Planned Phase
 
-- Phase 25: Live Sightings & Surf-Line Observation Ingestion Adapter
+- Phase 25B: MAVLink Telemetry Bridge
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Exact Next Codex Resume Prompt
 
-Use this as the next prompt anchor after Phase 24 review/commit:
+Use this as the next prompt anchor after Phase 25A review/commit:
 
 ```text
-Phase 25: Live Sightings & Surf-Line Observation Ingestion Adapter
+Phase 25B: MAVLink Telemetry Bridge
 
 Repo:
 F:\shark-attack-api
 
 Goal:
-Add reviewed, source-attributed sightings and surf-line/lifeguard observation ingestion for AI1SAD as bounded operational observation context.
+Plan a telemetry bridge for future MAVLink-compatible drone telemetry ingestion while keeping aircraft command/control out of AI1SAD.
 
 Constraints:
 - do not tune scoring weights
 - do not add attack-probability language
 - do not infer shark intent
-- no live scraping
+- no autonomous takeoff, landing, waypoint, or offboard-control commands
+- no DJI-specific dependency
+- keep Phase 25A observation intake as the stable baseline
 - no auth/billing changes
 - do not commit until review
 ```
@@ -106,26 +110,26 @@ Stop scripts:
 
 Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
-## Validation Counts (Latest Active-Event Replay Run)
+## Validation Counts (Latest Phase 25A Local Run)
 
-- Focused replay tests: `43 passed`
-- Focused biological-event tests: `13 passed`
-- Replay library tests: `4 passed, 3 warnings`
-- Full backend tests: `229 passed, 3 warnings`
+- Focused drone-ingestion tests: `10 passed, 1 warning`
+- Focused Panama City replay and replay-library tests: `7 passed, 3 warnings`
+- Full backend tests: `242 passed, 3 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
-- Secret scan: no matches
-- Prohibited-language scan: safety-rule/guardrail/test-only matches
-- JSON/SVG parse checks: passed for Michaelmas Island and Lovers Point artifacts
+- Secret scan on changed files: no matches
+- Prohibited-language scan: guardrail-only matches in docs
+- JSON/SVG parse checks: passed for NSA Panama City artifacts
 
 ## Current Review Item
 
 - Michaelmas Island Albany WA 2026 active-event replay reviewed and committed.
 - Lovers Point Pacific Grove Whale Carcass 2026 active-event replay reviewed and committed.
 - Both case studies use existing replay/provider layers only and do not add scoring-weight retunes, live scraping, auth/billing, or frontend runtime changes.
-- Phase 25 remains the next planned phase.
+- Phase 25A is in local review and not staged or committed. Phase 25B must remain future work only until this MVP is reviewed and committed.
 
 ## Recent Important Commits
 
+- `2f9c305` Add Michaelmas Island and Lovers Point replay case studies
 - `10d4dd6` Add Hawaii water clarity and turbidity adapter
 - `3ece14a` Add paired Recife shark-incident replay case study
 - `1fcdf62` Add Greater Recife paired replay case study

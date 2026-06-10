@@ -1,0 +1,248 @@
+{
+  "case_id": "nsa_panama_city_florida_2026_drone_observation",
+  "title": "NSA Panama City Florida 2026 drone observation fixture",
+  "location": {
+    "name": "NSA Panama City MWR Marina fixture point",
+    "lat": 30.1826,
+    "lon": -85.7539
+  },
+  "timestamp": "2026-06-08T17:15:00+00:00",
+  "scenario_type": "fixture_based_drone_observation_replay",
+  "warning_score": 5.83,
+  "warning_band": "low",
+  "activity_hazard_score": 0,
+  "activity_hazard_band": "low",
+  "surveillance_priority_score": 30.45,
+  "surveillance_priority_band": "moderate",
+  "confidence_breakdown": {
+    "overall_confidence": 0.5724,
+    "confidence_band": "low",
+    "components": {
+      "coverage_confidence": 0.1111,
+      "freshness_confidence": 1.0,
+      "completeness_confidence": 0.76,
+      "coverage_score": 0.1111,
+      "freshness_penalty": 0.0,
+      "missing_penalty": 0.24,
+      "source_details": {
+        "weather_observations": {
+          "weight": 0.15,
+          "status": "missing",
+          "contribution": 0.15
+        },
+        "ocean_observations": {
+          "weight": 0.15,
+          "status": "missing",
+          "contribution": 0.15
+        },
+        "vessel_activity": {
+          "weight": 0.1,
+          "status": "missing",
+          "contribution": 0.1
+        },
+        "biological_events": {
+          "weight": 0.15,
+          "status": "missing",
+          "contribution": 0.15
+        },
+        "human_exposure_estimates": {
+          "weight": 0.1,
+          "status": "present",
+          "contribution": 0.1
+        },
+        "recent_interactions": {
+          "weight": 0.15,
+          "status": "missing",
+          "contribution": 0.15
+        },
+        "sighting_reports": {
+          "weight": 0.1,
+          "status": "missing",
+          "contribution": 0.1
+        },
+        "reef_features": {
+          "weight": 0.05,
+          "status": "missing",
+          "contribution": 0.05
+        },
+        "regional_risk_profiles": {
+          "weight": 0.05,
+          "status": "missing",
+          "contribution": 0.05
+        }
+      }
+    }
+  },
+  "dominant_factors": [
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 1,
+      "points": 11,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.3612
+    },
+    {
+      "factor": "human_exposure_level",
+      "value": 0.45,
+      "points": 5.4,
+      "rationale": "Human activity level affects search urgency and area selection.",
+      "contribution": 0.1773
+    },
+    {
+      "factor": "human_exposure_surveillance_amplifier",
+      "value": 0.45,
+      "contexts": [
+        "sightings",
+        "activity_context"
+      ],
+      "points": 4.05,
+      "rationale": "Crowding/exposure can raise surveillance priority only when paired with sightings, activity context, recent interactions, or environmental signals.",
+      "contribution": 0.133
+    },
+    {
+      "factor": "activity_context",
+      "value": "swimming",
+      "points": 4,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.1314
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 5.83,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.0985
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.0985
+    }
+  ],
+  "missing_signal_sources": [
+    "biological_events",
+    "ocean_observations",
+    "recent_interactions",
+    "reef_features",
+    "sst_anomaly",
+    "vessel_activity",
+    "weather_observations"
+  ],
+  "data_sources_used": [
+    "human_exposure_estimates",
+    "regional_risk_profiles",
+    "sighting_reports"
+  ],
+  "quiet_day_comparison": {
+    "current_warning_score": 5.83,
+    "baseline_warning_score": 15.77,
+    "delta": -9.94,
+    "delta_percent": -63.03,
+    "current_band": "low",
+    "baseline_band": "low",
+    "band_change": false,
+    "current_confidence": 0.55,
+    "baseline_confidence": 0.83,
+    "missing_data_sources": [
+      "biological_events",
+      "ocean_observations",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "interpretation": "Near quiet-day baseline with limited data."
+  },
+  "drone_observations": [
+    {
+      "_id": "drone-observation-nsa-panama-city-2026-01",
+      "observation_id": "drone-observation-nsa-panama-city-2026-01",
+      "mission_id": "mission-nsa-panama-city-2026",
+      "drone_id": "human-operated-drone-fixture",
+      "timestamp": "2026-06-08T17:05:00+00:00",
+      "latitude": 30.1826,
+      "longitude": -85.7539,
+      "location": {
+        "geo": {
+          "type": "Point",
+          "coordinates": [
+            -85.7539,
+            30.1826
+          ]
+        }
+      },
+      "observation_type": "shark_sighting",
+      "count": 1,
+      "estimated_length_m": null,
+      "official_species_classification": "unknown",
+      "probable_species": "bull shark",
+      "scientific_name": "Carcharhinus leucas",
+      "species_assessment_source": "analyst_visual_assessment",
+      "species_confidence": 0.62,
+      "evidence_basis": [
+        "pectoral-fin morphology",
+        "caudal-fin / tail-fin profile visible in footage"
+      ],
+      "observed_behavior": "source-attributed surf-line observation",
+      "behavior_source": "operator footage review",
+      "evidence_type": "drone_video_metadata",
+      "confidence": 0.68,
+      "review_status": "analyst_reviewed",
+      "source": "fixture_historical_drone_observation",
+      "source_type": "human_operated_drone",
+      "visibility": "public",
+      "active_pack": "florida",
+      "recommended_surveillance_pattern": "post_sighting_focus_area",
+      "human_approved": true,
+      "autonomous_flight_control": false
+    },
+    {
+      "_id": "drone-observation-nsa-panama-city-2026-02",
+      "observation_id": "drone-observation-nsa-panama-city-2026-02",
+      "mission_id": "mission-nsa-panama-city-2026",
+      "drone_id": "human-operated-drone-fixture",
+      "timestamp": "2026-06-08T17:30:00+00:00",
+      "latitude": 30.1826,
+      "longitude": -85.7539,
+      "location": {
+        "geo": {
+          "type": "Point",
+          "coordinates": [
+            -85.7539,
+            30.1826
+          ]
+        }
+      },
+      "observation_type": "no_sighting_patrol_result",
+      "count": 0,
+      "confidence": 0.55,
+      "review_status": "operator_reviewed",
+      "source": "fixture_historical_drone_observation",
+      "source_type": "human_operated_drone",
+      "visibility": "public",
+      "active_pack": "florida",
+      "recommended_surveillance_pattern": "shoreline_parallel_sweep",
+      "human_approved": true,
+      "autonomous_flight_control": false
+    }
+  ],
+  "operational_recommendations": [
+    "post_sighting_focus_area",
+    "shoreline_parallel_sweep",
+    "human_operator_review_required"
+  ],
+  "timeline_notes": [
+    "Fixture uses source-attributed drone observation metadata only.",
+    "Probable species is analyst visual assessment metadata, not agency-confirmed taxonomy.",
+    "No autonomous flight control is represented."
+  ],
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "generated_at": "2026-06-10T06:52:48.050380+00:00",
+    "replay_asset_version": "2026.05"
+  },
+  "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes. It is not an attack prediction."
+}

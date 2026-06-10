@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">NSA Panama City drone observation replay heatmap</title>
+  <desc id="desc">Calm operational replay map showing a reviewed drone sighting focus area and shoreline sweep zone.</desc>
+  <rect width="720" height="420" fill="#06263A"/>
+  <path d="M0 300 C120 260 210 290 320 250 C430 210 560 230 720 180 L720 420 L0 420 Z" fill="#0F8B8D" opacity="0.5"/>
+  <path d="M0 340 C140 315 250 330 360 290 C470 250 580 260 720 225" fill="none" stroke="#2EC4D6" stroke-width="6" opacity="0.8"/>
+  <circle cx="360" cy="238" r="92" fill="#7B2CBF" opacity="0.16"/>
+  <circle cx="360" cy="238" r="58" fill="#2EC4D6" opacity="0.18"/>
+  <circle cx="360" cy="238" r="10" fill="#D9F0FF"/>
+  <text x="36" y="58" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="26" font-weight="700">AI1SAD Replay: NSA Panama City</text>
+  <text x="36" y="90" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="15">Reviewed human-operated drone observation | post-sighting focus area</text>
+  <text x="36" y="374" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="14">Warning 5.83 low | Surveillance 30.45 moderate</text>
+</svg>

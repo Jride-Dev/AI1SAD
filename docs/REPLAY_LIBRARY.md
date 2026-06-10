@@ -18,6 +18,7 @@ GET /api/v1/replay/library/{replay_id}
 | `horseshoe_reef_2026` | Horseshoe Reef 2026 | Western Australia | Spearfishing, reef habitat, and white shark regional suitability |
 | `queensland_spearfishing_reef_tiger_bull_2026` | Queensland Spearfishing 2026 | Far North Queensland, Australia | Tropical reef spearfishing with tiger/bull shark operational context |
 | `florida_crowded_inlet_demo` | Florida Crowded Inlet Demo | Florida | Crowding, inlet exposure, surf/fishing activity, and regional species context |
+| `nsa_panama_city_florida_2026_drone_observation` | NSA Panama City Florida 2026 Drone Observation Fixture | Panama City, Florida | Human-operated drone observation, analyst-attributed probable species metadata, and no-sighting patrol semantics |
 | `hawaii_october_tiger_context_demo` | Hawaii October Tiger Shark Context Demo | Hawaii | October regional context and calm monitoring workflow |
 | `cromwells_beach_hawaii_2026` | Cromwell's Beach Hawaii 2026 | Honolulu, Oahu, Hawaii | Timeline-separated pre-incident, quiet-day, post-incident update, and hypothetical early-sighting sensitivity |
 | `plumpudding_beach_esperance_whale_carcass_2026` | Plumpudding Beach Esperance Whale Carcass 2026 | Western Australia | Official WA carcass advice replay with bounded initial report and hypothetical sighting sensitivity |
@@ -30,6 +31,7 @@ GET /api/v1/replay/library/{replay_id}
 
 - [Horseshoe Reef 2026](CASE_STUDY_HORSESHOE_REEF_2026.md)
 - [Queensland Spearfishing 2026](case_studies/queensland_spearfishing_2026.md)
+- [NSA Panama City Florida 2026 Drone Observation Fixture](case_studies/nsa_panama_city_florida_2026.md)
 - [Cromwell's Beach Hawaii 2026](case_studies/cromwells_beach_hawaii_2026.md)
 - [Plumpudding Beach Esperance Whale Carcass 2026](case_studies/plumpudding_beach_esperance_whale_carcass_2026.md)
 - [Michaelmas Island Albany WA 2026](case_studies/michaelmas_island_albany_wa_2026.md)

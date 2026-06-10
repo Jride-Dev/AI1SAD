@@ -99,6 +99,8 @@ nav:
       - Hawaii Habitat: HAWAII_HABITAT_PROVIDER.md
       - Hawaii Tide And Current: HAWAII_TIDE_CURRENT_PROVIDER.md
       - Hawaii Water Clarity: HAWAII_WATER_CLARITY_PROVIDER.md
+      - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
+      - Drone Data Contract: DRONE_DATA_CONTRACT.md
 
   - Replay & Case Studies:
       - Replay Library: REPLAY_LIBRARY.md
@@ -110,6 +112,7 @@ nav:
       - Replay Validation: REPLAY_VALIDATION.md
       - Horseshoe Reef 2026: CASE_STUDY_HORSESHOE_REEF_2026.md
       - Queensland Spearfishing 2026: case_studies/queensland_spearfishing_2026.md
+      - NSA Panama City Florida 2026: case_studies/nsa_panama_city_florida_2026.md
       - Cromwell's Beach Hawaii 2026: case_studies/cromwells_beach_hawaii_2026.md
       - Plumpudding Beach Whale Carcass 2026: case_studies/plumpudding_beach_esperance_whale_carcass_2026.md
       - Michaelmas Island Albany WA 2026: case_studies/michaelmas_island_albany_wa_2026.md
@@ -119,6 +122,8 @@ nav:
   - Alerts & Operations:
       - Alert Engine: ALERT_ENGINE.md
       - Alert Levels: ALERT_LEVELS.md
+      - Drone Mission Workflow: DRONE_MISSION_WORKFLOW.md
+      - Drone Operations Safety: DRONE_OPERATIONS_SAFETY.md
       - Operational Mapping: OPERATIONAL_MAPPING.md
       - Operational Recommendations: OPERATIONAL_RECOMMENDATIONS.md
       - Human Override: HUMAN_OVERRIDE.md
