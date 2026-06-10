@@ -70,6 +70,16 @@ Hawaii water clarity explanations can include:
 
 These factors are bounded visibility context and must not be described as live NOAA CoastWatch, PacIOOS, camera, beach, or water-quality observations unless a future adapter ingests source-timestamped records.
 
+Drone observation explanations can include:
+
+- `review_status`
+- `source_type`
+- `probable_species` with explicit assessment source
+- no-sighting patrol caveats
+- human-approved recommended surveillance pattern
+
+Drone explanations must treat recommended patterns as human-reviewed planning labels, not flight-control commands.
+
 ## API Routes
 
 - `GET /api/v1/explain/location`

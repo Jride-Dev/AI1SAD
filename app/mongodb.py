@@ -39,6 +39,9 @@ COLLECTIONS = {
     "sighting_reports": "sighting_reports",
     "reef_features": "reef_features",
     "drone_priority_snapshots": "drone_priority_snapshots",
+    "drone_missions": "drone_missions",
+    "drone_telemetry": "drone_telemetry",
+    "drone_observations": "drone_observations",
     "signals": "signals",
     "ecology_events": "ecology_events",
     "species_season_profiles": "species_season_profiles",
@@ -147,6 +150,13 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["surveillance_missions"]].create_index([("visibility", ASCENDING), ("created_at", DESCENDING)])
     db[COLLECTIONS["surveillance_missions"]].create_index([("mission_type", ASCENDING), ("status", ASCENDING)])
     db[COLLECTIONS["drone_priority_snapshots"]].create_index([("expires_at", ASCENDING)], expireAfterSeconds=0)
+    db[COLLECTIONS["drone_missions"]].create_index([("visibility", ASCENDING), ("mission_id", ASCENDING)], unique=True)
+    db[COLLECTIONS["drone_missions"]].create_index([("status", ASCENDING), ("started_at", DESCENDING)])
+    db[COLLECTIONS["drone_telemetry"]].create_index([("visibility", ASCENDING), ("mission_id", ASCENDING), ("timestamp", DESCENDING)])
+    db[COLLECTIONS["drone_telemetry"]].create_index([("location.geo", GEOSPHERE)])
+    db[COLLECTIONS["drone_observations"]].create_index([("visibility", ASCENDING), ("mission_id", ASCENDING), ("timestamp", DESCENDING)])
+    db[COLLECTIONS["drone_observations"]].create_index([("visibility", ASCENDING), ("observation_type", ASCENDING), ("review_status", ASCENDING)])
+    db[COLLECTIONS["drone_observations"]].create_index([("location.geo", GEOSPHERE)])
 
     db[COLLECTIONS["signals"]].create_index([("visibility", ASCENDING), ("signal_type", ASCENDING), ("timestamp", DESCENDING)])
     db[COLLECTIONS["signals"]].create_index([("visibility", ASCENDING), ("species", ASCENDING), ("timestamp", DESCENDING)])

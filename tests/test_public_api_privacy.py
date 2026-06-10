@@ -341,6 +341,9 @@ class FakeDB:
                 ]
             ),
             COLLECTIONS["drone_priority_snapshots"]: FakeCollection([]),
+            COLLECTIONS["drone_missions"]: FakeCollection([]),
+            COLLECTIONS["drone_telemetry"]: FakeCollection([]),
+            COLLECTIONS["drone_observations"]: FakeCollection([]),
             COLLECTIONS["signals"]: FakeCollection(
                 [
                     {

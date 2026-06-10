@@ -10,6 +10,8 @@ from app.replay.decay import apply_decay_to_signals
 from app.replay.confidence import ConfidenceDecomposition
 from app.replay.heatmap import HeatmapConfig, HeatmapGenerator
 from app.risk_model import nearest_profile, REGIONAL_RISK_PROFILES
+from app.services.drone_observations import drone_observation_signal, drone_observation_to_sighting
+from app.services.signal_broker import warning_inputs_from_signals
 from app.services.warning_engine import calculate_warning
 from app.services.surveillance_engine import score_surveillance_zones
 
@@ -38,6 +40,11 @@ class ReplayRunner:
             now = scenario.timestamp
             profiles_list = self.profiles if scenario.use_regional_profiles else [{"visibility": "private"}]
             profile = nearest_profile(scenario.lat, scenario.lon, profiles_list)
+            drone_sightings = [sighting for sighting in (drone_observation_to_sighting(document) for document in scenario.drone_observations) if sighting]
+            drone_signal_inputs = warning_inputs_from_signals(
+                [drone_observation_signal(document) for document in scenario.drone_observations],
+                now=scenario.timestamp,
+            )
 
             warning = calculate_warning(
                 lat=scenario.lat,
@@ -48,12 +55,12 @@ class ReplayRunner:
                 sea_surface_temp_c=scenario.sea_surface_temp_c,
                 sst_anomaly_c=scenario.sst_anomaly_c,
                 vessel_activity_index=scenario.vessel_activity_index,
-                biological_events=scenario.biological_events,
+                biological_events=scenario.biological_events + drone_signal_inputs.get("biological_events", []),
                 kelp_habitat_signals=scenario.kelp_habitat_signals,
                 hawaii_habitat_signals=scenario.hawaii_habitat_signals,
                 hawaii_tide_current_signals=scenario.hawaii_tide_current_signals,
                 hawaii_water_clarity_signals=scenario.hawaii_water_clarity_signals,
-                human_exposure_index=scenario.human_exposure_index,
+                human_exposure_index=scenario.human_exposure_index or drone_signal_inputs.get("human_exposure_index"),
                 activity_context=scenario.activity_context,
                 reef_habitat=scenario.reef_habitat,
                 dropoff_habitat=scenario.dropoff_habitat,
@@ -86,7 +93,7 @@ class ReplayRunner:
                 month=scenario.month,
                 profiles=profiles_list,
                 recent_interactions=scenario.recent_interactions,
-                sighting_reports=scenario.sighting_reports,
+                sighting_reports=scenario.sighting_reports + drone_sightings,
                 reef_features=reef_features,
                 as_of=scenario.timestamp,
                 warning_inputs={
@@ -94,12 +101,12 @@ class ReplayRunner:
                     "sea_surface_temp_c": scenario.sea_surface_temp_c,
                     "sst_anomaly_c": scenario.sst_anomaly_c,
                     "vessel_activity_index": scenario.vessel_activity_index,
-                    "biological_events": scenario.biological_events,
+                    "biological_events": scenario.biological_events + drone_signal_inputs.get("biological_events", []),
                     "kelp_habitat_signals": scenario.kelp_habitat_signals,
                     "hawaii_habitat_signals": scenario.hawaii_habitat_signals,
                     "hawaii_tide_current_signals": scenario.hawaii_tide_current_signals,
                     "hawaii_water_clarity_signals": scenario.hawaii_water_clarity_signals,
-                    "human_exposure_index": scenario.human_exposure_index,
+                    "human_exposure_index": scenario.human_exposure_index or drone_signal_inputs.get("human_exposure_index"),
                 },
             )
 
@@ -190,6 +197,8 @@ class ReplayRunner:
                     "visibility": "public",
                 }
             )
+        for observation in scenario.drone_observations:
+            signals.append(drone_observation_signal(observation))
         if scenario.sea_surface_temp_c is not None:
             signals.append({
                 "signal_type": "ocean_sst",

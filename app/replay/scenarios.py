@@ -20,6 +20,7 @@ class ReplayScenario:
     human_exposure_index: float | None = None
     biological_events: list[dict[str, Any]] = field(default_factory=list)
     sighting_reports: list[dict[str, Any]] = field(default_factory=list)
+    drone_observations: list[dict[str, Any]] = field(default_factory=list)
     recent_interactions: list[dict[str, Any]] = field(default_factory=list)
     kelp_habitat_signals: list[dict[str, Any]] = field(default_factory=list)
     hawaii_habitat_signals: list[dict[str, Any]] = field(default_factory=list)

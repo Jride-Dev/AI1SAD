@@ -26,6 +26,7 @@ class Settings:
     admin_events_enabled: bool = False
     admin_surveillance_enabled: bool = False
     admin_alerts_enabled: bool = False
+    drone_ingest_enabled: bool = False
     api_access_enabled: bool = False
     api_free_rate_limit_per_minute: int = 60
 
@@ -42,6 +43,7 @@ def get_settings() -> Settings:
         admin_events_enabled=False if demo_mode else os.getenv("ADMIN_EVENTS_ENABLED", "false").lower() == "true",
         admin_surveillance_enabled=False if demo_mode else os.getenv("ADMIN_SURVEILLANCE_ENABLED", "false").lower() == "true",
         admin_alerts_enabled=False if demo_mode else os.getenv("ADMIN_ALERTS_ENABLED", "false").lower() == "true",
+        drone_ingest_enabled=False if demo_mode else os.getenv("DRONE_INGEST_ENABLED", "false").lower() == "true",
         api_access_enabled=os.getenv("API_ACCESS_ENABLED", "false").lower() == "true",
         api_free_rate_limit_per_minute=int(os.getenv("API_FREE_RATE_LIMIT_PER_MINUTE", "60")),
     )

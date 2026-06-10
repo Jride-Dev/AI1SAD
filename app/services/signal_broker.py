@@ -72,6 +72,10 @@ DEFAULT_MAX_AGE_HOURS = {
     "rip_current_alert": 6,
     "high_surf_alert": 6,
     "marine_warning": 6,
+    "drone_observation": 3,
+    "sighting": 3,
+    "shark_sighting": 3,
+    "no_sighting_patrol_result": 3,
 }
 
 
@@ -142,8 +146,8 @@ def active_public_signals(signals: list[dict[str, Any]], *, now: datetime | None
     return active
 
 
-def warning_inputs_from_signals(signals: list[dict[str, Any]]) -> dict[str, Any]:
-    active = active_public_signals(signals)
+def warning_inputs_from_signals(signals: list[dict[str, Any]], *, now: datetime | None = None) -> dict[str, Any]:
+    active = active_public_signals(signals, now=now)
     inputs: dict[str, Any] = {
         "rainfall_72h_mm": None,
         "sea_surface_temp_c": None,

@@ -14,6 +14,16 @@ from app.risk_model import RISK_DISCLAIMER, RISK_FACTOR_DEFINITIONS, nearest_pro
 from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surveillance_zones
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
 from app.services.alert_engine import evaluate_alerts
+from app.services.drone_observations import (
+    build_mission,
+    build_observation,
+    build_telemetry,
+    drone_observation_signal,
+    drone_observation_to_sighting,
+    map_feed_item,
+    parse_time as parse_drone_time,
+    public_doc as public_drone_doc,
+)
 from app.services.explainability_engine import (
     attach_alert_explanation_summary,
     build_explanation,
@@ -147,9 +157,11 @@ def warning_inputs_from_mongo(db: Database, lat: float, lon: float, radius_km: f
     event_docs = latest_public_docs(db, COLLECTIONS["biological_events"], lat, lon, radius_km)
     exposure_docs = latest_public_docs(db, COLLECTIONS["human_exposure_estimates"], lat, lon, radius_km)
     signal_docs = latest_public_docs(db, COLLECTIONS["signals"], lat, lon, radius_km, limit=200)
+    drone_observation_docs = latest_public_docs(db, COLLECTIONS["drone_observations"], lat, lon, radius_km, limit=200)
+    drone_signals = [drone_observation_signal(document) for document in drone_observation_docs if document.get("review_status") != "rejected"]
     kelp_signals = normalize_static_kelp_forest_signals(lat=lat, lon=lon, radius_km=radius_km, lookback_hours=720)
     habitat_signals = normalize_static_hawaii_habitat_signals(lat=lat, lon=lon, radius_km=radius_km, lookback_hours=2160)
-    signal_inputs = warning_inputs_from_signals(signal_docs)
+    signal_inputs = warning_inputs_from_signals(signal_docs + drone_signals)
     kelp_inputs = warning_inputs_from_signals(kelp_signals)
     habitat_inputs = warning_inputs_from_signals(habitat_signals)
 
@@ -179,6 +191,7 @@ def warning_inputs_from_mongo(db: Database, lat: float, lon: float, radius_km: f
             "biological_events": bool(event_docs),
             "human_exposure_estimates": bool(exposure_docs),
             "signals": bool(signal_docs),
+            "drone_observations": bool(drone_observation_docs),
         },
     }
 
@@ -890,6 +903,8 @@ def surveillance_inputs_from_mongo(
 ) -> dict[str, Any]:
     interactions = latest_public_docs(db, COLLECTIONS["recent_interactions"], lat, lon, radius_km)
     sightings = latest_public_docs(db, COLLECTIONS["sighting_reports"], lat, lon, radius_km)
+    drone_observations = latest_public_docs(db, COLLECTIONS["drone_observations"], lat, lon, radius_km, limit=200)
+    drone_sightings = [sighting for sighting in (drone_observation_to_sighting(document) for document in drone_observations) if sighting]
     reefs = latest_public_docs(db, COLLECTIONS["reef_features"], lat, lon, radius_km)
     warning_inputs = warning_inputs_from_mongo(db, lat, lon, radius_km)
     provider_status = {}
@@ -898,7 +913,7 @@ def surveillance_inputs_from_mongo(
     warning_inputs["provider_status"] = provider_status
     return {
         "recent_interactions": interactions,
-        "sighting_reports": sightings,
+        "sighting_reports": sightings + drone_sightings,
         "reef_features": reefs,
         "warning_inputs": warning_inputs,
     }
@@ -1139,6 +1154,167 @@ def surveillance_sightings(
         "disclaimer": SURVEILLANCE_DISCLAIMER,
         "results": latest_public_docs(db, COLLECTIONS["sighting_reports"], lat, lon, radius_km, limit),
     }
+
+
+def _drone_mission_or_404(db: Database, mission_id: str) -> dict[str, Any]:
+    mission = db[COLLECTIONS["drone_missions"]].find_one({"mission_id": mission_id})
+    if not mission:
+        raise HTTPException(status_code=404, detail="Drone mission not found")
+    return mission
+
+
+def _require_drone_ingest_enabled() -> None:
+    if not get_settings().drone_ingest_enabled:
+        raise HTTPException(status_code=403, detail="Drone ingestion endpoint is disabled")
+
+
+def _active_drone_observations(db: Database, limit: int) -> list[dict[str, Any]]:
+    now = datetime.now(timezone.utc)
+    docs = list(
+        db[COLLECTIONS["drone_observations"]]
+        .find({"visibility": "public", "review_status": {"$ne": "rejected"}}, {"private_notes": 0, "restricted": 0, "internal_notes": 0, "analyst_notes": 0})
+        .sort("timestamp", -1)
+        .limit(limit)
+    )
+    active = []
+    for doc in docs:
+        timestamp = parse_drone_time(doc.get("timestamp"))
+        if timestamp + timedelta(hours=3) >= now:
+            active.append(doc)
+    return active
+
+
+@router.post("/drone/missions")
+def create_drone_mission(payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    _require_drone_ingest_enabled()
+    try:
+        mission = build_mission(payload)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["drone_missions"]].insert_one(mission)
+    return maybe_demo({"status": "created", "mission": public_drone_doc(mission), "flight_control_commands_exposed": False})
+
+
+@router.get("/drone/missions/{mission_id}")
+def get_drone_mission(mission_id: str, db: Database = Depends(get_database)) -> dict[str, Any]:
+    mission = _drone_mission_or_404(db, mission_id)
+    return maybe_demo({"mission": public_drone_doc(mission), "flight_control_commands_exposed": False})
+
+
+@router.post("/drone/missions/{mission_id}/telemetry")
+def create_drone_telemetry(mission_id: str, payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    _require_drone_ingest_enabled()
+    mission = _drone_mission_or_404(db, mission_id)
+    try:
+        telemetry = build_telemetry(mission, payload)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["drone_telemetry"]].insert_one(telemetry)
+    return maybe_demo({"status": "created", "telemetry": public_drone_doc(telemetry), "flight_control_commands_exposed": False})
+
+
+@router.post("/drone/missions/{mission_id}/observations")
+def create_drone_observation(mission_id: str, payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    _require_drone_ingest_enabled()
+    mission = _drone_mission_or_404(db, mission_id)
+    try:
+        observation = build_observation(mission, payload)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["drone_observations"]].insert_one(observation)
+    return maybe_demo({"status": "created", "observation": public_drone_doc(observation), "flight_control_commands_exposed": False})
+
+
+@router.get("/drone/missions/{mission_id}/observations")
+def list_drone_observations(
+    mission_id: str,
+    limit: Annotated[int, Query(ge=1, le=250)] = 100,
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    _drone_mission_or_404(db, mission_id)
+    docs = list(
+        db[COLLECTIONS["drone_observations"]]
+        .find({"mission_id": mission_id, "visibility": "public"}, {"private_notes": 0, "restricted": 0, "internal_notes": 0, "analyst_notes": 0})
+        .sort("timestamp", -1)
+        .limit(limit)
+    )
+    return maybe_demo({"results": [public_drone_doc(doc) for doc in docs], "flight_control_commands_exposed": False})
+
+
+@router.post("/drone/missions/{mission_id}/complete")
+def complete_drone_mission(mission_id: str, payload: dict[str, Any] = Body(default={}), db: Database = Depends(get_database)) -> dict[str, Any]:
+    _require_drone_ingest_enabled()
+    mission = _drone_mission_or_404(db, mission_id)
+    mission["status"] = "completed"
+    mission["ended_at"] = parse_drone_time(payload.get("ended_at")) if payload.get("ended_at") else datetime.now(timezone.utc)
+    db[COLLECTIONS["drone_missions"]].replace_one({"mission_id": mission_id}, mission)
+    return maybe_demo({"status": "completed", "mission": public_drone_doc(mission), "flight_control_commands_exposed": False})
+
+
+@router.get("/drone/active-observations")
+def drone_active_observations(
+    limit: Annotated[int, Query(ge=1, le=250)] = 100,
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    docs = _active_drone_observations(db, limit)
+    return maybe_demo({"results": [public_drone_doc(doc) for doc in docs], "flight_control_commands_exposed": False})
+
+
+@router.get("/drone/surveillance-feed")
+def drone_surveillance_feed(
+    db: Database = Depends(get_database),
+    lat: Annotated[float | None, Query(ge=-90, le=90)] = None,
+    lon: Annotated[float | None, Query(ge=-180, le=180)] = None,
+    radius_km: Annotated[float, Query(gt=0, le=250)] = 10,
+    lookback_hours: Annotated[int, Query(ge=1, le=168)] = 24,
+    limit: Annotated[int, Query(ge=1, le=250)] = 100,
+) -> dict[str, Any]:
+    docs = _active_drone_observations(db, limit)
+    missions_by_id = {
+        doc["mission_id"]: db[COLLECTIONS["drone_missions"]].find_one({"mission_id": doc["mission_id"]})
+        for doc in docs
+        if doc.get("mission_id")
+    }
+    feed_items = [map_feed_item(doc, missions_by_id.get(doc.get("mission_id"))) for doc in docs]
+    signals = [drone_observation_signal(doc) for doc in docs if doc.get("review_status") != "rejected"]
+    sightings = [sighting for sighting in (drone_observation_to_sighting(doc) for doc in docs) if sighting]
+    center_lat = lat if lat is not None else (float(docs[0]["latitude"]) if docs else 0.0)
+    center_lon = lon if lon is not None else (float(docs[0]["longitude"]) if docs else 0.0)
+    profiles = list(db[COLLECTIONS["regional_risk_profiles"]].find({"visibility": "public"}, {"private_notes": 0, "restricted": 0}))
+    surveillance = score_surveillance_zones(
+        lat=center_lat,
+        lon=center_lon,
+        radius_km=radius_km,
+        mission_type="drone_observation_review",
+        lookback_hours=lookback_hours,
+        profiles=profiles,
+        sighting_reports=sightings,
+        warning_inputs=warning_inputs_from_signals(signals),
+    )
+    zone = surveillance.get("zones", [{}])[0]
+    alerts = evaluate_alerts(
+        {
+            "visibility": "public",
+            "lat": center_lat,
+            "lon": center_lon,
+            "radius_km": radius_km,
+            "surveillance_priority_score": zone.get("surveillance_priority_score", 0),
+            "activity_hazard_score": zone.get("activity_context_score", 0),
+            "warning_score": zone.get("warning_score", 0),
+            "confidence": zone.get("confidence", 0.5),
+            "dominant_factors": zone.get("dominant_factors", []),
+            "signals": signals,
+        }
+    )
+    return maybe_demo(
+        {
+            "disclaimer": SURVEILLANCE_DISCLAIMER,
+            "results": feed_items,
+            "surveillance": surveillance,
+            "alerts": alerts,
+            "flight_control": {"autonomous_flight_control": False, "commands_exposed": False, "human_approval_required": True},
+        }
+    )
 
 
 def build_surveillance_event(payload: dict[str, Any], event_kind: str) -> dict[str, Any]:

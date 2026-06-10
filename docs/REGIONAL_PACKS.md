@@ -82,6 +82,8 @@ Phase 24 adds static/manual Hawaii water clarity and turbidity baseline examples
 
 These Hawaii water-clarity signals are static visibility baselines. NOAA CoastWatch, PacIOOS water-quality products, Hawaii beach water-quality datasets, and reviewed runoff notes are future source candidates. They are not live water-quality, ocean-color, camera, or beach observations.
 
+Phase 25A adds vendor-neutral drone observation intake that can carry `pack_id` or `active_pack` for pack-aware map feeds and surveillance explanations. Drone intake does not add a regional scoring retune and does not issue aircraft-control commands.
+
 ## Hawaii Pack Coverage Gaps
 
 The Cromwell's Beach replay analysis shows that Hawaii operational awareness is currently limited most by early observational ingestion gaps and missing ocean-state layers, not by pack-weight tuning.
