@@ -57,28 +57,6 @@
 - Phase 25C: Drone Operator Observation Console
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
-## Exact Next Codex Resume Prompt
-
-Use this as the next prompt anchor after Phase 25B review/commit:
-
-```text
-Phase 25C: Drone Operator Observation Console
-
-Repo:
-F:\shark-attack-api
-
-Goal:
-Add a local operator console for human-reviewed drone observations using the existing drone mission, telemetry, and observation APIs.
-
-Constraints:
-- do not tune scoring weights
-- do not add attack-probability language
-- do not infer shark intent
-- use existing Phase 25A/25B APIs only
-- no autonomous takeoff, landing, waypoint, offboard-control, MAVLink command, DJI dependency, or computer-vision behavior
-- no auth/billing changes
-- do not commit until review
-```
 
 ## Local Startup Instructions
 
