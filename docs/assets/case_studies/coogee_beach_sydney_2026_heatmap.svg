@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Coogee Beach Sydney 2026 Replay Heatmap</title>
+  <desc id="desc">Operational replay visualization showing strict pre-incident, post-incident, and aviation-restricted drone-planning surveillance context without invented live ocean conditions.</desc>
+  <rect width="960" height="540" fill="#06263A"/>
+  <rect x="42" y="42" width="876" height="456" rx="16" fill="#0B3148" stroke="#2EC4D6" stroke-width="2"/>
+  <text x="72" y="92" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="30" font-weight="700">Coogee Beach Sydney 2026</text>
+  <text x="72" y="126" fill="#9ADBE8" font-family="Arial, sans-serif" font-size="17">Replay heatmap: operational surveillance priority, not a prediction layer</text>
+  <path d="M120 390 C230 315 322 302 420 250 C532 190 665 175 815 120" fill="none" stroke="#2EC4D6" stroke-width="10" stroke-linecap="round" opacity="0.55"/>
+  <path d="M102 420 C238 338 336 332 452 268 C560 209 686 197 835 145" fill="none" stroke="#D9F0FF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <circle cx="500" cy="245" r="82" fill="#7B2CBF" opacity="0.18" stroke="#7B2CBF" stroke-width="3"/>
+  <circle cx="500" cy="245" r="42" fill="#2EC4D6" opacity="0.26" stroke="#2EC4D6" stroke-width="2"/>
+  <circle cx="500" cy="245" r="8" fill="#D9F0FF"/>
+  <text x="524" y="248" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="15">Coogee Beach</text>
+  <g font-family="Arial, sans-serif" font-size="16">
+    <rect x="72" y="165" width="260" height="96" rx="10" fill="#1B2A41" stroke="#0F8B8D"/>
+    <text x="94" y="198" fill="#D9F0FF" font-weight="700">Strict pre-incident</text>
+    <text x="94" y="229" fill="#2EC4D6">surveillance_priority_score: 4.0</text>
+    <rect x="72" y="280" width="260" height="96" rx="10" fill="#1B2A41" stroke="#0F8B8D"/>
+    <text x="94" y="313" fill="#D9F0FF" font-weight="700">Post-incident update</text>
+    <text x="94" y="344" fill="#2EC4D6">surveillance_priority_score: 18.0</text>
+    <rect x="628" y="318" width="242" height="104" rx="10" fill="#1B2A41" stroke="#7B2CBF"/>
+    <text x="650" y="352" fill="#D9F0FF" font-weight="700">Drone restriction review</text>
+    <text x="650" y="382" fill="#BFA2DB">priority score: 18.0</text>
+    <text x="650" y="407" fill="#9ADBE8" font-size="13">Human-approved aviation review only</text>
+  </g>
+  <text x="72" y="462" fill="#D9F0FF" font-family="Arial, sans-serif" font-size="14">Patterns: beach_closure_support | shoreline_parallel_sweep | post_incident_focus_area | lifeguard_observation_coordination | aviation_restricted_drone_review</text>
+</svg>

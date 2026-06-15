@@ -1,0 +1,303 @@
+{
+  "case_id": "coogee_beach_sydney_2026",
+  "active_regional_pack": "new_south_wales_australia",
+  "score_summary": {
+    "strict_pre_incident": {
+      "warning_score": 0.0,
+      "activity_hazard_score": 0,
+      "surveillance_priority_score": 4.0,
+      "confidence": 0.43
+    },
+    "quiet_day_comparison": {
+      "warning_score": 0.0,
+      "activity_hazard_score": 0,
+      "surveillance_priority_score": 4.0,
+      "confidence": 0.43
+    },
+    "post_incident_operational_update": {
+      "warning_score": 0.0,
+      "activity_hazard_score": 0,
+      "surveillance_priority_score": 18.0,
+      "confidence": 0.48
+    },
+    "drone_restriction_operational_planning": {
+      "warning_score": 0.0,
+      "activity_hazard_score": 0,
+      "surveillance_priority_score": 18.0,
+      "confidence": 0.48
+    }
+  },
+  "dominant_factor_summary": {
+    "strict_pre_incident": [
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 1.0
+      },
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "river_mouth_runoff_proximity",
+        "value": null,
+        "points": 0,
+        "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.0
+      }
+    ],
+    "quiet_day_comparison": [
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 1.0
+      },
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "river_mouth_runoff_proximity",
+        "value": null,
+        "points": 0,
+        "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.0
+      }
+    ],
+    "post_incident_operational_update": [
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 1,
+        "points": 14,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.7778
+      },
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.2222
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "river_mouth_runoff_proximity",
+        "value": null,
+        "points": 0,
+        "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.0
+      }
+    ],
+    "drone_restriction_operational_planning": [
+      {
+        "factor": "recent_interactions_nearby",
+        "value": 1,
+        "points": 14,
+        "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+        "contribution": 0.7778
+      },
+      {
+        "factor": "activity_context",
+        "value": "swimming",
+        "points": 4,
+        "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+        "contribution": 0.2222
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "value": 0,
+        "points": 0,
+        "rationale": "Verified public sighting reports near the mission area increase search priority.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "reef_dropoff_habitat_proximity",
+        "value": 0,
+        "points": 0,
+        "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "river_mouth_runoff_proximity",
+        "value": null,
+        "points": 0,
+        "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+        "contribution": 0.0
+      },
+      {
+        "factor": "activity_hazard_score",
+        "value": 0,
+        "points": 0.0,
+        "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+        "contribution": 0.0
+      }
+    ]
+  },
+  "missing_signal_sources": {
+    "strict_pre_incident": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "recent_interactions",
+      "reef_features",
+      "sighting_reports",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "quiet_day_comparison": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "recent_interactions",
+      "reef_features",
+      "sighting_reports",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "post_incident_operational_update": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "reef_features",
+      "sighting_reports",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ],
+    "drone_restriction_operational_planning": [
+      "biological_events",
+      "human_exposure_estimates",
+      "ocean_observations",
+      "reef_features",
+      "sighting_reports",
+      "sst_anomaly",
+      "vessel_activity",
+      "weather_observations"
+    ]
+  },
+  "timeline_safety_checks": {
+    "pre_incident_has_post_incident_species": false,
+    "pre_incident_has_closure_metadata": false,
+    "pre_incident_has_drone_response": false,
+    "post_update_species_is_source_attributed": true,
+    "drone_restriction_is_operational_planning_only": true,
+    "invented_tide_current_visibility_weather_or_sightings": false
+  },
+  "closure_metadata": {
+    "closure_scope": "Coogee and nearby eastern-suburbs beaches",
+    "included_in_strict_preincident": false,
+    "included_in_post_update_artifact": true
+  },
+  "drone_restriction_notes": {
+    "routine_drone_monitoring": "limited by Sydney Airport flight-path restrictions",
+    "post_incident_response": "drone/helicopter surveillance escalation reported",
+    "operational_boundary": "human-approved surveillance only; no autonomous flight and no bypassing aviation restrictions"
+  },
+  "recommended_surveillance_patterns": [
+    "beach_closure_support",
+    "shoreline_parallel_sweep",
+    "post_incident_focus_area",
+    "lifeguard_observation_coordination",
+    "aviation_restricted_drone_review"
+  ],
+  "aerial_surveillance_response": "increased",
+  "aerial_platforms": [
+    "drone",
+    "helicopter"
+  ],
+  "drone_restriction_context": "Sydney Airport flight-path constraints / emergency review context",
+  "recommended_surveillance_pattern": [
+    "shoreline_parallel_sweep",
+    "post_incident_focus_area",
+    "lifeguard_observation_coordination",
+    "aviation_restricted_drone_review"
+  ],
+  "autonomous_flight_control": false,
+  "drone_observation_roadmap_relevance": [
+    "drone mission records",
+    "surf-line observation intake",
+    "map-ready surveillance feed",
+    "aviation-restriction notes",
+    "human-approved surveillance recommendations"
+  ],
+  "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+  "source_attributed_species": {
+    "taxon": "suspected white shark",
+    "classification_status": "source-attributed preliminary only",
+    "model_input_for_strict_preincident": false
+  }
+}

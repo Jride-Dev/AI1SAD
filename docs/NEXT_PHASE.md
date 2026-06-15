@@ -81,4 +81,4 @@ Do not commit until review.
 
 ## Current Interruption Note
 
-Phase 25B is local work in review until committed. Begin Phase 25C only after Phase 25B is reviewed and committed.
+Phase 25B is committed. The Coogee Beach Sydney 2026 replay case study is a pre-Phase 25C package. Begin Phase 25C only after that case-study package is committed and pushed or explicitly set aside.

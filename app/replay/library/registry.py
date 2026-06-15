@@ -405,6 +405,38 @@ REPLAY_LIBRARY: dict[str, dict[str, Any]] = {
         explanation_summary="Paired Recife replay keeps Piedade strict pre-incident low and shows the Boa Viagem lift from the previous day's Piedade interaction without adding a Recife scoring retune.",
         heatmap_asset="docs/assets/case_studies/piedade_boa_viagem_recife_2026_heatmap.svg",
     ),
+    "coogee_beach_sydney_2026": _item(
+        replay_id="coogee_beach_sydney_2026",
+        title="Coogee Beach Sydney 2026",
+        region="New South Wales, Australia",
+        coordinates={"lat": -33.9205, "lon": 151.2552},
+        observed_at="2026-06-13T11:53:00+10:00",
+        activity_context="swimming approximately 30 m offshore with urban beach baseline context",
+        species_context="suspected 3-4 m white shark is source-attributed preliminary post-incident metadata only",
+        replay_output={
+            "warning_score": 0.0,
+            "warning_band": "low",
+            "activity_hazard_score": 0,
+            "activity_hazard_band": "low",
+            "surveillance_priority_score": 18.0,
+            "surveillance_priority_band": "low",
+            "confidence": 0.48,
+        },
+        quiet_day_comparison={
+            "warning_score": 0.0,
+            "activity_hazard_score": 0,
+            "surveillance_priority_score": 4.0,
+            "confidence": 0.43,
+            "summary": "Strict pre-incident and quiet-day runs stay low because no timeline-valid live sighting, closure, tide/current, visibility, weather, or species signal is available before the incident.",
+        },
+        factor_summary=[
+            {"factor": "recent_interactions_nearby", "points": 14.0},
+            {"factor": "activity_context", "points": 4.0},
+            {"factor": "aviation_restricted_drone_review", "points": 0.0},
+        ],
+        explanation_summary="Timeline-separated NSW replay with low strict pre-incident output, a post-incident recent-interaction lift, and operational drone-restriction notes for human-approved surveillance planning.",
+        heatmap_asset="docs/assets/case_studies/coogee_beach_sydney_2026_heatmap.svg",
+    ),
 }
 
 

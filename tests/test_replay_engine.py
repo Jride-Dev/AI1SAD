@@ -223,10 +223,95 @@ class TestReplayRunner:
         assert drift_zone["surveillance_priority_score"] == initial_zone["surveillance_priority_score"]
         assert hypothetical_zone["surveillance_priority_score"] > initial_zone["surveillance_priority_score"]
 
+    def test_coogee_strict_chronology_excludes_post_incident_context(self):
+        pre = REPLAY_SCENARIOS["coogee_beach_sydney_2026_pre_incident"]
+        quiet = REPLAY_SCENARIOS["coogee_beach_sydney_2026_quiet_day"]
+        post = REPLAY_SCENARIOS["coogee_beach_sydney_2026_post_update"]
+        runner = ReplayRunner()
+        pre_result = runner.run_scenario(pre)
+        quiet_result = runner.run_scenario(quiet)
+        post_result = runner.run_scenario(post)
+
+        assert pre_result.error is None
+        assert quiet_result.error is None
+        assert post_result.error is None
+        assert pre.sighting_reports == []
+        assert pre.recent_interactions == []
+        assert pre.biological_events == []
+        assert pre.suspected_species is None
+        assert quiet.sighting_reports == []
+        assert quiet.recent_interactions == []
+        assert quiet.biological_events == []
+
+        pre_zone = (pre_result.surveillance or {}).get("zones", [{}])[0]
+        quiet_zone = (quiet_result.surveillance or {}).get("zones", [{}])[0]
+        post_zone = (post_result.surveillance or {}).get("zones", [{}])[0]
+        assert pre_result.warning["warning_band"] == "low"
+        assert pre_zone["surveillance_priority_score"] == quiet_zone["surveillance_priority_score"]
+        assert post_zone["surveillance_priority_score"] > pre_zone["surveillance_priority_score"]
+        assert "recent_interactions" not in pre_zone["data_sources_used"]
+        assert "recent_interactions" in post_zone["data_sources_used"]
+
+    def test_coogee_species_closure_and_drone_restriction_metadata_are_source_attributed(self):
+        replay = json.loads(Path("docs/assets/case_studies/coogee_beach_sydney_2026_replay.json").read_text(encoding="utf-8"))
+        summary = json.loads(Path("docs/assets/case_studies/coogee_beach_sydney_2026_factor_summary.json").read_text(encoding="utf-8"))
+
+        species = replay["verified_event_record"]["species_context"]
+        assert species["taxon"] == "suspected white shark"
+        assert species["classification_status"] == "source-attributed preliminary only"
+        assert species["model_input_for_strict_preincident"] is False
+        assert summary["source_attributed_species"]["classification_status"] == "source-attributed preliminary only"
+
+        checks = summary["timeline_safety_checks"]
+        assert checks["pre_incident_has_post_incident_species"] is False
+        assert checks["pre_incident_has_closure_metadata"] is False
+        assert checks["pre_incident_has_drone_response"] is False
+        assert checks["post_update_species_is_source_attributed"] is True
+        assert checks["drone_restriction_is_operational_planning_only"] is True
+        assert checks["invented_tide_current_visibility_weather_or_sightings"] is False
+
+        assert "aerial_surveillance_response" not in replay["runs"]["strict_pre_incident"]
+        assert "aerial_surveillance_response" not in replay["runs"]["quiet_day_comparison"]
+        for run_key in ["post_incident_operational_update", "drone_restriction_operational_planning"]:
+            run = replay["runs"][run_key]
+            assert run["aerial_surveillance_response"] == "increased"
+            assert run["aerial_platforms"] == ["drone", "helicopter"]
+            assert run["drone_restriction_context"] == "Sydney Airport flight-path constraints / emergency review context"
+            assert run["recommended_surveillance_pattern"] == [
+                "shoreline_parallel_sweep",
+                "post_incident_focus_area",
+                "lifeguard_observation_coordination",
+                "aviation_restricted_drone_review",
+            ]
+            assert run["autonomous_flight_control"] is False
+
+        assert summary["closure_metadata"]["closure_scope"] == "Coogee and nearby eastern-suburbs beaches"
+        assert summary["closure_metadata"]["included_in_strict_preincident"] is False
+        assert replay["drone_restriction_notes"]["operational_boundary"] == "human-approved surveillance only; no autonomous flight and no bypassing aviation restrictions"
+        assert replay["aerial_surveillance_response"] == "increased"
+        assert replay["aerial_platforms"] == ["drone", "helicopter"]
+        assert replay["drone_restriction_context"] == "Sydney Airport flight-path constraints / emergency review context"
+        assert replay["autonomous_flight_control"] is False
+        assert {
+            "drone mission records",
+            "surf-line observation intake",
+            "map-ready surveillance feed",
+            "aviation-restriction notes",
+            "human-approved surveillance recommendations",
+        } <= set(replay["drone_observation_roadmap_relevance"])
+        assert summary["aerial_surveillance_response"] == "increased"
+        assert summary["aerial_platforms"] == ["drone", "helicopter"]
+        assert summary["autonomous_flight_control"] is False
+        assert "aviation_restricted_drone_review" in replay["recommended_surveillance_patterns"]
+        assert "weather_observations" in replay["runs"]["strict_pre_incident"]["missing_signal_sources"]
+        assert "ocean_observations" in replay["runs"]["strict_pre_incident"]["missing_signal_sources"]
+        assert "sighting_reports" in replay["runs"]["strict_pre_incident"]["missing_signal_sources"]
+
     def test_active_event_replay_json_and_svg_artifacts_parse(self):
         artifact_stems = [
             "michaelmas_island_albany_wa_2026",
             "lovers_point_pacific_grove_whale_carcass_2026",
+            "coogee_beach_sydney_2026",
         ]
         for stem in artifact_stems:
             replay = json.loads(Path(f"docs/assets/case_studies/{stem}_replay.json").read_text(encoding="utf-8"))

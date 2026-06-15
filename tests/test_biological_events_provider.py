@@ -194,10 +194,11 @@ def test_plumpudding_carcass_metadata_preserves_provisional_taxonomy():
 
 def test_plumpudding_carcass_warning_is_bounded():
     scenario = REPLAY_SCENARIOS["plumpudding_beach_esperance_whale_carcass_2026_initial"]
+    fresh_events = [dict(event, observed_at=datetime.now(timezone.utc).isoformat()) for event in scenario.biological_events]
     result = calculate_warning(
         lat=scenario.lat,
         lon=scenario.lon,
-        biological_events=scenario.biological_events,
+        biological_events=fresh_events,
         month=scenario.month,
     )
 

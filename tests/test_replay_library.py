@@ -17,6 +17,7 @@ def test_replay_library_list_works():
     assert "piedade_boa_viagem_recife_2026" in replay_ids
     assert "michaelmas_island_albany_wa_2026" in replay_ids
     assert "lovers_point_pacific_grove_whale_carcass_2026" in replay_ids
+    assert "coogee_beach_sydney_2026" in replay_ids
 
 
 def test_replay_library_detail_works():

@@ -49,9 +49,10 @@ def load_region_scenarios() -> dict[str, ReplayScenario]:
     from app.replay.datasets.western_australia import SCENARIOS as WESTERN_AUSTRALIA
     from app.replay.datasets.brazil import SCENARIOS as BRAZIL
     from app.replay.datasets.california import SCENARIOS as CALIFORNIA
+    from app.replay.datasets.new_south_wales import SCENARIOS as NEW_SOUTH_WALES
 
     scenarios: dict[str, ReplayScenario] = {}
-    for region_pack in [FLORIDA, WESTERN_AUSTRALIA, QUEENSLAND, HAWAII, SOUTH_AFRICA, RED_SEA, BRAZIL, CALIFORNIA]:
+    for region_pack in [FLORIDA, WESTERN_AUSTRALIA, QUEENSLAND, HAWAII, SOUTH_AFRICA, RED_SEA, BRAZIL, CALIFORNIA, NEW_SOUTH_WALES]:
         scenarios.update(region_pack)
     return scenarios
 

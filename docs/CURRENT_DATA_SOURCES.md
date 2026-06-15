@@ -1,6 +1,6 @@
 # Current Condition Data Sources
 
-Phase 3B adds a warning-data pipeline that aggregates current-condition signals. This creates a warning score, not an attack prediction.
+Phase 3B adds a warning-data pipeline that aggregates current-condition signals. This creates a warning score, not an individual-outcome forecast.
 
 ## Reliable Automated Sources
 
@@ -16,6 +16,7 @@ Phase 3B adds a warning-data pipeline that aggregates current-condition signals.
 - Drone observation intake: vendor-neutral mission, telemetry, and observation records from human-operated coastal-surveillance drones. This is reviewed/manual ingestion first, with no DJI, MAVLink, flight-control, image-hosting, or computer-vision dependency. See [Drone Observation Ingestion](DRONE_OBSERVATION_INGESTION.md).
 - Greater Recife replay inputs: the Piedade / Boa Viagem case study uses source-attributed incident records and existing replay fields only. Recife tide, current, turbidity, rainfall, SST, human-exposure, telemetry, and regional-pack sources remain missing or future candidates. See [Recife Signal Gap Analysis](RECIFE_SIGNAL_GAP_ANALYSIS.md).
 - Active-event replay inputs: the Michaelmas Island and Lovers Point case studies use source-attributed active-event records, existing replay fields, static regional packs, and existing biological/kelp context only. They do not add live scraping, providers, or invented tide, current, drift, weather, turbidity, or sighting values.
+- Coogee Beach Sydney replay inputs: the 2026 Coogee case study uses source-attributed incident, closure, and aviation-restricted drone-response context in replay artifacts. The strict pre-incident run excludes closure, drone response, shark size, and species metadata. No NSW tide, current, visibility, weather, or sighting values are invented.
 
 ## Limited Or Uncertain Sources
 
@@ -81,7 +82,7 @@ The event layer is intentionally deterministic and evidence-tracked. Event colle
 
 Future records should include confidence labels such as `official`, `verified`, `community_report`, `news_only`, or `unconfirmed`.
 
-## Warning Score, Not Attack Prediction
+## Warning Score, Not Individual-Outcome Forecasting
 
 The warning engine estimates current encounter conditions from available signals:
 
@@ -95,7 +96,7 @@ The warning engine estimates current encounter conditions from available signals
 - water clarity/turbidity visibility context
 - regional seasonal multipliers
 
-The warning score does not predict attacks. It is not a safety guarantee and should not replace official beach, lifeguard, weather, wildlife, or emergency guidance.
+The warning score does not forecast individual outcomes. It is not a safety guarantee and should not replace official beach, lifeguard, weather, wildlife, or emergency guidance.
 
 The project deliberately starts with deterministic, explainable rules. A Bayesian/statistical layer may come later, and any ML ensemble belongs after the data contracts, source freshness, and explainability layer are stable.
 
