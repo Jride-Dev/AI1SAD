@@ -4,6 +4,8 @@
 
 Phase 25D-A adds metadata-only analyst review fields to drone and coastal observations. An analyst can annotate an existing observation with review status, outcome, a public summary, and private notes — without modifying the original observation, without AI1SAD fetching or hosting media, and without creating a new sighting from media reference alone.
 
+Phase 25D-C adds a local-only media attachment metadata prototype. Attachments remain private-by-default, disabled unless `MEDIA_ATTACHMENTS_ENABLED=true`, and do not cause AI1SAD to analyze media or create sightings.
+
 ## Safety Boundaries
 
 - Analyst review fields are metadata annotations only
@@ -93,3 +95,4 @@ The review card includes:
 
 - Backend: PATCH endpoint validates enums, filters private fields and raw media references, and does not create sightings from media references
 - Frontend: panel renders pending observations, dropdowns contain valid enum values, private notes warning is visible, and raw media references are hidden from public cards
+- Attachments: local metadata-only attachment endpoints remain gated, private-by-default, and do not expose storage keys or filenames through public feeds

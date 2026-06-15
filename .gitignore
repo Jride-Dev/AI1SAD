@@ -24,6 +24,7 @@ data/public/schema.json
 
 # Hidden, sensitive, restricted, or license-unclear data must stay local.
 data/private/
+data/media_attachments/
 
 # Frontend local dependencies and generated build output.
 frontend/node_modules/

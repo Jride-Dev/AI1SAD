@@ -1,59 +1,79 @@
 # Next Phase
 
-## Phase 25D-C: Local-Only Media Attachment Prototype (Not Started)
+## Phase 25D-D: Media Attachment Security Review and Upload Hardening
 
 ## Objective
 
-Build a local-only media attachment prototype for drone/coastal observations using the filesystem-based design documented in Phase 25D-B.
+Review the Phase 25D-C local-only metadata prototype and define the security controls required before any binary media upload path is added.
 
-Phase 25D-C should build on Phase 25D-A review metadata and Phase 25D-B storage design without adding cloud storage, computer vision, or autonomous flight control.
+Do not start this phase automatically. Phase 25D-D begins only after Phase 25D-C is reviewed and committed.
 
-## Phase 25D-B Completion Note
+## Current Baseline
 
-Phase 25D-B is a planning-and-documentation phase:
+Phase 25D-C provides:
 
-- `docs/MEDIA_ATTACHMENT_STORAGE_DESIGN.md` documents the full attachment model, storage backend tradeoffs, privacy visibility levels, public-feed rules, security review checklist, and implementation gates
-- No storage clients, upload endpoints, database migrations, or frontend upload UI are added
-- Updated: README, OBSERVATION_ANALYST_REVIEW.md, DRONE_OPERATOR_CONSOLE.md, DRONE_DATA_CONTRACT.md, DRONE_OPERATIONS_SAFETY.md, CURRENT_DATA_SOURCES.md, PROJECT_STATUS.md, NEXT_PHASE.md, mkdocs.yml
-- MkDocs navigation includes the new design document
-- No code changes
+- metadata-only attachment records
+- `MEDIA_ATTACHMENTS_ENABLED=false` by default
+- local private filesystem backend label
+- no binary upload
+- no cloud storage
+- no external media fetch
+- no computer vision
+- no public media exposure
+- no scoring or replay changes
 
-## Planned Scope (Future Phase)
+## Review Scope
 
-1. Local filesystem-based media storage within `data/` directory
-2. Upload endpoint for attaching media to existing observations
-3. Media kind and MIME type validation
-4. Server-side EXIF/geotag stripping before storage
-5. Private-bucket semantics for local filesystem (no public access path)
-6. Attachment metadata stored alongside observation records
-7. Frontend media reference display (no upload UI yet)
-8. Public-feed filtering for attachment metadata based on visibility level
-9. Configuration flag to disable upload (`MEDIA_UPLOAD_ENABLED=false`)
+1. Confirm attachment endpoints are gated by `MEDIA_ATTACHMENTS_ENABLED`.
+2. Confirm public feeds never expose private attachment fields.
+3. Confirm path traversal and unsafe filenames are rejected.
+4. Confirm MIME-type and file-size metadata validation is bounded.
+5. Confirm attachments do not create sightings or alter scores.
+6. Define upload-hardening requirements before any binary upload is implemented.
 
-## Constraints
+## Upload-Hardening Questions
 
-- Do not add cloud storage (S3, Supabase Storage, Cloudinary, etc.)
-- Do not add computer vision
-- Do not add species detection from media
-- Do not add autonomous flight control
-- Do not transmit MAVLink commands
-- Do not add DJI-specific dependencies
-- Do not change auth/billing
-- Do not change scoring weights
-- Do not modify replay outputs
-- Do not commit until review
+Before adding upload support, decide:
+
+- maximum file sizes by media kind
+- accepted MIME types and extension mapping
+- malware scanning strategy
+- EXIF/geotag stripping strategy
+- retention and deletion policy
+- local storage root isolation rules
+- audit logging fields
+- role/auth model for attachment create/list/review
+- public release and redaction workflow
+- whether upload remains local-only or stays deferred
+
+## Safety Boundaries
+
+- Do not add cloud storage.
+- Do not add external media APIs.
+- Do not fetch or download external media.
+- Do not add computer vision.
+- Do not parse media for species or sightings.
+- Do not expose private media paths in public feeds.
+- Do not change scoring weights.
+- Do not modify replay outputs.
+- Do not add autonomous flight control.
+- Do not add MAVLink command behavior.
+- Do not add public media release without a separate review gate.
 
 ## Validation Expectations
 
+- focused attachment tests
 - focused drone observation tests
-- focused attachment storage tests
+- full backend tests
 - frontend tests
 - frontend build
-- full backend test suite
+- npm audit high
 - mkdocs build
+- README link/image check
 - secret scan
 - prohibited-language scan
+- git diff --check
 
 ## Review Gate
 
-Do not begin Phase 25D-C until Phase 25D-B has been reviewed and either committed or explicitly set aside.
+Stop before committing unless explicitly asked to commit Phase 25D-D work.

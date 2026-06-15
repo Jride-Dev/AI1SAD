@@ -351,6 +351,43 @@ export type AnalystReviewUpdate = {
   analyst_reviewed_at?: string | null;
 };
 
+export type DroneAttachment = {
+  attachment_id: string;
+  observation_id: string;
+  mission_id: string;
+  media_reference_type?: string | null;
+  storage_backend?: "local_private_filesystem";
+  media_kind: string;
+  mime_type?: string | null;
+  file_size_bytes?: number | null;
+  captured_at?: string | null;
+  uploaded_at?: string | null;
+  review_visibility: string;
+  public_release_status: string;
+  analyst_review_status: string;
+  public_summary?: string | null;
+  evidence_confidence?: number | null;
+  attachment_scope?: string;
+  private_by_default?: boolean;
+  public_feed_exposed?: boolean;
+  media_analysis_performed?: boolean;
+  sighting_created?: boolean;
+};
+
+export type DroneAttachmentPayload = {
+  media_kind: string;
+  media_reference_type?: string | null;
+  original_filename?: string | null;
+  mime_type?: string | null;
+  file_size_bytes?: number | null;
+  captured_at?: string | null;
+  uploaded_by_role?: string | null;
+  review_visibility?: string | null;
+  public_release_status?: string | null;
+  public_summary?: string | null;
+  evidence_confidence?: number | null;
+};
+
 export const MEDIA_REFERENCE_TYPES = [
   "local_filename",
   "drone_clip_id",
@@ -379,6 +416,22 @@ export const REVIEW_OUTCOMES = [
   "false_positive",
   "duplicate",
   "unusable_media",
+] as const;
+
+export const ATTACHMENT_MEDIA_KINDS = [
+  "image",
+  "video",
+  "telemetry_snapshot",
+  "observation_note",
+  "agency_report_reference",
+  "unknown",
+] as const;
+
+export const ATTACHMENT_VISIBILITIES = [
+  "private_internal",
+  "analyst_only",
+  "operator_visible",
+  "public_summary_only",
 ] as const;
 
 export type DroneConsoleData = {

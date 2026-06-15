@@ -6,6 +6,8 @@ import type {
   DashboardData,
   DemoScenario,
   DemoStatus,
+  DroneAttachment,
+  DroneAttachmentPayload,
   DroneConsoleData,
   DroneConsoleMissionOption,
   DroneObservation,
@@ -355,6 +357,49 @@ export async function submitObservationReview(missionId: string, observationId: 
     },
   );
   return response.observation;
+}
+
+export async function getObservationAttachments(observationId: string): Promise<DroneAttachment[]> {
+  const fallback: DroneAttachment[] = [];
+  const response = await requestJson<DroneAttachment[] | { results: DroneAttachment[] }>(
+    `/api/v1/drone/observations/${encodeURIComponent(observationId)}/attachments`,
+    fallback,
+    (value): value is DroneAttachment[] | { results: DroneAttachment[] } =>
+      Array.isArray(value) || Boolean(value && typeof value === "object" && Array.isArray((value as { results?: unknown }).results)),
+  );
+  return Array.isArray(response) ? response : response.results;
+}
+
+export async function submitObservationAttachment(observationId: string, payload: DroneAttachmentPayload): Promise<DroneAttachment> {
+  const fallback: DroneAttachment = {
+    attachment_id: `mock-attachment-${Date.now()}`,
+    observation_id: observationId,
+    mission_id: mockDroneConsoleData.observations.find((item) => item.observation_id === observationId)?.mission_id ?? "mock-mission",
+    media_kind: payload.media_kind,
+    media_reference_type: payload.media_reference_type,
+    mime_type: payload.mime_type,
+    file_size_bytes: payload.file_size_bytes,
+    captured_at: payload.captured_at,
+    uploaded_at: new Date().toISOString(),
+    review_visibility: payload.review_visibility ?? "analyst_only",
+    public_release_status: payload.public_release_status ?? "not_reviewed",
+    analyst_review_status: "unreviewed",
+    public_summary: payload.public_summary,
+    evidence_confidence: payload.evidence_confidence,
+    attachment_scope: "metadata_only_local",
+    private_by_default: true,
+    public_feed_exposed: false,
+    media_analysis_performed: false,
+    sighting_created: false,
+  };
+  const response = await postJson<{ attachment: DroneAttachment }>(
+    `/api/v1/drone/observations/${encodeURIComponent(observationId)}/attachments`,
+    payload,
+    { attachment: fallback },
+    (value): value is { attachment: DroneAttachment } =>
+      Boolean(value && typeof value === "object" && "attachment" in value),
+  );
+  return response.attachment;
 }
 
 export function __setMockModeForTests(value: boolean | null): void {

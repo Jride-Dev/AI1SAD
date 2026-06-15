@@ -26,6 +26,8 @@ class DroneObservationIngestionTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         os.environ.pop("DRONE_INGEST_ENABLED", None)
+        os.environ.pop("MEDIA_ATTACHMENTS_ENABLED", None)
+        os.environ.pop("MEDIA_ATTACHMENTS_STORAGE_ROOT", None)
         get_settings.cache_clear()
 
     def _mission_payload(self) -> dict:
@@ -47,6 +49,27 @@ class DroneObservationIngestionTests(unittest.TestCase):
     def _create_mission(self) -> None:
         response = self.client.post("/api/v1/drone/missions", json=self._mission_payload())
         self.assertEqual(response.status_code, 200)
+
+    def _create_observation(self, observation_type: str = "shark_sighting") -> str:
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": observation_type,
+                "confidence": 0.55,
+                "review_status": "operator_reviewed",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        return response.json()["observation"]["observation_id"]
+
+    def _enable_media_attachments(self) -> None:
+        os.environ["MEDIA_ATTACHMENTS_ENABLED"] = "true"
+        os.environ["MEDIA_ATTACHMENTS_STORAGE_ROOT"] = "./data/media_attachments"
+        get_settings.cache_clear()
 
     def test_drone_mission_creation_is_human_approved_without_flight_control(self):
         response = self.client.post("/api/v1/drone/missions", json=self._mission_payload())
@@ -507,6 +530,129 @@ class DroneObservationIngestionTests(unittest.TestCase):
         self.assertEqual(patch.status_code, 200)
         text = str(patch.json())
         self.assertNotIn("Highly sensitive private note", text)
+
+    def test_attachment_writes_rejected_when_disabled(self):
+        observation_id = self._create_observation()
+        response = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["detail"], "Local media attachment prototype is disabled")
+
+    def test_attachment_metadata_allowed_when_enabled_and_private_by_default(self):
+        observation_id = self._create_observation()
+        self._enable_media_attachments()
+        response = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={
+                "media_kind": "image",
+                "media_reference_type": "local_filename",
+                "original_filename": "frame-001.jpg",
+                "mime_type": "image/jpeg",
+                "file_size_bytes": 2048,
+                "captured_at": "2099-06-08T17:07:30Z",
+                "uploaded_by_role": "analyst",
+                "review_visibility": "analyst_only",
+                "public_summary": "Public-safe attachment summary",
+                "evidence_confidence": 0.7,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        attachment = payload["attachment"]
+        self.assertTrue(payload["private_by_default"])
+        self.assertFalse(payload["public_feed_exposed"])
+        self.assertFalse(payload["media_analysis_performed"])
+        self.assertFalse(payload["sighting_created"])
+        self.assertEqual(attachment["observation_id"], observation_id)
+        self.assertEqual(attachment["mission_id"], "mission-test-drone")
+        self.assertEqual(attachment["media_kind"], "image")
+        self.assertEqual(attachment["review_visibility"], "analyst_only")
+        self.assertEqual(attachment["public_summary"], "Public-safe attachment summary")
+        for private_field in ["storage_key", "stored_filename", "original_filename", "checksum_sha256", "uploaded_by_role"]:
+            self.assertNotIn(private_field, attachment)
+
+        listed = self.client.get(f"/api/v1/drone/observations/{observation_id}/attachments")
+        self.assertEqual(listed.status_code, 200)
+        self.assertEqual(len(listed.json()["results"]), 1)
+
+    def test_attachment_invalid_observation_rejected(self):
+        self._enable_media_attachments()
+        response = self.client.post(
+            "/api/v1/drone/observations/missing-observation/attachments",
+            json={"media_kind": "image", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_attachment_validation_rejects_unsupported_kind_visibility_and_paths(self):
+        observation_id = self._create_observation()
+        self._enable_media_attachments()
+        unsupported_kind = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "zip_archive", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(unsupported_kind.status_code, 422)
+        unsupported_visibility = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "review_visibility": "public_attachment_allowed", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(unsupported_visibility.status_code, 422)
+        traversal = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "..\\private\\frame.jpg"},
+        )
+        self.assertEqual(traversal.status_code, 422)
+
+    def test_attachment_review_public_summary_safe(self):
+        observation_id = self._create_observation()
+        self._enable_media_attachments()
+        created = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "observation_note", "original_filename": "note.txt", "mime_type": "text/plain"},
+        )
+        self.assertEqual(created.status_code, 200)
+        attachment_id = created.json()["attachment"]["attachment_id"]
+        patch = self.client.patch(
+            f"/api/v1/drone/observations/{observation_id}/attachments/{attachment_id}/review",
+            json={
+                "analyst_review_status": "reviewed",
+                "review_visibility": "public_summary_only",
+                "public_release_status": "inconclusive",
+                "public_summary": "Attachment reviewed; no public media released.",
+                "evidence_confidence": 0.4,
+            },
+        )
+        self.assertEqual(patch.status_code, 200)
+        attachment = patch.json()["attachment"]
+        self.assertEqual(attachment["analyst_review_status"], "reviewed")
+        self.assertEqual(attachment["review_visibility"], "public_summary_only")
+        self.assertEqual(attachment["public_summary"], "Attachment reviewed; no public media released.")
+        self.assertEqual(attachment["evidence_confidence"], 0.4)
+        self.assertNotIn("storage_key", attachment)
+        self.assertNotIn("original_filename", attachment)
+
+    def test_attachments_do_not_create_sightings_or_alter_public_feed(self):
+        observation_id = self._create_observation("water_clarity_observation")
+        self._enable_media_attachments()
+        before = json.dumps(self.client.get("/api/v1/drone/surveillance-feed").json(), sort_keys=True)
+        response = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={
+                "media_kind": "image",
+                "media_reference_type": "local_filename",
+                "original_filename": "private-frame.jpg",
+                "public_summary": "Private image retained for analyst review.",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        after_payload = self.client.get("/api/v1/drone/surveillance-feed").json()
+        after = json.dumps(after_payload, sort_keys=True)
+        self.assertEqual(before, after)
+        self.assertNotIn("private-frame.jpg", after)
+        self.assertNotIn("attachment_id", after)
+        self.assertNotIn("storage_key", after)
+        self.assertFalse(response.json()["sighting_created"])
 
     def test_mission_completion(self):
         self._create_mission()

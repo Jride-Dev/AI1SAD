@@ -581,6 +581,22 @@ Returns active public normalized signals across the database.
 
 Returns provider health rollups and recent provider failures without credentials or private notes.
 
+## Local Media Attachments
+
+Phase 25D-C adds local-only, metadata-only attachment endpoints for existing drone observation records. They are disabled unless `MEDIA_ATTACHMENTS_ENABLED=true`.
+
+`POST /api/v1/drone/observations/{observation_id}/attachments`
+
+Creates a private local attachment metadata record for an existing observation. This endpoint does not upload media, fetch external URLs, parse media, run computer vision, or create sightings from attachments.
+
+`GET /api/v1/drone/observations/{observation_id}/attachments`
+
+Lists private attachment metadata for an existing observation. Safe responses omit local storage paths, raw filenames, checksums, uploader role, and private notes.
+
+`PATCH /api/v1/drone/observations/{observation_id}/attachments/{attachment_id}/review`
+
+Updates analyst review metadata such as review status, public summary, visibility, and evidence confidence. Public feeds do not expose private attachment records.
+
 `GET /api/v1/regions/{region}/season-profile`
 
 Returns public species season profiles for a region.

@@ -8,6 +8,8 @@ Phase 25D-A adds metadata-only analyst review fields. These are annotations on e
 
 Phase 25D-B adds the media attachment storage design and privacy review. This is a planning-and-documentation phase only. No media storage, upload, or hosting is implemented.
 
+Phase 25D-C adds a local-only, metadata-only attachment prototype. It is disabled by default and does not add binary upload, cloud storage, media download, computer vision, media analysis, autonomous detections, or flight-control behavior.
+
 ## Safety Boundaries
 
 - Drone write endpoints are disabled unless `DRONE_INGEST_ENABLED=true`.
@@ -21,8 +23,11 @@ Phase 25D-B adds the media attachment storage design and privacy review. This is
 - The Drone Operator Console must not expose arming, takeoff, landing, waypoint, mission-upload, offboard-control, or MAVLink command actions.
 - Analyst review fields are metadata-only; AI1SAD does not fetch, host, or analyze media
 - `analyst_notes_private`, `analyst_reviewer_role`, and `analyst_reviewed_at` are excluded from public output
-- Media attachment storage is design-only in Phase 25D-B; no file upload, hosting, or storage client code is added
+- Media attachment support is metadata-only in Phase 25D-C; no file upload, hosting, cloud storage, or storage client code is added
 - Public feed rules for future attachments deny private URLs, storage keys, original filenames, and unreviewed evidence
+- Media attachment endpoints are disabled unless `MEDIA_ATTACHMENTS_ENABLED=true`
+- Local attachment metadata remains private-by-default and is not exposed through public surveillance feeds
+- Attachments do not create sightings and do not alter scoring
 
 ## Interpretation Rules
 

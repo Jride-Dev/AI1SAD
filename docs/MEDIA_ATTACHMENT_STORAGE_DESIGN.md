@@ -6,7 +6,7 @@ This document describes the future design for attaching media evidence to drone 
 
 Phase 25D-A added metadata-only analyst review fields: media reference types, review status, review outcome, public review summary, private analyst notes, and evidence confidence. Phase 25D-B takes the next step: a planning and privacy-review phase that defines what media attachment support will eventually need, what storage boundaries must exist, and what must remain private.
 
-The design is metadata-first. Current implementation stores review metadata and evidence pointers only. It does not upload, host, fetch, or analyze media.
+The design is metadata-first. Phase 25D-C implements a local-only metadata prototype for attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. It does not upload, host, fetch, download, parse, or analyze media.
 
 ## 2. Non-Goals for Current Phase
 
@@ -25,7 +25,7 @@ Phase 25D-B does not implement media handling:
 
 ## 3. Attachment Model Proposal
 
-Future media attachment records may include these fields. This is a design reference, not a schema migration.
+Phase 25D-C metadata-only attachment records use this model as a local prototype. Binary storage and public release remain future work.
 
 | Field | Type | Description |
 |---|---|---|
@@ -47,7 +47,7 @@ Future media attachment records may include these fields. This is a design refer
 | `checksum_sha256` | string | SHA-256 hash for integrity verification |
 | `redaction_status` | string | Enum: `not_required`, `pending`, `completed`, `exempt` |
 | `chain_of_custody_note` | string | Optional provenance note for evidence handling |
-| `evidence_confidence` | float | Analyst confidence in the media evidence, 0.0–1.0 |
+| `evidence_confidence` | float | Analyst confidence in the media evidence, 0.0-1.0 |
 | `analyst_review_status` | string | Review status for the attachment (extends observation-level review) |
 | `public_summary` | string | Public-safe description of the media content |
 
@@ -124,6 +124,8 @@ Each attachment carries a visibility level that determines where the attachment 
 
 Default visibility for new attachments is `analyst_only`. Public release requires explicit analyst approval.
 
+Phase 25D-C does not support `public_attachment_allowed`; that visibility remains a future design concept pending security review.
+
 ## 7. Public-Feed Rules
 
 Public feed responses must never expose:
@@ -159,12 +161,12 @@ Future review workflow for observations with media attachments:
 4. Analyst sets `analyst_review_status` and `review_outcome`
 5. Analyst writes `analyst_notes_private` (never public)
 6. Analyst writes `public_review_summary` (public-safe)
-7. Analyst optionally sets `evidence_confidence` (0.0–1.0)
+7. Analyst optionally sets `evidence_confidence` (0.0-1.0)
 8. Analyst sets `public_release_status` to control whether attachment metadata appears in public feed
 9. Public feed receives only safe fields and approved attachments
 10. Private attachment metadata and storage references remain excluded
 
-The existing PATCH endpoint for review metadata is sufficient for current metadata-only review. A future attachment-specific endpoint or multipart upload path would be needed when storage is implemented.
+Phase 25D-C adds local metadata-only attachment endpoints for creating attachment records and updating attachment review metadata. A future multipart upload path would be needed before binary storage is implemented.
 
 ## 9. Security Review Checklist
 
@@ -201,7 +203,7 @@ Before future storage implementation is enabled:
 
 ## 11. Safety Boundaries
 
-- Media does not create sightings by itself. An observation must exist before media can be attached.
+- Media does not create sightings by itself. An observation must exist before media metadata can be attached.
 - Media does not create autonomous detections. AI1SAD does not run computer vision on uploaded media.
 - Media does not infer species automatically. Species classification remains a human-reviewed analyst action.
 - AI1SAD does not control drones. Media attachment is an observation-ingestion feature, not a flight-control feature.

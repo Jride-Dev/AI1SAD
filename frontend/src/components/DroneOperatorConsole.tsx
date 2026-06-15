@@ -2,9 +2,9 @@ import { AlertTriangle, CheckCircle2, RefreshCw, Send, ShieldCheck } from "lucid
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-import { getDroneConsoleData, getDroneMission, getDroneMissionObservations, submitDroneObservation, submitObservationReview } from "../api/client";
-import { ANALYST_REVIEW_STATUSES, REVIEW_OUTCOMES } from "../types";
-import type { AnalystReviewUpdate, DroneConsoleData, DroneConsoleMissionOption, DroneFeedItem, DroneObservation, DroneObservationPayload } from "../types";
+import { getDroneConsoleData, getDroneMission, getDroneMissionObservations, submitDroneObservation, submitObservationAttachment, submitObservationReview } from "../api/client";
+import { ANALYST_REVIEW_STATUSES, ATTACHMENT_MEDIA_KINDS, ATTACHMENT_VISIBILITIES, MEDIA_REFERENCE_TYPES, REVIEW_OUTCOMES } from "../types";
+import type { AnalystReviewUpdate, DroneAttachment, DroneAttachmentPayload, DroneConsoleData, DroneConsoleMissionOption, DroneFeedItem, DroneObservation, DroneObservationPayload } from "../types";
 
 export const OBSERVATION_TYPE_OPTIONS = [
   "SHARK_SIGHTING",
@@ -51,6 +51,20 @@ type ObservationFormState = {
   operator_notes: string;
   public_summary: string;
   public_visibility: boolean;
+};
+
+type AttachmentFormState = {
+  observation_id: string;
+  media_kind: string;
+  media_reference_type: string;
+  original_filename: string;
+  mime_type: string;
+  file_size_bytes: string;
+  captured_at: string;
+  uploaded_by_role: string;
+  review_visibility: string;
+  public_summary: string;
+  evidence_confidence: string;
 };
 
 export function toApiObservationType(value: string): string {
@@ -165,6 +179,49 @@ export function formForSelectedMission(missionId: string, mission?: DroneConsole
   return { ...initialForm(mission), mission_id: missionId };
 }
 
+function initialAttachmentForm(observationId = ""): AttachmentFormState {
+  return {
+    observation_id: observationId,
+    media_kind: "image",
+    media_reference_type: "local_filename",
+    original_filename: "",
+    mime_type: "image/jpeg",
+    file_size_bytes: "",
+    captured_at: "",
+    uploaded_by_role: "analyst",
+    review_visibility: "analyst_only",
+    public_summary: "",
+    evidence_confidence: "",
+  };
+}
+
+export function buildAttachmentPayload(form: AttachmentFormState): DroneAttachmentPayload {
+  return removeUndefined({
+    media_kind: form.media_kind,
+    media_reference_type: form.media_reference_type || undefined,
+    original_filename: form.original_filename.trim() || undefined,
+    mime_type: form.mime_type.trim() || undefined,
+    file_size_bytes: optionalNumber(form.file_size_bytes),
+    captured_at: form.captured_at ? new Date(form.captured_at).toISOString() : undefined,
+    uploaded_by_role: form.uploaded_by_role.trim() || undefined,
+    review_visibility: form.review_visibility,
+    public_summary: form.public_summary.trim() || undefined,
+    evidence_confidence: optionalNumber(form.evidence_confidence),
+  });
+}
+
+export function validateAttachmentForm(form: AttachmentFormState): string[] {
+  const errors: string[] = [];
+  if (!form.observation_id.trim()) errors.push("Observation is required before attaching metadata.");
+  if (!form.media_kind.trim()) errors.push("Media kind is required.");
+  if (form.original_filename.includes("..") || form.original_filename.includes("/") || form.original_filename.includes("\\")) {
+    errors.push("Original filename must be a filename only.");
+  }
+  if (form.file_size_bytes && Number(form.file_size_bytes) < 0) errors.push("File size cannot be negative.");
+  if (form.evidence_confidence && (Number(form.evidence_confidence) < 0 || Number(form.evidence_confidence) > 1)) errors.push("Evidence confidence must be between 0 and 1.");
+  return errors;
+}
+
 export function DroneOperatorConsole({ initialData = null }: { initialData?: DroneConsoleData | null }) {
   const initialMission = initialData?.missions[0];
   const [consoleData, setConsoleData] = useState<DroneConsoleData | null>(initialData);
@@ -176,6 +233,11 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
   const [error, setError] = useState<string | null>(null);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<DroneAttachment[]>([]);
+  const [attachmentForm, setAttachmentForm] = useState<AttachmentFormState>(() => initialAttachmentForm(initialData?.observations[0]?.observation_id ?? ""));
+  const [attachmentErrors, setAttachmentErrors] = useState<string[]>([]);
+  const [attachmentMessage, setAttachmentMessage] = useState<string | null>(null);
+  const [attachmentSubmitting, setAttachmentSubmitting] = useState(false);
 
   const loadConsole = async () => {
     setLoading(true);
@@ -211,11 +273,28 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
     () => (consoleData?.observations ?? []).filter((item) => !selectedMissionId || item.mission_id === selectedMissionId),
     [consoleData, selectedMissionId],
   );
+  const selectedObservationAttachments = useMemo(
+    () => attachments.filter((item) => item.observation_id === attachmentForm.observation_id),
+    [attachments, attachmentForm.observation_id],
+  );
+
+  useEffect(() => {
+    const firstObservationId = missionObservations[0]?.observation_id ?? "";
+    if (!attachmentForm.observation_id || !missionObservations.some((item) => item.observation_id === attachmentForm.observation_id)) {
+      setAttachmentForm((current) => ({ ...current, observation_id: firstObservationId }));
+    }
+  }, [missionObservations, attachmentForm.observation_id]);
 
   const updateField = (field: keyof ObservationFormState, value: string | boolean) => {
     setForm((current) => ({ ...current, [field]: value }));
     setSubmitMessage(null);
     setValidationErrors([]);
+  };
+
+  const updateAttachmentField = (field: keyof AttachmentFormState, value: string) => {
+    setAttachmentForm((current) => ({ ...current, [field]: value }));
+    setAttachmentMessage(null);
+    setAttachmentErrors([]);
   };
 
   const chooseMission = (missionId: string, providedMission?: DroneConsoleMissionOption) => {
@@ -285,6 +364,25 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
       });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Review could not be submitted.");
+    }
+  };
+
+  const handleAttachmentSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const errors = validateAttachmentForm(attachmentForm);
+    setAttachmentErrors(errors);
+    setAttachmentMessage(null);
+    if (errors.length) return;
+
+    setAttachmentSubmitting(true);
+    try {
+      const created = await submitObservationAttachment(attachmentForm.observation_id, buildAttachmentPayload(attachmentForm));
+      setAttachments((current) => [created, ...current.filter((item) => item.attachment_id !== created.attachment_id)]);
+      setAttachmentMessage("Attachment metadata recorded as private local evidence.");
+    } catch (reason) {
+      setAttachmentErrors([reason instanceof Error ? reason.message : "Attachment metadata could not be submitted."]);
+    } finally {
+      setAttachmentSubmitting(false);
     }
   };
 
@@ -451,6 +549,16 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
 
       <RecentObservationsPanel items={recentItems} observations={missionObservations} />
       <AnalystReviewPanel observations={missionObservations} missionId={selectedMissionId} onReviewUpdated={reloadAfterReview} />
+      <AttachmentMetadataPanel
+        observations={missionObservations}
+        form={attachmentForm}
+        attachments={selectedObservationAttachments}
+        errors={attachmentErrors}
+        message={attachmentMessage}
+        submitting={attachmentSubmitting}
+        onField={updateAttachmentField}
+        onSubmit={handleAttachmentSubmit}
+      />
     </div>
   );
 }
@@ -682,6 +790,140 @@ function AnalystReviewCard({
         {message ? <div className="success-box" role="status"><CheckCircle2 size={16} aria-hidden="true" /><span>{message}</span></div> : null}
       </div>
     </article>
+  );
+}
+
+function AttachmentMetadataPanel({
+  observations,
+  form,
+  attachments,
+  errors,
+  message,
+  submitting,
+  onField,
+  onSubmit,
+}: {
+  observations: DroneObservation[];
+  form: AttachmentFormState;
+  attachments: DroneAttachment[];
+  errors: string[];
+  message: string | null;
+  submitting: boolean;
+  onField: (field: keyof AttachmentFormState, value: string) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}) {
+  return (
+    <section className="panel attachment-panel">
+      <div className="form-heading">
+        <div>
+          <p className="eyebrow">Local Evidence Prototype</p>
+          <h2>Attachment Metadata</h2>
+          <p>Local attachments are private evidence records. They are not exposed in the public surveillance feed.</p>
+        </div>
+        <span className="status-pill">{attachments.length} private records</span>
+      </div>
+      <div className="validation-box attachment-safety-copy">
+        <p>AI1SAD does not analyze media or create sightings from attachments.</p>
+        <p>Do not upload sensitive media unless local attachment support is explicitly enabled.</p>
+        <p>Local attachment writes require <code>MEDIA_ATTACHMENTS_ENABLED=true</code>; disabled backends return a validation error.</p>
+      </div>
+
+      {errors.length ? (
+        <div className="validation-box" role="alert">
+          {errors.map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </div>
+      ) : null}
+      {message ? (
+        <div className="success-box" role="status">
+          <CheckCircle2 size={16} aria-hidden="true" />
+          <span>{message}</span>
+        </div>
+      ) : null}
+
+      <form className="analyst-review-form attachment-form" onSubmit={onSubmit}>
+        <label>
+          Observation
+          <select value={form.observation_id} onChange={(event) => onField("observation_id", event.target.value)}>
+            {!observations.length ? <option value="">No observations available</option> : null}
+            {observations.map((item) => (
+              <option key={item.observation_id} value={item.observation_id}>
+                {item.observation_type.replaceAll("_", " ")} | {item.timestamp}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Media Kind
+          <select value={form.media_kind} onChange={(event) => onField("media_kind", event.target.value)}>
+            {ATTACHMENT_MEDIA_KINDS.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Reference Type
+          <select value={form.media_reference_type} onChange={(event) => onField("media_reference_type", event.target.value)}>
+            {MEDIA_REFERENCE_TYPES.filter((item) => item !== "external_url" && item !== "drone_clip_id").map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Original Filename
+          <input value={form.original_filename} onChange={(event) => onField("original_filename", event.target.value)} placeholder="filename only, no path" />
+        </label>
+        <label>
+          MIME Type
+          <input value={form.mime_type} onChange={(event) => onField("mime_type", event.target.value)} placeholder="image/jpeg" />
+        </label>
+        <label>
+          File Size Bytes
+          <input inputMode="numeric" value={form.file_size_bytes} onChange={(event) => onField("file_size_bytes", event.target.value)} />
+        </label>
+        <label>
+          Captured At
+          <input type="datetime-local" value={form.captured_at} onChange={(event) => onField("captured_at", event.target.value)} />
+        </label>
+        <label>
+          Review Visibility
+          <select value={form.review_visibility} onChange={(event) => onField("review_visibility", event.target.value)}>
+            {ATTACHMENT_VISIBILITIES.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Public Summary
+          <textarea value={form.public_summary} onChange={(event) => onField("public_summary", event.target.value)} placeholder="Public-safe summary only; no private filenames or paths" />
+        </label>
+        <label>
+          Evidence Confidence
+          <input type="number" min="0" max="1" step="0.05" value={form.evidence_confidence} onChange={(event) => onField("evidence_confidence", event.target.value)} />
+        </label>
+        <button type="submit" disabled={submitting || !observations.length}>
+          {submitting ? "Submitting" : "Submit Attachment Metadata"}
+        </button>
+      </form>
+
+      <div className="observation-list">
+        {attachments.map((item) => (
+          <article key={item.attachment_id}>
+            <div>
+              <strong>{item.media_kind.replaceAll("_", " ")}</strong>
+              <span>{item.analyst_review_status}</span>
+            </div>
+            <div className="inline-strip coordinate-strip">
+              <span>{item.review_visibility}</span>
+              <span>{item.public_release_status}</span>
+              <span>{item.public_feed_exposed === false ? "not public" : "public summary only"}</span>
+            </div>
+            {item.public_summary ? <p>{item.public_summary}</p> : <p className="explain-text">No public summary has been recorded.</p>}
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 

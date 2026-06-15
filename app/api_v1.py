@@ -27,6 +27,11 @@ from app.services.drone_observations import (
     parse_time as parse_drone_time,
     public_doc as public_drone_doc,
 )
+from app.services.media_attachments import (
+    attachment_response_doc,
+    build_attachment,
+    update_attachment_review,
+)
 from app.services.explainability_engine import (
     attach_alert_explanation_summary,
     build_explanation,
@@ -1171,6 +1176,18 @@ def _require_drone_ingest_enabled() -> None:
         raise HTTPException(status_code=403, detail="Drone ingestion endpoint is disabled")
 
 
+def _require_media_attachments_enabled() -> None:
+    if not get_settings().media_attachments_enabled:
+        raise HTTPException(status_code=403, detail="Local media attachment prototype is disabled")
+
+
+def _drone_observation_or_404(db: Database, observation_id: str) -> dict[str, Any]:
+    observation = db[COLLECTIONS["drone_observations"]].find_one({"observation_id": observation_id})
+    if not observation:
+        raise HTTPException(status_code=404, detail="Drone observation not found")
+    return observation
+
+
 def _active_drone_observations(db: Database, limit: int) -> list[dict[str, Any]]:
     now = datetime.now(timezone.utc)
     docs = list(
@@ -1282,6 +1299,86 @@ def update_drone_observation_review(
     db[COLLECTIONS["drone_observations"]].replace_one({"mission_id": mission_id, "observation_id": observation_id}, updated_doc)
     updated = db[COLLECTIONS["drone_observations"]].find_one({"mission_id": mission_id, "observation_id": observation_id})
     return maybe_demo({"status": "updated", "observation": public_drone_doc(updated) if updated else {}, "flight_control_commands_exposed": False})
+
+
+@router.post("/drone/observations/{observation_id}/attachments")
+def create_drone_observation_attachment(
+    observation_id: str,
+    payload: dict[str, Any] = Body(...),
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    _require_media_attachments_enabled()
+    observation = _drone_observation_or_404(db, observation_id)
+    try:
+        attachment = build_attachment(observation, payload)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["drone_attachments"]].insert_one(attachment)
+    return maybe_demo(
+        {
+            "status": "created",
+            "attachment": attachment_response_doc(attachment),
+            "private_by_default": True,
+            "public_feed_exposed": False,
+            "media_analysis_performed": False,
+            "sighting_created": False,
+        }
+    )
+
+
+@router.get("/drone/observations/{observation_id}/attachments")
+def list_drone_observation_attachments(
+    observation_id: str,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    _require_media_attachments_enabled()
+    _drone_observation_or_404(db, observation_id)
+    docs = list(
+        db[COLLECTIONS["drone_attachments"]]
+        .find({"observation_id": observation_id})
+        .sort("uploaded_at", -1)
+        .limit(limit)
+    )
+    return maybe_demo(
+        {
+            "results": [attachment_response_doc(doc) for doc in docs],
+            "private_by_default": True,
+            "public_feed_exposed": False,
+            "media_analysis_performed": False,
+            "sighting_created": False,
+        }
+    )
+
+
+@router.patch("/drone/observations/{observation_id}/attachments/{attachment_id}/review")
+def update_drone_observation_attachment_review(
+    observation_id: str,
+    attachment_id: str,
+    payload: dict[str, Any] = Body(...),
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    _require_media_attachments_enabled()
+    _drone_observation_or_404(db, observation_id)
+    existing = db[COLLECTIONS["drone_attachments"]].find_one({"observation_id": observation_id, "attachment_id": attachment_id})
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Attachment not found")
+    try:
+        updated_doc = update_attachment_review(existing, payload)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["drone_attachments"]].replace_one({"observation_id": observation_id, "attachment_id": attachment_id}, updated_doc)
+    updated = db[COLLECTIONS["drone_attachments"]].find_one({"observation_id": observation_id, "attachment_id": attachment_id})
+    return maybe_demo(
+        {
+            "status": "updated",
+            "attachment": attachment_response_doc(updated) if updated else {},
+            "private_by_default": True,
+            "public_feed_exposed": False,
+            "media_analysis_performed": False,
+            "sighting_created": False,
+        }
+    )
 
 
 @router.post("/drone/missions/{mission_id}/complete")

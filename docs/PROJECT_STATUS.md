@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Post-Phase 25D-A/25D-B hardening patch
-- Latest completed committed phase: Phase 25D-B (Media Attachment Storage Design and Privacy Review)
-- Latest completed local maintenance: Coogee replay post-incident media evidence update
-- Latest committed checkpoint before this patch: `8da0fb5` Add Coogee post-incident media evidence metadata
-- Repo status: drone-observation privacy and validation hardening patch prepared for review/commit; verify with `git status`
+- Current phase number: Phase 25D-C (Local-Only Media Attachment Prototype) - uncommitted
+- Latest completed committed phase: Post-Phase 25D-A/25D-B hardening patch
+- Latest completed local validation: Phase 25D-C local media attachment prototype validation run
+- Latest commit hash: `5ec0881` Harden drone observation privacy and validation
+- Repo status: uncommitted Phase 25D-C local media attachment prototype; verify with `git status`
 
 ## Major Completed Systems
 
@@ -30,7 +30,8 @@
 - Phase 25C Drone Operator Console implemented locally: `/drone-console`, mission selector, human-entered observation form, recent feed panel, no-sighting patrol copy, and provisional species copy
 - Phase 25D-A metadata-only analyst review fields implemented locally: PATCH endpoint for review updates, `analyst_review_status`, `review_outcome`, `public_review_summary`, `analyst_notes_private`, `evidence_confidence`, `media_reference_type`, `media_timestamp` enums, frontend Analyst Review Panel in drone console
 - Phase 25D-B media attachment storage design and privacy review: attachment model proposal, storage backend tradeoffs, privacy visibility levels, public-feed rules, security checklist, and implementation gates documented. No storage code added.
-- Post-Phase 25D hardening patch in review: raw media references excluded from public drone observation output, impossible confidence values rejected server-side, manual mission selection prefill fixed, and Observation Analyst Review mojibake cleaned up.
+- Post-Phase 25D hardening patch committed: raw media references excluded from public drone observation output, impossible confidence values rejected server-side, manual mission selection prefill fixed, and Observation Analyst Review mojibake cleaned up.
+- Phase 25D-C local-only media attachment prototype implemented locally: metadata-only attachment records, `MEDIA_ATTACHMENTS_ENABLED=false` default gate, local private filesystem backend label, private-by-default frontend panel, and public-feed privacy filtering. No binary upload, media hosting, computer vision, scoring change, replay change, or autonomous flight behavior added.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -53,6 +54,7 @@
 - Drone Operator Console media references are references only; image upload, media hosting remain future work (design documented in Phase 25D-B).
 - Raw drone media references are private-by-default and excluded from public responses until future public-safe release rules exist.
 - Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
+- Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, and upload hardening remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
@@ -63,9 +65,8 @@
 
 ## Next Planned Phase
 
-- Phase 25D-B committed: media attachment storage design and privacy review (documentation phase; no storage code)
-- Post-Phase 25D hardening patch
-- Phase 25D-C: Local-Only Media Attachment Prototype (not started)
+- Phase 25D-C: Local-Only Media Attachment Prototype (current uncommitted work)
+- Phase 25D-D: Media Attachment Security Review and Upload Hardening (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -146,6 +147,20 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Confidence validation: invalid `confidence` and `evidence_confidence` values now return 422; valid `0` and `1` boundaries accepted
 - Frontend hardening: Analyst Review cards no longer render raw media references; manual mission fetch selects using fetched mission detail instead of stale state
 
+## Validation Counts (Latest Phase 25D-C Local Run)
+
+- Focused drone observation ingestion tests: `29 passed, 1 warning`
+- Full backend tests: `274 passed, 3 warnings`
+- Frontend tests: `4 files passed`, `25 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend npm audit high: `0 vulnerabilities`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local link/image check: `49` links/images checked; local targets exist
+- Secret scan: no credential matches
+- Prohibited-language scan: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Current implementation: metadata-only local attachment records, disabled by default behind `MEDIA_ATTACHMENTS_ENABLED`, no binary upload, no external media fetching, no computer vision, no public feed exposure, and no scoring/replay changes
+
 ## Validation Counts (Latest Phase 25D-A Local Run)
 
 - Backend: PATCH endpoint for analyst review update, enum validation, private field filtering
@@ -185,11 +200,11 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Coogee replay post-incident media evidence update awaiting review.
-- Adds `post_incident_media_evidence` block with source-attributed drone video, rescuer account, and analyst visual assessment fields to replay JSON, factor summary, and case study markdown.
-- Probable white shark remains preliminary/source-attributed; same-individual link is unconfirmed. Possible blood plume is analyst visual assessment uncertainty, not confirmed fact.
-- No computer vision, media analysis, scoring-weight changes, or replay output changes.
-- No code changes: documentation and artifact metadata only.
+- Phase 25D-C Local-Only Media Attachment Prototype awaiting review.
+- Adds disabled-by-default metadata-only attachment records for existing drone observations.
+- Adds local private filesystem backend metadata, safe filename/root validation, review metadata, and frontend attachment metadata panel in the Drone Operator Console.
+- Public feeds do not expose attachment records, private media paths, storage keys, raw filenames, checksums, uploader roles, or private notes.
+- No binary media upload, media hosting, cloud storage, external URL fetching, computer vision, scoring-weight change, replay output change, autonomous flight behavior, or MAVLink command behavior.
 
 ## Recent Important Commits
 

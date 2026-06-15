@@ -166,13 +166,21 @@ Phase 25D-A adds metadata-only analyst review fields. These are annotations on e
 
 See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
 
-### Future Attachment Fields (Design Reference Only)
+### Local Attachment Metadata Fields
 
-Phase 25D-B documents a future attachment model for media evidence. The proposed fields are design-only and not implemented. See [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md) for the full proposal.
+Phase 25D-C implements metadata-only local attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. No binary upload, download, external URL fetch, computer vision, or media analysis is implemented. See [Local Media Attachment Prototype](LOCAL_MEDIA_ATTACHMENT_PROTOTYPE.md) and [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md).
 
-Future fields under review include: `attachment_id`, `observation_id`, `mission_id`, `storage_backend`, `storage_key`, `original_filename`, `media_kind`, `mime_type`, `file_size_bytes`, `captured_at`, `uploaded_at`, `uploaded_by_role`, `review_visibility`, `public_release_status`, `retention_policy`, `checksum_sha256`, `redaction_status`, `chain_of_custody_note`, `evidence_confidence`, `analyst_review_status`, and `public_summary`.
+Attachment records include internal fields such as `attachment_id`, `observation_id`, `mission_id`, `storage_backend`, `storage_key`, `original_filename`, `stored_filename`, `media_kind`, `mime_type`, `file_size_bytes`, `captured_at`, `uploaded_at`, `uploaded_by_role`, `review_visibility`, `public_release_status`, `checksum_sha256`, `evidence_confidence`, `analyst_review_status`, and `public_summary`.
 
-No storage implementation is included in Phase 25D-B.
+Public responses never expose `storage_key`, `stored_filename`, `original_filename`, `checksum_sha256`, `uploaded_by_role`, local paths, or raw media references. Public feeds do not expose attachment IDs or private attachment metadata.
+
+Attachment endpoints:
+
+- `POST /api/v1/drone/observations/{observation_id}/attachments`
+- `GET /api/v1/drone/observations/{observation_id}/attachments`
+- `PATCH /api/v1/drone/observations/{observation_id}/attachments/{attachment_id}/review`
+
+Attachment endpoints are local-prototype routes and require `MEDIA_ATTACHMENTS_ENABLED=true`.
 
 ## Map-Ready Feed Fields
 

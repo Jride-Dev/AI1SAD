@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { mockDroneConsoleData } from "../api/mockData";
-import { DroneOperatorConsole, buildDroneObservationPayload, formForSelectedMission, toApiObservationType, validateDroneObservationForm } from "./DroneOperatorConsole";
+import { DroneOperatorConsole, buildAttachmentPayload, buildDroneObservationPayload, formForSelectedMission, toApiObservationType, validateAttachmentForm, validateDroneObservationForm } from "./DroneOperatorConsole";
 
 const validForm = {
   mission_id: "mission-test",
@@ -24,6 +24,20 @@ const validForm = {
   operator_notes: "Operator note stays internal",
   public_summary: "Public-safe summary",
   public_visibility: true,
+};
+
+const validAttachmentForm = {
+  observation_id: "observation-demo-surf-line-1",
+  media_kind: "image",
+  media_reference_type: "local_filename",
+  original_filename: "frame-001.jpg",
+  mime_type: "image/jpeg",
+  file_size_bytes: "2048",
+  captured_at: "2026-06-08T18:08",
+  uploaded_by_role: "analyst",
+  review_visibility: "analyst_only",
+  public_summary: "Public-safe attachment summary",
+  evidence_confidence: "0.7",
 };
 
 describe("DroneOperatorConsole", () => {
@@ -124,5 +138,38 @@ describe("DroneOperatorConsole", () => {
 
     expect(markup).toContain("Private Notes (never public)");
     expect(markup).toContain("Analyst notes remain private and are never returned in public feed output.");
+  });
+
+  it("renders local attachment prototype safety copy", () => {
+    const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
+
+    expect(markup).toContain("Attachment Metadata");
+    expect(markup).toContain("Local attachments are private evidence records. They are not exposed in the public surveillance feed.");
+    expect(markup).toContain("AI1SAD does not analyze media or create sightings from attachments.");
+    expect(markup).toContain("Do not upload sensitive media unless local attachment support is explicitly enabled.");
+  });
+
+  it("builds metadata-only attachment payloads without storage keys", () => {
+    const payload = buildAttachmentPayload(validAttachmentForm);
+
+    expect(payload.media_kind).toBe("image");
+    expect(payload.media_reference_type).toBe("local_filename");
+    expect(payload.original_filename).toBe("frame-001.jpg");
+    expect(payload.file_size_bytes).toBe(2048);
+    expect(payload.public_summary).toBe("Public-safe attachment summary");
+    expect(JSON.stringify(payload)).not.toContain("storage_key");
+  });
+
+  it("validates attachment metadata before backend submission", () => {
+    const errors = validateAttachmentForm({
+      ...validAttachmentForm,
+      observation_id: "",
+      original_filename: "../private/frame.jpg",
+      evidence_confidence: "1.5",
+    });
+
+    expect(errors).toContain("Observation is required before attaching metadata.");
+    expect(errors).toContain("Original filename must be a filename only.");
+    expect(errors).toContain("Evidence confidence must be between 0 and 1.");
   });
 });
