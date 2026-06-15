@@ -1,6 +1,58 @@
 # Dependency Security Review
 
-Review date: 2026-06-03
+Latest review date: 2026-06-15
+
+## 2026-06-15 Esbuild Alerts
+
+Scope: two open GitHub Dependabot alerts reported on the default branch after the Coogee replay commit.
+
+| Alert | Package | Severity | Vulnerable Version | Patched Version | Dependency Path | Scope | Relationship | Runtime Exposure |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dependabot #4 / `GHSA-gv7w-rqvm-qjhr` | `esbuild` | high | `0.27.7` | `0.28.1` | `frontend/package-lock.json` -> `vite` -> `esbuild` | npm runtime scope in manifest metadata | transitive | Build/dev-server tooling; not shipped in the built React bundle |
+| Dependabot #3 / `GHSA-g7r4-m6w7-qqqr` | `esbuild` | low | `0.27.7` | `0.28.1` | `frontend/package-lock.json` -> `vite` -> `esbuild` | npm runtime scope in manifest metadata | transitive | Vite development server on Windows; not shipped in the built React bundle |
+
+Patch applied:
+
+```text
+frontend/package.json overrides.esbuild = ^0.28.1
+npm install
+```
+
+Reason for targeted override:
+
+- The patched `esbuild` version is `0.28.1`.
+- The current Vite 7.x line still declares `esbuild ^0.27.0`.
+- `npm audit fix --force` would move Vite to 8.x, a breaking major upgrade.
+- The override updates only the vulnerable transitive `esbuild` package and its platform packages while keeping Vite at `7.3.3` and Vitest at `4.1.8`.
+
+Post-patch resolution:
+
+```text
+vite 7.3.3
+esbuild 0.28.1
+vitest 4.1.8
+```
+
+Post-patch audit:
+
+```text
+npm audit --audit-level=low
+found 0 vulnerabilities
+```
+
+Validation run for this patch:
+
+- Frontend tests: `3 passed`, `8 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend audit: `npm audit --audit-level=high` reported `0 vulnerabilities`
+- Backend tests: `255 passed, 3 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- Secret scan: no credential values; documentation phrases and `js-tokens` package names only
+- Prohibited-language scan: guardrail-only matches in `PROJECT_STATUS.md`
+
+Recommendation: safe patch now. Monitor the Vite 7.x line for a native `esbuild >=0.28.1` dependency range, then remove the override during a normal dependency-maintenance pass.
+
+## 2026-06-03 Vitest Alerts
 
 Scope: two open GitHub Dependabot critical alerts reported after the latest push. The first review documented the issue without changing dependencies. The follow-up patch applied a targeted Vitest-only upgrade.
 

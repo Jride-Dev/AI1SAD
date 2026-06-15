@@ -5,6 +5,7 @@
 - Current phase number: Phase 25C planned
 - Latest completed committed phase: Phase 25B (Read-Only MAVLink Telemetry Bridge)
 - Latest completed local phase: Coogee Beach Sydney 2026 replay case study
+- Latest completed local maintenance: targeted Dependabot esbuild alert patch
 - Latest commit hash before Coogee replay work: `1996b0a` Add AI1SAD repository agent instructions
 - Repo status: clean before Coogee replay local changes; verify with `git status`
 
@@ -111,10 +112,21 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Prohibited-language scan on changed files: guardrail/test-only matches only
 - Local environment note: `pydantic-core` was corrected to `2.46.4` to match installed `pydantic 2.13.4` before backend validation
 
+## Validation Counts (Latest Dependency Security Maintenance)
+
+- GitHub Dependabot open alerts reviewed: `2` esbuild alerts (`1 high`, `1 low`)
+- Patched package: `esbuild 0.27.7` -> `0.28.1` through a targeted frontend npm override
+- Frontend tests: `3 passed`, `8 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend audit: `npm audit --audit-level=high` reported `0 vulnerabilities`
+- Backend tests: `255 passed, 3 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- Secret scan on changed files: no credential values; documentation phrases and `js-tokens` package names only
+- Prohibited-language scan on changed files: guardrail-only matches only
+
 ## Current Review Item
 
-- Coogee Beach Sydney 2026 replay case study has been reviewed and committed as a pre-Phase 25C package.
-- The case uses existing replay/provider layers only and does not add scoring-weight retunes, live scraping, auth/billing, providers, or frontend runtime changes.
+- Targeted Dependabot maintenance patched the two open esbuild alerts without force-fix commands, Vite major upgrades, application-code changes, replay-output changes, or scoring behavior changes.
 - Phase 25C remains the next planned phase.
 
 ## Recent Important Commits
