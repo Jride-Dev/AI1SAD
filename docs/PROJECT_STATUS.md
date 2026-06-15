@@ -2,12 +2,12 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25D-A implemented, pending review
-- Latest completed committed phase: Phase 25B (Read-Only MAVLink Telemetry Bridge)
-- Latest completed local phase: Phase 25D-A (Observation Analyst Review Fields)
+- Current phase number: Phase 25D-B (Media Attachment Storage Design and Privacy Review)
+- Latest completed committed phase: Phase 25D-A (Observation Analyst Review Fields)
+- Latest completed local phase: Phase 25D-B design documentation
 - Latest completed local maintenance: targeted Dependabot esbuild alert patch
-- Latest commit hash before Phase 25D-A work: `837a8cd` Patch Dependabot security alerts
-- Repo status: clean before Phase 25D-A local changes; verify with `git status`
+- Latest commit hash: `5b5937a` Phase 25D-A: metadata-only analyst review fields
+- Repo status: local Phase 25D-B documentation changes; verify with `git status`
 
 ## Major Completed Systems
 
@@ -30,6 +30,7 @@
 - Phase 25B read-only MAVLink telemetry bridge committed: JSONL fixture replay, telemetry normalization, bounded batch submission, no aircraft control
 - Phase 25C Drone Operator Console implemented locally: `/drone-console`, mission selector, human-entered observation form, recent feed panel, no-sighting patrol copy, and provisional species copy
 - Phase 25D-A metadata-only analyst review fields implemented locally: PATCH endpoint for review updates, `analyst_review_status`, `review_outcome`, `public_review_summary`, `analyst_notes_private`, `evidence_confidence`, `media_reference_type`, `media_timestamp` enums, frontend Analyst Review Panel in drone console
+- Phase 25D-B media attachment storage design and privacy review: attachment model proposal, storage backend tradeoffs, privacy visibility levels, public-feed rules, security checklist, and implementation gates documented. No storage code added.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -49,7 +50,7 @@
 - Live surf-line/lifeguard observation ingestion is supported through the local console/API path when drone ingestion is enabled; broader provider-style ingestion remains future work
 - Live sightings ingestion pipeline still limited
 - Drone intake is vendor-neutral observation ingestion only; it does not provide aircraft control, image hosting, or computer-vision inference.
-- Drone Operator Console media references are references only; image upload, media hosting remain future work.
+- Drone Operator Console media references are references only; image upload, media hosting remain future work (design documented in Phase 25D-B).
 - Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
@@ -61,8 +62,8 @@
 
 ## Next Planned Phase
 
-- Phase 25D-B: Future media reference expansion (not started)
-- Phase 25D-A completed locally: metadata-only analyst review fields
+- Phase 25D-B completed locally: media attachment storage design and privacy review (documentation phase; no storage code)
+- Phase 25D-C: Local-Only Media Attachment Prototype (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -158,14 +159,12 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25D-A (Observation Analyst Review Fields) is implemented locally and awaiting review.
-- Adds MEDIA_REFERENCE_TYPES, ANALYST_REVIEW_STATUSES, REVIEW_OUTCOMES enum sets
-- Adds PATCH endpoint for updating analyst review fields on existing observations
-- Adds AnalystReviewPanel frontend component in the Drone Operator Console
-- Private review fields (analyst_notes_private, analyst_reviewer_role, analyst_reviewed_at) excluded from public output
-- No computer vision, media upload/hosting, or autonomous flight control added
-- No scoring-weight changes, replay-output changes, auth, or billing changes
-- Phase 25D-B must not start until Phase 25D-A is reviewed
+- Phase 25D-B (Media Attachment Storage Design and Privacy Review) is implemented locally and awaiting review.
+- New document: `docs/MEDIA_ATTACHMENT_STORAGE_DESIGN.md` with attachment model, privacy model, public-feed rules, security checklist, and implementation gates
+- Updated README, OBSERVATION_ANALYST_REVIEW.md, DRONE_OPERATOR_CONSOLE.md, DRONE_DATA_CONTRACT.md, DRONE_OPERATIONS_SAFETY.md, CURRENT_DATA_SOURCES.md, PROJECT_STATUS.md, NEXT_PHASE.md, and mkdocs.yml
+- No code changes: no storage clients, no upload endpoints, no database migrations, no frontend upload UI
+- No computer vision, media upload/hosting, autonomous flight control, scoring-weight changes, replay-output changes, auth, or billing changes
+- Phase 25D-C must not start until Phase 25D-B is reviewed
 
 ## Recent Important Commits
 
@@ -194,3 +193,4 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - `3f6ce69` Fix frontend live-data trust and replay selection handling
 - `ba6d3df` Integrate AI1SAD brand assets across platform
 - `90e540e` Add one-click local demo launcher
+- `5b5937a` Phase 25D-A: metadata-only analyst review fields for observations

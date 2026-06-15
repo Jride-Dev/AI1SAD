@@ -6,6 +6,8 @@ Phase 25C adds a Drone Operator Console for human-entered observations. It is a 
 
 Phase 25D-A adds metadata-only analyst review fields. These are annotations on existing observations and do not change aircraft-safety boundaries.
 
+Phase 25D-B adds the media attachment storage design and privacy review. This is a planning-and-documentation phase only. No media storage, upload, or hosting is implemented.
+
 ## Safety Boundaries
 
 - Drone write endpoints are disabled unless `DRONE_INGEST_ENABLED=true`.
@@ -19,6 +21,8 @@ Phase 25D-A adds metadata-only analyst review fields. These are annotations on e
 - The Drone Operator Console must not expose arming, takeoff, landing, waypoint, mission-upload, offboard-control, or MAVLink command actions.
 - Analyst review fields are metadata-only; AI1SAD does not fetch, host, or analyze media
 - `analyst_notes_private`, `analyst_reviewer_role`, and `analyst_reviewed_at` are excluded from public output
+- Media attachment storage is design-only in Phase 25D-B; no file upload, hosting, or storage client code is added
+- Public feed rules for future attachments deny private URLs, storage keys, original filenames, and unreviewed evidence
 
 ## Interpretation Rules
 

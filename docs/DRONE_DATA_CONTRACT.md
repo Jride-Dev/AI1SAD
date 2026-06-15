@@ -166,6 +166,14 @@ Phase 25D-A adds metadata-only analyst review fields. These are annotations on e
 
 See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
 
+### Future Attachment Fields (Design Reference Only)
+
+Phase 25D-B documents a future attachment model for media evidence. The proposed fields are design-only and not implemented. See [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md) for the full proposal.
+
+Future fields under review include: `attachment_id`, `observation_id`, `mission_id`, `storage_backend`, `storage_key`, `original_filename`, `media_kind`, `mime_type`, `file_size_bytes`, `captured_at`, `uploaded_at`, `uploaded_by_role`, `review_visibility`, `public_release_status`, `retention_policy`, `checksum_sha256`, `redaction_status`, `chain_of_custody_note`, `evidence_confidence`, `analyst_review_status`, and `public_summary`.
+
+No storage implementation is included in Phase 25D-B.
+
 ## Map-Ready Feed Fields
 
 Each feed item includes latitude, longitude, timestamp, observation type, review status, confidence, mission ID, source type, active pack, explanation summary, recommended action, recommended surveillance pattern, expiration, and data freshness.

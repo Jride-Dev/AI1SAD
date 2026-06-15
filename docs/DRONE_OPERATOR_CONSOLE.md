@@ -1,6 +1,6 @@
 # Drone Operator Console
 
-Phase 25C adds a local frontend console for human-entered coastal and drone patrol observations. Phase 25D-A adds metadata-only analyst review fields.
+Phase 25C adds a local frontend console for human-entered coastal and drone patrol observations. Phase 25D-A adds metadata-only analyst review fields. Phase 25D-B documents the media attachment storage design and privacy review for future evidence workflows.
 
 The console is observation intake only. It does not control aircraft, transmit MAVLink commands, upload waypoints, run computer vision, or infer sightings from telemetry alone.
 
@@ -154,3 +154,7 @@ PATCH /api/v1/drone/missions/{mission_id}/observations/{observation_id}
 Private notes and reviewer role are not returned in public feed output.
 
 See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
+
+## Media Attachment Design
+
+Phase 25D-B documents the media attachment storage design and privacy review. Current implementation stores review metadata and evidence pointers only; it does not upload, host, fetch, or analyze media. Future attachment support is design-documented in the [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md) document, which covers the attachment model, storage backend options, privacy model, public-feed rules, security checklist, and implementation gates. No storage implementation is included in Phase 25D-B.

@@ -82,6 +82,10 @@ The review card includes:
 - Private notes textarea with a visible warning that notes are never public
 - Submit button
 
+## Related Documents
+
+- [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md) — design and privacy review for future evidence attachment workflows
+
 ## Testing
 
 - Backend: PATCH endpoint validates enums, filters private fields, and does not create sightings from media references

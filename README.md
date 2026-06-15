@@ -18,8 +18,8 @@ Current development checkpoint:
 
 - Latest completed phase: Phase 25D-A, Observation Analyst Review Fields
 - Latest completed maintenance: targeted Dependabot esbuild alert patch
-- Current implementation: Phase 25D-A, metadata-only analyst review fields
-- Next planned phase: Phase 25D-B, Drone Observation Media References (future)
+- Current implementation: Phase 25D-B, Media Attachment Storage Design and Privacy Review
+- Next planned phase: Phase 25D-C, Local-Only Media Attachment Prototype (not started)
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
@@ -66,6 +66,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Vendor-neutral human-operated drone observation ingestion MVP
 - Drone Operator Console for human-entered patrol observations, including shark sightings, no-sighting patrols, carcasses, baitfish activity, poor visibility, and surf-line activity. AI1SAD records observations and recommends surveillance attention; it does not control aircraft or predict individual attacks.
 - Metadata-only analyst review fields for annotating observations with review status, outcome, public summary, and private notes
+- Media attachment storage design and privacy review for future evidence workflows
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
@@ -200,12 +201,14 @@ It does not add:
 - DJI-specific dependencies
 - computer vision inference
 - file upload or image hosting
+- media attachment storage (design documented in Phase 25D-B; not implemented yet)
 
 See:
 
 - [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 - [Drone Observation Ingestion](docs/DRONE_OBSERVATION_INGESTION.md)
 - [Observation Analyst Review](docs/OBSERVATION_ANALYST_REVIEW.md)
+- [Media Attachment Storage Design](docs/MEDIA_ATTACHMENT_STORAGE_DESIGN.md)
 - [Drone Mission Workflow](docs/DRONE_MISSION_WORKFLOW.md)
 - [Drone Data Contract](docs/DRONE_DATA_CONTRACT.md)
 - [Drone Operations Safety](docs/DRONE_OPERATIONS_SAFETY.md)
@@ -263,6 +266,7 @@ Phase 25C local validation:
 - [Brand Identity](docs/BRAND_IDENTITY.md)
 - [Brand Deployment Map](docs/BRAND_DEPLOYMENT_MAP.md)
 - [Dependency Security Review](docs/DEPENDENCY_SECURITY_REVIEW.md)
+- [Media Attachment Storage Design](docs/MEDIA_ATTACHMENT_STORAGE_DESIGN.md)
 - [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 
 ## Development Notes
