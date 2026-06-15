@@ -18,6 +18,26 @@ ATTACHMENT_REVIEW_STATUSES = {"unreviewed", "needs_review", "in_review", "review
 MEDIA_REFERENCE_TYPES = {"local_filename", "camera_card_reference", "agency_evidence_id", "private_case_reference", "none"}
 SAFE_MIME_PREFIXES = ("image/", "video/", "text/plain", "application/json")
 BLOCKED_MIME_TERMS = ("javascript", "script", "executable", "x-msdownload", "x-sh", "x-bat", "x-msdos-program")
+BLOCKED_FILENAME_EXTENSIONS = {
+    ".bat",
+    ".cmd",
+    ".com",
+    ".dll",
+    ".exe",
+    ".hta",
+    ".jar",
+    ".js",
+    ".jse",
+    ".mjs",
+    ".msi",
+    ".php",
+    ".ps1",
+    ".scr",
+    ".sh",
+    ".vbe",
+    ".vbs",
+    ".wsf",
+}
 
 ATTACHMENT_PRIVATE_FIELDS = {
     "storage_key",
@@ -55,6 +75,15 @@ def bounded_int(value: Any, field: str, minimum: int, maximum: int) -> int | Non
     return result
 
 
+def safe_identifier(value: Any, field: str, *, default_prefix: str) -> str:
+    text = text_field(value, field, max_length=80, default="")
+    if not text:
+        text = f"{default_prefix}-{uuid4().hex[:12]}"
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", text):
+        raise ValueError(f"{field} must contain only letters, numbers, underscores, or hyphens")
+    return text
+
+
 def validate_storage_root() -> Path:
     root = Path(get_settings().media_attachments_storage_root).expanduser()
     if not root.is_absolute():
@@ -75,11 +104,15 @@ def safe_filename(value: Any, field: str, *, default_suffix: str = ".metadata") 
     text = text_field(value, field, max_length=180, default="")
     if not text:
         return f"{uuid4().hex}{default_suffix}"
+    if re.match(r"^[A-Za-z]:[\\/]", text):
+        raise ValueError(f"{field} must be a filename only")
     candidate = Path(text)
-    if candidate.is_absolute() or len(candidate.parts) != 1 or ".." in candidate.parts:
+    if candidate.is_absolute() or len(candidate.parts) != 1 or ".." in text:
         raise ValueError(f"{field} must be a filename only")
     if not re.fullmatch(r"[A-Za-z0-9._ -]+", text):
         raise ValueError(f"{field} contains unsupported characters")
+    if candidate.suffix.lower() in BLOCKED_FILENAME_EXTENSIONS:
+        raise ValueError(f"{field} has an unsupported executable or script extension")
     return text
 
 
@@ -116,7 +149,7 @@ def build_attachment(observation: dict[str, Any], payload: dict[str, Any]) -> di
     if not isinstance(payload, dict):
         raise ValueError("payload must be an object")
     validate_storage_root()
-    attachment_id = text_field(payload.get("attachment_id") or f"attachment-{uuid4().hex[:12]}", "attachment_id", max_length=80)
+    attachment_id = safe_identifier(payload.get("attachment_id"), "attachment_id", default_prefix="attachment")
     media_kind = optional_choice(payload.get("media_kind"), MEDIA_KINDS, "media_kind", "unknown")
     review_visibility = optional_choice(payload.get("review_visibility"), REVIEW_VISIBILITIES, "review_visibility", "analyst_only")
     public_release_status = optional_choice(payload.get("public_release_status"), PUBLIC_RELEASE_STATUSES, "public_release_status", "not_reviewed")
@@ -136,7 +169,7 @@ def build_attachment(observation: dict[str, Any], payload: dict[str, Any]) -> di
         "media_kind": media_kind,
         "mime_type": validate_mime_type(payload.get("mime_type")),
         "file_size_bytes": bounded_int(payload.get("file_size_bytes"), "file_size_bytes", 0, 500_000_000),
-        "captured_at": parse_time(payload["captured_at"]) if payload.get("captured_at") else None,
+        "captured_at": validate_timestamp(payload.get("captured_at")),
         "uploaded_at": utc_now(),
         "uploaded_by_role": text_field(payload.get("uploaded_by_role"), "uploaded_by_role", max_length=80, default="operator") or "operator",
         "review_visibility": review_visibility,
@@ -153,6 +186,15 @@ def build_attachment(observation: dict[str, Any], payload: dict[str, Any]) -> di
     }
     doc["checksum_sha256"] = doc["checksum_sha256"] or metadata_checksum(doc)
     return doc
+
+
+def validate_timestamp(value: Any) -> datetime | None:
+    if value in {None, ""}:
+        return None
+    try:
+        return parse_time(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("captured_at must be a valid timestamp") from exc
 
 
 def attachment_response_doc(doc: dict[str, Any]) -> dict[str, Any]:

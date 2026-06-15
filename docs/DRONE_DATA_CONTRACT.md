@@ -168,11 +168,13 @@ See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
 
 ### Local Attachment Metadata Fields
 
-Phase 25D-C implements metadata-only local attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. No binary upload, download, external URL fetch, computer vision, or media analysis is implemented. See [Local Media Attachment Prototype](LOCAL_MEDIA_ATTACHMENT_PROTOTYPE.md) and [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md).
+Phase 25D-C implements metadata-only local attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. Phase 25D-D hardens metadata validation before any binary upload work exists. No binary upload, download, external URL fetch, computer vision, species inference, sighting inference, or media analysis is implemented. See [Local Media Attachment Prototype](LOCAL_MEDIA_ATTACHMENT_PROTOTYPE.md) and [Media Attachment Storage Design](MEDIA_ATTACHMENT_STORAGE_DESIGN.md).
 
 Attachment records include internal fields such as `attachment_id`, `observation_id`, `mission_id`, `storage_backend`, `storage_key`, `original_filename`, `stored_filename`, `media_kind`, `mime_type`, `file_size_bytes`, `captured_at`, `uploaded_at`, `uploaded_by_role`, `review_visibility`, `public_release_status`, `checksum_sha256`, `evidence_confidence`, `analyst_review_status`, and `public_summary`.
 
 Public responses never expose `storage_key`, `stored_filename`, `original_filename`, `checksum_sha256`, `uploaded_by_role`, local paths, or raw media references. Public feeds do not expose attachment IDs or private attachment metadata.
+
+Attachment metadata validation rejects path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enum values, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries. `original_filename` is private display metadata only and is never used as a storage path.
 
 Attachment endpoints:
 

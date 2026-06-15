@@ -144,9 +144,10 @@ describe("DroneOperatorConsole", () => {
     const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
 
     expect(markup).toContain("Attachment Metadata");
-    expect(markup).toContain("Local attachments are private evidence records. They are not exposed in the public surveillance feed.");
-    expect(markup).toContain("AI1SAD does not analyze media or create sightings from attachments.");
+    expect(markup).toContain("Attachment metadata is private by default and is not exposed in public feeds.");
+    expect(markup).toContain("AI1SAD does not analyze media, infer species, or create sightings from attachments.");
     expect(markup).toContain("Do not upload sensitive media unless local attachment support is explicitly enabled.");
+    expect(markup).toContain("Local attachment support must be explicitly enabled before writes are accepted.");
   });
 
   it("builds metadata-only attachment payloads without storage keys", () => {
@@ -171,5 +172,29 @@ describe("DroneOperatorConsole", () => {
     expect(errors).toContain("Observation is required before attaching metadata.");
     expect(errors).toContain("Original filename must be a filename only.");
     expect(errors).toContain("Evidence confidence must be between 0 and 1.");
+  });
+
+  it("rejects unsafe local attachment metadata in the console", () => {
+    const errors = validateAttachmentForm({
+      ...validAttachmentForm,
+      media_kind: "archive",
+      media_reference_type: "external_url",
+      original_filename: "C:\\private\\run.ps1",
+      mime_type: "application/x-msdownload",
+      file_size_bytes: "500000001",
+      captured_at: "not-a-date",
+      review_visibility: "public_attachment_allowed",
+      public_summary: "x".repeat(501),
+    });
+
+    expect(errors).toContain("Media kind is not supported.");
+    expect(errors).toContain("Reference type is not supported for local attachment metadata.");
+    expect(errors).toContain("Original filename must be a filename only.");
+    expect(errors).toContain("Original filename cannot use executable or script extensions.");
+    expect(errors).toContain("MIME type must be image, video, text/plain, or application/json.");
+    expect(errors).toContain("File size must be between 0 and 500000000 bytes.");
+    expect(errors).toContain("Captured at must be a valid timestamp.");
+    expect(errors).toContain("Review visibility is not supported.");
+    expect(errors).toContain("Public summary must be 500 characters or fewer.");
   });
 });

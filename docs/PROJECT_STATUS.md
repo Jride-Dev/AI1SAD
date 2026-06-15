@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25D-C (Local-Only Media Attachment Prototype) - uncommitted
-- Latest completed committed phase: Post-Phase 25D-A/25D-B hardening patch
-- Latest completed local validation: Phase 25D-C local media attachment prototype validation run
-- Latest commit hash: `5ec0881` Harden drone observation privacy and validation
-- Repo status: uncommitted Phase 25D-C local media attachment prototype; verify with `git status`
+- Current phase number: Phase 25D-D (Media Attachment Security Review and Upload Hardening) - uncommitted
+- Latest completed committed phase: Phase 25D-C Local-Only Media Attachment Prototype
+- Latest completed local validation: Phase 25D-D focused attachment hardening checks in progress
+- Latest commit hash: `bc6c5c9` Add local media attachment metadata prototype
+- Repo status: uncommitted Phase 25D-D media attachment hardening patch; verify with `git status`
 
 ## Major Completed Systems
 
@@ -32,6 +32,7 @@
 - Phase 25D-B media attachment storage design and privacy review: attachment model proposal, storage backend tradeoffs, privacy visibility levels, public-feed rules, security checklist, and implementation gates documented. No storage code added.
 - Post-Phase 25D hardening patch committed: raw media references excluded from public drone observation output, impossible confidence values rejected server-side, manual mission selection prefill fixed, and Observation Analyst Review mojibake cleaned up.
 - Phase 25D-C local-only media attachment prototype implemented locally: metadata-only attachment records, `MEDIA_ATTACHMENTS_ENABLED=false` default gate, local private filesystem backend label, private-by-default frontend panel, and public-feed privacy filtering. No binary upload, media hosting, computer vision, scoring change, replay change, or autonomous flight behavior added.
+- Phase 25D-D media attachment hardening implemented locally: stricter attachment metadata validation for path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries. No binary upload, cloud storage, external fetch, media analysis, scoring change, replay change, or flight-control behavior added.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -54,7 +55,7 @@
 - Drone Operator Console media references are references only; image upload, media hosting remain future work (design documented in Phase 25D-B).
 - Raw drone media references are private-by-default and excluded from public responses until future public-safe release rules exist.
 - Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
-- Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, and upload hardening remain future work.
+- Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, EXIF/geotag stripping, and production upload hardening remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
@@ -65,8 +66,8 @@
 
 ## Next Planned Phase
 
-- Phase 25D-C: Local-Only Media Attachment Prototype (current uncommitted work)
-- Phase 25D-D: Media Attachment Security Review and Upload Hardening (not started)
+- Phase 25D-D: Media Attachment Security Review and Upload Hardening (current uncommitted work)
+- Phase 25E: UAV Operator Research Brief and Compatibility Matrix (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -161,6 +162,20 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Git whitespace check: passed with CRLF normalization warnings only
 - Current implementation: metadata-only local attachment records, disabled by default behind `MEDIA_ATTACHMENTS_ENABLED`, no binary upload, no external media fetching, no computer vision, no public feed exposure, and no scoring/replay changes
 
+## Validation Counts (Latest Phase 25D-D Local Run)
+
+- Focused drone observation ingestion tests: `30 passed, 1 warning`
+- Full backend tests: `275 passed, 3 warnings`
+- Frontend tests: `4 files passed`, `26 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend npm audit high: `0 vulnerabilities`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local link/image check: `49` links/images checked; local targets exist
+- Secret scan: no credential matches
+- Prohibited-language scan: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Current implementation: hardened metadata validation only; no binary upload, cloud storage, external media fetching, computer vision, media-based species inference, sighting creation, public media exposure, scoring change, or replay change
+
 ## Validation Counts (Latest Phase 25D-A Local Run)
 
 - Backend: PATCH endpoint for analyst review update, enum validation, private field filtering
@@ -200,15 +215,17 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25D-C Local-Only Media Attachment Prototype awaiting review.
-- Adds disabled-by-default metadata-only attachment records for existing drone observations.
-- Adds local private filesystem backend metadata, safe filename/root validation, review metadata, and frontend attachment metadata panel in the Drone Operator Console.
-- Public feeds do not expose attachment records, private media paths, storage keys, raw filenames, checksums, uploader roles, or private notes.
-- No binary media upload, media hosting, cloud storage, external URL fetching, computer vision, scoring-weight change, replay output change, autonomous flight behavior, or MAVLink command behavior.
+- Phase 25D-D Media Attachment Security Review and Upload Hardening awaiting review.
+- Hardens metadata-only local attachments before any binary upload support exists.
+- Rejects path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong public summaries.
+- Public feeds still do not expose attachment records, private media paths, storage keys, raw filenames, checksums, uploader roles, or private notes.
+- No binary media upload, media hosting, cloud storage, external URL fetching, computer vision, media-based species inference, scoring-weight change, replay output change, autonomous flight behavior, or MAVLink command behavior.
 
 ## Recent Important Commits
 
 - `1996b0a` Add AI1SAD repository agent instructions
+- `bc6c5c9` Add local media attachment metadata prototype
+- `5ec0881` Harden drone observation privacy and validation
 - `837a8cd` Patch Dependabot security alerts
 - `fe63fe0` Add Coogee Beach Sydney replay case study
 - `f737cd1` Add read-only MAVLink telemetry bridge

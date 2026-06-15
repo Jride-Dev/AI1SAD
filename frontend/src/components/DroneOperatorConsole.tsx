@@ -30,6 +30,9 @@ const PROVENANCE_OPTIONS = [
 ] as const;
 
 const OBSERVER_ROLES = ["drone_operator", "lifeguard", "analyst", "coastal_observer", "agency_observer"] as const;
+const ATTACHMENT_REFERENCE_TYPES = MEDIA_REFERENCE_TYPES.filter((item) => item !== "external_url" && item !== "drone_clip_id");
+const BLOCKED_ATTACHMENT_EXTENSIONS = [".bat", ".cmd", ".com", ".dll", ".exe", ".hta", ".jar", ".js", ".jse", ".mjs", ".msi", ".php", ".ps1", ".scr", ".sh", ".vbe", ".vbs", ".wsf"];
+const SAFE_ATTACHMENT_MIME_PREFIXES = ["image/", "video/", "text/plain", "application/json"];
 
 type ObservationFormState = {
   mission_id: string;
@@ -212,13 +215,28 @@ export function buildAttachmentPayload(form: AttachmentFormState): DroneAttachme
 
 export function validateAttachmentForm(form: AttachmentFormState): string[] {
   const errors: string[] = [];
+  const hasFileSize = Boolean(form.file_size_bytes);
+  const hasConfidence = Boolean(form.evidence_confidence);
+  const fileSize = hasFileSize ? Number(form.file_size_bytes) : 0;
+  const confidence = hasConfidence ? Number(form.evidence_confidence) : 0;
+  const filename = form.original_filename.trim();
+  const extension = filename.includes(".") ? filename.slice(filename.lastIndexOf(".")).toLowerCase() : "";
+  const mimeType = form.mime_type.trim().toLowerCase();
   if (!form.observation_id.trim()) errors.push("Observation is required before attaching metadata.");
   if (!form.media_kind.trim()) errors.push("Media kind is required.");
-  if (form.original_filename.includes("..") || form.original_filename.includes("/") || form.original_filename.includes("\\")) {
+  if (!ATTACHMENT_MEDIA_KINDS.includes(form.media_kind as (typeof ATTACHMENT_MEDIA_KINDS)[number])) errors.push("Media kind is not supported.");
+  if (form.media_reference_type && !ATTACHMENT_REFERENCE_TYPES.includes(form.media_reference_type as (typeof ATTACHMENT_REFERENCE_TYPES)[number])) errors.push("Reference type is not supported for local attachment metadata.");
+  if (!ATTACHMENT_VISIBILITIES.includes(form.review_visibility as (typeof ATTACHMENT_VISIBILITIES)[number])) errors.push("Review visibility is not supported.");
+  if (filename.length > 180) errors.push("Original filename must be 180 characters or fewer.");
+  if (filename.includes("..") || filename.includes("/") || filename.includes("\\") || /^[A-Za-z]:[\\/]/.test(filename)) {
     errors.push("Original filename must be a filename only.");
   }
-  if (form.file_size_bytes && Number(form.file_size_bytes) < 0) errors.push("File size cannot be negative.");
-  if (form.evidence_confidence && (Number(form.evidence_confidence) < 0 || Number(form.evidence_confidence) > 1)) errors.push("Evidence confidence must be between 0 and 1.");
+  if (extension && BLOCKED_ATTACHMENT_EXTENSIONS.includes(extension)) errors.push("Original filename cannot use executable or script extensions.");
+  if (mimeType && !SAFE_ATTACHMENT_MIME_PREFIXES.some((prefix) => mimeType === prefix || mimeType.startsWith(prefix))) errors.push("MIME type must be image, video, text/plain, or application/json.");
+  if (hasFileSize && (!Number.isFinite(fileSize) || fileSize < 0 || fileSize > 500_000_000)) errors.push("File size must be between 0 and 500000000 bytes.");
+  if (form.captured_at && Number.isNaN(Date.parse(form.captured_at))) errors.push("Captured at must be a valid timestamp.");
+  if (form.public_summary.length > 500) errors.push("Public summary must be 500 characters or fewer.");
+  if (hasConfidence && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)) errors.push("Evidence confidence must be between 0 and 1.");
   return errors;
 }
 
@@ -818,13 +836,14 @@ function AttachmentMetadataPanel({
         <div>
           <p className="eyebrow">Local Evidence Prototype</p>
           <h2>Attachment Metadata</h2>
-          <p>Local attachments are private evidence records. They are not exposed in the public surveillance feed.</p>
+          <p>Attachment metadata is private by default and is not exposed in public feeds.</p>
         </div>
         <span className="status-pill">{attachments.length} private records</span>
       </div>
       <div className="validation-box attachment-safety-copy">
-        <p>AI1SAD does not analyze media or create sightings from attachments.</p>
+        <p>AI1SAD does not analyze media, infer species, or create sightings from attachments.</p>
         <p>Do not upload sensitive media unless local attachment support is explicitly enabled.</p>
+        <p>Local attachment support must be explicitly enabled before writes are accepted.</p>
         <p>Local attachment writes require <code>MEDIA_ATTACHMENTS_ENABLED=true</code>; disabled backends return a validation error.</p>
       </div>
 
@@ -865,7 +884,7 @@ function AttachmentMetadataPanel({
         <label>
           Reference Type
           <select value={form.media_reference_type} onChange={(event) => onField("media_reference_type", event.target.value)}>
-            {MEDIA_REFERENCE_TYPES.filter((item) => item !== "external_url" && item !== "drone_clip_id").map((item) => (
+            {ATTACHMENT_REFERENCE_TYPES.map((item) => (
               <option key={item} value={item}>{item}</option>
             ))}
           </select>

@@ -6,6 +6,8 @@ Phase 25D-A adds metadata-only analyst review fields to drone and coastal observ
 
 Phase 25D-C adds a local-only media attachment metadata prototype. Attachments remain private-by-default, disabled unless `MEDIA_ATTACHMENTS_ENABLED=true`, and do not cause AI1SAD to analyze media or create sightings.
 
+Phase 25D-D hardens attachment metadata validation. Unsafe path-like filenames, executable/script extensions, unsupported enum values, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries are rejected. Attachments remain metadata-only and do not analyze media, infer species, or create sightings.
+
 ## Safety Boundaries
 
 - Analyst review fields are metadata annotations only

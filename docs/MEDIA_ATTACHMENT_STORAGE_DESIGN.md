@@ -6,7 +6,7 @@ This document describes the future design for attaching media evidence to drone 
 
 Phase 25D-A added metadata-only analyst review fields: media reference types, review status, review outcome, public review summary, private analyst notes, and evidence confidence. Phase 25D-B takes the next step: a planning and privacy-review phase that defines what media attachment support will eventually need, what storage boundaries must exist, and what must remain private.
 
-The design is metadata-first. Phase 25D-C implements a local-only metadata prototype for attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. It does not upload, host, fetch, download, parse, or analyze media.
+The design is metadata-first. Phase 25D-C implements a local-only metadata prototype for attachment records behind `MEDIA_ATTACHMENTS_ENABLED=false` by default. Phase 25D-D hardens metadata validation before any binary upload work exists. The prototype does not upload, host, fetch, download, parse, or analyze media.
 
 ## 2. Non-Goals for Current Phase
 
@@ -25,7 +25,7 @@ Phase 25D-B does not implement media handling:
 
 ## 3. Attachment Model Proposal
 
-Phase 25D-C metadata-only attachment records use this model as a local prototype. Binary storage and public release remain future work.
+Phase 25D-C metadata-only attachment records use this model as a local prototype. Phase 25D-D adds stricter path, filename, MIME, checksum, timestamp, file-size, and enum validation. Binary storage and public release remain future work.
 
 | Field | Type | Description |
 |---|---|---|
@@ -173,7 +173,9 @@ Phase 25D-C adds local metadata-only attachment endpoints for creating attachmen
 Before any storage implementation is enabled, the following must be reviewed:
 
 - **File type restrictions**: Only allow known-safe MIME types; reject executables, scripts, archives, and unknown types
+- **Path safety**: Reject path traversal, absolute paths, Windows drive-root paths, parent-directory references, and filename strings that contain path separators
 - **Max file size**: Enforce a configurable per-file size limit (e.g., 10 MB for images, 50 MB for video)
+- **Checksum and timestamp validation**: Reject malformed SHA-256 checksums and malformed media capture timestamps
 - **Malware scanning**: Integrate with a server-side AV scanner or reject uploads until scanning is available
 - **Signed URLs**: Use time-limited signed URLs for access to private storage; never expose permanent storage keys
 - **Private buckets**: Store all uploads in private buckets by default; public buckets only for explicitly approved media

@@ -10,6 +10,8 @@ Phase 25D-B adds the media attachment storage design and privacy review. This is
 
 Phase 25D-C adds a local-only, metadata-only attachment prototype. It is disabled by default and does not add binary upload, cloud storage, media download, computer vision, media analysis, autonomous detections, or flight-control behavior.
 
+Phase 25D-D hardens local attachment metadata validation. It rejects unsafe path-like metadata, executable/script filename extensions, invalid checksums, malformed timestamps, impossible file sizes, and unsupported attachment enum values before any binary upload support exists.
+
 ## Safety Boundaries
 
 - Drone write endpoints are disabled unless `DRONE_INGEST_ENABLED=true`.
@@ -28,6 +30,8 @@ Phase 25D-C adds a local-only, metadata-only attachment prototype. It is disable
 - Media attachment endpoints are disabled unless `MEDIA_ATTACHMENTS_ENABLED=true`
 - Local attachment metadata remains private-by-default and is not exposed through public surveillance feeds
 - Attachments do not create sightings and do not alter scoring
+- Attachments do not infer species or trigger computer vision
+- Original filenames are private display metadata only and are never used as storage paths
 
 ## Interpretation Rules
 

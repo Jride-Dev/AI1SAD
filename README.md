@@ -18,8 +18,8 @@ Current development checkpoint:
 
 - Latest completed phase: Phase 25D-C, Local-Only Media Attachment Prototype
 - Latest completed maintenance: post-Phase 25D-A drone observation privacy and validation hardening
-- Current implementation: Phase 25D-C, metadata-only local attachment records behind an explicit configuration gate
-- Next planned phase: Phase 25D-D, Media Attachment Security Review and Upload Hardening
+- Current implementation: Phase 25D-D, media attachment security review and metadata hardening
+- Next planned phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
@@ -66,7 +66,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Vendor-neutral human-operated drone observation ingestion MVP
 - Drone Operator Console for human-entered patrol observations, including shark sightings, no-sighting patrols, carcasses, baitfish activity, poor visibility, and surf-line activity. AI1SAD records observations and recommends surveillance attention; it does not control aircraft or predict individual attacks.
 - Metadata-only analyst review fields for annotating observations with review status, outcome, public summary, and private notes
-- Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media or create sightings from attachments.
+- Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 

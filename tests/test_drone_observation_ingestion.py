@@ -603,6 +603,65 @@ class DroneObservationIngestionTests(unittest.TestCase):
             json={"media_kind": "image", "original_filename": "..\\private\\frame.jpg"},
         )
         self.assertEqual(traversal.status_code, 422)
+        parent_reference = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "frame..jpg"},
+        )
+        self.assertEqual(parent_reference.status_code, 422)
+        absolute_path = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "/tmp/frame.jpg"},
+        )
+        self.assertEqual(absolute_path.status_code, 422)
+        windows_drive = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "C:\\private\\frame.jpg"},
+        )
+        self.assertEqual(windows_drive.status_code, 422)
+        script_extension = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "original_filename": "frame.exe"},
+        )
+        self.assertEqual(script_extension.status_code, 422)
+
+    def test_attachment_validation_rejects_bad_metadata_values(self):
+        observation_id = self._create_observation()
+        self._enable_media_attachments()
+        invalid_review_status = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "analyst_review_status": "auto_reviewed", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(invalid_review_status.status_code, 422)
+        invalid_release_status = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "public_release_status": "approved_public", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(invalid_release_status.status_code, 422)
+        invalid_checksum = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "checksum_sha256": "not-a-sha256", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(invalid_checksum.status_code, 422)
+        negative_size = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "file_size_bytes": -1, "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(negative_size.status_code, 422)
+        huge_size = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "video", "file_size_bytes": 500_000_001, "original_filename": "frame-001.mp4", "mime_type": "video/mp4"},
+        )
+        self.assertEqual(huge_size.status_code, 422)
+        malformed_timestamp = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"media_kind": "image", "captured_at": "not-a-date", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(malformed_timestamp.status_code, 422)
+        unsafe_attachment_id = self.client.post(
+            f"/api/v1/drone/observations/{observation_id}/attachments",
+            json={"attachment_id": "../attachment", "media_kind": "image", "original_filename": "frame-001.jpg"},
+        )
+        self.assertEqual(unsafe_attachment_id.status_code, 422)
 
     def test_attachment_review_public_summary_safe(self):
         observation_id = self._create_observation()

@@ -1,6 +1,6 @@
 # Local Media Attachment Prototype
 
-Phase 25D-C adds a local-only, metadata-only attachment prototype for drone and coastal observation evidence.
+Phase 25D-C adds a local-only, metadata-only attachment prototype for drone and coastal observation evidence. Phase 25D-D hardens validation and documents upload-security gates before any binary upload work exists.
 
 It is disabled by default and intended for local demo/review workflows only.
 
@@ -24,8 +24,16 @@ Implemented in Phase 25D-C:
 - private-by-default review visibility
 - public-safe summary field
 - attachment review metadata
-- API validation for media kind, visibility, MIME type, filenames, file size, and confidence
+- API validation for media kind, visibility, review status, release status, MIME type, filenames, file size, checksum, timestamp, and confidence
 - frontend metadata form in the Drone Operator Console
+
+Hardened in Phase 25D-D:
+
+- path traversal, absolute paths, Windows drive-root paths, and parent-directory references are rejected
+- executable and script filename extensions are rejected
+- unsupported media kinds, reference types, review visibility, review status, and public release statuses are rejected
+- impossible file sizes, invalid checksums, malformed timestamps, and overlong summaries are rejected
+- original filenames are treated only as private display metadata and are never used as storage paths
 
 Not implemented:
 
@@ -69,7 +77,7 @@ Attachment endpoint responses expose only safe metadata for local review. Storag
 ## Safety Rules
 
 - Local attachments are private evidence records. They are not exposed in the public surveillance feed.
-- AI1SAD does not analyze media or create sightings from attachments.
+- AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - Do not upload sensitive media unless local attachment support is explicitly enabled.
 - Attachments do not alter scoring.
 - Attachments do not create sightings.
@@ -81,4 +89,4 @@ Attachment endpoint responses expose only safe metadata for local review. Storag
 - No authentication model is implemented for attachment workflows.
 - Public attachment release is not implemented.
 - Local filesystem storage remains a prototype planning boundary, not production evidence storage.
-- Phase 25D-D should perform a security review before any upload-hardening work proceeds.
+- Binary upload remains blocked until a future phase defines authentication, malware scanning, EXIF/geotag stripping, retention, and public-release review.
