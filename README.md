@@ -236,6 +236,8 @@ It also does not add:
 
 See:
 
+- [UAV Operator Research Brief](docs/UAV_OPERATOR_RESEARCH_BRIEF.md)
+- [UAV Compatibility Matrix](docs/UAV_COMPATIBILITY_MATRIX.md)
 - [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 - [Drone Observation Ingestion](docs/DRONE_OBSERVATION_INGESTION.md)
 - [Observation Analyst Review](docs/OBSERVATION_ANALYST_REVIEW.md)

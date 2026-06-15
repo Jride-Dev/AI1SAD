@@ -106,6 +106,8 @@ nav:
       - MAVLink Safety Boundaries: MAVLINK_SAFETY_BOUNDARIES.md
 
   - Drone Operations:
+      - UAV Operator Research Brief: UAV_OPERATOR_RESEARCH_BRIEF.md
+      - UAV Compatibility Matrix: UAV_COMPATIBILITY_MATRIX.md
       - Drone Operator Console: DRONE_OPERATOR_CONSOLE.md
       - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
       - Observation Analyst Review: OBSERVATION_ANALYST_REVIEW.md

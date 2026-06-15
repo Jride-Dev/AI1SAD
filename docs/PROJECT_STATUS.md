@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25D-D (Media Attachment Security Review and Upload Hardening) - uncommitted
-- Latest completed committed phase: Phase 25D-C Local-Only Media Attachment Prototype
-- Latest completed local validation: Phase 25D-D focused attachment hardening checks in progress
-- Latest commit hash: `bc6c5c9` Add local media attachment metadata prototype
-- Repo status: uncommitted Phase 25D-D media attachment hardening patch; verify with `git status`
+- Current phase number: Phase 25E (UAV Operator Research Brief and Compatibility Matrix) - uncommitted
+- Latest completed committed phase: Phase 25D-D Media Attachment Security Review and Upload Hardening
+- Latest completed local validation: Phase 25E MkDocs build and doc link checks
+- Latest commit hash: `fe5b230` Harden local media attachment metadata validation
+- Repo status: uncommitted Phase 25E UAV research brief and compatibility matrix; verify with `git status`
 
 ## Major Completed Systems
 
@@ -33,6 +33,7 @@
 - Post-Phase 25D hardening patch committed: raw media references excluded from public drone observation output, impossible confidence values rejected server-side, manual mission selection prefill fixed, and Observation Analyst Review mojibake cleaned up.
 - Phase 25D-C local-only media attachment prototype implemented locally: metadata-only attachment records, `MEDIA_ATTACHMENTS_ENABLED=false` default gate, local private filesystem backend label, private-by-default frontend panel, and public-feed privacy filtering. No binary upload, media hosting, computer vision, scoring change, replay change, or autonomous flight behavior added.
 - Phase 25D-D media attachment hardening implemented locally: stricter attachment metadata validation for path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries. No binary upload, cloud storage, external fetch, media analysis, scoring change, replay change, or flight-control behavior added.
+- Phase 25E UAV operator research brief and compatibility matrix: operator-facing documentation covering manual consumer drone workflow, MAVLink read-only telemetry workflow, post-flight evidence workflow, agency/helicopter report workflow, compatibility matrix, operator questions, minimum field checklist, safety boundaries, and research questions for real UAV operators. Documentation-only phase; no code changes.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -66,8 +67,8 @@
 
 ## Next Planned Phase
 
-- Phase 25D-D: Media Attachment Security Review and Upload Hardening (current uncommitted work)
-- Phase 25E: UAV Operator Research Brief and Compatibility Matrix (not started)
+- Phase 25E: UAV Operator Research Brief and Compatibility Matrix (current uncommitted work)
+- Phase 25F: UAV Operator Feedback Intake and Field Requirements Tracker (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -203,6 +204,15 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Secret scan on changed docs/code: no credential values; documentation phrases, placeholder config names, and existing test key strings only
 - Prohibited-language scan on changed docs/code: required safety-copy and guardrail/test-only matches only
 
+## Validation Counts (Latest Phase 25E Local Run)
+
+- MkDocs build: passed (2.53s, known Material advisory only)
+- README local link/image check: 66 checked, passed
+- Secret scan: passed
+- Prohibited-language scan: passed
+- git whitespace check: passed (CRLF warnings only)
+- No code changed: backend/frontend tests not required
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -215,11 +225,13 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25D-D Media Attachment Security Review and Upload Hardening awaiting review.
-- Hardens metadata-only local attachments before any binary upload support exists.
-- Rejects path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong public summaries.
-- Public feeds still do not expose attachment records, private media paths, storage keys, raw filenames, checksums, uploader roles, or private notes.
-- No binary media upload, media hosting, cloud storage, external URL fetching, computer vision, media-based species inference, scoring-weight change, replay output change, autonomous flight behavior, or MAVLink command behavior.
+- Phase 25E UAV Operator Research Brief and Compatibility Matrix awaiting review.
+- Adds `docs/UAV_OPERATOR_RESEARCH_BRIEF.md` with ten sections covering purpose, capabilities, workflow modes, compatibility matrix, Coogee case relevance, operator questions, field checklist, safety boundaries, and research questions.
+- Adds `docs/UAV_COMPATIBILITY_MATRIX.md` as a shorter companion page focused on the compatibility table and integration modes.
+- Updated README.md with links to both new docs.
+- Updated mkdocs.yml with both new pages under Drone Operations navigation.
+- Documentation-only phase. No code changes.
+- Review gate: do not commit until reviewed; do not begin Phase 25F.
 
 ## Recent Important Commits
 
