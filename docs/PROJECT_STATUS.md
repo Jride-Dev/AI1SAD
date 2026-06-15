@@ -2,12 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25D-B (Media Attachment Storage Design and Privacy Review)
-- Latest completed committed phase: Phase 25D-A (Observation Analyst Review Fields)
-- Latest completed local phase: Phase 25D-B design documentation
-- Latest completed local maintenance: targeted Dependabot esbuild alert patch
-- Latest commit hash: `5b5937a` Phase 25D-A: metadata-only analyst review fields
-- Repo status: local Phase 25D-B documentation changes; verify with `git status`
+- Current phase number: Phase 25D-B (Media Attachment Storage Design and Privacy Review) — committed
+- Latest completed committed phase: Phase 25D-B (Media Attachment Storage Design and Privacy Review)
+- Latest completed local maintenance: Coogee replay post-incident media evidence update
+- Latest commit hash: `c4f12bd` Clarify consumer drone app compatibility
+- Repo status: uncommitted Coogee replay media-evidence update; verify with `git status`
 
 ## Major Completed Systems
 
@@ -58,11 +57,12 @@
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
 - Michaelmas Island replay shows high WA spearfishing/offshore surveillance context even before post-incident signals, with missing live weather/ocean/sighting sources.
 - Lovers Point replay shows carcass and closure surveillance context while drift direction remains unavailable until tide/current fixture support exists.
-- Coogee Beach Sydney 2026 replay keeps strict pre-incident and quiet-day runs low, then documents post-incident closure and aviation-restricted drone-review context without adding providers or invented live conditions.
+- Coogee Beach Sydney 2026 replay keeps strict pre-incident and quiet-day runs low, then documents post-incident closure, drone/helicopter aerial footage evidence, rescuer account, and aviation-restricted drone-review context without adding providers or invented live conditions. Probable white shark remains preliminary/source-attributed; same-individual link is unconfirmed. Possible blood plume is analyst visual assessment uncertainty.
 
 ## Next Planned Phase
 
-- Phase 25D-B completed locally: media attachment storage design and privacy review (documentation phase; no storage code)
+- Phase 25D-B committed: media attachment storage design and privacy review (documentation phase; no storage code)
+- Coogee replay post-incident media evidence update (current uncommitted work)
 - Phase 25D-C: Local-Only Media Attachment Prototype (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
@@ -157,14 +157,23 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Secret scan on changed docs/code: no credential values; documentation phrases, placeholder config names, and existing test key strings only
 - Prohibited-language scan on changed docs/code: required safety-copy and guardrail/test-only matches only
 
+## Validation Counts (Latest Coogee Media Evidence Update)
+
+- Focused replay tests: pending
+- Replay-library tests: pending
+- Full backend tests: pending
+- MkDocs build: pending
+- JSON/SVG parse checks: pending
+- Secret scan: pending
+- Prohibited-language scan: pending
+
 ## Current Review Item
 
-- Phase 25D-B (Media Attachment Storage Design and Privacy Review) is implemented locally and awaiting review.
-- New document: `docs/MEDIA_ATTACHMENT_STORAGE_DESIGN.md` with attachment model, privacy model, public-feed rules, security checklist, and implementation gates
-- Updated README, OBSERVATION_ANALYST_REVIEW.md, DRONE_OPERATOR_CONSOLE.md, DRONE_DATA_CONTRACT.md, DRONE_OPERATIONS_SAFETY.md, CURRENT_DATA_SOURCES.md, PROJECT_STATUS.md, NEXT_PHASE.md, and mkdocs.yml
-- No code changes: no storage clients, no upload endpoints, no database migrations, no frontend upload UI
-- No computer vision, media upload/hosting, autonomous flight control, scoring-weight changes, replay-output changes, auth, or billing changes
-- Phase 25D-C must not start until Phase 25D-B is reviewed
+- Coogee replay post-incident media evidence update awaiting review.
+- Adds `post_incident_media_evidence` block with source-attributed drone video, rescuer account, and analyst visual assessment fields to replay JSON, factor summary, and case study markdown.
+- Probable white shark remains preliminary/source-attributed; same-individual link is unconfirmed. Possible blood plume is analyst visual assessment uncertainty, not confirmed fact.
+- No computer vision, media analysis, scoring-weight changes, or replay output changes.
+- No code changes: documentation and artifact metadata only.
 
 ## Recent Important Commits
 
@@ -194,3 +203,4 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - `ba6d3df` Integrate AI1SAD brand assets across platform
 - `90e540e` Add one-click local demo launcher
 - `5b5937a` Phase 25D-A: metadata-only analyst review fields for observations
+- `c4f12bd` Clarify consumer drone app compatibility

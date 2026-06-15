@@ -25,7 +25,7 @@ GET /api/v1/replay/library/{replay_id}
 | `michaelmas_island_albany_wa_2026` | Michaelmas Island Albany WA 2026 | Western Australia | Active-event replay with strict pre-incident, quiet-day, and post-incident operational update runs |
 | `lovers_point_pacific_grove_whale_carcass_2026` | Lovers Point Pacific Grove Whale Carcass 2026 | Monterey County, California | Nearshore carcass, closure, drift-planning, and hypothetical sighting sensitivity replay |
 | `piedade_boa_viagem_recife_2026` | Piedade and Boa Viagem Recife 2026 | Greater Recife, Pernambuco, Brazil | Paired strict chronology replay with Piedade-to-Boa-Viagem recent-interaction lift |
-| `coogee_beach_sydney_2026` | Coogee Beach Sydney 2026 | New South Wales, Australia | Strict chronology replay with post-incident closure and aviation-restricted drone-planning context |
+| `coogee_beach_sydney_2026` | Coogee Beach Sydney 2026 | New South Wales, Australia | Strict chronology replay with post-incident closure, drone/helicopter aerial footage evidence, and aviation-restricted drone-planning context |
 | `red_sea_anomaly_demo` | Red Sea Anomaly Demo | Red Sea | Biological anomaly and tourism corridor operational review |
 
 ## Linked Case Studies

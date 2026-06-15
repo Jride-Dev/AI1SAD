@@ -307,6 +307,32 @@ class TestReplayRunner:
         assert "ocean_observations" in replay["runs"]["strict_pre_incident"]["missing_signal_sources"]
         assert "sighting_reports" in replay["runs"]["strict_pre_incident"]["missing_signal_sources"]
 
+        # post-incident media evidence assertions
+        assert "post_incident_media_evidence" in replay
+        assert "post_incident_media_evidence" in replay["runs"]["post_incident_operational_update"]
+        assert "post_incident_media_evidence" in replay["runs"]["drone_restriction_operational_planning"]
+        assert "post_incident_media_evidence" not in replay["runs"]["strict_pre_incident"]
+        assert "post_incident_media_evidence" not in replay["runs"]["quiet_day_comparison"]
+        assert "post_incident_media_evidence" in summary
+
+        media = replay["post_incident_media_evidence"]
+        assert media["aerial_video_available"] is True
+        assert media["same_individual_as_attacker"] == "unconfirmed"
+        assert media["possible_blood_plume_visible"] == "analyst_visual_assessment_uncertain"
+        assert media["media_analysis_performed"] is False
+        assert media["computer_vision_performed"] is False
+        assert media["species_confidence"] == "preliminary_source_attributed"
+
+        checks = summary["timeline_safety_checks"]
+        assert checks["pre_incident_has_media_evidence"] is False
+        assert checks["quiet_day_has_media_evidence"] is False
+        assert checks["post_update_media_evidence_present"] is True
+        assert checks["same_individual_as_attacker_is_unconfirmed"] is True
+        assert checks["possible_blood_plume_is_analyst_uncertain"] is True
+        assert checks["media_analysis_performed_is_false"] is True
+        assert checks["computer_vision_performed_is_false"] is True
+        assert checks["species_is_preliminary_source_attributed"] is True
+
     def test_active_event_replay_json_and_svg_artifacts_parse(self):
         artifact_stems = [
             "michaelmas_island_albany_wa_2026",

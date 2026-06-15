@@ -106,6 +106,41 @@ Output:
 - `activity_hazard_score`: 0, low
 - `surveillance_priority_score`: 18.0, low
 
+## Post-Incident Media Evidence
+
+Source-attributed post-incident media and evidence metadata is preserved in the replay artifacts. This information applies only to the post-incident operational update and drone-restriction operational planning scenarios. It is excluded from the strict pre-incident and quiet-day comparison scenarios.
+
+### Drone and Aerial Video Evidence
+
+- ABC published aerial video showing a shark swimming off Coogee Beach after the attack was reported.
+- Reuters reported drones were flown under emergency provisions after the attack.
+- Guardian reported drone/helicopter footage after the attack indicated a white shark was in the area.
+- Guardian also reported NSW DPI caution that this does not necessarily prove it was the same shark involved in the attack.
+
+### Rescuer Account
+
+- Reuters reported the rescuer saw a three-to-four-metre shark and described the water during rescue as "all red."
+
+### Evidence Handling
+
+- Drone/aerial footage exists after the attack and supports post-incident surveillance context.
+- Probable white shark is source-attributed and preliminary, not a confirmed species classification.
+- Same-individual attribution (shark in video = attacker) remains unconfirmed.
+- A possible blood plume is noted as analyst visual assessment uncertainty, not confirmed source fact.
+- No computer vision or automated media analysis was performed by AI1SAD. The system does not fetch, host, or analyze media.
+
+### Artifact Fields
+
+Replay artifacts include a `post_incident_media_evidence` block with these key fields:
+
+- `aerial_video_available`: true
+- `species_assessment`: probable_white_shark
+- `species_confidence`: preliminary_source_attributed
+- `same_individual_as_attacker`: unconfirmed
+- `possible_blood_plume_visible`: analyst_visual_assessment_uncertain
+- `media_analysis_performed`: false
+- `computer_vision_performed`: false
+
 ## Recommended Surveillance Patterns
 
 - `beach_closure_support`

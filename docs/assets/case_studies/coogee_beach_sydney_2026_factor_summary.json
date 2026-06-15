@@ -255,7 +255,15 @@
     "pre_incident_has_drone_response": false,
     "post_update_species_is_source_attributed": true,
     "drone_restriction_is_operational_planning_only": true,
-    "invented_tide_current_visibility_weather_or_sightings": false
+    "invented_tide_current_visibility_weather_or_sightings": false,
+    "pre_incident_has_media_evidence": false,
+    "quiet_day_has_media_evidence": false,
+    "post_update_media_evidence_present": true,
+    "same_individual_as_attacker_is_unconfirmed": true,
+    "possible_blood_plume_is_analyst_uncertain": true,
+    "media_analysis_performed_is_false": true,
+    "computer_vision_performed_is_false": true,
+    "species_is_preliminary_source_attributed": true
   },
   "closure_metadata": {
     "closure_scope": "Coogee and nearby eastern-suburbs beaches",
@@ -299,5 +307,27 @@
     "taxon": "suspected white shark",
     "classification_status": "source-attributed preliminary only",
     "model_input_for_strict_preincident": false
+  },
+  "post_incident_media_evidence": {
+    "aerial_video_available": true,
+    "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+    "aerial_video_timing": "after_attack",
+    "large_shark_visible_after_attack": true,
+    "shark_length_estimate_m": "3.0-4.0",
+    "species_assessment": "probable_white_shark",
+    "species_assessment_source": "drone_helicopter_footage_source_attributed",
+    "species_confidence": "preliminary_source_attributed",
+    "same_individual_as_attacker": "unconfirmed",
+    "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+    "water_red_during_rescue": "source_attributed_rescuer_quote",
+    "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+    "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+    "media_analysis_performed": false,
+    "computer_vision_performed": false,
+    "media_hosted_by_ai1sad": false,
+    "media_reference_type": "external_report_reference",
+    "analyst_review_status": "inconclusive",
+    "review_outcome": "species_uncertain",
+    "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
   }
 }

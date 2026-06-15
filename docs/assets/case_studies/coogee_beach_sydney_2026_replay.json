@@ -28,6 +28,18 @@
       {
         "label": "ABC News June 14 drone restriction report",
         "url": "https://www.abc.net.au/news/2026-06-14/ban-lifted-coogee-drones-nsw-shark-culls-not-ruled-out/106796046"
+      },
+      {
+        "label": "ABC News aerial video showing shark off Coogee after attack",
+        "url": "https://www.abc.net.au/news/2026-06-13/coogee-shark-attack-aerial-video/106794400"
+      },
+      {
+        "label": "Reuters report: drones flown under emergency provisions, rescuer saw 3-4m shark, water 'all red'",
+        "url": "https://www.reuters.com/world/australia/drones-shark-coogee-australia-2026-06-13/"
+      },
+      {
+        "label": "Guardian report: drone/helicopter footage indicates white shark, NSW DPI cautions same-individual link unconfirmed",
+        "url": "https://www.theguardian.com/australia-news/2026/jun/13/coogee-beach-shark-attack-white-shark-drone-footage"
       }
     ]
   },
@@ -497,7 +509,29 @@
         "aviation_restricted_drone_review"
       ],
       "autonomous_flight_control": false,
-      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring."
+      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+      "post_incident_media_evidence": {
+        "aerial_video_available": true,
+        "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+        "aerial_video_timing": "after_attack",
+        "large_shark_visible_after_attack": true,
+        "shark_length_estimate_m": "3.0-4.0",
+        "species_assessment": "probable_white_shark",
+        "species_assessment_source": "drone_helicopter_footage_source_attributed",
+        "species_confidence": "preliminary_source_attributed",
+        "same_individual_as_attacker": "unconfirmed",
+        "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+        "water_red_during_rescue": "source_attributed_rescuer_quote",
+        "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+        "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+        "media_analysis_performed": false,
+        "computer_vision_performed": false,
+        "media_hosted_by_ai1sad": false,
+        "media_reference_type": "external_report_reference",
+        "analyst_review_status": "inconclusive",
+        "review_outcome": "species_uncertain",
+        "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+      }
     },
     "drone_restriction_operational_planning": {
       "scenario_id": "coogee_beach_sydney_2026_drone_restriction_planning",
@@ -662,14 +696,36 @@
         "aviation_restricted_drone_review"
       ],
       "autonomous_flight_control": false,
-      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring."
+      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+      "post_incident_media_evidence": {
+        "aerial_video_available": true,
+        "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+        "aerial_video_timing": "after_attack",
+        "large_shark_visible_after_attack": true,
+        "shark_length_estimate_m": "3.0-4.0",
+        "species_assessment": "probable_white_shark",
+        "species_assessment_source": "drone_helicopter_footage_source_attributed",
+        "species_confidence": "preliminary_source_attributed",
+        "same_individual_as_attacker": "unconfirmed",
+        "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+        "water_red_during_rescue": "source_attributed_rescuer_quote",
+        "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+        "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+        "media_analysis_performed": false,
+        "computer_vision_performed": false,
+        "media_hosted_by_ai1sad": false,
+        "media_reference_type": "external_report_reference",
+        "analyst_review_status": "inconclusive",
+        "review_outcome": "species_uncertain",
+        "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+      }
     }
   },
   "timeline_separation_notes": {
     "strict_pre_incident": "Excludes post-incident closure, drone/helicopter response, shark size, species assessment, and any later response signal.",
     "quiet_day_comparison": "Uses the same beach, season, and swimming context without incident-specific or post-incident signals.",
-    "post_incident_operational_update": "Includes the confirmed incident as a recent interaction and keeps species and size source-attributed only.",
-    "drone_restriction_operational_planning": "Uses the post-incident operational state plus aviation-restriction notes; it does not imply autonomous flight or bypassing CASA/Sydney Airport restrictions."
+    "post_incident_operational_update": "Includes the confirmed incident as a recent interaction, source-attributed post-incident media evidence, and keeps species and size source-attributed only. Same-individual-attribution remains unconfirmed. Possible blood plume is analyst visual assessment, not confirmed fact.",
+    "drone_restriction_operational_planning": "Uses the post-incident operational state plus aviation-restriction notes and post-incident media evidence; it does not imply autonomous flight, computer vision, or bypassing CASA/Sydney Airport restrictions."
   },
   "recommended_surveillance_patterns": [
     "beach_closure_support",
@@ -704,6 +760,28 @@
     "human-approved surveillance recommendations"
   ],
   "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+  "post_incident_media_evidence": {
+    "aerial_video_available": true,
+    "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+    "aerial_video_timing": "after_attack",
+    "large_shark_visible_after_attack": true,
+    "shark_length_estimate_m": "3.0-4.0",
+    "species_assessment": "probable_white_shark",
+    "species_assessment_source": "drone_helicopter_footage_source_attributed",
+    "species_confidence": "preliminary_source_attributed",
+    "same_individual_as_attacker": "unconfirmed",
+    "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+    "water_red_during_rescue": "source_attributed_rescuer_quote",
+    "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+    "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+    "media_analysis_performed": false,
+    "computer_vision_performed": false,
+    "media_hosted_by_ai1sad": false,
+    "media_reference_type": "external_report_reference",
+    "analyst_review_status": "inconclusive",
+    "review_outcome": "species_uncertain",
+    "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+  },
   "model_metadata": {
     "model_version": "0.11.0",
     "scoring_revision": "phase-11-explainability",
