@@ -69,7 +69,21 @@ REVIEW_OUTCOMES = {
     "unusable_media",
 }
 
-PUBLIC_DROP_FIELDS = {"notes_internal", "internal_notes", "analyst_notes", "analyst_notes_internal", "analyst_notes_private", "analyst_reviewer_role", "analyst_reviewed_at", "operator_id", "private_notes", "restricted"}
+PUBLIC_DROP_FIELDS = {
+    "notes_internal",
+    "internal_notes",
+    "analyst_notes",
+    "analyst_notes_internal",
+    "analyst_notes_private",
+    "analyst_reviewer_role",
+    "analyst_reviewed_at",
+    "operator_id",
+    "private_notes",
+    "restricted",
+    "media_reference",
+    "media_reference_type",
+    "media_timestamp",
+}
 
 
 def utc_now() -> datetime:
@@ -224,7 +238,8 @@ def build_observation(mission: dict[str, Any], payload: dict[str, Any]) -> dict[
         require_choice(str(review_outcome), REVIEW_OUTCOMES, "review_outcome")
     lat = bounded_float(payload["latitude"], "latitude", -90, 90)
     lon = bounded_float(payload["longitude"], "longitude", -180, 180)
-    confidence = max(0.0, min(1.0, float(payload.get("confidence", 0.35) or 0.35)))
+    confidence_value = payload.get("confidence", 0.35)
+    confidence = bounded_float(0.35 if confidence_value in {None, ""} else confidence_value, "confidence", 0, 1)
     observation_id = text_field(payload.get("observation_id") or f"observation-{uuid4().hex[:12]}", "observation_id", max_length=80)
     doc = {
         "_id": observation_id,

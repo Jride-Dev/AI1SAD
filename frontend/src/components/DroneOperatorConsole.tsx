@@ -161,6 +161,10 @@ function initialForm(mission?: DroneConsoleMissionOption): ObservationFormState 
   };
 }
 
+export function formForSelectedMission(missionId: string, mission?: DroneConsoleMissionOption): ObservationFormState {
+  return { ...initialForm(mission), mission_id: missionId };
+}
+
 export function DroneOperatorConsole({ initialData = null }: { initialData?: DroneConsoleData | null }) {
   const initialMission = initialData?.missions[0];
   const [consoleData, setConsoleData] = useState<DroneConsoleData | null>(initialData);
@@ -214,11 +218,11 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
     setValidationErrors([]);
   };
 
-  const chooseMission = (missionId: string) => {
-    const mission = consoleData?.missions.find((item) => item.mission.mission_id === missionId);
+  const chooseMission = (missionId: string, providedMission?: DroneConsoleMissionOption) => {
+    const mission = providedMission ?? consoleData?.missions.find((item) => item.mission.mission_id === missionId);
     setSelectedMissionId(missionId);
     setManualMissionId(missionId);
-    setForm((current) => ({ ...initialForm(mission ?? undefined), ...current, mission_id: missionId }));
+    setForm(formForSelectedMission(missionId, mission));
   };
 
   const fetchManualMission = async () => {
@@ -236,7 +240,7 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
         const retainedObservations = base.observations.filter((item) => item.mission_id !== mission.mission.mission_id);
         return { ...base, missions, observations: [...observations, ...retainedObservations] };
       });
-      chooseMission(mission.mission.mission_id);
+      chooseMission(mission.mission.mission_id, mission);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Mission detail could not be loaded.");
     }
@@ -594,6 +598,7 @@ function AnalystReviewPanel({
         <div>
           <p className="eyebrow">Analyst Review</p>
           <h2>Review Queue</h2>
+          <p>Private media references are not shown in public feed output.</p>
         </div>
         <span className="status-pill">{needsReview.length} pending</span>
       </div>
@@ -642,7 +647,7 @@ function AnalystReviewCard({
       </div>
       <div className="inline-strip coordinate-strip">
         <span>Confidence {Math.round(observation.confidence * 100)}%</span>
-        {observation.media_reference ? <span>Media: {observation.media_reference}</span> : null}
+        <span>Media reference hidden from public output</span>
       </div>
       <div className="analyst-review-form">
         <label>

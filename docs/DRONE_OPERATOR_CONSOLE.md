@@ -122,7 +122,7 @@ DRONE_INGEST_ENABLED=true
 
 ## Public Feed Filtering
 
-Public feed output remains map-ready and public-safe. Internal/operator notes are not exposed through public response paths.
+Public feed output remains map-ready and public-safe. Internal/operator notes and raw media references are not exposed through public response paths.
 
 The console displays recent feed items with:
 
@@ -132,6 +132,8 @@ The console displays recent feed items with:
 - confidence
 - public/private visibility marker when available
 - provenance or source label
+
+Raw `media_reference`, `media_reference_type`, and `media_timestamp` values are hidden from public feed cards. Future attachment-release rules can add public-safe media summaries without exposing private filenames, case references, or storage paths.
 
 ## Analyst Review Panel
 

@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25D-B (Media Attachment Storage Design and Privacy Review) — committed
+- Current phase number: Post-Phase 25D-A/25D-B hardening patch
 - Latest completed committed phase: Phase 25D-B (Media Attachment Storage Design and Privacy Review)
 - Latest completed local maintenance: Coogee replay post-incident media evidence update
-- Latest commit hash: `c4f12bd` Clarify consumer drone app compatibility
-- Repo status: uncommitted Coogee replay media-evidence update; verify with `git status`
+- Latest committed checkpoint before this patch: `8da0fb5` Add Coogee post-incident media evidence metadata
+- Repo status: drone-observation privacy and validation hardening patch prepared for review/commit; verify with `git status`
 
 ## Major Completed Systems
 
@@ -30,6 +30,7 @@
 - Phase 25C Drone Operator Console implemented locally: `/drone-console`, mission selector, human-entered observation form, recent feed panel, no-sighting patrol copy, and provisional species copy
 - Phase 25D-A metadata-only analyst review fields implemented locally: PATCH endpoint for review updates, `analyst_review_status`, `review_outcome`, `public_review_summary`, `analyst_notes_private`, `evidence_confidence`, `media_reference_type`, `media_timestamp` enums, frontend Analyst Review Panel in drone console
 - Phase 25D-B media attachment storage design and privacy review: attachment model proposal, storage backend tradeoffs, privacy visibility levels, public-feed rules, security checklist, and implementation gates documented. No storage code added.
+- Post-Phase 25D hardening patch in review: raw media references excluded from public drone observation output, impossible confidence values rejected server-side, manual mission selection prefill fixed, and Observation Analyst Review mojibake cleaned up.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -50,6 +51,7 @@
 - Live sightings ingestion pipeline still limited
 - Drone intake is vendor-neutral observation ingestion only; it does not provide aircraft control, image hosting, or computer-vision inference.
 - Drone Operator Console media references are references only; image upload, media hosting remain future work (design documented in Phase 25D-B).
+- Raw drone media references are private-by-default and excluded from public responses until future public-safe release rules exist.
 - Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
@@ -62,7 +64,7 @@
 ## Next Planned Phase
 
 - Phase 25D-B committed: media attachment storage design and privacy review (documentation phase; no storage code)
-- Coogee replay post-incident media evidence update (current uncommitted work)
+- Post-Phase 25D hardening patch
 - Phase 25D-C: Local-Only Media Attachment Prototype (not started)
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
@@ -129,6 +131,20 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - Secret scan on changed files: no credential values; documentation phrases and `js-tokens` package names only
 - Prohibited-language scan on changed files: guardrail-only matches only
+
+## Validation Counts (Post-Phase 25D Hardening Local Run)
+
+- Focused drone observation ingestion tests: `23 passed, 1 warning`
+- Full backend tests: `268 passed, 3 warnings`
+- Frontend tests: `22 passed`
+- Frontend build: passed
+- Frontend npm audit high: `0 vulnerabilities`
+- MkDocs build: passed
+- Secret scan: no credential matches
+- Prohibited-language scan: guardrail/disclaimer matches only
+- Public output hardening: `media_reference`, `media_reference_type`, and `media_timestamp` excluded via `PUBLIC_DROP_FIELDS`
+- Confidence validation: invalid `confidence` and `evidence_confidence` values now return 422; valid `0` and `1` boundaries accepted
+- Frontend hardening: Analyst Review cards no longer render raw media references; manual mission fetch selects using fetched mission detail instead of stale state
 
 ## Validation Counts (Latest Phase 25D-A Local Run)
 

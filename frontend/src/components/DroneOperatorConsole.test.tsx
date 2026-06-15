@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { mockDroneConsoleData } from "../api/mockData";
-import { DroneOperatorConsole, buildDroneObservationPayload, toApiObservationType, validateDroneObservationForm } from "./DroneOperatorConsole";
+import { DroneOperatorConsole, buildDroneObservationPayload, formForSelectedMission, toApiObservationType, validateDroneObservationForm } from "./DroneOperatorConsole";
 
 const validForm = {
   mission_id: "mission-test",
@@ -80,6 +80,19 @@ describe("DroneOperatorConsole", () => {
     expect(markup).toContain("pending");
     expect(markup).toContain("no sighting patrol result");
     expect(markup).toContain("shark sighting");
+    expect(markup).toContain("Private media references are not shown in public feed output.");
+    expect(markup).toContain("Media reference hidden from public output");
+    expect(markup).not.toContain("clip-surf-001");
+    expect(markup).not.toContain("clip-sighting-001");
+  });
+
+  it("prefills selected mission fields from directly fetched mission detail", () => {
+    const fetchedMission = mockDroneConsoleData.missions[0];
+    const form = formForSelectedMission(fetchedMission.mission.mission_id, fetchedMission);
+
+    expect(form.mission_id).toBe(fetchedMission.mission.mission_id);
+    expect(form.latitude).toBe(String(fetchedMission.latestTelemetry?.latitude));
+    expect(form.longitude).toBe(String(fetchedMission.latestTelemetry?.longitude));
   });
 
   it("renders review status dropdown with valid options", () => {

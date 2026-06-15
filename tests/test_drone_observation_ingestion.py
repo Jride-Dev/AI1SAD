@@ -266,13 +266,48 @@ class DroneObservationIngestionTests(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         obs = response.json()["observation"]
-        self.assertEqual(obs.get("media_reference"), "clip-001")
-        self.assertEqual(obs.get("media_reference_type"), "drone_clip_id")
+        self.assertNotIn("media_reference", obs)
+        self.assertNotIn("media_reference_type", obs)
+        self.assertNotIn("media_timestamp", obs)
         self.assertEqual(obs.get("analyst_review_status"), "needs_review")
         self.assertEqual(obs.get("review_outcome"), "confirms_operator_observation")
         self.assertNotIn("analyst_notes_private", obs)
         self.assertEqual(obs.get("public_review_summary"), "Operator observation consistent with clip review")
         self.assertEqual(obs.get("evidence_confidence"), 0.72)
+
+    def test_private_media_reference_types_excluded_from_public_output(self):
+        self._create_mission()
+        for media_type in ["local_filename", "private_case_reference"]:
+            reference = f"sensitive-{media_type}-001"
+            response = self.client.post(
+                "/api/v1/drone/missions/mission-test-drone/observations",
+                json={
+                    "timestamp": "2099-06-08T17:08:00Z",
+                    "latitude": 30.1826,
+                    "longitude": -85.7539,
+                    "observation_type": "shark_sighting",
+                    "confidence": 0.6,
+                    "review_status": "operator_reviewed",
+                    "media_reference": reference,
+                    "media_reference_type": media_type,
+                    "media_timestamp": "2099-06-08T17:07:00Z",
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+            created = json.dumps(response.json())
+            self.assertNotIn(reference, created)
+            self.assertNotIn("media_reference", created)
+            self.assertNotIn("media_reference_type", created)
+            self.assertNotIn("media_timestamp", created)
+
+        listed = self.client.get("/api/v1/drone/missions/mission-test-drone/observations")
+        self.assertEqual(listed.status_code, 200)
+        listed_text = json.dumps(listed.json())
+        self.assertNotIn("sensitive-local_filename-001", listed_text)
+        self.assertNotIn("sensitive-private_case_reference-001", listed_text)
+        self.assertNotIn("media_reference", listed_text)
+        self.assertNotIn("media_reference_type", listed_text)
+        self.assertNotIn("media_timestamp", listed_text)
 
     def test_unsupported_media_reference_type_is_rejected(self):
         self._create_mission()
@@ -318,6 +353,42 @@ class DroneObservationIngestionTests(unittest.TestCase):
             },
         )
         self.assertEqual(response.status_code, 422)
+
+    def test_observation_confidence_rejects_impossible_values(self):
+        self._create_mission()
+        for field, value in [("confidence", 1.7), ("confidence", -0.1), ("evidence_confidence", 1.2), ("evidence_confidence", -0.2)]:
+            response = self.client.post(
+                "/api/v1/drone/missions/mission-test-drone/observations",
+                json={
+                    "timestamp": "2099-06-08T17:08:00Z",
+                    "latitude": 30.1826,
+                    "longitude": -85.7539,
+                    "observation_type": "shark_sighting",
+                    "review_status": "operator_reviewed",
+                    field: value,
+                },
+            )
+            self.assertEqual(response.status_code, 422, field)
+
+    def test_observation_confidence_boundaries_are_accepted(self):
+        self._create_mission()
+        for value in [0, 1]:
+            response = self.client.post(
+                "/api/v1/drone/missions/mission-test-drone/observations",
+                json={
+                    "timestamp": "2099-06-08T17:08:00Z",
+                    "latitude": 30.1826,
+                    "longitude": -85.7539,
+                    "observation_type": "shark_sighting",
+                    "review_status": "operator_reviewed",
+                    "confidence": value,
+                    "evidence_confidence": value,
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+            observation = response.json()["observation"]
+            self.assertEqual(observation["confidence"], value)
+            self.assertEqual(observation["evidence_confidence"], value)
 
     def test_analyst_notes_private_excluded_from_public_feed(self):
         self._create_mission()

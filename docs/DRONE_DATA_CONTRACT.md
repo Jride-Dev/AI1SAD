@@ -90,7 +90,7 @@ Validation bounds:
 - `source_type`
 - `public_visibility`
 
-Private analyst or internal notes, analyst private notes, analyst reviewer role, and analyst review timestamps are never exposed through public endpoints.
+Private analyst or internal notes, analyst private notes, analyst reviewer role, analyst review timestamps, raw media references, media reference types, and media timestamps are never exposed through public endpoints. Media-reference visibility is private-by-default until a future phase defines public-safe attachment release rules.
 
 ### Observation Types
 
@@ -149,7 +149,7 @@ Validation bounds:
 - longitude: `-180` to `180`
 - count: `1` to `1000`, except `no_sighting_patrol_result` may use `0`
 - estimated length: `0.1` to `20` meters when present
-- confidence/species confidence: `0` to `1`
+- confidence/species confidence/evidence confidence: `0` to `1`; impossible values are rejected rather than clamped
 - timestamp is required and must parse as a date/time
 - observation type, review status, and species assessment source must use known enumerations
 
@@ -160,8 +160,8 @@ Species guesses remain provisional operator metadata unless confirmed by an offi
 Phase 25D-A adds metadata-only analyst review fields. These are annotations on existing observations:
 
 - `analyst_review_status`, `review_outcome`, `public_review_summary`, `evidence_confidence` are review metadata
-- `analyst_notes_private`, `analyst_reviewer_role`, `analyst_reviewed_at` are private and excluded from public responses
-- `media_reference_type` and `media_timestamp` describe the associated media (reference only; no upload or hosting)
+- `analyst_notes_private`, `analyst_reviewer_role`, `analyst_reviewed_at`, `media_reference`, `media_reference_type`, and `media_timestamp` are private and excluded from public responses
+- `media_reference_type` and `media_timestamp` describe the associated media internally (reference only; no upload or hosting)
 - The PATCH endpoint updates analyst review fields on an existing observation without modifying the original
 
 See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
