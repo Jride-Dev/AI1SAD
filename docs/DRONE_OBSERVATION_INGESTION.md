@@ -6,6 +6,8 @@ This is an observation-ingestion layer. AI1SAD records mission, telemetry, and o
 
 Phase 25B adds a read-only MAVLink telemetry bridge that can replay telemetry into the existing telemetry endpoint. It does not add aircraft command/control or create observations from telemetry alone.
 
+Phase 25C adds a local Drone Operator Console at `http://localhost:5174/drone-console`. The console is a human-facing frontend for the same mission, observation, active-observation, and surveillance-feed routes. It does not add aircraft control or duplicate backend scoring logic.
+
 ## Scope
 
 - Human operator mission records
@@ -15,6 +17,7 @@ Phase 25B adds a read-only MAVLink telemetry bridge that can replay telemetry in
 - Reviewed sighting handling
 - Map-ready surveillance feed output
 - Replay fixture support for historical drone observations
+- Local operator-console workflow for human-entered observations
 
 ## Non-Scope
 
@@ -23,6 +26,7 @@ Phase 25B adds a read-only MAVLink telemetry bridge that can replay telemetry in
 - MAVLink dependencies
 - Computer-vision inference
 - Image hosting
+- Autonomous operator-console flight actions
 - Auth or billing
 - Broad scoring-weight changes
 
@@ -35,6 +39,8 @@ Drone observations are operational signals. A single unreviewed sighting can rai
 A no-sighting patrol result is not proof of safety. It only narrows uncertainty inside the documented coverage area, patrol window, and visibility context.
 
 Probable species can be stored with provenance and confidence. It remains metadata unless existing regional suitability rules independently use a bounded species context.
+
+The console supports `other` as a generic observation type for reviewed field notes that do not fit the structured categories. `other` remains a generic observation signal and does not create a shark sighting.
 
 ## API Routes
 
@@ -56,3 +62,11 @@ Public responses filter internal notes and expose `flight_control.commands_expos
 Drone write endpoints are disabled by default. Set `DRONE_INGEST_ENABLED=true` in a reviewed local or deployment environment before accepting mission, telemetry, observation, or completion writes.
 
 Public read endpoints remain available for sanitized active-observation and surveillance-feed output.
+
+## Console Route
+
+```text
+http://localhost:5174/drone-console
+```
+
+The console uses explicit mock/demo fixtures only when frontend mock mode is enabled. In live mode, backend failures and validation errors remain visible and do not silently fall back to mock data.

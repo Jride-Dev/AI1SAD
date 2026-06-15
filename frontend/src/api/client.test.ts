@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { __setMockModeForTests, getAlerts, getDashboardData, getWarning } from "./client";
+import { __setMockModeForTests, getAlerts, getDashboardData, getDroneConsoleData, submitDroneObservation, getWarning } from "./client";
 
 describe("dashboard API client", () => {
   const fetchMock = vi.fn();
@@ -55,5 +55,64 @@ describe("dashboard API client", () => {
       json: async () => ({ unexpected: true }),
     });
     await expect(getAlerts()).rejects.toThrow("Malformed API payload");
+  });
+
+  it("returns drone console demo data only when mock mode is enabled", async () => {
+    __setMockModeForTests(true);
+    const data = await getDroneConsoleData();
+
+    expect(data.data_source).toBe("mock");
+    expect(data.missions[0].mission.autonomous_flight_control).toBe(false);
+    expect(data.feed.flight_control?.commands_exposed).toBe(false);
+  });
+
+  it("submits drone observations in explicit mock mode", async () => {
+    __setMockModeForTests(true);
+    const observation = await submitDroneObservation("mission-panama-city-mavlink-demo", {
+      timestamp: "2026-06-08T17:10:00Z",
+      latitude: 30.1826,
+      longitude: -85.7539,
+      observation_type: "no_sighting_patrol_result",
+      count: 0,
+      confidence: 0.6,
+      review_status: "operator_reviewed",
+      source: "drone_operator_visual",
+      source_type: "drone_operator",
+      public_visibility: true,
+    });
+
+    expect(observation.mission_id).toBe("mission-panama-city-mavlink-demo");
+    expect(observation.observation_type).toBe("no_sighting_patrol_result");
+  });
+
+  it("surfaces backend validation errors for drone observation submit", async () => {
+    __setMockModeForTests(false);
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 422,
+      json: async () => ({ detail: "latitude must be between -90 and 90" }),
+    });
+
+    await expect(
+      submitDroneObservation("mission-test", {
+        timestamp: "2026-06-08T17:10:00Z",
+        latitude: 95,
+        longitude: -85.7539,
+        observation_type: "shark_sighting",
+        confidence: 0.6,
+        review_status: "operator_reviewed",
+        source: "drone_operator_visual",
+        source_type: "drone_operator",
+        public_visibility: true,
+      }),
+    ).rejects.toThrow("latitude must be between -90 and 90");
+  });
+
+  it("does not silently mock drone console data when live backend is unavailable", async () => {
+    __setMockModeForTests(false);
+    fetchMock.mockRejectedValueOnce(new Error("backend unavailable"));
+    fetchMock.mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ results: [] }) });
+
+    await expect(getDroneConsoleData()).rejects.toThrow("backend unavailable");
   });
 });

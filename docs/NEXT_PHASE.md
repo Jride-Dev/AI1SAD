@@ -1,10 +1,12 @@
 # Next Phase
 
-## Phase 25C: Drone Operator Observation Console
+## Phase 25D: Observation Media References and Analyst Review Queue
 
 ## Objective
 
-Add a local operator console for human-reviewed drone observations using the existing AI1SAD drone mission, telemetry, observation, and surveillance-feed APIs.
+Add a bounded workflow for attaching media references to human-entered observations and routing those observations through an analyst review queue.
+
+Phase 25D should build on Phase 25C's Drone Operator Console without changing aircraft-control boundaries.
 
 ## Constraints
 
@@ -15,70 +17,68 @@ Add a local operator console for human-reviewed drone observations using the exi
 - Do not transmit MAVLink commands
 - Do not add DJI-specific dependencies
 - Do not add computer vision
+- Do not upload or host media until storage, privacy, and retention rules are reviewed
 - Do not change auth/billing
 - Do not commit until review
 
-## Phase 25B Completion Note
+## Phase 25C Completion Note
 
-Phase 25B adds a read-only MAVLink telemetry bridge:
+Phase 25C adds a local Drone Operator Console:
 
-- deterministic JSONL fixture replay
-- safe Panama City shoreline patrol telemetry fixture
-- telemetry normalization and validation
-- mocked API submission tests
-- disabled-by-default bridge and UDP modes
-- no flight-control routes or commands
-
-Operator-console UI remains future work.
+- frontend route: `http://localhost:5174/drone-console`
+- mission selector and known-mission fetch workflow
+- human-entered observation form
+- no-sighting patrol caveat
+- provisional species-copy guidance
+- recent map-ready feed panel
+- explicit live-mode backend error handling
+- existing drone observation endpoints reused
+- no aircraft control
 
 ## Planned Scope
 
-1. Display active mission telemetry from existing APIs
-2. Let a human operator submit reviewed observations
-3. Show public-safe surveillance feed items
-4. Preserve no-sighting patrol semantics
-5. Keep all write actions behind existing backend gates
-6. Add focused tests proving no aircraft-control commands are exposed
+1. Define media-reference metadata fields for observations
+2. Add analyst review queue states and filters
+3. Preserve public/private media-reference boundaries
+4. Show queue-ready observations in a local analyst view
+5. Keep media references as references only unless storage is explicitly designed
+6. Add tests for private notes, media-reference filtering, and review-state transitions
 
 ## Source Inputs
 
-- Existing AI1SAD drone mission and observation APIs
-- Existing AI1SAD surveillance-feed output
-- Existing map-ready feed fields
-
-The console should not communicate with aircraft directly.
+- Existing drone mission and observation APIs
+- Phase 25C console-submitted observations
+- Existing public-safe surveillance feed
+- Existing `media_reference` field
 
 ## Bounded Behavior Rules
 
-- Operators submit source-attributed observations only.
-- Telemetry remains context and should not create a sighting.
-- Do not infer species or behavior from telemetry alone.
-- Do not tune scoring weights around Panama City or any single case.
+- Media references are metadata, not uploaded evidence, until a reviewed storage design exists.
+- Analyst review may change review status and public summary metadata.
+- Analyst review must not infer species as official classification without an official or qualified source.
+- No observation media workflow may control aircraft.
+- No media reference may expose private filesystem paths in public output.
 
 ## Recommended Execution Order
 
-1. Console requirements and safety design
-2. Read-only mission/telemetry/feed views
-3. Human-reviewed observation form
-4. Tests for safe filtering and no command exposure
-5. Docs and validation sweep
+1. Review current observation contract and public filtering
+2. Design analyst-review states and allowed transitions
+3. Add queue API or reuse existing endpoints if sufficient
+4. Add frontend queue surface
+5. Update drone docs and safety docs
+6. Run backend, frontend, docs, secret, and prohibited-language validation
 
 ## Validation Expectations
 
-- focused drone operator console tests
-- focused MAVLink bridge regression tests
-- focused drone intake regression tests
+- focused drone observation tests
+- focused analyst queue tests if backend changes are added
+- frontend tests
+- frontend build
 - full backend test suite
 - mkdocs build
 - secret scan
 - prohibited-language scan
 
-Frontend tests/build should run if frontend runtime files are touched.
-
 ## Review Gate
 
-Do not commit until review.
-
-## Current Interruption Note
-
-Phase 25B is committed. The Coogee Beach Sydney 2026 replay case study is a pre-Phase 25C package. Begin Phase 25C only after that case-study package is committed and pushed or explicitly set aside.
+Do not begin Phase 25D until Phase 25C has been reviewed and either committed or explicitly set aside.

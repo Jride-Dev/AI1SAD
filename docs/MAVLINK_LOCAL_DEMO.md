@@ -35,6 +35,14 @@ The script:
 5. fetches the public surveillance feed
 6. prints concise pass/fail output
 
+After the backend and frontend are running, the Drone Operator Console can be opened at:
+
+```text
+http://localhost:5174/drone-console
+```
+
+Use the console to review the demo mission ID and submit human-entered observations. The console does not read `.tlog` files, listen to UDP, or send MAVLink commands.
+
 ## Generic Fixture Replay
 
 ```powershell
@@ -42,4 +50,3 @@ python scripts/run_mavlink_bridge.py --fixture-jsonl tests/fixtures/mavlink/pana
 ```
 
 `.tlog` and UDP modes are placeholders in Phase 25B and do not parse or transmit MAVLink traffic yet.
-

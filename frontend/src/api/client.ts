@@ -1,10 +1,15 @@
-import { mockDashboardData, mockDemoScenarios, mockReplayLibrary, scenarioCoordinates } from "./mockData";
+import { mockDashboardData, mockDemoScenarios, mockDroneConsoleData, mockReplayLibrary, scenarioCoordinates } from "./mockData";
 import type {
   Alert,
   Coordinates,
   DashboardData,
   DemoScenario,
   DemoStatus,
+  DroneConsoleData,
+  DroneConsoleMissionOption,
+  DroneObservation,
+  DroneObservationPayload,
+  DroneSurveillanceFeed,
   ExplanationResponse,
   ProviderHealth,
   RegionalPack,
@@ -28,14 +33,23 @@ function useMocks(): boolean {
 
 type Validator<T> = (value: unknown) => value is T;
 
-async function requestJson<T>(path: string, fallback: T, validate?: Validator<T>): Promise<T> {
+async function requestJson<T>(path: string, fallback: T, validate?: Validator<T>, init?: RequestInit): Promise<T> {
   if (useMocks()) {
     return fallback;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(`${API_BASE_URL}${path}`, init);
   if (!response.ok) {
-    throw new Error(`Request failed (${response.status}) for ${path}`);
+    let detail = "";
+    try {
+      const errorPayload = await response.json();
+      if (errorPayload && typeof errorPayload === "object" && "detail" in errorPayload) {
+        detail = `: ${String((errorPayload as { detail: unknown }).detail)}`;
+      }
+    } catch {
+      detail = "";
+    }
+    throw new Error(`Request failed (${response.status}) for ${path}${detail}`);
   }
   let payload: unknown;
   try {
@@ -47,6 +61,14 @@ async function requestJson<T>(path: string, fallback: T, validate?: Validator<T>
     throw new Error(`Malformed API payload for ${path}`);
   }
   return payload as T;
+}
+
+function postJson<T>(path: string, payload: unknown, fallback: T, validate?: Validator<T>): Promise<T> {
+  return requestJson(path, fallback, validate, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 }
 
 function query(params: Record<string, string | number | undefined>): string {
@@ -225,6 +247,93 @@ export async function getDashboardData(coords: Coordinates): Promise<DashboardDa
     demoStatus,
     data_source: useMocks() ? "mock" : "live",
   };
+}
+
+export async function getDroneSurveillanceFeed(): Promise<DroneSurveillanceFeed> {
+  return requestJson(
+    "/api/v1/drone/surveillance-feed",
+    mockDroneConsoleData.feed,
+    (value): value is DroneSurveillanceFeed =>
+      Boolean(value && typeof value === "object" && Array.isArray((value as { results?: unknown }).results)),
+  );
+}
+
+export async function getDroneActiveObservations(): Promise<DroneObservation[]> {
+  const response = await requestJson<DroneObservation[] | { results: DroneObservation[] }>(
+    "/api/v1/drone/active-observations",
+    mockDroneConsoleData.observations,
+    (value): value is DroneObservation[] | { results: DroneObservation[] } =>
+      Array.isArray(value) || Boolean(value && typeof value === "object" && Array.isArray((value as { results?: unknown }).results)),
+  );
+  return Array.isArray(response) ? response : response.results;
+}
+
+export async function getDroneMission(missionId: string): Promise<DroneConsoleMissionOption> {
+  const fallback = mockDroneConsoleData.missions.find((item) => item.mission.mission_id === missionId) ?? mockDroneConsoleData.missions[0];
+  const response = await requestJson<{ mission: DroneConsoleMissionOption["mission"] }>(
+    `/api/v1/drone/missions/${encodeURIComponent(missionId)}`,
+    { mission: fallback.mission },
+    (value): value is { mission: DroneConsoleMissionOption["mission"] } =>
+      Boolean(value && typeof value === "object" && "mission" in value),
+  );
+  return { mission: response.mission, latestTelemetry: fallback.latestTelemetry ?? null };
+}
+
+export async function getDroneMissionObservations(missionId: string): Promise<DroneObservation[]> {
+  const fallback = mockDroneConsoleData.observations.filter((item) => item.mission_id === missionId);
+  const response = await requestJson<DroneObservation[] | { results: DroneObservation[] }>(
+    `/api/v1/drone/missions/${encodeURIComponent(missionId)}/observations`,
+    fallback,
+    (value): value is DroneObservation[] | { results: DroneObservation[] } =>
+      Array.isArray(value) || Boolean(value && typeof value === "object" && Array.isArray((value as { results?: unknown }).results)),
+  );
+  return Array.isArray(response) ? response : response.results;
+}
+
+export async function getDroneConsoleData(): Promise<DroneConsoleData> {
+  if (useMocks()) {
+    return mockDroneConsoleData;
+  }
+  const [feed, observations] = await Promise.all([getDroneSurveillanceFeed(), getDroneActiveObservations()]);
+  const missionIds = Array.from(new Set([...feed.results.map((item) => item.mission_id), ...observations.map((item) => item.mission_id)].filter(Boolean)));
+  const missions: DroneConsoleMissionOption[] = missionIds.map((missionId) => {
+    const observation = observations.find((item) => item.mission_id === missionId);
+    const feedItem = feed.results.find((item) => item.mission_id === missionId);
+    return {
+      mission: {
+        mission_id: missionId,
+        drone_id: observation?.drone_id ?? "unknown",
+        status: "active",
+        mission_type: feedItem?.recommended_surveillance_pattern ?? "manual_observation_patrol",
+        recommended_pattern: feedItem?.recommended_surveillance_pattern,
+        pack_id: observation?.active_pack ?? feedItem?.active_pack,
+        human_approved: true,
+        autonomous_flight_control: false,
+        source: observation?.source ?? "drone_observation_intake",
+        visibility: observation?.visibility ?? "public",
+      },
+      latestTelemetry: null,
+    };
+  });
+  return { missions, observations, feed, data_source: "live" };
+}
+
+export async function submitDroneObservation(missionId: string, payload: DroneObservationPayload): Promise<DroneObservation> {
+  const fallback: DroneObservation = {
+    ...mockDroneConsoleData.observations[0],
+    ...payload,
+    mission_id: missionId,
+    observation_id: `mock-${payload.observation_type}-${Date.now()}`,
+    drone_id: mockDroneConsoleData.missions.find((item) => item.mission.mission_id === missionId)?.mission.drone_id,
+  };
+  const response = await postJson<{ observation: DroneObservation }>(
+    `/api/v1/drone/missions/${encodeURIComponent(missionId)}/observations`,
+    payload,
+    { observation: fallback },
+    (value): value is { observation: DroneObservation } =>
+      Boolean(value && typeof value === "object" && "observation" in value),
+  );
+  return response.observation;
 }
 
 export function __setMockModeForTests(value: boolean | null): void {

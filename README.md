@@ -17,7 +17,9 @@ AI1SAD does not predict individual incidents or infer shark intent. It separates
 Current development checkpoint:
 
 - Latest completed phase: Phase 25A, Drone Observation Intake MVP
-- Next planned phase: Phase 25B, MAVLink Telemetry Bridge
+- Latest completed maintenance: targeted Dependabot esbuild alert patch
+- Current implementation: Phase 25C, Drone Operator Observation Console
+- Next planned phase: Phase 25D, Observation Media References and Analyst Review Queue
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
@@ -62,6 +64,8 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Regional packs for Florida, Hawaii, Western Australia, Queensland, South Africa, Red Sea, New South Wales, U.S. East Coast, California, and Brazil/Recife planning
 - Static/offline adapters for biological events, vessel/fishing context, human exposure, kelp forest habitat, Hawaii habitat, Hawaii tide/current context, and Hawaii water clarity/turbidity context
 - Vendor-neutral human-operated drone observation ingestion MVP
+- Drone Operator Console for human-entered patrol observations, including shark sightings, no-sighting patrols, carcasses, baitfish activity, poor visibility, and surf-line activity. AI1SAD records observations and recommends surveillance attention; it does not control aircraft or predict individual attacks.
+- Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
 ## Local Demo
@@ -171,17 +175,20 @@ See the full [Replay Library](docs/REPLAY_LIBRARY.md).
 
 ## Drone Observation Intake
 
-Phase 25A adds a vendor-neutral observation-ingestion path for human-operated coastal-surveillance drones:
+Phase 25A adds a vendor-neutral observation-ingestion path for human-operated coastal-surveillance drones. Phase 25C adds a local Drone Operator Console at `/drone-console` for human-entered patrol observations:
 
 - mission records
 - telemetry points
 - source-attributed observations
+- no-sighting patrol caveats
 - review status
 - probable species metadata with provenance
 - no-sighting patrol semantics
 - public-safe active-observation feed
 - surveillance-feed integration
 - replay fixture support
+
+AI1SAD supports human-approved surveillance decisions. It does not control aircraft or predict individual attacks.
 
 It does not add:
 
@@ -195,10 +202,12 @@ It does not add:
 
 See:
 
+- [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 - [Drone Observation Ingestion](docs/DRONE_OBSERVATION_INGESTION.md)
 - [Drone Mission Workflow](docs/DRONE_MISSION_WORKFLOW.md)
 - [Drone Data Contract](docs/DRONE_DATA_CONTRACT.md)
 - [Drone Operations Safety](docs/DRONE_OPERATIONS_SAFETY.md)
+- [MAVLink Telemetry Bridge](docs/MAVLINK_TELEMETRY_BRIDGE.md)
 
 ## Safety And Privacy
 
@@ -220,16 +229,18 @@ Operational recommendations require human review. Scores support interpretation 
 
 ## Validation Snapshot
 
-Latest Phase 25A validation recorded in [Project Status](docs/PROJECT_STATUS.md):
+Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-- Focused drone-ingestion tests: `10 passed`
-- Focused Panama City replay and replay-library tests: `7 passed`
-- Full backend tests: `242 passed`
-- Direct MkDocs build: passed
-- Secret scan on changed files: no matches
-- JSON/SVG parse checks: passed
+Phase 25C local validation:
 
-Frontend tests/build are available under `frontend/` when frontend runtime files are touched.
+- Frontend tests: `4 passed`, `17 tests passed`
+- Frontend build: passed
+- Frontend audit: `0 vulnerabilities`
+- Focused drone-ingestion tests: `11 passed, 1 warning`
+- Focused MAVLink bridge tests: `11 passed`
+- Full backend tests: `256 passed, 3 warnings`
+- MkDocs build: passed with the known Material advisory banner
+- README link/image check: passed
 
 ## Documentation Map
 
@@ -250,6 +261,7 @@ Frontend tests/build are available under `frontend/` when frontend runtime files
 - [Brand Identity](docs/BRAND_IDENTITY.md)
 - [Brand Deployment Map](docs/BRAND_DEPLOYMENT_MAP.md)
 - [Dependency Security Review](docs/DEPENDENCY_SECURITY_REVIEW.md)
+- [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 
 ## Development Notes
 

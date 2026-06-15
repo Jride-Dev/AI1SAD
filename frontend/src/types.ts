@@ -238,3 +238,125 @@ export type DashboardData = {
   demoStatus: DemoStatus;
   data_source?: "mock" | "live";
 };
+
+export type DroneMission = {
+  mission_id: string;
+  drone_id: string;
+  operator_role?: string;
+  region?: string;
+  pack_id?: string;
+  mission_type?: string;
+  started_at?: string;
+  ended_at?: string | null;
+  status?: string;
+  recommended_pattern?: string;
+  human_approved?: boolean;
+  autonomous_flight_control?: boolean;
+  source?: string;
+  visibility?: string;
+  notes_public?: string;
+};
+
+export type DroneTelemetrySummary = {
+  timestamp?: string;
+  latitude?: number;
+  longitude?: number;
+  altitude_m?: number | null;
+  heading_deg?: number | null;
+  groundspeed_mps?: number | null;
+  battery_percent?: number | null;
+  gps_fix_quality?: string | null;
+  source?: string;
+  source_type?: string;
+};
+
+export type DroneObservation = {
+  observation_id?: string;
+  mission_id: string;
+  drone_id?: string;
+  timestamp: string;
+  latitude: number;
+  longitude: number;
+  observation_type: string;
+  count?: number;
+  estimated_length_m?: number | null;
+  probable_species?: string | null;
+  species_assessment_source?: string | null;
+  species_confidence?: number | null;
+  observed_behavior?: string | null;
+  behavior_source?: string | null;
+  evidence_type?: string | null;
+  media_reference?: string | null;
+  confidence: number;
+  review_status: string;
+  source: string;
+  source_type: string;
+  visibility?: string;
+  public_visibility?: boolean | string;
+  active_pack?: string;
+  recommended_surveillance_pattern?: string;
+};
+
+export type DroneFeedItem = {
+  latitude: number;
+  longitude: number;
+  timestamp: string;
+  observation_type: string;
+  review_status: string;
+  confidence: number;
+  mission_id: string;
+  source_type: string;
+  active_pack?: string;
+  explanation_summary?: string;
+  recommended_action?: string;
+  recommended_surveillance_pattern?: string;
+  expires_at?: string;
+  data_freshness?: { status?: string; source?: string };
+};
+
+export type DroneSurveillanceFeed = {
+  disclaimer?: string;
+  results: DroneFeedItem[];
+  surveillance?: SurveillanceResponse;
+  alerts?: Alert[];
+  flight_control?: {
+    autonomous_flight_control: boolean;
+    commands_exposed: boolean;
+    human_approval_required: boolean;
+  };
+};
+
+export type DroneConsoleMissionOption = {
+  mission: DroneMission;
+  latestTelemetry?: DroneTelemetrySummary | null;
+};
+
+export type DroneConsoleData = {
+  missions: DroneConsoleMissionOption[];
+  observations: DroneObservation[];
+  feed: DroneSurveillanceFeed;
+  data_source: "mock" | "live";
+};
+
+export type DroneObservationPayload = {
+  timestamp: string;
+  latitude: number;
+  longitude: number;
+  observation_type: string;
+  count?: number;
+  estimated_length_m?: number;
+  probable_species?: string;
+  species_assessment_source?: string;
+  species_confidence?: number;
+  observed_behavior?: string;
+  behavior_source?: string;
+  evidence_type?: string;
+  media_reference?: string;
+  analyst_notes?: string;
+  internal_notes?: string;
+  confidence: number;
+  review_status: string;
+  source: string;
+  source_type: string;
+  public_visibility: boolean;
+};

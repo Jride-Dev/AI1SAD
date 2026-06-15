@@ -252,6 +252,10 @@ h3 {
   grid-template-columns: minmax(260px, 0.35fr) minmax(0, 1fr);
 }
 
+.drone-console-grid {
+  grid-template-columns: minmax(320px, 0.58fr) minmax(300px, 0.42fr);
+}
+
 .wide {
   grid-column: 1 / -1;
 }
@@ -710,6 +714,211 @@ h3 {
   justify-content: flex-start;
 }
 
+.drone-console-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(217, 240, 255, 0.9)),
+    repeating-radial-gradient(circle at 84% 30%, rgba(46, 196, 214, 0.12) 0 1px, transparent 1px 24px);
+}
+
+.drone-console-hero p,
+.safety-copy p,
+.recent-observations p {
+  color: #35495a;
+  line-height: 1.5;
+}
+
+.safety-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.safety-badges span {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(15, 139, 141, 0.22);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #0b4051;
+  background: #f4fbfd;
+  font-size: 13px;
+}
+
+.mission-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.mission-panel label,
+.drone-form label {
+  display: grid;
+  gap: 6px;
+  color: #405464;
+  font-size: 13px;
+}
+
+.mission-panel select,
+.mission-panel input,
+.manual-mission-row input,
+.drone-form input,
+.drone-form select,
+.drone-form textarea {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #b8d8df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102232;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.drone-form textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.manual-mission-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.manual-mission-row button,
+.drone-form button {
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--teal), var(--purple));
+  color: #ffffff;
+  min-height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.drone-form button:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
+.mission-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.safety-copy {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.safety-copy p {
+  border-left: 4px solid var(--teal);
+  padding: 10px 12px;
+  background: #f4fbfd;
+  border-radius: 0 8px 8px 0;
+}
+
+.drone-form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.notes-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.checkbox-field {
+  display: flex !important;
+  grid-template-columns: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-field input {
+  width: auto;
+  min-height: auto;
+}
+
+.validation-box,
+.success-box {
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.validation-box {
+  border: 1px solid #f0c86a;
+  background: #fffaf0;
+  color: #6b4e0f;
+}
+
+.success-box {
+  border: 1px solid rgba(15, 139, 141, 0.24);
+  background: #effbf8;
+  color: #11624f;
+  display: flex;
+  align-items: center;
+}
+
+.recent-observations {
+  display: grid;
+  gap: 14px;
+}
+
+.observation-list {
+  display: grid;
+  gap: 10px;
+}
+
+.observation-list article {
+  border: 1px solid #d8e8ed;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(248, 253, 254, 0.98), rgba(217, 240, 255, 0.78)),
+    repeating-linear-gradient(90deg, rgba(46, 196, 214, 0.06) 0 1px, transparent 1px 30px);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.observation-list article > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5f7182;
+  font-size: 13px;
+}
+
+.observation-list strong {
+  color: #0b4051;
+  text-transform: capitalize;
+}
+
 .timeline small {
   color: var(--muted);
 }
@@ -840,6 +1049,7 @@ h3 {
   .grid.two,
   .grid.three,
   .replay-library-grid,
+  .drone-console-grid,
   .operational-map-layout,
   .zone-card,
   .alert-card {
@@ -852,6 +1062,8 @@ h3 {
 
   .topbar,
   .demo-banner,
+  .drone-console-hero,
+  .form-heading,
   .score-cluster {
     align-items: flex-start;
     justify-content: flex-start;
@@ -891,6 +1103,12 @@ h3 {
 
   .brand-hero strong {
     font-size: 18px;
+  }
+
+  .form-grid,
+  .notes-grid,
+  .mission-facts {
+    grid-template-columns: 1fr;
   }
 
   .replay-card {

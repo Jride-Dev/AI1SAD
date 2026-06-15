@@ -1,0 +1,134 @@
+# Drone Operator Console
+
+Phase 25C adds a local frontend console for human-entered coastal and drone patrol observations.
+
+The console is observation intake only. It does not control aircraft, transmit MAVLink commands, upload waypoints, run computer vision, or infer sightings from telemetry alone.
+
+Required operating invariant:
+
+```text
+AI1SAD recommends missions.
+Humans approve missions.
+Drone operators fly missions.
+AI1SAD ingests observations.
+```
+
+## Local Route
+
+Frontend route:
+
+```text
+http://localhost:5174/drone-console
+```
+
+The page is available from the local dashboard navigation as **Drone Console**.
+
+## What Operators Can Record
+
+The console supports source-attributed, human-entered observation types:
+
+- shark sighting
+- unknown large marine animal
+- no-sighting patrol
+- carcass
+- baitfish congregation
+- marine mammal activity
+- poor visibility
+- surf-line activity
+- swimmer density
+- vessel activity
+- other
+
+`OTHER` is accepted as a generic observation type and remains bounded context. It does not create a shark sighting.
+
+## Required Fields
+
+- mission ID
+- observation type
+- observed timestamp
+- latitude
+- longitude
+- observer role
+- visual confidence
+- provenance
+
+The console maps these fields onto the existing drone observation endpoint:
+
+```text
+POST /api/v1/drone/missions/{mission_id}/observations
+```
+
+## Optional Fields
+
+- estimated size
+- estimated count
+- species guess
+- species confidence
+- behavior notes
+- visibility notes
+- surf-zone notes
+- media reference
+- operator notes
+- public summary
+
+Species guesses are stored as provisional operator metadata. They are not official species classifications.
+
+Media references are references only in Phase 25C. The console does not upload images or video.
+
+## Mission And Telemetry Context
+
+The console reuses existing mission and feed routes:
+
+```text
+GET /api/v1/drone/missions/{mission_id}
+GET /api/v1/drone/missions/{mission_id}/observations
+GET /api/v1/drone/active-observations
+GET /api/v1/drone/surveillance-feed
+```
+
+If the read-only MAVLink bridge has posted telemetry to a mission, that telemetry remains mission context only. Telemetry alone never creates an observation or sighting.
+
+## Safety Copy
+
+The UI states:
+
+```text
+AI1SAD records human observations and recommends surveillance attention. It does not control aircraft or predict individual shark attacks.
+```
+
+For no-sighting patrols:
+
+```text
+No-sighting patrols reduce uncertainty only within the observed patrol area, time window, and visibility conditions. They do not prove an area is safe.
+```
+
+For species guesses:
+
+```text
+Species guesses are provisional unless confirmed by an official source or qualified review.
+```
+
+## Demo And Live Behavior
+
+Demo fixtures are available only when frontend mock mode is explicitly enabled.
+
+In live mode, backend failures and validation errors are shown to the operator. The console does not silently switch to mock data after a failed live request.
+
+Drone write endpoints remain disabled unless:
+
+```text
+DRONE_INGEST_ENABLED=true
+```
+
+## Public Feed Filtering
+
+Public feed output remains map-ready and public-safe. Internal/operator notes are not exposed through public response paths.
+
+The console displays recent feed items with:
+
+- observation type
+- timestamp
+- coordinates
+- confidence
+- public/private visibility marker when available
+- provenance or source label

@@ -1,22 +1,29 @@
-import { Activity, AlertTriangle, BookOpen, Boxes, ExternalLink, HeartPulse, Map, Plane, RotateCcw } from "lucide-react";
+import { Activity, AlertTriangle, BookOpen, Boxes, ClipboardList, ExternalLink, HeartPulse, Map, Plane, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
 import { scenarioCoordinates } from "./api/mockData";
 import { OperationalMap } from "./components/OperationalMap";
+import { DroneOperatorConsole } from "./components/DroneOperatorConsole";
 import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth, ReplayLibraryItem } from "./types";
 
 const pages = [
-  { id: "map", label: "Live Map", icon: Map },
-  { id: "surveillance", label: "Surveillance", icon: Plane },
-  { id: "replay", label: "Replay", icon: RotateCcw },
-  { id: "replayLibrary", label: "Replay Library", icon: BookOpen },
-  { id: "alerts", label: "Alerts", icon: AlertTriangle },
-  { id: "health", label: "Provider Health", icon: HeartPulse },
-  { id: "packs", label: "Regional Packs", icon: Boxes },
+  { id: "map", label: "Live Map", icon: Map, path: "/" },
+  { id: "surveillance", label: "Surveillance", icon: Plane, path: "/surveillance" },
+  { id: "droneConsole", label: "Drone Console", icon: ClipboardList, path: "/drone-console" },
+  { id: "replay", label: "Replay", icon: RotateCcw, path: "/replay" },
+  { id: "replayLibrary", label: "Replay Library", icon: BookOpen, path: "/replay-library" },
+  { id: "alerts", label: "Alerts", icon: AlertTriangle, path: "/alerts" },
+  { id: "health", label: "Provider Health", icon: HeartPulse, path: "/provider-health" },
+  { id: "packs", label: "Regional Packs", icon: Boxes, path: "/regional-packs" },
 ] as const;
 
 type PageId = (typeof pages)[number]["id"];
+
+function pageFromPath(pathname: string): PageId {
+  const match = pages.find((item) => item.path === pathname);
+  return match?.id ?? "map";
+}
 
 export function resolveReplaySelectionId(currentId: string, items: ReplayLibraryItem[]): string {
   if (!items.length) return "";
@@ -25,7 +32,7 @@ export function resolveReplaySelectionId(currentId: string, items: ReplayLibrary
 }
 
 export default function App() {
-  const [activePage, setActivePage] = useState<PageId>("map");
+  const [activePage, setActivePage] = useState<PageId>(() => (typeof window === "undefined" ? "map" : pageFromPath(window.location.pathname)));
   const [selectedScenarioId, setSelectedScenarioId] = useState("horseshoe_reef_2026");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,6 +62,13 @@ export default function App() {
 
   const page = useMemo(() => pages.find((item) => item.id === activePage) ?? pages[0], [activePage]);
 
+  const selectPage = (item: (typeof pages)[number]) => {
+    setActivePage(item.id);
+    if (typeof window !== "undefined" && window.location.pathname !== item.path) {
+      window.history.pushState(null, "", item.path);
+    }
+  };
+
   return (
     <main className="shell">
       <aside className="sidebar">
@@ -69,7 +83,7 @@ export default function App() {
           {pages.map((item) => {
             const Icon = item.icon;
             return (
-              <button key={item.id} className={item.id === activePage ? "active" : ""} onClick={() => setActivePage(item.id)} type="button">
+              <button key={item.id} className={item.id === activePage ? "active" : ""} onClick={() => selectPage(item)} type="button">
                 <Icon size={18} aria-hidden="true" />
                 <span>{item.label}</span>
               </button>
@@ -99,7 +113,15 @@ export default function App() {
         </header>
         <BrandHero />
 
-        {error ? <ErrorPanel message={error} /> : loading || !data ? <LoadingPanel /> : <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />}
+        {activePage === "droneConsole" ? (
+          <DroneOperatorConsole />
+        ) : error ? (
+          <ErrorPanel message={error} />
+        ) : loading || !data ? (
+          <LoadingPanel />
+        ) : (
+          <DashboardPage page={activePage} data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={setSelectedScenarioId} />
+        )}
       </section>
     </main>
   );
@@ -139,6 +161,7 @@ function DashboardPage({
 }) {
   if (page === "map") return <LiveWarningMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />;
   if (page === "surveillance") return <SurveillanceView data={data} />;
+  if (page === "droneConsole") return <DroneOperatorConsole />;
   if (page === "replay") return <ReplayExplorer data={data} />;
   if (page === "replayLibrary") return <ReplayLibraryView items={data.replayLibrary} />;
   if (page === "packs") return <RegionalPackExplorer data={data} />;

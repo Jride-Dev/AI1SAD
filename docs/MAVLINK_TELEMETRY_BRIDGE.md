@@ -63,3 +63,8 @@ Unavailable values remain `null`. The bridge does not invent telemetry.
 
 Telemetry alone never creates a shark sighting or species observation.
 
+## Operator Console Relationship
+
+The Phase 25C Drone Operator Console can display mission context that was populated by the read-only bridge when such telemetry is available through existing mission/feed workflows.
+
+The console does not connect to MAVLink, does not transmit MAVLink messages, and does not create sightings from telemetry alone. Human-entered observations remain separate from telemetry records.

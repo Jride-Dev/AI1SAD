@@ -27,6 +27,7 @@ OBSERVATION_TYPES = {
     "swimmer_density",
     "vessel_activity",
     "no_sighting_patrol_result",
+    "other",
 }
 
 REVIEW_STATUSES = {"unreviewed", "operator_reviewed", "analyst_reviewed", "confirmed", "rejected"}
@@ -276,6 +277,7 @@ def observation_signal_type(observation_type: str) -> str:
         "swimmer_density": "human_exposure",
         "vessel_activity": "vessel_activity",
         "no_sighting_patrol_result": "no_sighting_patrol_result",
+        "other": "drone_observation",
     }.get(observation_type, "drone_observation")
 
 

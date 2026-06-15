@@ -78,9 +78,61 @@ Validation bounds:
 - `confidence`
 - `review_status`
 - `source`
+- `source_type`
 - `public_visibility`
 
 Private analyst or internal notes are never exposed through public endpoints.
+
+### Observation Types
+
+- `shark_sighting`
+- `unknown_large_marine_animal`
+- `no_sighting_patrol_result`
+- `carcass`
+- `baitfish_congregation`
+- `marine_mammal_activity`
+- `water_clarity_observation`
+- `surf_line_activity`
+- `swimmer_density`
+- `vessel_activity`
+- `other`
+
+The Drone Operator Console presents uppercase UI labels and maps them to this API enum. `POOR_VISIBILITY` maps to `water_clarity_observation`; `NO_SIGHTING_PATROL` maps to `no_sighting_patrol_result`; `OTHER` maps to `other`.
+
+### Console Field Mapping
+
+Console required fields:
+
+- `mission_id`
+- `observation_type`
+- `observed_at`
+- `latitude`
+- `longitude`
+- `observer_role`
+- `visual_confidence`
+- `provenance`
+
+| Console field | API field |
+| --- | --- |
+| `observed_at` | `timestamp` |
+| `visual_confidence` | `confidence` |
+| `species_guess` | `probable_species` |
+| `estimated_size_m` | `estimated_length_m` |
+| `estimated_count` | `count` |
+| `provenance` | `source` |
+| `observer_role` | `source_type` |
+| `behavior_notes` | `observed_behavior` |
+| `operator_notes` | `internal_notes` |
+| `public_summary`, `visibility_notes`, `surf_zone_notes` | public-safe analyst note text |
+
+Expected console provenance values:
+
+- `drone_operator_visual`
+- `lifeguard_visual`
+- `analyst_reviewed_visual`
+- `official_agency_report`
+- `project_owner_analyst_visual_assessment`
+- `demo_fixture`
 
 Validation bounds:
 
@@ -91,6 +143,8 @@ Validation bounds:
 - confidence/species confidence: `0` to `1`
 - timestamp is required and must parse as a date/time
 - observation type, review status, and species assessment source must use known enumerations
+
+Species guesses remain provisional operator metadata unless confirmed by an official source or qualified review. `official_species_classification` remains separate from operator guess fields.
 
 ## Map-Ready Feed Fields
 

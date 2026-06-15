@@ -2,12 +2,12 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25C planned
+- Current phase number: Phase 25C implemented, pending review
 - Latest completed committed phase: Phase 25B (Read-Only MAVLink Telemetry Bridge)
-- Latest completed local phase: Coogee Beach Sydney 2026 replay case study
+- Latest completed local phase: Phase 25C Drone Operator Observation Console
 - Latest completed local maintenance: targeted Dependabot esbuild alert patch
-- Latest commit hash before Coogee replay work: `1996b0a` Add AI1SAD repository agent instructions
-- Repo status: clean before Coogee replay local changes; verify with `git status`
+- Latest commit hash before Phase 25C work: `837a8cd` Patch Dependabot security alerts
+- Repo status: clean before Phase 25C local changes; verify with `git status`
 
 ## Major Completed Systems
 
@@ -28,6 +28,7 @@
 - One-click local launcher scripts
 - Phase 25A vendor-neutral drone observation intake MVP in local review: mission records, telemetry ingestion, observation ingestion, map-ready feed, replay fixture support
 - Phase 25B read-only MAVLink telemetry bridge committed: JSONL fixture replay, telemetry normalization, bounded batch submission, no aircraft control
+- Phase 25C Drone Operator Console implemented locally: `/drone-console`, mission selector, human-entered observation form, recent feed panel, no-sighting patrol copy, and provisional species copy
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -44,9 +45,10 @@
 - Tide-state adapter has static/offline baseline support; live ingestion not yet integrated
 - Current-direction/speed adapter has static/offline baseline support; live ingestion not yet integrated
 - Water clarity/turbidity adapter has static/offline baseline support; live ingestion not yet integrated
-- Live surf-line/lifeguard observation ingestion not yet integrated
+- Live surf-line/lifeguard observation ingestion is supported through the local console/API path when drone ingestion is enabled; broader provider-style ingestion remains future work
 - Live sightings ingestion pipeline still limited
 - Drone intake is vendor-neutral observation ingestion only; it does not provide aircraft control, image hosting, or computer-vision inference.
+- Drone Operator Console media references are references only; image upload, media hosting, and analyst review queue remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
@@ -57,7 +59,7 @@
 
 ## Next Planned Phase
 
-- Phase 25C: Drone Operator Observation Console
+- Phase 25D: Observation Media References and Analyst Review Queue
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -124,14 +126,34 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Secret scan on changed files: no credential values; documentation phrases and `js-tokens` package names only
 - Prohibited-language scan on changed files: guardrail-only matches only
 
+## Validation Counts (Latest Phase 25C Local Run)
+
+- Frontend route added: `http://localhost:5174/drone-console`
+- Backend changes: existing drone endpoints reused; `other` accepted as a generic bounded observation type
+- Frontend tests: `4 passed`, `17 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend audit: `npm audit --audit-level=high` reported `0 vulnerabilities`
+- Focused drone-ingestion tests: `11 passed, 1 warning`
+- Focused MAVLink bridge tests: `11 passed`
+- Focused Panama City replay tests: `3 passed`
+- Full backend tests: `256 passed, 3 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README link/image check: passed after skipping HTML tags/placeholders
+- Secret scan on changed docs/code: no credential values; documentation phrases, placeholder config names, and existing test key strings only
+- Prohibited-language scan on changed docs/code: required safety-copy and guardrail/test-only matches only
+
 ## Current Review Item
 
-- Targeted Dependabot maintenance patched the two open esbuild alerts without force-fix commands, Vite major upgrades, application-code changes, replay-output changes, or scoring behavior changes.
-- Phase 25C remains the next planned phase.
+- Phase 25C Drone Operator Console is implemented locally and awaiting review.
+- The console reuses existing drone mission, observation, active-observation, and surveillance-feed endpoints.
+- The console adds no autonomous flight control, MAVLink command transmission, DJI dependencies, computer vision, scoring-weight changes, replay-output changes, auth, or billing.
+- Phase 25D remains the next planned phase and must not start until Phase 25C is reviewed.
 
 ## Recent Important Commits
 
 - `1996b0a` Add AI1SAD repository agent instructions
+- `837a8cd` Patch Dependabot security alerts
+- `fe63fe0` Add Coogee Beach Sydney replay case study
 - `f737cd1` Add read-only MAVLink telemetry bridge
 - `53ebbf1` Update README featured replay preview
 - `3b1f267` Refresh GitHub README with current AI1SAD status

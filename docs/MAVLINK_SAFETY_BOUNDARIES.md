@@ -25,3 +25,6 @@ AI1SAD must not:
 
 Telemetry is context for mission tracks and operational review. It is not animal detection, species classification, or warning evidence by itself.
 
+## Drone Operator Console Boundary
+
+The Drone Operator Console is a human-entry surface. It may show telemetry context when available, but it does not connect to aircraft, issue MAVLink commands, or turn telemetry into sightings.

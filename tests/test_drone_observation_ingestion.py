@@ -157,6 +157,24 @@ class DroneObservationIngestionTests(unittest.TestCase):
         )
         self.assertEqual(invalid_length.status_code, 422)
 
+    def test_other_observation_type_is_accepted_for_operator_console(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "other",
+                "confidence": 0.5,
+                "review_status": "operator_reviewed",
+                "source": "drone_operator_visual",
+                "source_type": "drone_operator",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["observation"]["observation_type"], "other")
+
     def test_unreviewed_vs_reviewed_sighting_behavior(self):
         self._create_mission()
         unreviewed = self.client.post(
