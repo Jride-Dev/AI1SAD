@@ -71,4 +71,45 @@ describe("DroneOperatorConsole", () => {
     expect(payload.observation_type).toBe("no_sighting_patrol_result");
     expect(payload.count).toBe(0);
   });
+
+  it("renders analyst review panel with pending observations when analyst_review_status is missing or unreviewed", () => {
+    const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
+
+    expect(markup).toContain("Analyst Review");
+    expect(markup).toContain("Review Queue");
+    expect(markup).toContain("pending");
+    expect(markup).toContain("no sighting patrol result");
+    expect(markup).toContain("shark sighting");
+  });
+
+  it("renders review status dropdown with valid options", () => {
+    const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
+
+    expect(markup).toContain("unreviewed");
+    expect(markup).toContain("needs_review");
+    expect(markup).toContain("in_review");
+    expect(markup).toContain("reviewed");
+    expect(markup).toContain("rejected");
+    expect(markup).toContain("inconclusive");
+  });
+
+  it("renders review outcomes dropdown with valid options", () => {
+    const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
+
+    expect(markup).toContain("no_public_change");
+    expect(markup).toContain("confirms_operator_observation");
+    expect(markup).toContain("downgrades_operator_observation");
+    expect(markup).toContain("upgrades_operator_observation");
+    expect(markup).toContain("species_uncertain");
+    expect(markup).toContain("false_positive");
+    expect(markup).toContain("duplicate");
+    expect(markup).toContain("unusable_media");
+  });
+
+  it("analyst review private notes warning is present", () => {
+    const markup = renderToString(<DroneOperatorConsole initialData={mockDroneConsoleData} />);
+
+    expect(markup).toContain("Private Notes (never public)");
+    expect(markup).toContain("Analyst notes remain private and are never returned in public feed output.");
+  });
 });

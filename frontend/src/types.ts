@@ -287,6 +287,15 @@ export type DroneObservation = {
   behavior_source?: string | null;
   evidence_type?: string | null;
   media_reference?: string | null;
+  media_reference_type?: string | null;
+  media_timestamp?: string | null;
+  analyst_review_status?: string | null;
+  analyst_reviewed_at?: string | null;
+  analyst_reviewer_role?: string | null;
+  analyst_notes_private?: string | null;
+  public_review_summary?: string | null;
+  review_outcome?: string | null;
+  evidence_confidence?: number | null;
   confidence: number;
   review_status: string;
   source: string;
@@ -331,6 +340,47 @@ export type DroneConsoleMissionOption = {
   latestTelemetry?: DroneTelemetrySummary | null;
 };
 
+export type AnalystReviewUpdate = {
+  analyst_review_status?: string | null;
+  review_outcome?: string | null;
+  public_review_summary?: string | null;
+  analyst_notes_private?: string | null;
+  analyst_reviewer_role?: string | null;
+  media_reference_type?: string | null;
+  evidence_confidence?: number | null;
+  analyst_reviewed_at?: string | null;
+};
+
+export const MEDIA_REFERENCE_TYPES = [
+  "local_filename",
+  "drone_clip_id",
+  "camera_card_reference",
+  "external_url",
+  "agency_evidence_id",
+  "private_case_reference",
+  "none",
+] as const;
+
+export const ANALYST_REVIEW_STATUSES = [
+  "unreviewed",
+  "needs_review",
+  "in_review",
+  "reviewed",
+  "rejected",
+  "inconclusive",
+] as const;
+
+export const REVIEW_OUTCOMES = [
+  "no_public_change",
+  "confirms_operator_observation",
+  "downgrades_operator_observation",
+  "upgrades_operator_observation",
+  "species_uncertain",
+  "false_positive",
+  "duplicate",
+  "unusable_media",
+] as const;
+
 export type DroneConsoleData = {
   missions: DroneConsoleMissionOption[];
   observations: DroneObservation[];
@@ -344,19 +394,28 @@ export type DroneObservationPayload = {
   longitude: number;
   observation_type: string;
   count?: number;
-  estimated_length_m?: number;
-  probable_species?: string;
-  species_assessment_source?: string;
-  species_confidence?: number;
-  observed_behavior?: string;
-  behavior_source?: string;
-  evidence_type?: string;
-  media_reference?: string;
-  analyst_notes?: string;
-  internal_notes?: string;
+  estimated_length_m?: number | null;
+  probable_species?: string | null;
+  species_assessment_source?: string | null;
+  species_confidence?: number | null;
+  observed_behavior?: string | null;
+  behavior_source?: string | null;
+  evidence_type?: string | null;
+  media_reference?: string | null;
+  media_reference_type?: string | null;
+  media_timestamp?: string | null;
+  analyst_notes?: string | null;
+  analyst_review_status?: string | null;
+  analyst_reviewed_at?: string | null;
+  analyst_reviewer_role?: string | null;
+  analyst_notes_private?: string | null;
+  public_review_summary?: string | null;
+  review_outcome?: string | null;
+  evidence_confidence?: number | null;
+  internal_notes?: string | null;
   confidence: number;
   review_status: string;
   source: string;
   source_type: string;
-  public_visibility: boolean;
+  public_visibility?: boolean | string;
 };

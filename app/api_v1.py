@@ -15,6 +15,9 @@ from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surv
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
 from app.services.alert_engine import evaluate_alerts
 from app.services.drone_observations import (
+    ANALYST_REVIEW_STATUSES,
+    MEDIA_REFERENCE_TYPES,
+    REVIEW_OUTCOMES,
     build_mission,
     build_observation,
     build_telemetry,
@@ -1239,6 +1242,46 @@ def list_drone_observations(
         .limit(limit)
     )
     return maybe_demo({"results": [public_drone_doc(doc) for doc in docs], "flight_control_commands_exposed": False})
+
+
+@router.patch("/drone/missions/{mission_id}/observations/{observation_id}")
+def update_drone_observation_review(
+    mission_id: str,
+    observation_id: str,
+    payload: dict[str, Any] = Body(...),
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    _require_drone_ingest_enabled()
+    _drone_mission_or_404(db, mission_id)
+    existing = db[COLLECTIONS["drone_observations"]].find_one({"mission_id": mission_id, "observation_id": observation_id})
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Observation not found")
+    updates: dict[str, Any] = {}
+    text_fields = {"analyst_reviewer_role", "analyst_notes_private", "public_review_summary", "media_reference_type"}
+    for field in text_fields:
+        if field in payload:
+            updates[field] = str(payload[field]).strip() if payload[field] not in {None, ""} else None
+    choice_fields = {"media_reference_type": MEDIA_REFERENCE_TYPES, "analyst_review_status": ANALYST_REVIEW_STATUSES, "review_outcome": REVIEW_OUTCOMES}
+    for field, choices in choice_fields.items():
+        if field in payload and payload[field] is not None:
+            value = str(payload[field])
+            if value not in choices:
+                raise HTTPException(status_code=422, detail=f"{field} must be one of: {', '.join(sorted(choices))}")
+            updates[field] = value
+    if "evidence_confidence" in payload and payload["evidence_confidence"] is not None:
+        ec = float(payload["evidence_confidence"])
+        if ec < 0 or ec > 1:
+            raise HTTPException(status_code=422, detail="evidence_confidence must be between 0 and 1")
+        updates["evidence_confidence"] = ec
+    if "analyst_reviewed_at" in payload and payload["analyst_reviewed_at"] is not None:
+        updates["analyst_reviewed_at"] = parse_drone_time(payload["analyst_reviewed_at"])
+    if not updates:
+        raise HTTPException(status_code=422, detail="No valid review fields to update")
+    updates["analyst_updated_at"] = datetime.now(timezone.utc)
+    updated_doc = {**existing, **updates}
+    db[COLLECTIONS["drone_observations"]].replace_one({"mission_id": mission_id, "observation_id": observation_id}, updated_doc)
+    updated = db[COLLECTIONS["drone_observations"]].find_one({"mission_id": mission_id, "observation_id": observation_id})
+    return maybe_demo({"status": "updated", "observation": public_drone_doc(updated) if updated else {}, "flight_control_commands_exposed": False})
 
 
 @router.post("/drone/missions/{mission_id}/complete")

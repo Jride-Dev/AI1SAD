@@ -39,7 +39,37 @@ SPECIES_ASSESSMENT_SOURCES = {
     "confirmed_external_source",
 }
 
-PUBLIC_DROP_FIELDS = {"notes_internal", "internal_notes", "analyst_notes", "analyst_notes_internal", "operator_id", "private_notes", "restricted"}
+MEDIA_REFERENCE_TYPES = {
+    "local_filename",
+    "drone_clip_id",
+    "camera_card_reference",
+    "external_url",
+    "agency_evidence_id",
+    "private_case_reference",
+    "none",
+}
+
+ANALYST_REVIEW_STATUSES = {
+    "unreviewed",
+    "needs_review",
+    "in_review",
+    "reviewed",
+    "rejected",
+    "inconclusive",
+}
+
+REVIEW_OUTCOMES = {
+    "no_public_change",
+    "confirms_operator_observation",
+    "downgrades_operator_observation",
+    "upgrades_operator_observation",
+    "species_uncertain",
+    "false_positive",
+    "duplicate",
+    "unusable_media",
+}
+
+PUBLIC_DROP_FIELDS = {"notes_internal", "internal_notes", "analyst_notes", "analyst_notes_internal", "analyst_notes_private", "analyst_reviewer_role", "analyst_reviewed_at", "operator_id", "private_notes", "restricted"}
 
 
 def utc_now() -> datetime:
@@ -183,6 +213,15 @@ def build_observation(mission: dict[str, Any], payload: dict[str, Any]) -> dict[
     species_source = payload.get("species_assessment_source")
     if species_source is not None:
         require_choice(str(species_source), SPECIES_ASSESSMENT_SOURCES, "species_assessment_source")
+    media_ref_type = payload.get("media_reference_type")
+    if media_ref_type is not None:
+        require_choice(str(media_ref_type), MEDIA_REFERENCE_TYPES, "media_reference_type")
+    analyst_review_status = payload.get("analyst_review_status")
+    if analyst_review_status is not None:
+        require_choice(str(analyst_review_status), ANALYST_REVIEW_STATUSES, "analyst_review_status")
+    review_outcome = payload.get("review_outcome")
+    if review_outcome is not None:
+        require_choice(str(review_outcome), REVIEW_OUTCOMES, "review_outcome")
     lat = bounded_float(payload["latitude"], "latitude", -90, 90)
     lon = bounded_float(payload["longitude"], "longitude", -180, 180)
     confidence = max(0.0, min(1.0, float(payload.get("confidence", 0.35) or 0.35)))
@@ -206,7 +245,16 @@ def build_observation(mission: dict[str, Any], payload: dict[str, Any]) -> dict[
         "behavior_source": text_field(payload.get("behavior_source"), "behavior_source", max_length=120, default="") or None,
         "evidence_type": text_field(payload.get("evidence_type"), "evidence_type", max_length=80, default="") or None,
         "media_reference": text_field(payload.get("media_reference"), "media_reference", max_length=500, default="") or None,
+        "media_reference_type": media_ref_type,
+        "media_timestamp": parse_time(payload["media_timestamp"]) if payload.get("media_timestamp") else None,
         "analyst_notes": text_field(payload.get("analyst_notes"), "analyst_notes", max_length=1000, default="") or None,
+        "analyst_review_status": analyst_review_status or "unreviewed",
+        "analyst_reviewed_at": parse_time(payload["analyst_reviewed_at"]) if payload.get("analyst_reviewed_at") else None,
+        "analyst_reviewer_role": text_field(payload.get("analyst_reviewer_role"), "analyst_reviewer_role", max_length=80, default="") or None,
+        "analyst_notes_private": text_field(payload.get("analyst_notes_private"), "analyst_notes_private", max_length=1000, default="") or None,
+        "public_review_summary": text_field(payload.get("public_review_summary"), "public_review_summary", max_length=500, default="") or None,
+        "review_outcome": review_outcome,
+        "evidence_confidence": optional_bounded_float(payload.get("evidence_confidence"), "evidence_confidence", 0, 1),
         "confidence": confidence,
         "review_status": review_status,
         "source": text_field(payload.get("source", mission.get("source", "drone_operator_submission")), "source", max_length=120),

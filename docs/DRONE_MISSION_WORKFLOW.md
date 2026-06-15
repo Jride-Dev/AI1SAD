@@ -40,6 +40,18 @@ The Drone Operator Console may display mission and telemetry context, then submi
 
 Rejected observations are not used in public active-observation or feed outputs.
 
+## Analyst Review
+
+Phase 25D-A adds metadata-only analyst review as an optional post-ingestion step. An analyst can update review status, outcome, public summary, and private notes on an existing observation via the PATCH endpoint:
+
+```text
+PATCH /api/v1/drone/missions/{mission_id}/observations/{observation_id}
+```
+
+The Drone Operator Console surfaces observations needing review. Review fields are annotations only; they do not change the original observation type or create new sightings.
+
+See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
+
 ## Local Console Workflow
 
 Open:

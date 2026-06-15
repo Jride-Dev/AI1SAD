@@ -75,13 +75,22 @@ Validation bounds:
 - `behavior_source`
 - `evidence_type`
 - `media_reference`
+- `media_reference_type` (enum: `local_filename`, `drone_clip_id`, `camera_card_reference`, `external_url`, `agency_evidence_id`, `private_case_reference`, `none`)
+- `media_timestamp`
+- `analyst_review_status` (enum: `unreviewed`, `needs_review`, `in_review`, `reviewed`, `rejected`, `inconclusive`)
+- `analyst_reviewed_at`
+- `analyst_reviewer_role`
+- `analyst_notes_private`
+- `public_review_summary`
+- `review_outcome` (enum: `no_public_change`, `confirms_operator_observation`, `downgrades_operator_observation`, `upgrades_operator_observation`, `species_uncertain`, `false_positive`, `duplicate`, `unusable_media`)
+- `evidence_confidence`
 - `confidence`
 - `review_status`
 - `source`
 - `source_type`
 - `public_visibility`
 
-Private analyst or internal notes are never exposed through public endpoints.
+Private analyst or internal notes, analyst private notes, analyst reviewer role, and analyst review timestamps are never exposed through public endpoints.
 
 ### Observation Types
 
@@ -145,6 +154,17 @@ Validation bounds:
 - observation type, review status, and species assessment source must use known enumerations
 
 Species guesses remain provisional operator metadata unless confirmed by an official source or qualified review. `official_species_classification` remains separate from operator guess fields.
+
+### Analyst Review Fields
+
+Phase 25D-A adds metadata-only analyst review fields. These are annotations on existing observations:
+
+- `analyst_review_status`, `review_outcome`, `public_review_summary`, `evidence_confidence` are review metadata
+- `analyst_notes_private`, `analyst_reviewer_role`, `analyst_reviewed_at` are private and excluded from public responses
+- `media_reference_type` and `media_timestamp` describe the associated media (reference only; no upload or hosting)
+- The PATCH endpoint updates analyst review fields on an existing observation without modifying the original
+
+See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).
 
 ## Map-Ready Feed Fields
 

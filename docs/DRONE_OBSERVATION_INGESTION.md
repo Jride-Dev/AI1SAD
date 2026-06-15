@@ -8,6 +8,8 @@ Phase 25B adds a read-only MAVLink telemetry bridge that can replay telemetry in
 
 Phase 25C adds a local Drone Operator Console at `http://localhost:5174/drone-console`. The console is a human-facing frontend for the same mission, observation, active-observation, and surveillance-feed routes. It does not add aircraft control or duplicate backend scoring logic.
 
+Phase 25D-A adds metadata-only analyst review fields and a PATCH endpoint for updating review status, outcome, private notes, and public summary on existing observations.
+
 ## Scope
 
 - Human operator mission records
@@ -50,6 +52,7 @@ GET /api/v1/drone/missions/{mission_id}
 POST /api/v1/drone/missions/{mission_id}/telemetry
 POST /api/v1/drone/missions/{mission_id}/observations
 GET /api/v1/drone/missions/{mission_id}/observations
+PATCH /api/v1/drone/missions/{mission_id}/observations/{observation_id}
 POST /api/v1/drone/missions/{mission_id}/complete
 GET /api/v1/drone/active-observations
 GET /api/v1/drone/surveillance-feed

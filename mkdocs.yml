@@ -108,6 +108,7 @@ nav:
   - Drone Operations:
       - Drone Operator Console: DRONE_OPERATOR_CONSOLE.md
       - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
+      - Observation Analyst Review: OBSERVATION_ANALYST_REVIEW.md
       - Drone Mission Workflow: DRONE_MISSION_WORKFLOW.md
       - Drone Data Contract: DRONE_DATA_CONTRACT.md
       - Drone Operations Safety: DRONE_OPERATIONS_SAFETY.md

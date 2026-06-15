@@ -244,6 +244,199 @@ class DroneObservationIngestionTests(unittest.TestCase):
         feed_item = map_feed_item(response.json()["observation"])
         self.assertIn("not treat no-sighting patrol as proof of safety", feed_item["recommended_action"])
 
+    def test_analyst_review_fields_accepted_on_observation_creation(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "confidence": 0.6,
+                "review_status": "operator_reviewed",
+                "media_reference": "clip-001",
+                "media_reference_type": "drone_clip_id",
+                "analyst_review_status": "needs_review",
+                "review_outcome": "confirms_operator_observation",
+                "analyst_notes_private": "Analyst private note",
+                "public_review_summary": "Operator observation consistent with clip review",
+                "evidence_confidence": 0.72,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        obs = response.json()["observation"]
+        self.assertEqual(obs.get("media_reference"), "clip-001")
+        self.assertEqual(obs.get("media_reference_type"), "drone_clip_id")
+        self.assertEqual(obs.get("analyst_review_status"), "needs_review")
+        self.assertEqual(obs.get("review_outcome"), "confirms_operator_observation")
+        self.assertNotIn("analyst_notes_private", obs)
+        self.assertEqual(obs.get("public_review_summary"), "Operator observation consistent with clip review")
+        self.assertEqual(obs.get("evidence_confidence"), 0.72)
+
+    def test_unsupported_media_reference_type_is_rejected(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "review_status": "operator_reviewed",
+                "media_reference_type": "youtube_video",
+            },
+        )
+        self.assertEqual(response.status_code, 422)
+
+    def test_unsupported_analyst_review_status_is_rejected(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "review_status": "operator_reviewed",
+                "analyst_review_status": "auto_approved",
+            },
+        )
+        self.assertEqual(response.status_code, 422)
+
+    def test_unsupported_review_outcome_is_rejected(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "review_status": "operator_reviewed",
+                "review_outcome": "autonomous_detection",
+            },
+        )
+        self.assertEqual(response.status_code, 422)
+
+    def test_analyst_notes_private_excluded_from_public_feed(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "confidence": 0.5,
+                "review_status": "operator_reviewed",
+                "analyst_notes_private": "Must not appear in public feed",
+                "public_review_summary": "Safe summary text",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        text = str(response.json())
+        self.assertNotIn("Must not appear in public feed", text)
+        self.assertIn("Safe summary text", text)
+
+    def test_media_reference_does_not_create_sighting_alone(self):
+        self._create_mission()
+        response = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "water_clarity_observation",
+                "media_reference": "clip-002",
+                "confidence": 0.4,
+                "review_status": "operator_reviewed",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        feed = self.client.get("/api/v1/drone/surveillance-feed").json()
+        matching = [item for item in feed["results"] if item.get("observation_type") == "water_clarity_observation"]
+        self.assertGreater(len(matching), 0)
+        for item in matching:
+            self.assertNotEqual(item["explanation_summary"], "shark_sighting")
+            self.assertNotIn("clip-002", str(item))
+
+    def test_patch_observation_review_updates_fields(self):
+        self._create_mission()
+        created = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "confidence": 0.55,
+                "review_status": "operator_reviewed",
+            },
+        )
+        self.assertEqual(created.status_code, 200)
+        obs_id = created.json()["observation"]["observation_id"]
+        patch = self.client.patch(
+            f"/api/v1/drone/missions/mission-test-drone/observations/{obs_id}",
+            json={
+                "analyst_review_status": "in_review",
+                "review_outcome": "species_uncertain",
+                "public_review_summary": "Species unclear from available reference",
+            },
+        )
+        self.assertEqual(patch.status_code, 200)
+        patched = patch.json()["observation"]
+        self.assertEqual(patched.get("analyst_review_status"), "in_review")
+        self.assertEqual(patched.get("review_outcome"), "species_uncertain")
+        self.assertEqual(patched.get("public_review_summary"), "Species unclear from available reference")
+
+    def test_patch_observation_review_rejects_invalid_status(self):
+        self._create_mission()
+        created = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "confidence": 0.55,
+                "review_status": "operator_reviewed",
+            },
+        )
+        self.assertEqual(created.status_code, 200)
+        obs_id = created.json()["observation"]["observation_id"]
+        patch = self.client.patch(
+            f"/api/v1/drone/missions/mission-test-drone/observations/{obs_id}",
+            json={"analyst_review_status": "auto_confirmed"},
+        )
+        self.assertEqual(patch.status_code, 422)
+
+    def test_patch_observation_review_private_notes_filtered(self):
+        self._create_mission()
+        created = self.client.post(
+            "/api/v1/drone/missions/mission-test-drone/observations",
+            json={
+                "timestamp": "2099-06-08T17:08:00Z",
+                "latitude": 30.1826,
+                "longitude": -85.7539,
+                "observation_type": "shark_sighting",
+                "confidence": 0.55,
+                "review_status": "operator_reviewed",
+            },
+        )
+        self.assertEqual(created.status_code, 200)
+        obs_id = created.json()["observation"]["observation_id"]
+        patch = self.client.patch(
+            f"/api/v1/drone/missions/mission-test-drone/observations/{obs_id}",
+            json={
+                "analyst_review_status": "reviewed",
+                "analyst_notes_private": "Highly sensitive private note",
+            },
+        )
+        self.assertEqual(patch.status_code, 200)
+        text = str(patch.json())
+        self.assertNotIn("Highly sensitive private note", text)
+
     def test_mission_completion(self):
         self._create_mission()
         response = self.client.post("/api/v1/drone/missions/mission-test-drone/complete", json={"ended_at": "2099-06-08T18:00:00Z"})

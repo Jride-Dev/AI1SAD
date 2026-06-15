@@ -2,12 +2,12 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25C implemented, pending review
+- Current phase number: Phase 25D-A implemented, pending review
 - Latest completed committed phase: Phase 25B (Read-Only MAVLink Telemetry Bridge)
-- Latest completed local phase: Phase 25C Drone Operator Observation Console
+- Latest completed local phase: Phase 25D-A (Observation Analyst Review Fields)
 - Latest completed local maintenance: targeted Dependabot esbuild alert patch
-- Latest commit hash before Phase 25C work: `837a8cd` Patch Dependabot security alerts
-- Repo status: clean before Phase 25C local changes; verify with `git status`
+- Latest commit hash before Phase 25D-A work: `837a8cd` Patch Dependabot security alerts
+- Repo status: clean before Phase 25D-A local changes; verify with `git status`
 
 ## Major Completed Systems
 
@@ -29,6 +29,7 @@
 - Phase 25A vendor-neutral drone observation intake MVP in local review: mission records, telemetry ingestion, observation ingestion, map-ready feed, replay fixture support
 - Phase 25B read-only MAVLink telemetry bridge committed: JSONL fixture replay, telemetry normalization, bounded batch submission, no aircraft control
 - Phase 25C Drone Operator Console implemented locally: `/drone-console`, mission selector, human-entered observation form, recent feed panel, no-sighting patrol copy, and provisional species copy
+- Phase 25D-A metadata-only analyst review fields implemented locally: PATCH endpoint for review updates, `analyst_review_status`, `review_outcome`, `public_review_summary`, `analyst_notes_private`, `evidence_confidence`, `media_reference_type`, `media_timestamp` enums, frontend Analyst Review Panel in drone console
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -48,7 +49,8 @@
 - Live surf-line/lifeguard observation ingestion is supported through the local console/API path when drone ingestion is enabled; broader provider-style ingestion remains future work
 - Live sightings ingestion pipeline still limited
 - Drone intake is vendor-neutral observation ingestion only; it does not provide aircraft control, image hosting, or computer-vision inference.
-- Drone Operator Console media references are references only; image upload, media hosting, and analyst review queue remain future work.
+- Drone Operator Console media references are references only; image upload, media hosting remain future work.
+- Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
@@ -59,7 +61,8 @@
 
 ## Next Planned Phase
 
-- Phase 25D: Observation Media References and Analyst Review Queue
+- Phase 25D-B: Future media reference expansion (not started)
+- Phase 25D-A completed locally: metadata-only analyst review fields
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -126,6 +129,17 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Secret scan on changed files: no credential values; documentation phrases and `js-tokens` package names only
 - Prohibited-language scan on changed files: guardrail-only matches only
 
+## Validation Counts (Latest Phase 25D-A Local Run)
+
+- Backend: PATCH endpoint for analyst review update, enum validation, private field filtering
+- Frontend: AnalystReviewPanel component, submitObservationReview API client, mock data fixtures
+- Analyst review fields: media_reference_type, analyst_review_status, review_outcome, evidence_confidence, analyst_notes_private (filtered from public output), public_review_summary
+- enum validation: unsupported media_reference_type, analyst_review_status, review_outcome rejected with 422
+- PATCH endpoint validates enum values server-side and rejects unsupported types
+- `analyst_notes_private`, `analyst_reviewer_role`, `analyst_reviewed_at` excluded via PUBLIC_DROP_FIELDS
+- Frontend private notes warning visible: "Analyst notes remain private and are never returned in public feed output."
+- No computer vision, media upload/hosting, or autonomous flight control added
+
 ## Validation Counts (Latest Phase 25C Local Run)
 
 - Frontend route added: `http://localhost:5174/drone-console`
@@ -144,10 +158,14 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25C Drone Operator Console is implemented locally and awaiting review.
-- The console reuses existing drone mission, observation, active-observation, and surveillance-feed endpoints.
-- The console adds no autonomous flight control, MAVLink command transmission, DJI dependencies, computer vision, scoring-weight changes, replay-output changes, auth, or billing.
-- Phase 25D remains the next planned phase and must not start until Phase 25C is reviewed.
+- Phase 25D-A (Observation Analyst Review Fields) is implemented locally and awaiting review.
+- Adds MEDIA_REFERENCE_TYPES, ANALYST_REVIEW_STATUSES, REVIEW_OUTCOMES enum sets
+- Adds PATCH endpoint for updating analyst review fields on existing observations
+- Adds AnalystReviewPanel frontend component in the Drone Operator Console
+- Private review fields (analyst_notes_private, analyst_reviewer_role, analyst_reviewed_at) excluded from public output
+- No computer vision, media upload/hosting, or autonomous flight control added
+- No scoring-weight changes, replay-output changes, auth, or billing changes
+- Phase 25D-B must not start until Phase 25D-A is reviewed
 
 ## Recent Important Commits
 

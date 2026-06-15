@@ -1,12 +1,28 @@
 # Next Phase
 
-## Phase 25D: Observation Media References and Analyst Review Queue
+## Phase 25D-B: Future Media Reference Expansion (Not Started)
 
 ## Objective
 
-Add a bounded workflow for attaching media references to human-entered observations and routing those observations through an analyst review queue.
+Future expansion of media reference support for drone/coastal observations beyond the current metadata-only analyst review fields added in Phase 25D-A.
 
-Phase 25D should build on Phase 25C's Drone Operator Console without changing aircraft-control boundaries.
+## Phase 25D-A Completion Note
+
+Phase 25D-A adds metadata-only analyst review fields:
+
+- `MEDIA_REFERENCE_TYPES`, `ANALYST_REVIEW_STATUSES`, `REVIEW_OUTCOMES` enum sets
+- `analyst_review_status`, `review_outcome`, `public_review_summary`, `analyst_notes_private`, `evidence_confidence`, `media_reference_type`, `media_timestamp` on observations
+- PATCH `/api/v1/drone/missions/{mission_id}/observations/{observation_id}` endpoint
+- `analyst_notes_private`, `analyst_reviewer_role`, `analyst_reviewed_at` excluded from public output via `PUBLIC_DROP_FIELDS`
+- AnalystReviewPanel component in Drone Operator Console
+- No computer vision, media upload/hosting, autonomous flight control, scoring-weight changes, or replay-output changes
+
+## Planned Scope (Future Phase)
+
+1. Media storage design (privacy, retention, access rules reviewed)
+2. Media upload or external-hosted-reference support
+3. Enhanced analyst review UI with media preview
+4. Any expanded scoring or signal integration from reviewed media
 
 ## Constraints
 
@@ -21,57 +37,9 @@ Phase 25D should build on Phase 25C's Drone Operator Console without changing ai
 - Do not change auth/billing
 - Do not commit until review
 
-## Phase 25C Completion Note
-
-Phase 25C adds a local Drone Operator Console:
-
-- frontend route: `http://localhost:5174/drone-console`
-- mission selector and known-mission fetch workflow
-- human-entered observation form
-- no-sighting patrol caveat
-- provisional species-copy guidance
-- recent map-ready feed panel
-- explicit live-mode backend error handling
-- existing drone observation endpoints reused
-- no aircraft control
-
-## Planned Scope
-
-1. Define media-reference metadata fields for observations
-2. Add analyst review queue states and filters
-3. Preserve public/private media-reference boundaries
-4. Show queue-ready observations in a local analyst view
-5. Keep media references as references only unless storage is explicitly designed
-6. Add tests for private notes, media-reference filtering, and review-state transitions
-
-## Source Inputs
-
-- Existing drone mission and observation APIs
-- Phase 25C console-submitted observations
-- Existing public-safe surveillance feed
-- Existing `media_reference` field
-
-## Bounded Behavior Rules
-
-- Media references are metadata, not uploaded evidence, until a reviewed storage design exists.
-- Analyst review may change review status and public summary metadata.
-- Analyst review must not infer species as official classification without an official or qualified source.
-- No observation media workflow may control aircraft.
-- No media reference may expose private filesystem paths in public output.
-
-## Recommended Execution Order
-
-1. Review current observation contract and public filtering
-2. Design analyst-review states and allowed transitions
-3. Add queue API or reuse existing endpoints if sufficient
-4. Add frontend queue surface
-5. Update drone docs and safety docs
-6. Run backend, frontend, docs, secret, and prohibited-language validation
-
 ## Validation Expectations
 
 - focused drone observation tests
-- focused analyst queue tests if backend changes are added
 - frontend tests
 - frontend build
 - full backend test suite
@@ -81,4 +49,4 @@ Phase 25C adds a local Drone Operator Console:
 
 ## Review Gate
 
-Do not begin Phase 25D until Phase 25C has been reviewed and either committed or explicitly set aside.
+Do not begin Phase 25D-B until Phase 25D-A has been reviewed and either committed or explicitly set aside.

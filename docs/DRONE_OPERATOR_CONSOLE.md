@@ -1,6 +1,6 @@
 # Drone Operator Console
 
-Phase 25C adds a local frontend console for human-entered coastal and drone patrol observations.
+Phase 25C adds a local frontend console for human-entered coastal and drone patrol observations. Phase 25D-A adds metadata-only analyst review fields.
 
 The console is observation intake only. It does not control aircraft, transmit MAVLink commands, upload waypoints, run computer vision, or infer sightings from telemetry alone.
 
@@ -132,3 +132,25 @@ The console displays recent feed items with:
 - confidence
 - public/private visibility marker when available
 - provenance or source label
+
+## Analyst Review Panel
+
+Phase 25D-A adds an Analyst Review panel below the recent observations list. The panel surfaces observations with `analyst_review_status` of `unreviewed`, `needs_review`, or `in_review`.
+
+Each review card includes:
+
+- Review status dropdown (unreviewed, needs_review, in_review, reviewed, rejected, inconclusive)
+- Outcome dropdown (no_public_change, confirms_operator_observation, downgrades_operator_observation, upgrades_operator_observation, species_uncertain, false_positive, duplicate, unusable_media)
+- Public review summary textarea
+- Private notes textarea with a visible warning that analyst notes are never public
+- Submit button
+
+The PATCH endpoint is used to submit review updates:
+
+```text
+PATCH /api/v1/drone/missions/{mission_id}/observations/{observation_id}
+```
+
+Private notes and reviewer role are not returned in public feed output.
+
+See [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md).

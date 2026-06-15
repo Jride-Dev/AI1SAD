@@ -2,8 +2,9 @@ import { AlertTriangle, CheckCircle2, RefreshCw, Send, ShieldCheck } from "lucid
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-import { getDroneConsoleData, getDroneMission, getDroneMissionObservations, submitDroneObservation } from "../api/client";
-import type { DroneConsoleData, DroneConsoleMissionOption, DroneFeedItem, DroneObservation, DroneObservationPayload } from "../types";
+import { getDroneConsoleData, getDroneMission, getDroneMissionObservations, submitDroneObservation, submitObservationReview } from "../api/client";
+import { ANALYST_REVIEW_STATUSES, REVIEW_OUTCOMES } from "../types";
+import type { AnalystReviewUpdate, DroneConsoleData, DroneConsoleMissionOption, DroneFeedItem, DroneObservation, DroneObservationPayload } from "../types";
 
 export const OBSERVATION_TYPE_OPTIONS = [
   "SHARK_SIGHTING",
@@ -269,6 +270,20 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
     }
   };
 
+  const reloadAfterReview = async (missionId: string, observationId: string, reviewPayload: AnalystReviewUpdate): Promise<void> => {
+    setError(null);
+    try {
+      const updated = await submitObservationReview(missionId, observationId, reviewPayload);
+      setConsoleData((current) => {
+        if (!current) return current;
+        const observations = current.observations.map((item) => (item.observation_id === observationId ? updated : item));
+        return { ...current, observations };
+      });
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Review could not be submitted.");
+    }
+  };
+
   if (loading) {
     return (
       <section className="panel state-panel">
@@ -431,6 +446,7 @@ export function DroneOperatorConsole({ initialData = null }: { initialData?: Dro
       </form>
 
       <RecentObservationsPanel items={recentItems} observations={missionObservations} />
+      <AnalystReviewPanel observations={missionObservations} missionId={selectedMissionId} onReviewUpdated={reloadAfterReview} />
     </div>
   );
 }
@@ -540,6 +556,127 @@ function RecentObservationsPanel({ items, observations }: { items: DroneFeedItem
       </div>
       {!items.length ? <p className="explain-text">No recent observations are available for this mission.</p> : null}
     </section>
+  );
+}
+
+function AnalystReviewPanel({
+  observations,
+  missionId,
+  onReviewUpdated,
+}: {
+  observations: DroneObservation[];
+  missionId: string;
+  onReviewUpdated: (missionId: string, observationId: string, payload: AnalystReviewUpdate) => Promise<void>;
+}) {
+  const needsReview = observations.filter((item) => {
+    const status = item.analyst_review_status;
+    return !status || status === "unreviewed" || status === "needs_review" || status === "in_review";
+  });
+
+  if (!needsReview.length) {
+    return (
+      <section className="panel analyst-review-panel">
+        <div className="form-heading">
+          <div>
+            <p className="eyebrow">Analyst Review</p>
+            <h2>Review Queue</h2>
+          </div>
+          <span className="status-pill">0 pending</span>
+        </div>
+        <p className="explain-text">No unreviewed observations for the current mission.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel analyst-review-panel">
+      <div className="form-heading">
+        <div>
+          <p className="eyebrow">Analyst Review</p>
+          <h2>Review Queue</h2>
+        </div>
+        <span className="status-pill">{needsReview.length} pending</span>
+      </div>
+      <div className="observation-list">
+        {needsReview.map((item) => (
+          <AnalystReviewCard key={item.observation_id} observation={item} missionId={missionId} onReviewUpdated={onReviewUpdated} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AnalystReviewCard({
+  observation,
+  missionId,
+  onReviewUpdated,
+}: {
+  observation: DroneObservation;
+  missionId: string;
+  onReviewUpdated: (missionId: string, observationId: string, payload: AnalystReviewUpdate) => Promise<void>;
+}) {
+  const [status, setStatus] = useState(observation.analyst_review_status ?? "unreviewed");
+  const [outcome, setOutcome] = useState(observation.review_outcome ?? "");
+  const [summary, setSummary] = useState(observation.public_review_summary ?? "");
+  const [notesPrivate, setNotesPrivate] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setMessage(null);
+    const payload: AnalystReviewUpdate = { analyst_review_status: status };
+    if (outcome) payload.review_outcome = outcome;
+    if (summary.trim()) payload.public_review_summary = summary.trim();
+    if (notesPrivate.trim()) payload.analyst_notes_private = notesPrivate.trim();
+    await onReviewUpdated(missionId, observation.observation_id ?? "", payload);
+    setSubmitting(false);
+    setMessage("Review submitted.");
+  };
+
+  return (
+    <article className="analyst-review-card">
+      <div>
+        <strong>{observation.observation_type.replaceAll("_", " ")}</strong>
+        <span>{observation.timestamp}</span>
+      </div>
+      <div className="inline-strip coordinate-strip">
+        <span>Confidence {Math.round(observation.confidence * 100)}%</span>
+        {observation.media_reference ? <span>Media: {observation.media_reference}</span> : null}
+      </div>
+      <div className="analyst-review-form">
+        <label>
+          Review Status
+          <select value={status} onChange={(event) => setStatus(event.target.value)}>
+            {ANALYST_REVIEW_STATUSES.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Outcome
+          <select value={outcome} onChange={(event) => setOutcome(event.target.value)}>
+            <option value="">-- none --</option>
+            {REVIEW_OUTCOMES.map((item) => (
+              <option key={item} value={item}>{item}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Public Review Summary
+          <textarea value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Public-safe summary of review findings" />
+        </label>
+        <label className="analyst-notes-private">
+          Private Notes (never public)
+          <textarea value={notesPrivate} onChange={(event) => setNotesPrivate(event.target.value)} placeholder="Private analyst notes; never exposed in public feed" />
+          <span className="private-note-warning">Analyst notes remain private and are never returned in public feed output.</span>
+        </label>
+        <button type="button" disabled={submitting} onClick={handleSubmit}>
+          {submitting ? "Submitting" : "Submit Review"}
+        </button>
+        {message ? <div className="success-box" role="status"><CheckCircle2 size={16} aria-hidden="true" /><span>{message}</span></div> : null}
+      </div>
+    </article>
   );
 }
 

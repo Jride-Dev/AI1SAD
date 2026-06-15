@@ -890,6 +890,99 @@ h3 {
   gap: 14px;
 }
 
+.analyst-review-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.analyst-review-card {
+  border: 1px solid #d8e8ed;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(248, 253, 254, 0.98), rgba(217, 240, 255, 0.78)),
+    repeating-linear-gradient(90deg, rgba(123, 44, 191, 0.06) 0 1px, transparent 1px 30px);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.analyst-review-card > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5f7182;
+  font-size: 13px;
+}
+
+.analyst-review-card strong {
+  color: #0b4051;
+  text-transform: capitalize;
+}
+
+.analyst-review-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.analyst-review-form label {
+  display: grid;
+  gap: 4px;
+  color: #405464;
+  font-size: 13px;
+}
+
+.analyst-review-form select,
+.analyst-review-form textarea {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #b8d8df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102232;
+  padding: 6px 8px;
+  font: inherit;
+}
+
+.analyst-review-form textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.analyst-review-form button {
+  grid-column: 1 / -1;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--teal), var(--purple));
+  color: #ffffff;
+  min-height: 38px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.analyst-review-form button:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
+.analyst-notes-private {
+  grid-column: 1 / -1;
+  border: 1px dashed #7b5a10;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fffaf0;
+}
+
+.private-note-warning {
+  color: #7b5a10;
+  font-size: 11px;
+  font-style: italic;
+}
+
 .observation-list {
   display: grid;
   gap: 10px;

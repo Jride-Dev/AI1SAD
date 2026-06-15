@@ -1,6 +1,7 @@
 import { mockDashboardData, mockDemoScenarios, mockDroneConsoleData, mockReplayLibrary, scenarioCoordinates } from "./mockData";
 import type {
   Alert,
+  AnalystReviewUpdate,
   Coordinates,
   DashboardData,
   DemoScenario,
@@ -332,6 +333,26 @@ export async function submitDroneObservation(missionId: string, payload: DroneOb
     { observation: fallback },
     (value): value is { observation: DroneObservation } =>
       Boolean(value && typeof value === "object" && "observation" in value),
+  );
+  return response.observation;
+}
+
+export async function submitObservationReview(missionId: string, observationId: string, payload: AnalystReviewUpdate): Promise<DroneObservation> {
+  const fallback: DroneObservation = {
+    ...mockDroneConsoleData.observations.find((item) => item.observation_id === observationId) ?? mockDroneConsoleData.observations[0],
+    mission_id: missionId,
+    ...payload,
+  };
+  const response = await requestJson<{ observation: DroneObservation }>(
+    `/api/v1/drone/missions/${encodeURIComponent(missionId)}/observations/${encodeURIComponent(observationId)}`,
+    { observation: fallback },
+    (value): value is { observation: DroneObservation } =>
+      Boolean(value && typeof value === "object" && "observation" in value),
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
   );
   return response.observation;
 }
