@@ -192,12 +192,43 @@ Phase 25A adds a vendor-neutral observation-ingestion path for human-operated co
 
 AI1SAD supports human-approved surveillance decisions. It does not control aircraft or predict individual attacks.
 
-It does not add:
+### Consumer Drone App Compatibility
+
+AI1SAD can work alongside any consumer drone flight app through the manual operator workflow. The pilot flies normally using the drone's own app, controller, or manufacturer software. AI1SAD does not need that app to expose an API. The operator records observations in the AI1SAD Drone Operator Console while the drone is flown manually.
+
+This is not the same as direct SDK/API integration. Consumer drone app compatibility means AI1SAD supports the patrol workflow, not that AI1SAD controls the aircraft or reads private app telemetry.
+
+| Drone / Flight App Type                       | AI1SAD Support Path                                         | API Required?           |
+| --------------------------------------------- | ----------------------------------------------------------- | ----------------------- |
+| Any consumer drone flight app                 | Manual Drone Operator Console + media/evidence reference    | No                      |
+| DJI Fly / DJI Pilot                           | Manual workflow now; future read-only SDK research possible | No for current workflow |
+| Ophelia GO / M RC PRO / Holy Stone-class apps | Manual workflow only + post-flight media reference          | No                      |
+| Generic Wi-Fi camera drone apps               | Manual workflow + map-pin observation                       | No                      |
+| ArduPilot / PX4 / Pixhawk                     | Read-only MAVLink telemetry bridge                          | Yes, MAVLink            |
+
+AI1SAD works with consumer drone apps by running beside them, not inside them.
+
+AI1SAD recommends surveillance attention.
+Humans approve missions.
+Drone operators fly missions.
+AI1SAD ingests observations.
+
+AI1SAD does not:
+
+- control consumer drone apps
+- autonomously fly aircraft
+- bypass manufacturer software
+- require drone-app API access for manual workflows
+- create shark sightings from telemetry alone
+- fetch or analyze media
+- predict individual shark attacks
+
+It also does not add:
 
 - autonomous takeoff or landing
 - waypoint execution
 - offboard flight control
-- MAVLink support yet
+- MAVLink command transmission
 - DJI-specific dependencies
 - computer vision inference
 - file upload or image hosting
