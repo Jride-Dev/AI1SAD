@@ -187,3 +187,42 @@ Attachment endpoints are local-prototype routes and require `MEDIA_ATTACHMENTS_E
 ## Map-Ready Feed Fields
 
 Each feed item includes latitude, longitude, timestamp, observation type, review status, confidence, mission ID, source type, active pack, explanation summary, recommended action, recommended surveillance pattern, expiration, and data freshness.
+
+## UAV Operator Feedback
+
+Phase 25F adds research-only UAV operator feedback records. These records collect field requirements and workflow notes from UAV operators, lifeguards, coastal authorities, researchers, and agency teams.
+
+Feedback records include:
+
+- `feedback_id`
+- `submitted_at`
+- `submitter_role`
+- `organization_type`
+- `region`
+- `country`
+- `contact_allowed`
+- `contact_reference`
+- `drone_platform`
+- `drone_model`
+- `flight_app`
+- `telemetry_available`
+- `telemetry_export_format`
+- `media_workflow`
+- `no_sighting_patrols_logged`
+- `observation_fields_used`
+- `privacy_constraints`
+- `controlled_airspace_notes`
+- `operator_pain_points`
+- `requested_features`
+- `suggested_observation_types`
+- `workflow_notes`
+- `public_summary`
+- `internal_notes_private`
+- `review_status`
+- `reviewed_at`
+- `reviewer_role`
+- `requirements_tags`
+
+Private fields such as `contact_reference`, `internal_notes_private`, `reviewed_at`, and `reviewer_role` are excluded from public-safe output.
+
+Feedback records are requirements input only. They do not create drone observations, sightings, warnings, public alerts, replay facts, surveillance feed items, scoring changes, or drone operations.

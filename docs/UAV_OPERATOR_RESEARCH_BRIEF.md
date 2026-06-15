@@ -202,6 +202,7 @@ These questions are intended for future engagement with NSW, lifeguard, governme
 ## See Also
 
 - [UAV Compatibility Matrix](UAV_COMPATIBILITY_MATRIX.md)
+- [UAV Operator Feedback Intake](UAV_OPERATOR_FEEDBACK_INTAKE.md)
 - [Drone Operator Console](DRONE_OPERATOR_CONSOLE.md)
 - [Drone Observation Ingestion](DRONE_OBSERVATION_INGESTION.md)
 - [Observation Analyst Review](OBSERVATION_ANALYST_REVIEW.md)

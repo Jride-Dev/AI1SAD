@@ -434,6 +434,95 @@ export const ATTACHMENT_VISIBILITIES = [
   "public_summary_only",
 ] as const;
 
+export const UAV_SUBMITTER_ROLES = [
+  "uav_operator",
+  "lifeguard",
+  "coastal_authority",
+  "researcher",
+  "agency_staff",
+  "citizen_scientist",
+  "project_owner",
+  "unknown",
+] as const;
+
+export const UAV_ORGANIZATION_TYPES = [
+  "government",
+  "lifeguard_service",
+  "research",
+  "nonprofit",
+  "private_operator",
+  "volunteer",
+  "independent",
+  "unknown",
+] as const;
+
+export const UAV_TELEMETRY_OPTIONS = [
+  "none",
+  "unknown",
+  "app_only",
+  "export_file",
+  "mavlink",
+  "vendor_sdk",
+  "manual_notes",
+] as const;
+
+export const UAV_MEDIA_WORKFLOWS = [
+  "none",
+  "sd_card",
+  "app_gallery",
+  "screen_recording",
+  "agency_evidence_system",
+  "external_reference",
+  "local_reference_only",
+  "unknown",
+] as const;
+
+export const UAV_FEEDBACK_REVIEW_STATUSES = [
+  "new",
+  "triaged",
+  "needs_follow_up",
+  "accepted_requirement",
+  "rejected",
+  "archived",
+] as const;
+
+export type UavOperatorFeedbackPayload = {
+  submitter_role: string;
+  organization_type: string;
+  region?: string | null;
+  country?: string | null;
+  contact_allowed?: boolean;
+  contact_reference?: string | null;
+  drone_platform?: string | null;
+  drone_model?: string | null;
+  flight_app?: string | null;
+  telemetry_available: string;
+  telemetry_export_format?: string | null;
+  media_workflow: string;
+  no_sighting_patrols_logged?: boolean;
+  observation_fields_used?: string[];
+  privacy_constraints?: string[];
+  controlled_airspace_notes?: string | null;
+  operator_pain_points?: string[];
+  requested_features?: string[];
+  suggested_observation_types?: string[];
+  workflow_notes?: string | null;
+  public_summary?: string | null;
+  internal_notes_private?: string | null;
+  requirements_tags?: string[];
+};
+
+export type UavOperatorFeedback = UavOperatorFeedbackPayload & {
+  feedback_id: string;
+  submitted_at?: string;
+  review_status: string;
+  research_input_only: boolean;
+  creates_sighting: boolean;
+  creates_public_alert: boolean;
+  alters_scoring: boolean;
+  alters_replay: boolean;
+};
+
 export type DroneConsoleData = {
   missions: DroneConsoleMissionOption[];
   observations: DroneObservation[];

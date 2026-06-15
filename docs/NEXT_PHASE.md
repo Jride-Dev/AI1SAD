@@ -1,56 +1,73 @@
 # Next Phase
 
-## Phase 25F: UAV Operator Feedback Intake and Field Requirements Tracker
+## Phase 25G: UAV Feedback Review Dashboard and Requirements Prioritization
 
 ## Objective
 
-Create a structured feedback intake and field-requirements tracker for UAV operators, lifeguards, coastal authorities, and shark-surveillance teams who review or test AI1SAD.
+Add a review dashboard for UAV operator feedback records and turn submitted workflow notes into prioritized requirements without treating feedback as live surveillance data.
 
-Do not start this phase automatically. Phase 25F begins only after Phase 25E is reviewed and committed.
+Do not start this phase automatically. Phase 25G begins only after Phase 25F is reviewed and committed.
 
 ## Current Baseline
 
-Phase 25E should leave AI1SAD with:
+Phase 25F should leave AI1SAD with:
 
-- `docs/UAV_OPERATOR_RESEARCH_BRIEF.md` — comprehensive operator-facing research brief
-- `docs/UAV_COMPATIBILITY_MATRIX.md` — shorter companion compatibility table
-- Updated README and MkDocs navigation
-- No code changes
+- `POST /api/v1/uav/operator-feedback`
+- `GET /api/v1/uav/operator-feedback`
+- `PATCH /api/v1/uav/operator-feedback/{feedback_id}/status`
+- frontend route `/uav-feedback`
+- research-only feedback records
+- public/private field filtering
+- validation for enums, note lengths, unsafe contact references, public-summary contact leakage, and obvious secrets
+- no sightings, warnings, public alerts, replay facts, surveillance feed entries, scoring changes, drone operations, SDK integrations, media upload, cloud storage, computer vision, or MAVLink command behavior
 
-## Planned Scope (Future Phase)
+## Planned Scope
 
-1. Create a feedback template for UAV operators to report:
-   - which drone platforms they use
-   - what telemetry is available
-   - what observation fields they currently record
-   - what is missing from AI1SAD for their workflow
-   - what privacy or airspace restrictions they face
-2. Create a field-requirements tracker that maps operator needs to AI1SAD capabilities:
-   - supported today
-   - needs documentation only
-   - needs future implementation
-   - out of scope
-3. Document common pain points from real-world drone patrol workflows.
-4. Update the UAV Operator Research Brief with operator-validated field requirements.
+1. Add a dedicated feedback review dashboard.
+2. Show feedback cards grouped by review status.
+3. Add requirements prioritization fields:
+   - priority
+   - effort estimate
+   - safety impact
+   - workflow impact
+   - dependency notes
+4. Add filters for:
+   - region
+   - organization type
+   - telemetry availability
+   - media workflow
+   - requirements tag
+5. Keep private contact references and private notes out of public-facing views.
+6. Update docs with a requirements triage workflow.
 
 ## Safety Boundaries
 
-- Do not add flight-control code.
-- Do not add cloud storage.
-- Do not add external media APIs.
-- Do not add computer vision.
-- Do not infer species or sightings from media.
-- Do not change scoring weights.
+- Do not convert feedback into live observations.
+- Do not create sightings from feedback.
+- Do not create warnings or public alerts from feedback.
+- Do not alter scoring weights.
 - Do not modify replay outputs.
+- Do not add cloud storage.
+- Do not add media upload.
+- Do not add computer vision.
+- Do not add drone SDK integrations.
+- Do not add autonomous flight control.
+- Do not add MAVLink command/control behavior.
+- Do not imply endorsement from any agency/operator.
 
 ## Validation Expectations
 
+- focused UAV feedback tests
+- full backend tests
+- frontend tests
+- frontend build
+- npm audit high
 - mkdocs build
-- README link/image check if README changes
+- README link/image check
 - secret scan
 - prohibited-language scan
-- backend/frontend tests only if code changes occur
+- git diff --check
 
 ## Review Gate
 
-Stop before committing unless explicitly asked to commit Phase 25F work.
+Stop before committing unless explicitly asked to commit Phase 25G work.

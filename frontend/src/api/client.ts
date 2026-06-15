@@ -20,6 +20,8 @@ import type {
   ReplayHeatmap,
   ReplayResult,
   SurveillanceResponse,
+  UavOperatorFeedback,
+  UavOperatorFeedbackPayload,
   WarningResponse,
 } from "../types";
 
@@ -400,6 +402,28 @@ export async function submitObservationAttachment(observationId: string, payload
       Boolean(value && typeof value === "object" && "attachment" in value),
   );
   return response.attachment;
+}
+
+export async function submitUavOperatorFeedback(payload: UavOperatorFeedbackPayload): Promise<UavOperatorFeedback> {
+  const fallback: UavOperatorFeedback = {
+    ...payload,
+    feedback_id: `mock-feedback-${Date.now()}`,
+    submitted_at: new Date().toISOString(),
+    review_status: "new",
+    research_input_only: true,
+    creates_sighting: false,
+    creates_public_alert: false,
+    alters_scoring: false,
+    alters_replay: false,
+  };
+  const response = await postJson<{ feedback: UavOperatorFeedback }>(
+    "/api/v1/uav/operator-feedback",
+    payload,
+    { feedback: fallback },
+    (value): value is { feedback: UavOperatorFeedback } =>
+      Boolean(value && typeof value === "object" && "feedback" in value),
+  );
+  return response.feedback;
 }
 
 export function __setMockModeForTests(value: boolean | null): void {

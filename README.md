@@ -16,10 +16,10 @@ AI1SAD does not predict individual incidents or infer shark intent. It separates
 
 Current development checkpoint:
 
-- Latest completed phase: Phase 25D-C, Local-Only Media Attachment Prototype
-- Latest completed maintenance: post-Phase 25D-A drone observation privacy and validation hardening
-- Current implementation: Phase 25D-D, media attachment security review and metadata hardening
-- Next planned phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
+- Latest completed phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
+- Latest completed maintenance: Phase 25D-D media attachment security review and metadata hardening
+- Current implementation: Phase 25F, UAV Operator Feedback Intake and Field Requirements Tracker
+- Next planned phase: Phase 25G, UAV Feedback Review Dashboard and Requirements Prioritization
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
@@ -67,6 +67,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Drone Operator Console for human-entered patrol observations, including shark sightings, no-sighting patrols, carcasses, baitfish activity, poor visibility, and surf-line activity. AI1SAD records observations and recommends surveillance attention; it does not control aircraft or predict individual attacks.
 - Metadata-only analyst review fields for annotating observations with review status, outcome, public summary, and private notes
 - Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
+- UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
@@ -147,6 +148,7 @@ mkdocs serve --dev-addr 0.0.0.0:8001
 - `/api/v1/replay/run/{scenario_id}`
 - `/api/v1/drone/active-observations`
 - `/api/v1/drone/surveillance-feed`
+- `/api/v1/uav/operator-feedback`
 
 Drone write endpoints are disabled by default unless `DRONE_INGEST_ENABLED=true`.
 
@@ -238,6 +240,7 @@ See:
 
 - [UAV Operator Research Brief](docs/UAV_OPERATOR_RESEARCH_BRIEF.md)
 - [UAV Compatibility Matrix](docs/UAV_COMPATIBILITY_MATRIX.md)
+- [UAV Operator Feedback Intake](docs/UAV_OPERATOR_FEEDBACK_INTAKE.md)
 - [Drone Operator Console](docs/DRONE_OPERATOR_CONSOLE.md)
 - [Drone Observation Ingestion](docs/DRONE_OBSERVATION_INGESTION.md)
 - [Observation Analyst Review](docs/OBSERVATION_ANALYST_REVIEW.md)

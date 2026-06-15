@@ -2,11 +2,11 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25E (UAV Operator Research Brief and Compatibility Matrix) - uncommitted
-- Latest completed committed phase: Phase 25D-D Media Attachment Security Review and Upload Hardening
-- Latest completed local validation: Phase 25E MkDocs build and doc link checks
-- Latest commit hash: `fe5b230` Harden local media attachment metadata validation
-- Repo status: uncommitted Phase 25E UAV research brief and compatibility matrix; verify with `git status`
+- Current phase number: Phase 25F (UAV Operator Feedback Intake and Field Requirements Tracker) - implemented locally, uncommitted
+- Latest completed committed phase: Phase 25E UAV Operator Research Brief and Compatibility Matrix
+- Latest completed local validation: Phase 25F backend, frontend, docs, security, README link, and diff checks passed
+- Latest commit hash: `e8f85f0` Add UAV operator research brief and compatibility matrix
+- Repo status: uncommitted Phase 25F UAV operator feedback intake; verify with `git status`
 
 ## Major Completed Systems
 
@@ -34,6 +34,7 @@
 - Phase 25D-C local-only media attachment prototype implemented locally: metadata-only attachment records, `MEDIA_ATTACHMENTS_ENABLED=false` default gate, local private filesystem backend label, private-by-default frontend panel, and public-feed privacy filtering. No binary upload, media hosting, computer vision, scoring change, replay change, or autonomous flight behavior added.
 - Phase 25D-D media attachment hardening implemented locally: stricter attachment metadata validation for path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries. No binary upload, cloud storage, external fetch, media analysis, scoring change, replay change, or flight-control behavior added.
 - Phase 25E UAV operator research brief and compatibility matrix: operator-facing documentation covering manual consumer drone workflow, MAVLink read-only telemetry workflow, post-flight evidence workflow, agency/helicopter report workflow, compatibility matrix, operator questions, minimum field checklist, safety boundaries, and research questions for real UAV operators. Documentation-only phase; no code changes.
+- Phase 25F UAV operator feedback intake implemented locally: research-only feedback records, `/api/v1/uav/operator-feedback` POST/GET/PATCH endpoints, frontend `/uav-feedback` submission page, public/private field filtering, enum and length validation, unsafe contact-reference rejection, public-summary contact leakage checks, secret-like text rejection, and no side effects on observations, sightings, warnings, public alerts, replay facts, surveillance feeds, scoring, drone operations, vendor SDKs, media upload, cloud storage, computer vision, or MAVLink command behavior.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -58,6 +59,7 @@
 - Analyst review fields are metadata-only annotations; AI1SAD does not fetch, host, or analyze media.
 - Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, EXIF/geotag stripping, and production upload hardening remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
+- UAV operator feedback is research/requirements input only; Phase 25G still needs a review dashboard and requirements prioritization workflow.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -67,8 +69,7 @@
 
 ## Next Planned Phase
 
-- Phase 25E: UAV Operator Research Brief and Compatibility Matrix (current uncommitted work)
-- Phase 25F: UAV Operator Feedback Intake and Field Requirements Tracker (not started)
+- Phase 25G: UAV Feedback Review Dashboard and Requirements Prioritization
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -213,6 +214,20 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - git whitespace check: passed (CRLF warnings only)
 - No code changed: backend/frontend tests not required
 
+## Validation Counts (Latest Phase 25F Local Run)
+
+- Focused UAV feedback tests: `8 passed, 1 warning`
+- Full backend tests: `283 passed, 3 warnings`
+- Frontend tests: `5 files passed`, `30 tests passed`
+- Frontend build: passed with Vite `7.3.3`
+- Frontend npm audit high: `0 vulnerabilities`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local link/image check: `52` links/images checked; local targets exist
+- Secret scan: no credential matches
+- Prohibited-language scan: guardrail/disclaimer/test-only matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Current implementation: research-only UAV operator feedback intake, private-by-default contact fields, public-safe output filtering, no observation/sighting/feed creation, no warnings or public alerts, no replay/scoring changes, no drone operations, no SDK integrations, no media upload, no cloud storage, no computer vision, and no MAVLink command behavior.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -225,16 +240,18 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25E UAV Operator Research Brief and Compatibility Matrix awaiting review.
-- Adds `docs/UAV_OPERATOR_RESEARCH_BRIEF.md` with ten sections covering purpose, capabilities, workflow modes, compatibility matrix, Coogee case relevance, operator questions, field checklist, safety boundaries, and research questions.
-- Adds `docs/UAV_COMPATIBILITY_MATRIX.md` as a shorter companion page focused on the compatibility table and integration modes.
-- Updated README.md with links to both new docs.
-- Updated mkdocs.yml with both new pages under Drone Operations navigation.
-- Documentation-only phase. No code changes.
-- Review gate: do not commit until reviewed; do not begin Phase 25F.
+- Phase 25F UAV Operator Feedback Intake and Field Requirements Tracker awaiting review.
+- Adds `app/services/uav_operator_feedback.py` for bounded validation, public/private output filtering, and research-only side-effect flags.
+- Adds `/api/v1/uav/operator-feedback` POST/GET/PATCH endpoints for feedback submission, listing, and status updates.
+- Adds frontend route `http://localhost:5174/uav-feedback` with required safety/privacy copy, feedback submission form, validation errors, backend unavailable state, and success summary.
+- Adds `docs/UAV_OPERATOR_FEEDBACK_INTAKE.md` and updates README, API docs, drone docs, current data sources, UAV research docs, MkDocs navigation, and next-phase handoff.
+- Feedback remains requirements input only. It does not create observations, sightings, public feed entries, warnings, public alerts, replay facts, scoring changes, drone operations, SDK integrations, media upload, cloud storage, computer vision, or MAVLink command behavior.
+- Review gate: do not commit until reviewed; do not begin Phase 25G.
 
 ## Recent Important Commits
 
+- `e8f85f0` Add UAV operator research brief and compatibility matrix
+- `fe5b230` Harden local media attachment metadata validation
 - `1996b0a` Add AI1SAD repository agent instructions
 - `bc6c5c9` Add local media attachment metadata prototype
 - `5ec0881` Harden drone observation privacy and validation

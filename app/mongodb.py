@@ -43,6 +43,7 @@ COLLECTIONS = {
     "drone_telemetry": "drone_telemetry",
     "drone_observations": "drone_observations",
     "drone_attachments": "drone_attachments",
+    "uav_operator_feedback": "uav_operator_feedback",
     "signals": "signals",
     "ecology_events": "ecology_events",
     "species_season_profiles": "species_season_profiles",
@@ -160,6 +161,8 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["drone_observations"]].create_index([("location.geo", GEOSPHERE)])
     db[COLLECTIONS["drone_attachments"]].create_index([("observation_id", ASCENDING), ("uploaded_at", DESCENDING)])
     db[COLLECTIONS["drone_attachments"]].create_index([("mission_id", ASCENDING), ("review_visibility", ASCENDING)])
+    db[COLLECTIONS["uav_operator_feedback"]].create_index([("submitted_at", DESCENDING)])
+    db[COLLECTIONS["uav_operator_feedback"]].create_index([("review_status", ASCENDING), ("submitted_at", DESCENDING)])
 
     db[COLLECTIONS["signals"]].create_index([("visibility", ASCENDING), ("signal_type", ASCENDING), ("timestamp", DESCENDING)])
     db[COLLECTIONS["signals"]].create_index([("visibility", ASCENDING), ("species", ASCENDING), ("timestamp", DESCENDING)])

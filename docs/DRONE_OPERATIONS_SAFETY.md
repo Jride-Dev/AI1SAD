@@ -12,6 +12,8 @@ Phase 25D-C adds a local-only, metadata-only attachment prototype. It is disable
 
 Phase 25D-D hardens local attachment metadata validation. It rejects unsafe path-like metadata, executable/script filename extensions, invalid checksums, malformed timestamps, impossible file sizes, and unsupported attachment enum values before any binary upload support exists.
 
+Phase 25F adds UAV operator feedback intake. Feedback records are research and requirements input only; they are not live observations and do not change operational outputs.
+
 ## Safety Boundaries
 
 - Drone write endpoints are disabled unless `DRONE_INGEST_ENABLED=true`.
@@ -32,6 +34,8 @@ Phase 25D-D hardens local attachment metadata validation. It rejects unsafe path
 - Attachments do not create sightings and do not alter scoring
 - Attachments do not infer species or trigger computer vision
 - Original filenames are private display metadata only and are never used as storage paths
+- UAV feedback records do not create observations, sightings, warnings, public alerts, replay facts, or surveillance feed entries
+- UAV feedback records do not imply endorsement from an agency, operator, researcher, or lifeguard service
 
 ## Interpretation Rules
 

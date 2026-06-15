@@ -597,6 +597,20 @@ Lists private attachment metadata for an existing observation. Safe responses om
 
 Updates analyst review metadata such as review status, public summary, visibility, and evidence confidence. Public feeds do not expose private attachment records.
 
+## UAV Operator Feedback
+
+`POST /api/v1/uav/operator-feedback`
+
+Creates a research-only UAV operator feedback record. Feedback records capture operator workflow notes, telemetry availability, media workflow, privacy constraints, controlled-airspace notes, requested features, and requirements tags. They do not create sightings, warnings, public alerts, replay facts, or surveillance feed entries.
+
+`GET /api/v1/uav/operator-feedback`
+
+Lists public-safe feedback summaries. Private contact references, private notes, reviewer role, and review timestamps are filtered from responses.
+
+`PATCH /api/v1/uav/operator-feedback/{feedback_id}/status`
+
+Updates review status, requirements tags, and private triage metadata. Allowed status values are `new`, `triaged`, `needs_follow_up`, `accepted_requirement`, `rejected`, and `archived`.
+
 `GET /api/v1/regions/{region}/season-profile`
 
 Returns public species season profiles for a region.

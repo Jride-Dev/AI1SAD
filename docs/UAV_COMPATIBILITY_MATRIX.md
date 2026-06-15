@@ -44,6 +44,7 @@ Supported workflow does not mean direct app or API integration.
 ## See Also
 
 - [UAV Operator Research Brief](UAV_OPERATOR_RESEARCH_BRIEF.md)
+- [UAV Operator Feedback Intake](UAV_OPERATOR_FEEDBACK_INTAKE.md)
 - [Drone Operator Console](DRONE_OPERATOR_CONSOLE.md)
 - [Drone Operations Safety](DRONE_OPERATIONS_SAFETY.md)
 - [MAVLink Telemetry Bridge](MAVLINK_TELEMETRY_BRIDGE.md)

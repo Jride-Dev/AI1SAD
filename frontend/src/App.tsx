@@ -1,16 +1,18 @@
-import { Activity, AlertTriangle, BookOpen, Boxes, ClipboardList, ExternalLink, HeartPulse, Map, Plane, RotateCcw } from "lucide-react";
+import { Activity, AlertTriangle, BookOpen, Boxes, ClipboardList, ExternalLink, HeartPulse, Map, MessageSquare, Plane, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
 import { scenarioCoordinates } from "./api/mockData";
 import { OperationalMap } from "./components/OperationalMap";
 import { DroneOperatorConsole } from "./components/DroneOperatorConsole";
+import { UavFeedbackPage } from "./components/UavFeedbackPage";
 import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth, ReplayLibraryItem } from "./types";
 
 const pages = [
   { id: "map", label: "Live Map", icon: Map, path: "/" },
   { id: "surveillance", label: "Surveillance", icon: Plane, path: "/surveillance" },
   { id: "droneConsole", label: "Drone Console", icon: ClipboardList, path: "/drone-console" },
+  { id: "uavFeedback", label: "UAV Feedback", icon: MessageSquare, path: "/uav-feedback" },
   { id: "replay", label: "Replay", icon: RotateCcw, path: "/replay" },
   { id: "replayLibrary", label: "Replay Library", icon: BookOpen, path: "/replay-library" },
   { id: "alerts", label: "Alerts", icon: AlertTriangle, path: "/alerts" },
@@ -115,6 +117,8 @@ export default function App() {
 
         {activePage === "droneConsole" ? (
           <DroneOperatorConsole />
+        ) : activePage === "uavFeedback" ? (
+          <UavFeedbackPage />
         ) : error ? (
           <ErrorPanel message={error} />
         ) : loading || !data ? (
@@ -162,6 +166,7 @@ function DashboardPage({
   if (page === "map") return <LiveWarningMap data={data} selectedScenarioId={selectedScenarioId} onSelectScenario={onSelectScenario} />;
   if (page === "surveillance") return <SurveillanceView data={data} />;
   if (page === "droneConsole") return <DroneOperatorConsole />;
+  if (page === "uavFeedback") return <UavFeedbackPage />;
   if (page === "replay") return <ReplayExplorer data={data} />;
   if (page === "replayLibrary") return <ReplayLibraryView items={data.replayLibrary} />;
   if (page === "packs") return <RegionalPackExplorer data={data} />;

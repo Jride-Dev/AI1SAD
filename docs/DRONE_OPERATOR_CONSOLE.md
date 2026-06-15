@@ -23,6 +23,14 @@ http://localhost:5174/drone-console
 
 The page is available from the local dashboard navigation as **Drone Console**.
 
+Related route:
+
+```text
+http://localhost:5174/uav-feedback
+```
+
+The **UAV Feedback** page collects research and requirements feedback from operators. It is separate from live observation intake and does not create sightings, warnings, public alerts, or surveillance feed entries.
+
 ## What Operators Can Record
 
 The console supports source-attributed, human-entered observation types:

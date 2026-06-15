@@ -32,6 +32,11 @@ from app.services.media_attachments import (
     build_attachment,
     update_attachment_review,
 )
+from app.services.uav_operator_feedback import (
+    build_feedback,
+    public_feedback_doc,
+    update_feedback_status,
+)
 from app.services.explainability_engine import (
     attach_alert_explanation_summary,
     build_explanation,
@@ -1377,6 +1382,76 @@ def update_drone_observation_attachment_review(
             "public_feed_exposed": False,
             "media_analysis_performed": False,
             "sighting_created": False,
+        }
+    )
+
+
+@router.post("/uav/operator-feedback")
+def create_uav_operator_feedback(payload: dict[str, Any] = Body(...), db: Database = Depends(get_database)) -> dict[str, Any]:
+    try:
+        feedback = build_feedback(payload)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["uav_operator_feedback"]].insert_one(feedback)
+    return maybe_demo(
+        {
+            "status": "created",
+            "feedback": public_feedback_doc(feedback),
+            "research_input_only": True,
+            "creates_sighting": False,
+            "creates_public_alert": False,
+            "alters_scoring": False,
+            "alters_replay": False,
+        }
+    )
+
+
+@router.get("/uav/operator-feedback")
+def list_uav_operator_feedback(
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    review_status: Annotated[str | None, Query(max_length=40)] = None,
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    query: dict[str, Any] = {}
+    if review_status:
+        query["review_status"] = review_status.strip()
+    docs = list(db[COLLECTIONS["uav_operator_feedback"]].find(query).sort("submitted_at", -1).limit(limit))
+    return maybe_demo(
+        {
+            "results": [public_feedback_doc(doc) for doc in docs],
+            "research_input_only": True,
+            "creates_sighting": False,
+            "creates_public_alert": False,
+            "alters_scoring": False,
+            "alters_replay": False,
+        }
+    )
+
+
+@router.patch("/uav/operator-feedback/{feedback_id}/status")
+def update_uav_operator_feedback_status(
+    feedback_id: str,
+    payload: dict[str, Any] = Body(...),
+    db: Database = Depends(get_database),
+) -> dict[str, Any]:
+    existing = db[COLLECTIONS["uav_operator_feedback"]].find_one({"feedback_id": feedback_id})
+    if existing is None:
+        raise HTTPException(status_code=404, detail="UAV operator feedback not found")
+    try:
+        updated_doc = update_feedback_status(existing, payload)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    db[COLLECTIONS["uav_operator_feedback"]].replace_one({"feedback_id": feedback_id}, updated_doc)
+    updated = db[COLLECTIONS["uav_operator_feedback"]].find_one({"feedback_id": feedback_id}) or updated_doc
+    return maybe_demo(
+        {
+            "status": "updated",
+            "feedback": public_feedback_doc(updated),
+            "research_input_only": True,
+            "creates_sighting": False,
+            "creates_public_alert": False,
+            "alters_scoring": False,
+            "alters_replay": False,
         }
     )
 
