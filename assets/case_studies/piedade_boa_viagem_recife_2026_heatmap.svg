@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Piedade and Boa Viagem Recife incident-cluster replay heatmap">
+  <defs>
+    <style>
+      .bg { fill: #06263a; }
+      .ocean { fill: #0f8b8d; fill-opacity: 0.22; }
+      .coast { fill: #d9f0ff; fill-opacity: 0.18; stroke: #d9f0ff; stroke-opacity: 0.55; stroke-width: 2; }
+      .reef { stroke: #2ec4d6; stroke-width: 5; stroke-opacity: 0.72; fill: none; stroke-dasharray: 10 10; }
+      .grid { stroke: #2ec4d6; stroke-opacity: 0.18; stroke-width: 1; }
+      .cell-low { fill: #0f8b8d; fill-opacity: 0.46; }
+      .cell-lift { fill: #7b2cbf; fill-opacity: 0.5; }
+      .marker { fill: #d9f0ff; stroke: #2ec4d6; stroke-width: 3; }
+      .marker2 { fill: #d9f0ff; stroke: #7b2cbf; stroke-width: 3; }
+      .title { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 24px; font-weight: 700; }
+      .label { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 18px; font-weight: 700; }
+      .small { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 14px; opacity: 0.9; }
+      .muted { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 13px; opacity: 0.72; }
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="540"/>
+  <rect class="ocean" x="0" y="0" width="960" height="540"/>
+  <g>
+    <path class="coast" d="M98,0 C142,72 158,132 150,198 C140,286 172,360 222,540 L0,540 L0,0 Z"/>
+    <path class="reef" d="M300,76 C334,150 340,222 324,286 C304,366 328,424 370,500"/>
+    <g>
+      <line x1="260" y1="62" x2="590" y2="500" class="grid"/>
+      <line x1="240" y1="496" x2="610" y2="70" class="grid"/>
+      <circle cx="356" cy="315" r="72" fill="none" class="grid"/>
+      <circle cx="414" cy="206" r="72" fill="none" class="grid"/>
+      <circle cx="385" cy="260" r="178" fill="none" class="grid"/>
+    </g>
+    <rect x="276" y="296" width="70" height="70" class="cell-low"/>
+    <rect x="350" y="260" width="70" height="70" class="cell-low"/>
+    <rect x="402" y="188" width="70" height="70" class="cell-lift"/>
+    <rect x="468" y="154" width="70" height="70" class="cell-low"/>
+    <circle cx="352" cy="320" r="13" class="marker"/>
+    <text x="382" y="316" class="label">Piedade</text>
+    <text x="382" y="337" class="small">strict pre: surveillance 9.0 (low)</text>
+    <circle cx="418" cy="210" r="13" class="marker2"/>
+    <text x="448" y="206" class="label">Boa Viagem</text>
+    <text x="448" y="227" class="small">strict pre with Piedade interaction: 23.0 (low)</text>
+  </g>
+  <text x="42" y="48" class="title">AI1SAD Greater Recife Replay</text>
+  <text x="42" y="76" class="small">Piedade and Boa Viagem paired incident-cluster case study</text>
+  <text x="42" y="502" class="muted">Static replay artifact: reef-barrier corridor context plus timeline-valid recent interaction. No tide/current/turbidity/weather values are invented.</text>
+</svg>

@@ -1,0 +1,184 @@
+{
+  "case_id": "cromwells_beach_hawaii_2026",
+  "swimming_across_channel_top_surveillance_factors": [
+    {
+      "factor": "reef_dropoff_habitat_proximity",
+      "value": 1,
+      "points": 5,
+      "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+      "contribution": 0.3333
+    },
+    {
+      "factor": "activity_context",
+      "value": "swimming",
+      "points": 4,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.2667
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 0.0,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.2
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.2
+    },
+    {
+      "factor": "recent_interactions_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+      "contribution": 0.0
+    },
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.0
+    }
+  ],
+  "surfing_or_paddling_out_top_surveillance_factors": [
+    {
+      "factor": "activity_context",
+      "value": "surfing",
+      "points": 7,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.3889
+    },
+    {
+      "factor": "reef_dropoff_habitat_proximity",
+      "value": 1,
+      "points": 5,
+      "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+      "contribution": 0.2778
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 0.0,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.1667
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.1667
+    },
+    {
+      "factor": "recent_interactions_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+      "contribution": 0.0
+    },
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.0
+    }
+  ],
+  "post_incident_top_surveillance_factors": [
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 2,
+      "points": 22,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.55
+    },
+    {
+      "factor": "activity_context",
+      "value": "surfing",
+      "points": 7,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.175
+    },
+    {
+      "factor": "reef_dropoff_habitat_proximity",
+      "value": 1,
+      "points": 5,
+      "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+      "contribution": 0.125
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 0.0,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.075
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.075
+    },
+    {
+      "factor": "recent_interactions_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+      "contribution": 0.0
+    }
+  ],
+  "hypothetical_early_sighting_top_surveillance_factors": [
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 1,
+      "points": 11,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.3793
+    },
+    {
+      "factor": "activity_context",
+      "value": "surfing",
+      "points": 7,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.2414
+    },
+    {
+      "factor": "reef_dropoff_habitat_proximity",
+      "value": 1,
+      "points": 5,
+      "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+      "contribution": 0.1724
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 0.0,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.1034
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.1034
+    },
+    {
+      "factor": "recent_interactions_nearby",
+      "value": 0,
+      "points": 0,
+      "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+      "contribution": 0.0
+    }
+  ],
+  "score_split_note": {
+    "warning_score": "Environmental and live-condition context only.",
+    "activity_hazard_score": "Human activity context only; not attack probability.",
+    "surveillance_priority_score": "Operational search prioritization."
+  }
+}

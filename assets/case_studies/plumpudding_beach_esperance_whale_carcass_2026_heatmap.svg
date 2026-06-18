@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Plumpudding Beach whale carcass replay heatmap">
+  <defs>
+    <style>
+      .bg { fill: #06263a; }
+      .grid { stroke: #2ec4d6; stroke-opacity: 0.22; stroke-width: 1; }
+      .coast { fill: #d9f0ff; fill-opacity: 0.16; stroke: #d9f0ff; stroke-opacity: 0.55; stroke-width: 2; }
+      .cell-low { fill: #0f8b8d; fill-opacity: 0.42; }
+      .cell-mod { fill: #7b2cbf; fill-opacity: 0.48; }
+      .marker { fill: #d9f0ff; stroke: #2ec4d6; stroke-width: 3; }
+      .label { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 20px; font-weight: 700; }
+      .small { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 14px; opacity: 0.88; }
+      .muted { fill: #d9f0ff; font-family: Arial, sans-serif; font-size: 13px; opacity: 0.72; }
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="540"/>
+  <g>
+    <path class="coast" d="M58,364 C142,318 216,324 288,284 C362,243 438,250 515,214 C610,170 720,162 884,118 L920,0 L0,0 L0,398 Z"/>
+    <g>
+      <rect x="210" y="250" width="70" height="70" class="cell-low"/>
+      <rect x="285" y="248" width="70" height="70" class="cell-low"/>
+      <rect x="360" y="244" width="70" height="70" class="cell-low"/>
+      <rect x="435" y="232" width="70" height="70" class="cell-mod"/>
+      <rect x="510" y="218" width="70" height="70" class="cell-low"/>
+      <rect x="585" y="205" width="70" height="70" class="cell-low"/>
+      <rect x="660" y="188" width="70" height="70" class="cell-low"/>
+    </g>
+    <g>
+      <line x1="160" y1="140" x2="820" y2="435" class="grid"/>
+      <line x1="185" y1="435" x2="780" y2="145" class="grid"/>
+      <circle cx="472" cy="267" r="62" fill="none" class="grid"/>
+      <circle cx="472" cy="267" r="112" fill="none" class="grid"/>
+      <circle cx="472" cy="267" r="162" fill="none" class="grid"/>
+    </g>
+    <circle cx="472" cy="267" r="13" class="marker"/>
+    <text x="500" y="261" class="label">Plumpudding Beach</text>
+    <text x="500" y="284" class="small">Whale carcass initial report: surveillance 24.96 (low)</text>
+    <text x="500" y="306" class="small">Hypothetical sighting sensitivity: surveillance 35.96 (moderate)</text>
+  </g>
+  <text x="42" y="48" class="label">AI1SAD Operational Replay</text>
+  <text x="42" y="75" class="small">WA SharkSmart advice context - static replay artifact</text>
+  <text x="42" y="502" class="muted">Recommended: carcass event buffer, shoreline parallel sweep, future down-current drift corridor when tide/current support is available.</text>
+</svg>

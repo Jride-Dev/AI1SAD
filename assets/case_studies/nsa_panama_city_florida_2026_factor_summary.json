@@ -1,0 +1,59 @@
+{
+  "case_id": "nsa_panama_city_florida_2026_drone_observation",
+  "factor_summary": [
+    {
+      "factor": "verified_sightings_nearby",
+      "value": 1,
+      "points": 11,
+      "rationale": "Verified public sighting reports near the mission area increase search priority.",
+      "contribution": 0.3612
+    },
+    {
+      "factor": "human_exposure_level",
+      "value": 0.45,
+      "points": 5.4,
+      "rationale": "Human activity level affects search urgency and area selection.",
+      "contribution": 0.1773
+    },
+    {
+      "factor": "human_exposure_surveillance_amplifier",
+      "value": 0.45,
+      "contexts": [
+        "sightings",
+        "activity_context"
+      ],
+      "points": 4.05,
+      "rationale": "Crowding/exposure can raise surveillance priority only when paired with sightings, activity context, recent interactions, or environmental signals.",
+      "contribution": 0.133
+    },
+    {
+      "factor": "activity_context",
+      "value": "swimming",
+      "points": 4,
+      "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+      "contribution": 0.1314
+    },
+    {
+      "factor": "regional_sst_species_context",
+      "value": 5.83,
+      "points": 3,
+      "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+      "contribution": 0.0985
+    },
+    {
+      "factor": "regional_species_suitability",
+      "value": null,
+      "points": 3.0,
+      "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+      "contribution": 0.0985
+    }
+  ],
+  "species_metadata": {
+    "official_species_classification": "unknown",
+    "probable_species": "bull shark",
+    "scientific_name": "Carcharhinus leucas",
+    "provenance": "analyst_visual_assessment",
+    "scoring_note": "Probable species is retained as evidence metadata and does not add direct scoring points by itself."
+  },
+  "no_sighting_semantics": "No-sighting patrol result reduces uncertainty only within documented coverage/time/visibility and is not proof of safety."
+}

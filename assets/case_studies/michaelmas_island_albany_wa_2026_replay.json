@@ -1,0 +1,568 @@
+{
+  "case_id": "michaelmas_island_albany_wa_2026",
+  "title": "Michaelmas Island Albany WA active-event replay (2026-06-06)",
+  "source_record": {
+    "official_record": "Michaelmas Island, City of Albany, Western Australia; reported through WA Police / DPIRD context",
+    "location": "Michaelmas Island, City of Albany, Western Australia",
+    "coordinates": {
+      "lat": -35.05,
+      "lon": 118.02,
+      "coordinate_note": "Approximate replay point for Michaelmas Island operational area."
+    },
+    "event_date": "2026-06-06",
+    "incident_time": "approximately 2026-06-06T11:25:00+08:00",
+    "reported_to_dpird": "approximately 2026-06-06T11:30:00+08:00",
+    "victim_context": {
+      "age": 35,
+      "sex": "male",
+      "activity": "spearfishing with family",
+      "outcome": "fatal"
+    },
+    "official_wording": "suspected 4.5 m shark",
+    "secondary_source_attributed_classification": {
+      "taxon": "suspected white shark",
+      "classification_status": "source_attributed_unconfirmed",
+      "estimated_length_m": 4.5
+    },
+    "same_individual_assumption": false,
+    "regional_context_note": "Rottnest Island and Queensland fatalities are broader regional/national context only and are not modeled as the same local coastal corridor."
+  },
+  "runs": {
+    "strict_pre_incident": {
+      "scenario_id": "michaelmas_island_albany_wa_2026_pre_incident",
+      "label": "Michaelmas Island Albany WA strict pre-incident replay",
+      "timestamp": "2026-06-06T03:25:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 58,
+      "activity_hazard_band": "elevated",
+      "surveillance_priority_score": 89.3,
+      "surveillance_priority_band": "high",
+      "confidence": 0.48,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 21.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.2352
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 58,
+          "points": 20.3,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.2273
+        },
+        {
+          "factor": "wa_white_shark_reef_spearfishing_context",
+          "value": "spearfishing",
+          "points": 18,
+          "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+          "contribution": 0.2016
+        },
+        {
+          "factor": "activity_context",
+          "value": "spearfishing",
+          "points": 14,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.1568
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 13,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.1456
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.0336
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles"
+      ],
+      "active_regional_pack": "western_australia",
+      "engine_recommended_pattern": "reef-edge expanding grid",
+      "timeline_note": "Uses no post-11:25 AWST incident, caution, closure, or sighting inputs."
+    },
+    "quiet_day_comparison": {
+      "scenario_id": "michaelmas_island_albany_wa_2026_quiet_day",
+      "label": "Michaelmas Island Albany WA quiet-day spearfishing comparison",
+      "timestamp": "2026-06-06T03:25:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 58,
+      "activity_hazard_band": "elevated",
+      "surveillance_priority_score": 89.3,
+      "surveillance_priority_band": "high",
+      "confidence": 0.48,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 21.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.2352
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 58,
+          "points": 20.3,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.2273
+        },
+        {
+          "factor": "wa_white_shark_reef_spearfishing_context",
+          "value": "spearfishing",
+          "points": 18,
+          "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+          "contribution": 0.2016
+        },
+        {
+          "factor": "activity_context",
+          "value": "spearfishing",
+          "points": 14,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.1568
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 13,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.1456
+        },
+        {
+          "factor": "regional_sst_species_context",
+          "value": 0.0,
+          "points": 3,
+          "rationale": "Regional SST species context can support surveillance review without dominating priority.",
+          "contribution": 0.0336
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "reef_features",
+        "regional_risk_profiles"
+      ],
+      "active_regional_pack": "western_australia",
+      "engine_recommended_pattern": "reef-edge expanding grid",
+      "timeline_note": "Same location, season, spearfishing activity, and offshore structure baseline without incident-specific signals."
+    },
+    "post_incident_operational_update": {
+      "scenario_id": "michaelmas_island_albany_wa_2026_post_update",
+      "label": "Michaelmas Island Albany WA post-incident operational update",
+      "timestamp": "2026-06-06T03:30:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 70,
+      "activity_hazard_band": "elevated",
+      "surveillance_priority_score": 100,
+      "surveillance_priority_band": "high",
+      "confidence": 0.55,
+      "confidence_breakdown": {
+        "overall_confidence": 0.5724,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.1111,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.76,
+          "coverage_score": 0.1111,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.24,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "present",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_warning_factors": [
+        {
+          "factor": "rainfall_intensity_score",
+          "value": 0,
+          "points": 0,
+          "rationale": "Rainfall in the previous 72 hours.",
+          "contribution": 0
+        },
+        {
+          "factor": "runoff_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Rainfall/runoff proxy near coastal water.",
+          "contribution": 0
+        },
+        {
+          "factor": "river_mouth_proximity_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Nearest river mouth, inlet, estuary, or outflow.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature suitability.",
+          "contribution": 0
+        },
+        {
+          "factor": "sst_anomaly_score",
+          "value": null,
+          "points": 0,
+          "rationale": "Sea-surface temperature anomaly magnitude.",
+          "contribution": 0
+        }
+      ],
+      "dominant_surveillance_factors": [
+        {
+          "factor": "activity_hazard_score",
+          "value": 70,
+          "points": 24.5,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.245
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 1,
+          "points": 22,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.22
+        },
+        {
+          "factor": "regional_species_suitability",
+          "value": null,
+          "points": 21.0,
+          "rationale": "Nearest regional profile and suspected species context adjust search priority.",
+          "contribution": 0.21
+        },
+        {
+          "factor": "wa_white_shark_reef_spearfishing_context",
+          "value": "spearfishing",
+          "points": 18,
+          "rationale": "Western Australia white shark profile weights reef/spearfishing or diving search context.",
+          "contribution": 0.18
+        },
+        {
+          "factor": "activity_context",
+          "value": "spearfishing",
+          "points": 14,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.14
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 1,
+          "points": 13,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.13
+        }
+      ],
+      "missing_signal_sources": [
+        "human_exposure_estimates",
+        "ocean_observations",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "biological_events",
+        "recent_interactions",
+        "reef_features",
+        "regional_risk_profiles"
+      ],
+      "active_regional_pack": "western_australia",
+      "engine_recommended_pattern": "reef-edge expanding grid",
+      "timeline_note": "Includes the fatal incident and official post-incident caution/closure guidance only after the incident time."
+    }
+  },
+  "comparisons": {
+    "pre_vs_quiet_surveillance_delta": 0.0,
+    "post_vs_pre_surveillance_delta": 10.7,
+    "interpretation": "Strict pre-incident and quiet-day scores match because the same WA spearfishing/offshore-structure context is present without hindsight. Post-incident recent-interaction context increases operational focus."
+  },
+  "recommended_surveillance_patterns": [
+    "offshore_island_focus_scan",
+    "shoreline_return_route_monitoring",
+    "spearfishing_activity_buffer",
+    "post_incident_focus_area"
+  ],
+  "missing_signal_sources": [
+    "biological_events",
+    "human_exposure_estimates",
+    "ocean_observations",
+    "recent_interactions",
+    "sighting_reports",
+    "sst_anomaly",
+    "vessel_activity",
+    "weather_observations"
+  ],
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "generated_at": "2026-06-07T10:37:36.253798+00:00",
+    "replay_asset_version": "2026.05"
+  },
+  "disclaimer": "AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes. It is not an attack prediction."
+}

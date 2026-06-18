@@ -1,0 +1,189 @@
+{
+  "case_id": "piedade_boa_viagem_recife_2026",
+  "title": "Piedade and Boa Viagem Greater Recife incident-cluster replay (2026)",
+  "source_record": {
+    "piedade": {
+      "location": "Piedade Beach, Jaboatao dos Guararapes, Greater Recife, Pernambuco, Brazil",
+      "coordinates": {
+        "lat": -8.171,
+        "lon": -34.914,
+        "coordinate_note": "Approximate replay point for Piedade Beach."
+      },
+      "event_date": "2026-05-31",
+      "approximate_time_local": "13:40",
+      "victim_context": "Bather, age 11",
+      "outcome": "Serious injuries with left-leg amputation",
+      "source_attributed_species_assessment": {
+        "assessing_body": "CEMIT",
+        "classification_status": "preliminary_source_attributed",
+        "taxon": "adult bull shark",
+        "portuguese_source_term": "tubarão-cabeça-chata",
+        "estimated_length_m": 2.5,
+        "independent_taxonomy_verified": false,
+        "model_input_for_strict_preincident": false
+      }
+    },
+    "boa_viagem": {
+      "location": "Boa Viagem Beach, Recife, Pernambuco, Brazil; Acaiaca / Padre Bernardino Pessoa corridor",
+      "coordinates": {
+        "lat": -8.126,
+        "lon": -34.899,
+        "coordinate_note": "Approximate replay point for Boa Viagem / Acaiaca corridor."
+      },
+      "event_date": "2026-06-01",
+      "approximate_time_local": "15:10",
+      "victim_context": "Teenage / young-adult woman bather, age 19",
+      "outcome": "Serious injuries with right-leg amputation",
+      "source_attributed_species_assessment": {
+        "assessing_body": "CEMIT",
+        "classification_status": "preliminary_source_attributed",
+        "taxon": "adult tiger shark",
+        "portuguese_source_term": "tubarão-tigre",
+        "estimated_length_m": 3.0,
+        "independent_taxonomy_verified": false,
+        "model_input_for_strict_preincident": false
+      }
+    }
+  },
+  "species_context_tests": {
+    "piedade_source_attributed_suitability": {
+      "factor": "piedade_source_attributed_bull_shark_suitability",
+      "taxon": "adult bull shark",
+      "portuguese_source_term": "tubarão-cabeça-chata",
+      "points": 0,
+      "rationale": "Source-attributed species context is documented for explainability review, but is not used as a strict pre-incident scoring input."
+    },
+    "boa_viagem_source_attributed_suitability": {
+      "factor": "boa_viagem_source_attributed_tiger_shark_suitability",
+      "taxon": "adult tiger shark",
+      "portuguese_source_term": "tubarão-tigre",
+      "points": 0,
+      "rationale": "Source-attributed species context is documented for explainability review, but is not used as a strict pre-incident scoring input."
+    },
+    "shared_corridor_cluster": {
+      "factor": "species_agnostic_recent_interaction_lift",
+      "points": 14.0,
+      "rationale": "The Boa Viagem lift comes from a timeline-valid recent interaction in the shared coastal corridor, not from assuming the same species or same individual."
+    },
+    "same_individual_assumption": false
+  },
+  "runs": {
+    "piedade_strict_pre_incident": {
+      "scenario_id": "piedade_beach_recife_2026_pre_incident",
+      "timestamp": "2026-05-31T13:35:00-03:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 9.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.43,
+      "confidence_breakdown": {
+        "warning_confidence": 0.48,
+        "surveillance_confidence": 0.43
+      },
+      "dominant_surveillance_factors": [
+        {"factor": "reef_dropoff_habitat_proximity", "value": 1, "points": 5},
+        {"factor": "activity_context", "value": "swimming", "points": 4}
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "regional_risk_profiles",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "regional_rules_triggered": [],
+      "operational_interpretation": "Strict pre-incident replay stays low because live tide, current, turbidity, rainfall, SST, sighting, exposure, and Recife regional-pack signals are unavailable."
+    },
+    "piedade_quiet_day": {
+      "scenario_id": "piedade_beach_recife_2026_quiet_day",
+      "timestamp": "2026-05-31T13:35:00-03:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 9.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.43,
+      "summary": "Same location, season, time-of-day, activity, and baseline reef-barrier context without incident-specific signals."
+    },
+    "boa_viagem_strict_pre_incident": {
+      "scenario_id": "boa_viagem_recife_2026_pre_incident",
+      "timestamp": "2026-06-01T15:05:00-03:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 23.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.48,
+      "confidence_breakdown": {
+        "warning_confidence": 0.48,
+        "surveillance_confidence": 0.48
+      },
+      "dominant_surveillance_factors": [
+        {"factor": "recent_interactions_nearby", "value": 1, "points": 14},
+        {"factor": "reef_dropoff_habitat_proximity", "value": 1, "points": 5},
+        {"factor": "activity_context", "value": "swimming", "points": 4}
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "regional_risk_profiles",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "regional_rules_triggered": [],
+      "piedade_to_boa_viagem_recent_interaction_lift": 14.0,
+      "operational_interpretation": "Boa Viagem strict pre-incident replay remains low-warning but receives a surveillance lift from the prior Piedade interaction, which is timeline-valid by the June 1 replay timestamp."
+    },
+    "boa_viagem_quiet_day": {
+      "scenario_id": "boa_viagem_recife_2026_quiet_day",
+      "timestamp": "2026-06-01T15:05:00-03:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 9.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.43,
+      "summary": "Same location, season, time-of-day, activity, and baseline reef-barrier context without the Piedade recent-interaction signal."
+    }
+  },
+  "recommended_surveillance_patterns": [
+    "baseline_drone_patrol_window_morning",
+    "baseline_drone_patrol_window_midday",
+    "baseline_drone_patrol_window_late_afternoon_dusk",
+    "reef_barrier_parallel_sweep",
+    "shoreline_parallel_sweep",
+    "reef_gap_focus_scan",
+    "channel_mouth_pass",
+    "post_sighting_focus_area",
+    "nearshore_channel_ladder_search",
+    "posted-swim-zone observation focus",
+    "future tide/current and turbidity-informed corridor once supported"
+  ],
+  "adaptive_surge_monitoring_triggers": [
+    "recent severe incident",
+    "nearby sighting",
+    "tagged-shark receiver detection later",
+    "high human exposure",
+    "tide/current overlap later",
+    "turbidity/runoff overlap later"
+  ],
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "generated_at": "2026-06-04T00:00:00Z"
+  },
+  "disclaimer": "AI1SAD replay outputs are bounded operational-surveillance artifacts for review and planning. They do not replace official beach, lifeguard, emergency, wildlife, or public-health guidance."
+}

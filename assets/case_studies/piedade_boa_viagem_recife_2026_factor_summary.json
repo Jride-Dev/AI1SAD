@@ -1,0 +1,130 @@
+{
+  "case_id": "piedade_boa_viagem_recife_2026",
+  "runs": {
+    "piedade_strict_pre_incident": {
+      "warning_score": 0.0,
+      "surveillance_priority_score": 9.0,
+      "dominant_factors": [
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "points": 5,
+          "rationale": "Baseline reef-barrier/channel context helps define a surveillance corridor; it is not a live condition."
+        },
+        {
+          "factor": "activity_context",
+          "points": 4,
+          "rationale": "Bather/swimming context affects where an operator would observe."
+        }
+      ],
+      "excluded_hindsight": [
+        "Boa Viagem incident",
+        "post-Piedade response activity",
+        "post-incident CEMIT taxonomy as model input",
+        "invented tide/current/turbidity/weather values"
+      ]
+    },
+    "piedade_quiet_day": {
+      "warning_score": 0.0,
+      "surveillance_priority_score": 9.0,
+      "dominant_factors": [
+        {"factor": "reef_dropoff_habitat_proximity", "points": 5},
+        {"factor": "activity_context", "points": 4}
+      ]
+    },
+    "boa_viagem_strict_pre_incident": {
+      "warning_score": 0.0,
+      "surveillance_priority_score": 23.0,
+      "dominant_factors": [
+        {
+          "factor": "recent_interactions_nearby",
+          "points": 14,
+          "rationale": "The previous day's Piedade incident is timeline-valid recent-interaction context."
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "points": 5,
+          "rationale": "Baseline reef-barrier/channel context helps define a surveillance corridor."
+        },
+        {
+          "factor": "activity_context",
+          "points": 4,
+          "rationale": "Bather/swimming context affects where an operator would observe."
+        }
+      ],
+      "piedade_to_boa_viagem_recent_interaction_lift": 14.0,
+      "excluded_hindsight": [
+        "post-Boa-Viagem response activity",
+        "post-incident CEMIT taxonomy as model input",
+        "invented tide/current/turbidity/weather values"
+      ]
+    },
+    "boa_viagem_quiet_day": {
+      "warning_score": 0.0,
+      "surveillance_priority_score": 9.0,
+      "dominant_factors": [
+        {"factor": "reef_dropoff_habitat_proximity", "points": 5},
+        {"factor": "activity_context", "points": 4}
+      ]
+    }
+  },
+  "missing_signal_sources": [
+    "live sightings ingestion",
+    "Recife/Pernambuco regional pack",
+    "tide/current observations",
+    "turbidity/water clarity",
+    "rainfall/runoff lookback",
+    "SST/anomaly",
+    "human exposure estimates",
+    "future telemetry ingestion"
+  ],
+  "operational_recommendation_factors": {
+    "baseline_drone_patrol_windows": [
+      "morning",
+      "midday",
+      "late afternoon / dusk"
+    ],
+    "adaptive_surge_monitoring_after": [
+      "recent severe incident",
+      "nearby sighting",
+      "tagged-shark receiver detection later",
+      "high human exposure",
+      "tide/current overlap later",
+      "turbidity/runoff overlap later"
+    ],
+    "recommended_patterns": [
+      "shoreline_parallel_sweep",
+      "reef_gap_focus_scan",
+      "channel_mouth_pass",
+      "post_sighting_focus_area"
+    ]
+  },
+  "species_handling": {
+    "piedade": "CEMIT preliminary adult bull shark assessment, Portuguese source term tubarão-cabeça-chata, approximately 2.5 m if retained from source; source-attributed only.",
+    "boa_viagem": "CEMIT preliminary adult tiger shark assessment, Portuguese source term tubarão-tigre, approximately 3 m; source-attributed only.",
+    "same_individual_assumption": false
+  },
+  "species_specific_explainability_factors": [
+    {
+      "factor": "piedade_source_attributed_bull_shark_suitability",
+      "taxon": "adult bull shark",
+      "portuguese_source_term": "tubarão-cabeça-chata",
+      "points": 0,
+      "classification_status": "preliminary_source_attributed",
+      "model_input_for_strict_preincident": false
+    },
+    {
+      "factor": "boa_viagem_source_attributed_tiger_shark_suitability",
+      "taxon": "adult tiger shark",
+      "portuguese_source_term": "tubarão-tigre",
+      "points": 0,
+      "classification_status": "preliminary_source_attributed",
+      "model_input_for_strict_preincident": false
+    },
+    {
+      "factor": "species_agnostic_recent_interaction_lift",
+      "points": 14.0,
+      "classification_status": "timeline_valid_cluster_context",
+      "same_individual_assumption": false
+    }
+  ]
+}

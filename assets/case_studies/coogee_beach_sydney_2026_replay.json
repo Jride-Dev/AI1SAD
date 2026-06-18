@@ -1,0 +1,793 @@
+{
+  "case_id": "coogee_beach_sydney_2026",
+  "title": "Coogee Beach Sydney 2026 shark-incident replay",
+  "location": {
+    "name": "Coogee Beach, Sydney eastern suburbs, New South Wales, Australia",
+    "lat": -33.9205,
+    "lon": 151.2552
+  },
+  "verified_event_record": {
+    "date": "2026-06-13",
+    "victim_context": "35-year-old woman",
+    "activity": "swimming",
+    "distance_offshore_m": 30,
+    "outcome": "critical but stable; serious arm and leg injuries",
+    "reported_shark_size_m": "3-4",
+    "species_context": {
+      "taxon": "suspected white shark",
+      "classification_status": "source-attributed preliminary only",
+      "model_input_for_strict_preincident": false
+    },
+    "authority_response": "Coogee and nearby eastern-suburbs beach closures after the incident",
+    "drone_context": "Drone/helicopter surveillance increased; routine drone monitoring is constrained by Sydney Airport flight-path restrictions; emergency use or exemption was source-attributed after the incident.",
+    "sources": [
+      {
+        "label": "ABC News June 13 incident report",
+        "url": "https://www.abc.net.au/news/2026-06-13/woman-injured-after-shark-attack-sydney-coogee-beach/106794390"
+      },
+      {
+        "label": "ABC News June 14 drone restriction report",
+        "url": "https://www.abc.net.au/news/2026-06-14/ban-lifted-coogee-drones-nsw-shark-culls-not-ruled-out/106796046"
+      },
+      {
+        "label": "ABC News aerial video showing shark off Coogee after attack",
+        "url": "https://www.abc.net.au/news/2026-06-13/coogee-shark-attack-aerial-video/106794400"
+      },
+      {
+        "label": "Reuters report: drones flown under emergency provisions, rescuer saw 3-4m shark, water 'all red'",
+        "url": "https://www.reuters.com/world/australia/drones-shark-coogee-australia-2026-06-13/"
+      },
+      {
+        "label": "Guardian report: drone/helicopter footage indicates white shark, NSW DPI cautions same-individual link unconfirmed",
+        "url": "https://www.theguardian.com/australia-news/2026/jun/13/coogee-beach-shark-attack-white-shark-drone-footage"
+      }
+    ]
+  },
+  "runs": {
+    "strict_pre_incident": {
+      "scenario_id": "coogee_beach_sydney_2026_pre_incident",
+      "label": "Coogee Beach Sydney 2026 strict pre-incident replay",
+      "timestamp": "2026-06-13T01:53:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 4.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.43,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_factors": [
+        {
+          "factor": "activity_context",
+          "value": "swimming",
+          "points": 4,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 1.0
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 0,
+          "points": 0,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "river_mouth_runoff_proximity",
+          "value": null,
+          "points": 0,
+          "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "reef_features",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "regional_risk_profiles"
+      ],
+      "recommended_pattern": "surf-zone ladder search",
+      "quiet_day_warning_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 14.6,
+        "delta": -14.6,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "active_regional_pack": "new_south_wales_australia"
+    },
+    "quiet_day_comparison": {
+      "scenario_id": "coogee_beach_sydney_2026_quiet_day",
+      "label": "Coogee Beach Sydney 2026 quiet-day swimming comparison",
+      "timestamp": "2026-06-13T01:53:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 4.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.43,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_factors": [
+        {
+          "factor": "activity_context",
+          "value": "swimming",
+          "points": 4,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 1.0
+        },
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 0,
+          "points": 0,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "river_mouth_runoff_proximity",
+          "value": null,
+          "points": 0,
+          "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "recent_interactions",
+        "reef_features",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "regional_risk_profiles"
+      ],
+      "recommended_pattern": "surf-zone ladder search",
+      "quiet_day_warning_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 14.6,
+        "delta": -14.6,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "active_regional_pack": "new_south_wales_australia"
+    },
+    "post_incident_operational_update": {
+      "scenario_id": "coogee_beach_sydney_2026_post_update",
+      "label": "Coogee Beach Sydney 2026 post-incident operational update",
+      "timestamp": "2026-06-13T02:20:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 18.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.48,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_factors": [
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 1,
+          "points": 14,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.7778
+        },
+        {
+          "factor": "activity_context",
+          "value": "swimming",
+          "points": 4,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.2222
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 0,
+          "points": 0,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "river_mouth_runoff_proximity",
+          "value": null,
+          "points": 0,
+          "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "reef_features",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "recent_interactions",
+        "regional_risk_profiles"
+      ],
+      "recommended_pattern": "surf-zone ladder search",
+      "quiet_day_warning_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 14.6,
+        "delta": -14.6,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "active_regional_pack": "new_south_wales_australia",
+      "aerial_surveillance_response": "increased",
+      "aerial_platforms": [
+        "drone",
+        "helicopter"
+      ],
+      "drone_restriction_context": "Sydney Airport flight-path constraints / emergency review context",
+      "recommended_surveillance_pattern": [
+        "shoreline_parallel_sweep",
+        "post_incident_focus_area",
+        "lifeguard_observation_coordination",
+        "aviation_restricted_drone_review"
+      ],
+      "autonomous_flight_control": false,
+      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+      "post_incident_media_evidence": {
+        "aerial_video_available": true,
+        "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+        "aerial_video_timing": "after_attack",
+        "large_shark_visible_after_attack": true,
+        "shark_length_estimate_m": "3.0-4.0",
+        "species_assessment": "probable_white_shark",
+        "species_assessment_source": "drone_helicopter_footage_source_attributed",
+        "species_confidence": "preliminary_source_attributed",
+        "same_individual_as_attacker": "unconfirmed",
+        "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+        "water_red_during_rescue": "source_attributed_rescuer_quote",
+        "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+        "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+        "media_analysis_performed": false,
+        "computer_vision_performed": false,
+        "media_hosted_by_ai1sad": false,
+        "media_reference_type": "external_report_reference",
+        "analyst_review_status": "inconclusive",
+        "review_outcome": "species_uncertain",
+        "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+      }
+    },
+    "drone_restriction_operational_planning": {
+      "scenario_id": "coogee_beach_sydney_2026_drone_restriction_planning",
+      "label": "Coogee Beach Sydney 2026 aviation-restricted drone planning replay",
+      "timestamp": "2026-06-14T00:00:00+00:00",
+      "warning_score": 0.0,
+      "warning_band": "low",
+      "activity_hazard_score": 0,
+      "activity_hazard_band": "low",
+      "surveillance_priority_score": 18.0,
+      "surveillance_priority_band": "low",
+      "confidence": 0.48,
+      "confidence_breakdown": {
+        "overall_confidence": 0.51,
+        "confidence_band": "low",
+        "components": {
+          "coverage_confidence": 0.0,
+          "freshness_confidence": 1.0,
+          "completeness_confidence": 0.7,
+          "coverage_score": 0.0,
+          "freshness_penalty": 0.0,
+          "missing_penalty": 0.3,
+          "source_details": {
+            "weather_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "ocean_observations": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "vessel_activity": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "biological_events": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "human_exposure_estimates": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "recent_interactions": {
+              "weight": 0.15,
+              "status": "missing",
+              "contribution": 0.15
+            },
+            "sighting_reports": {
+              "weight": 0.1,
+              "status": "missing",
+              "contribution": 0.1
+            },
+            "reef_features": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            },
+            "regional_risk_profiles": {
+              "weight": 0.05,
+              "status": "missing",
+              "contribution": 0.05
+            }
+          }
+        }
+      },
+      "dominant_factors": [
+        {
+          "factor": "recent_interactions_nearby",
+          "value": 1,
+          "points": 14,
+          "rationale": "Recent public fatal/nonfatal interactions near the mission area increase search priority.",
+          "contribution": 0.7778
+        },
+        {
+          "factor": "activity_context",
+          "value": "swimming",
+          "points": 4,
+          "rationale": "Activity context shapes where a safety team may search; spearfishing is context, not automatic provocation.",
+          "contribution": 0.2222
+        },
+        {
+          "factor": "verified_sightings_nearby",
+          "value": 0,
+          "points": 0,
+          "rationale": "Verified public sighting reports near the mission area increase search priority.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "reef_dropoff_habitat_proximity",
+          "value": 0,
+          "points": 0,
+          "rationale": "Reef, dropoff, channel, or habitat features can help define useful drone search zones.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "river_mouth_runoff_proximity",
+          "value": null,
+          "points": 0,
+          "rationale": "River mouths, inlets, and runoff zones may deserve targeted search attention where regionally relevant.",
+          "contribution": 0.0
+        },
+        {
+          "factor": "activity_hazard_score",
+          "value": 0,
+          "points": 0.0,
+          "rationale": "Activity hazard feeds surveillance priority separately from environmental warning score.",
+          "contribution": 0.0
+        }
+      ],
+      "missing_signal_sources": [
+        "biological_events",
+        "human_exposure_estimates",
+        "ocean_observations",
+        "reef_features",
+        "sighting_reports",
+        "sst_anomaly",
+        "vessel_activity",
+        "weather_observations"
+      ],
+      "data_sources_used": [
+        "recent_interactions",
+        "regional_risk_profiles"
+      ],
+      "recommended_pattern": "surf-zone ladder search",
+      "quiet_day_warning_comparison": {
+        "current_warning_score": 0.0,
+        "baseline_warning_score": 14.6,
+        "delta": -14.6,
+        "delta_percent": -100.0,
+        "current_band": "low",
+        "baseline_band": "low",
+        "band_change": false,
+        "current_confidence": 0.48,
+        "baseline_confidence": 0.83,
+        "missing_data_sources": [
+          "biological_events",
+          "human_exposure_estimates",
+          "ocean_observations",
+          "sst_anomaly",
+          "vessel_activity",
+          "weather_observations"
+        ],
+        "interpretation": "Below quiet-day baseline."
+      },
+      "active_regional_pack": "new_south_wales_australia",
+      "aerial_surveillance_response": "increased",
+      "aerial_platforms": [
+        "drone",
+        "helicopter"
+      ],
+      "drone_restriction_context": "Sydney Airport flight-path constraints / emergency review context",
+      "recommended_surveillance_pattern": [
+        "shoreline_parallel_sweep",
+        "post_incident_focus_area",
+        "lifeguard_observation_coordination",
+        "aviation_restricted_drone_review"
+      ],
+      "autonomous_flight_control": false,
+      "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+      "post_incident_media_evidence": {
+        "aerial_video_available": true,
+        "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+        "aerial_video_timing": "after_attack",
+        "large_shark_visible_after_attack": true,
+        "shark_length_estimate_m": "3.0-4.0",
+        "species_assessment": "probable_white_shark",
+        "species_assessment_source": "drone_helicopter_footage_source_attributed",
+        "species_confidence": "preliminary_source_attributed",
+        "same_individual_as_attacker": "unconfirmed",
+        "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+        "water_red_during_rescue": "source_attributed_rescuer_quote",
+        "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+        "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+        "media_analysis_performed": false,
+        "computer_vision_performed": false,
+        "media_hosted_by_ai1sad": false,
+        "media_reference_type": "external_report_reference",
+        "analyst_review_status": "inconclusive",
+        "review_outcome": "species_uncertain",
+        "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+      }
+    }
+  },
+  "timeline_separation_notes": {
+    "strict_pre_incident": "Excludes post-incident closure, drone/helicopter response, shark size, species assessment, and any later response signal.",
+    "quiet_day_comparison": "Uses the same beach, season, and swimming context without incident-specific or post-incident signals.",
+    "post_incident_operational_update": "Includes the confirmed incident as a recent interaction, source-attributed post-incident media evidence, and keeps species and size source-attributed only. Same-individual-attribution remains unconfirmed. Possible blood plume is analyst visual assessment, not confirmed fact.",
+    "drone_restriction_operational_planning": "Uses the post-incident operational state plus aviation-restriction notes and post-incident media evidence; it does not imply autonomous flight, computer vision, or bypassing CASA/Sydney Airport restrictions."
+  },
+  "recommended_surveillance_patterns": [
+    "beach_closure_support",
+    "shoreline_parallel_sweep",
+    "post_incident_focus_area",
+    "lifeguard_observation_coordination",
+    "aviation_restricted_drone_review"
+  ],
+  "drone_restriction_notes": {
+    "routine_drone_monitoring": "limited by Sydney Airport flight-path restrictions",
+    "post_incident_response": "drone/helicopter surveillance escalation reported",
+    "operational_boundary": "human-approved surveillance only; no autonomous flight and no bypassing aviation restrictions"
+  },
+  "aerial_surveillance_response": "increased",
+  "aerial_platforms": [
+    "drone",
+    "helicopter"
+  ],
+  "drone_restriction_context": "Sydney Airport flight-path constraints / emergency review context",
+  "recommended_surveillance_pattern": [
+    "shoreline_parallel_sweep",
+    "post_incident_focus_area",
+    "lifeguard_observation_coordination",
+    "aviation_restricted_drone_review"
+  ],
+  "autonomous_flight_control": false,
+  "drone_observation_roadmap_relevance": [
+    "drone mission records",
+    "surf-line observation intake",
+    "map-ready surveillance feed",
+    "aviation-restriction notes",
+    "human-approved surveillance recommendations"
+  ],
+  "operational_framing": "Authorities increased drone and helicopter surveillance after the incident, demonstrating that aerial observation is already part of the practical coastal response. AI1SAD should support this by producing structured surveillance priorities, recommended patrol patterns, and map-ready observation feeds for human-operated aerial monitoring.",
+  "post_incident_media_evidence": {
+    "aerial_video_available": true,
+    "aerial_video_source": "ABC News / social media aerial video as reported by ABC",
+    "aerial_video_timing": "after_attack",
+    "large_shark_visible_after_attack": true,
+    "shark_length_estimate_m": "3.0-4.0",
+    "species_assessment": "probable_white_shark",
+    "species_assessment_source": "drone_helicopter_footage_source_attributed",
+    "species_confidence": "preliminary_source_attributed",
+    "same_individual_as_attacker": "unconfirmed",
+    "same_individual_note": "footage indicates a white shark in the area after the attack, but authorities cautioned this does not prove it was the same shark involved",
+    "water_red_during_rescue": "source_attributed_rescuer_quote",
+    "possible_blood_plume_visible": "analyst_visual_assessment_uncertain",
+    "possible_blood_plume_note": "analyst/user visual observation only; do not treat as confirmed source fact",
+    "media_analysis_performed": false,
+    "computer_vision_performed": false,
+    "media_hosted_by_ai1sad": false,
+    "media_reference_type": "external_report_reference",
+    "analyst_review_status": "inconclusive",
+    "review_outcome": "species_uncertain",
+    "public_review_summary": "Aerial footage after the incident showed a large shark in the area; source reporting indicates probable white shark, but the same-individual link remains unconfirmed."
+  },
+  "model_metadata": {
+    "model_version": "0.11.0",
+    "scoring_revision": "phase-11-explainability",
+    "provider_stack_version": "phase-9-static-live-adapters",
+    "generated_at": "2026-06-15T00:28:04.453886+00:00",
+    "replay_asset_version": "2026.05"
+  },
+  "disclaimer": "AI1SAD provides bounded operational-intelligence replay outputs. It does not guarantee safety outcomes, infer animal motivation, or replace official beach, lifeguard, aviation, wildlife, or emergency guidance."
+}

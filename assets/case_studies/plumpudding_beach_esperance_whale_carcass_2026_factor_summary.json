@@ -1,0 +1,81 @@
+{
+  "case_id": "plumpudding_beach_esperance_whale_carcass_2026",
+  "source": "WA SharkSmart Shark ADVICE for Plumpudding Beach, west of Esperance",
+  "taxonomy_note": {
+    "official_species_identification": null,
+    "whale_taxon": "Kogia sp.",
+    "possible_species": "Kogia breviceps",
+    "taxonomy_status": "provisional",
+    "taxonomy_confidence": "provisional_unverified"
+  },
+  "initial_report": {
+    "scores": {
+      "warning_score": 19.68,
+      "activity_hazard_score": 12,
+      "surveillance_priority_score": 24.96
+    },
+    "dominant_factors": [
+      {
+        "factor": "biological_event_score",
+        "points": 19.68,
+        "meaning": "Whale-carcass biological event context drives the low bounded warning score."
+      },
+      {
+        "factor": "biological_event_surveillance_context",
+        "points": 14.76,
+        "meaning": "Carcass context is the strongest operational surveillance factor."
+      },
+      {
+        "factor": "activity_hazard_score",
+        "points": 4.2,
+        "meaning": "Activity layer contributes low contextual points; no specific activity was asserted."
+      },
+      {
+        "factor": "regional_sst_species_context",
+        "points": 3,
+        "meaning": "Western Australia regional profile contributes bounded background context."
+      },
+      {
+        "factor": "regional_species_suitability",
+        "points": 3,
+        "meaning": "Regional suitability context is present without species confirmation."
+      }
+    ],
+    "missing_sources": [
+      "weather_observations",
+      "ocean_observations",
+      "sst_anomaly",
+      "vessel_activity",
+      "human_exposure_estimates",
+      "recent_interactions",
+      "sighting_reports",
+      "reef_features"
+    ]
+  },
+  "hypothetical_nearby_sighting": {
+    "scores": {
+      "warning_score": 19.68,
+      "activity_hazard_score": 12,
+      "surveillance_priority_score": 35.96
+    },
+    "surveillance_priority_delta_vs_initial": 11.0,
+    "hypothetical": true,
+    "dominant_factors": [
+      {
+        "factor": "biological_event_surveillance_context",
+        "points": 14.76
+      },
+      {
+        "factor": "verified_sightings_nearby",
+        "points": 11,
+        "meaning": "Hypothetical verified sighting ingestion raises surveillance priority."
+      }
+    ]
+  },
+  "recommended_patterns": [
+    "carcass_event_buffer_zone",
+    "shoreline_parallel_sweep",
+    "future down-current drift corridor once tide/current support exists"
+  ],
+  "safety_note": "This report is for bounded operational surveillance context only."
+}
