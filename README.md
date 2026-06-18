@@ -6,6 +6,14 @@
   <img src="images/branding/banner-github.png" alt="AI1SAD marine intelligence banner" width="100%">
 </p>
 
+<div align="right">
+  <strong>Support AI1SAD</strong><br>
+  Sponsorship helps keep development, docs, data cleanup, and hosting moving.<br>
+  <a href="https://ko-fi.com/jride">Ko-fi</a> ·
+  <a href="https://paypal.me/FretTrack?country.x=US&locale.x=en_US">PayPal</a> ·
+  <a href="https://venmo.com/Jeffrey-Russell-429">Venmo</a>
+</div>
+
 AI1SAD is a marine intelligence platform for shark-encounter data, environmental context, replay analysis, and operational surveillance planning.
 
 It combines historical incidents, regional profiles, environmental signals, habitat context, biological events, human exposure, replay case studies, and human-operated drone observation intake into a single FastAPI, frontend, and documentation workspace.
@@ -348,12 +356,6 @@ Build docs:
 ```powershell
 mkdocs build
 ```
-
-## Support
-
-Sponsorship helps keep AI1SAD moving forward by covering maintenance time, documentation, data cleanup, hosting, and continued development of public-safety research tooling.
-
-Support links: [Ko-fi](https://ko-fi.com/jride), [PayPal](https://paypal.me/FretTrack?country.x=US&locale.x=en_US), or [Venmo](https://venmo.com/Jeffrey-Russell-429).
 
 ## License
 

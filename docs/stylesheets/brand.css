@@ -47,7 +47,7 @@
 .md-typeset .ai1sad-hero > img {
   display: block;
   width: 100%;
-  min-height: 240px;
+  min-height: 410px;
   object-fit: cover;
   object-position: center;
 }
@@ -81,6 +81,57 @@
   color: #d9f0ff;
   font-weight: 700;
   letter-spacing: 0;
+}
+
+.md-typeset .ai1sad-support-card {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1rem;
+  width: min(15.5rem, calc(100% - 2rem));
+  margin: 0;
+  padding: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 139, 141, 0.34);
+  color: #1b2a41;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(6, 38, 58, 0.11);
+}
+
+.md-typeset .ai1sad-support-card strong {
+  display: block;
+  color: #06263a;
+  font-size: 1.05rem;
+}
+
+.md-typeset .ai1sad-support-card p {
+  margin: 0.45rem 0 0.7rem;
+  color: #405464;
+  line-height: 1.45;
+}
+
+.md-typeset .ai1sad-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.md-typeset .ai1sad-support-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  color: #06263a;
+  border: 1px solid rgba(15, 139, 141, 0.36);
+  background: #d9f0ff;
+  font-weight: 700;
+}
+
+.md-typeset .ai1sad-support-links a:hover {
+  color: #ffffff;
+  background: #0f8b8d;
+  text-decoration: none;
 }
 
 .md-typeset .ai1sad-card-grid {
@@ -124,8 +175,22 @@
     grid-template-columns: 1fr;
   }
 
+  .md-typeset .ai1sad-hero > img {
+    min-height: 220px;
+  }
+
   .md-typeset .ai1sad-hero-copy {
     position: static;
     background: #06263a;
+  }
+
+  .md-typeset .ai1sad-support-card {
+    position: static;
+    width: auto;
+    margin: 0;
+    border-radius: 0;
+    border-right: 0;
+    border-left: 0;
+    box-shadow: none;
   }
 }
