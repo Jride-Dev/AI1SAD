@@ -349,6 +349,12 @@ Build docs:
 mkdocs build
 ```
 
+## Support
+
+Sponsorship helps keep AI1SAD moving forward by covering maintenance time, documentation, data cleanup, hosting, and continued development of public-safety research tooling.
+
+Support links: [Ko-fi](https://ko-fi.com/jride), [PayPal](https://paypal.me/FretTrack?country.x=US&locale.x=en_US), or [Venmo](https://venmo.com/Jeffrey-Russell-429).
+
 ## License
 
 AI1SAD code is licensed under the [Apache License 2.0](LICENSE). Data sources, incident records, public advisories, imagery, and third-party datasets may have separate licenses, terms, attribution requirements, and privacy restrictions.
