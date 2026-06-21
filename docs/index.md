@@ -173,3 +173,5 @@ The dashboard shell visualizes existing backend responses. It should not impleme
 AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
 
 Always follow local lifeguard, beach-closure, marine agency, wildlife, weather, maritime, and emergency guidance.
+
+[![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/ai1sad?utm_source=badge&utm_medium=embed)
