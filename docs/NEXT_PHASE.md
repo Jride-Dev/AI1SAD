@@ -6,6 +6,10 @@
 
 Add a review dashboard for UAV operator feedback records and turn submitted workflow notes into prioritized requirements without treating feedback as live surveillance data.
 
+Target full working-version launch: September 7, 2026.
+
+AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
+
 Do not start this phase automatically. Phase 25G begins only after Phase 25F is reviewed and committed.
 
 ## Current Baseline

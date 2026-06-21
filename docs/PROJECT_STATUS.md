@@ -3,6 +3,8 @@
 ## Current Snapshot
 
 - Current phase number: Phase 25F (UAV Operator Feedback Intake and Field Requirements Tracker) - implemented locally, uncommitted
+- Target full working-version launch: September 7, 2026.
+- AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
 - Latest completed committed phase: Phase 25E UAV Operator Research Brief and Compatibility Matrix
 - Latest local maintenance: targeted Vite security patch from `7.3.3` to `7.3.5`; frontend/docs/security checks passed, backend suite currently has one unrelated biological-events replay test failure
 - Latest commit hash: `e8f85f0` Add UAV operator research brief and compatibility matrix

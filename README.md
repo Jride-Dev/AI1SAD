@@ -20,9 +20,12 @@ Current development checkpoint:
 - Latest completed maintenance: Phase 25D-D media attachment security review and metadata hardening
 - Current implementation: Phase 25F, UAV Operator Feedback Intake and Field Requirements Tracker
 - Next planned phase: Phase 25G, UAV Feedback Review Dashboard and Requirements Prioritization
+- Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
+
+AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
 
 See:
 
