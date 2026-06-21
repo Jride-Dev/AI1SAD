@@ -1,6 +1,74 @@
 # Dependency Security Review
 
-Latest review date: 2026-06-15
+Latest review date: 2026-06-21
+
+## 2026-06-21 Vite Windows Dev Server Alerts
+
+Scope: two open GitHub Dependabot alerts reported against `frontend/package-lock.json` for the direct `vite` dependency.
+
+| Alert | Package | Severity | GHSA | CVE | Old Version | New Version | Dependency Path | Runtime Exposure |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dependabot #5 | `vite` | high | `GHSA-fx2h-pf6j-xcff` | `CVE-2026-53571` | `7.3.3` | `7.3.5` | `frontend/package-lock.json` -> `vite` | Vite development server on Windows; production build output is not the affected server |
+| Dependabot #6 | `vite` / advisory path includes `launch-editor` | medium | `GHSA-v6wh-96g9-6wx3` | `CVE-2026-53632` | `7.3.3` | `7.3.5` | `frontend/package-lock.json` -> `vite` | Vite development server/editor-open middleware on Windows; `launch-editor` is not installed as a separate dependency after the patch |
+
+Patch applied:
+
+```text
+cd frontend
+npm install vite@7.3.5 --save-dev
+```
+
+No `npm audit fix --force` command was used. No React, Vitest, application code, replay output, or scoring logic was changed.
+
+Reason for targeted update:
+
+- `vite 7.3.5` is the first patched Vite 7.x version for both reported advisories.
+- The high alert covers Windows alternate path handling in the dev server file-deny checks, which can expose denied files such as local environment files when a Vite dev server is reachable.
+- The medium alert covers Windows UNC path handling through editor-open behavior, which can trigger NTLM authentication to an attacker-controlled SMB target if a malicious request reaches the local dev server.
+- Updating Vite within the same minor line keeps the change narrow and avoids unrelated major dependency churn.
+
+Post-patch resolution:
+
+```text
+vite 7.3.5
+launch-editor: not present in npm dependency tree
+```
+
+Post-patch audit:
+
+```text
+npm audit --audit-level=high
+0 high or critical vulnerabilities; command exited 0
+1 low @babel/core advisory remains outside this Vite-alert scope
+```
+
+Validation run for this patch:
+
+- Frontend dependency tree: `npm ls vite` resolved all Vite entries to `7.3.5`
+- `npm ls launch-editor`: empty tree; no separate `launch-editor` override required
+- Frontend tests: `5` test files passed, `30` tests passed
+- Frontend build: passed with Vite `7.3.5`
+- Frontend audit high: passed with `0` high or critical vulnerabilities; one low `@babel/core` advisory remains unrelated to the two Vite alerts
+- Backend tests:
+  - `python -m pytest -q` with system Python 3.14 failed during collection because `pymongo` was not installed in that interpreter
+  - `F:\Python310\python.exe -m pytest -q` ran the suite and reported `282 passed, 1 failed, 3 warnings`
+  - Failing test: `tests/test_biological_events_provider.py::test_lovers_point_carcass_warning_is_bounded`
+  - The backend failure appears unrelated to the frontend Vite dependency patch and was not changed because doing so would expand this maintenance task into provider/replay/scoring behavior
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `54` checked, passed
+- Secret scan on changed files: no credential matches
+- Prohibited-language scan on changed files: no matches
+- Git whitespace check: passed with CRLF normalization warnings only
+
+Dependabot confirmation:
+
+- Local audit confirms the Vite high/medium advisories are remediated by `vite 7.3.5`.
+- GitHub Dependabot API was checked before commit/push and still reported alerts #5 and #6 open on the remote default branch, as expected because the local patch had not been pushed.
+- Recheck Dependabot after the patch is committed and pushed.
+
+Remaining known security item:
+
+- `npm audit --audit-level=low` reports one low `@babel/core` advisory. It is outside the requested Vite-alert scope and was not patched in this targeted maintenance pass.
 
 ## 2026-06-15 Esbuild Alerts
 

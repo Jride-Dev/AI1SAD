@@ -4,7 +4,7 @@
 
 - Current phase number: Phase 25F (UAV Operator Feedback Intake and Field Requirements Tracker) - implemented locally, uncommitted
 - Latest completed committed phase: Phase 25E UAV Operator Research Brief and Compatibility Matrix
-- Latest completed local validation: Phase 25F backend, frontend, docs, security, README link, and diff checks passed
+- Latest local maintenance: targeted Vite security patch from `7.3.3` to `7.3.5`; frontend/docs/security checks passed, backend suite currently has one unrelated biological-events replay test failure
 - Latest commit hash: `e8f85f0` Add UAV operator research brief and compatibility matrix
 - Repo status: uncommitted Phase 25F UAV operator feedback intake; verify with `git status`
 
@@ -125,6 +125,26 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Local environment note: `pydantic-core` was corrected to `2.46.4` to match installed `pydantic 2.13.4` before backend validation
 
 ## Validation Counts (Latest Dependency Security Maintenance)
+
+- GitHub Dependabot open alerts reviewed: `2` Vite alerts (`1 high`, `1 medium`)
+- Patched package: `vite 7.3.3` -> `7.3.5`
+- Separate `launch-editor` fix required: no; `npm ls launch-editor` is empty after the Vite patch
+- Frontend tests: `5` files passed, `30` tests passed
+- Frontend build: passed with Vite `7.3.5`
+- Frontend audit high: `0` high or critical vulnerabilities; one low `@babel/core` advisory remains outside the Vite-alert scope
+- Backend tests:
+  - `python -m pytest -q` with system Python 3.14 failed during collection because `pymongo` was not installed in that interpreter
+  - `F:\Python310\python.exe -m pytest -q` ran with `282 passed, 1 failed, 3 warnings`
+  - Failing test: `tests/test_biological_events_provider.py::test_lovers_point_carcass_warning_is_bounded`
+  - Failure was not patched because it is unrelated to the Vite dependency update and would require provider/replay/scoring work outside this maintenance scope
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local link/image check: `54` checked, passed
+- Secret scan on changed files: no credential matches
+- Prohibited-language scan on changed files: no matches
+- Git whitespace check: passed with CRLF normalization warnings only
+- GitHub Dependabot API before commit/push: still reported alerts #5 and #6 open on the remote default branch; recheck after the patch is pushed
+
+## Validation Counts (Previous Dependency Security Maintenance)
 
 - GitHub Dependabot open alerts reviewed: `2` esbuild alerts (`1 high`, `1 low`)
 - Patched package: `esbuild 0.27.7` -> `0.28.1` through a targeted frontend npm override
