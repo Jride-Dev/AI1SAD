@@ -226,6 +226,7 @@ def test_lovers_point_carcass_warning_is_bounded():
     result = calculate_warning(
         lat=scenario.lat,
         lon=scenario.lon,
+        as_of=scenario.timestamp,
         biological_events=scenario.biological_events,
         kelp_habitat_signals=scenario.kelp_habitat_signals,
         month=scenario.month,
@@ -234,3 +235,13 @@ def test_lovers_point_carcass_warning_is_bounded():
     assert result["signals"]["biological_event_score"] > 0
     assert result["warning_score"] < 45
     assert result["warning_band"] == "low"
+
+    stale_result = calculate_warning(
+        lat=scenario.lat,
+        lon=scenario.lon,
+        as_of=scenario.timestamp + timedelta(days=15),
+        biological_events=scenario.biological_events,
+        kelp_habitat_signals=scenario.kelp_habitat_signals,
+        month=scenario.month,
+    )
+    assert stale_result["signals"]["biological_event_score"] == 0

@@ -286,11 +286,13 @@ Operational recommendations require human review. Scores support interpretation 
 
 Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-Phase 26A local validation:
+Lovers Point backend freshness fix validation:
 
-- Focused GSAF importer tests: `13 passed, 1 warning`
-- Full backend tests: `295 passed, 1 failed, 3 warnings`
-- Known unrelated failure: `tests/test_biological_events_provider.py::test_lovers_point_carcass_warning_is_bounded`
+- Focused Lovers Point carcass test: `1 passed`
+- Biological events provider tests: `13 passed`
+- Full backend tests: `296 passed, 3 warnings`
+- Replay freshness behavior: biological-event freshness can be evaluated at scenario time for strict replay; default live/API scoring still uses current time.
+- No scoring weights, fixture dates, provider adapters, replay artifacts, frontend dependencies, or dependency-security files changed.
 - MkDocs build: passed with the known Material advisory banner
 - README local links/images check: `55` checked, passed
 - Secret scan: no credential patterns matched

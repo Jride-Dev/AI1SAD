@@ -33,6 +33,8 @@ Additional planning docs now describe two later source lanes:
 
 These planning docs do not start Phase 26B, Phase 26C, or Phase 26D implementation.
 
+A Phase 26A follow-up backend maintenance fix resolves the known Lovers Point biological-event freshness test before Phase 26B. Biological-event freshness can now be evaluated at the replay scenario timestamp for strict replay runs, while default live/API warning behavior still uses current wall-clock time. No scoring weights, fixture dates, replay outputs, providers, frontend dependencies, or dependency-security files changed.
+
 ## Planned Scope
 
 1. Define the AI1SAD shark-human incident registry schema.

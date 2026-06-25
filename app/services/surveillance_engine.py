@@ -434,6 +434,7 @@ def score_surveillance_zones(
     warning = calculate_warning(
         lat=lat,
         lon=lon,
+        as_of=now,
         lookback_hours=lookback_hours,
         rainfall_72h_mm=warning_inputs.get("rainfall_72h_mm"),
         river_mouth_distance_km=river_mouth_distance_km,

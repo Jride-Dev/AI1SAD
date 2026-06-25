@@ -23,6 +23,8 @@ app/replay/
 
 Each scenario captures a known location, timestamp, and environmental conditions. The runner feeds these through the existing `calculate_warning`, `score_surveillance_zones`, and risk engines.
 
+Strict replay runs evaluate time-sensitive biological-event freshness at the scenario timestamp, not at the current wall-clock time. This keeps historical carcass and closure scenarios deterministic while preserving default live/API warning behavior for current-condition scoring.
+
 Six built-in scenarios:
 
 | Scenario | Region | Context |
@@ -109,6 +111,7 @@ python -m pytest tests/test_replay_engine.py -v
 ## Limitations
 
 - Scenarios are deterministic and do not include real-time provider data
+- Scenario-time freshness anchoring is limited to replay/evaluation calls that explicitly pass the replay timestamp
 - Heatmap generation recalculates scores per cell; large grids may be slow
 - Quiet-day baseline uses fixed moderate inputs, not historical averages
 - Signal decay is exponential; does not account for intermittent refresh patterns

@@ -49,6 +49,7 @@ class ReplayRunner:
             warning = calculate_warning(
                 lat=scenario.lat,
                 lon=scenario.lon,
+                as_of=scenario.timestamp,
                 lookback_hours=scenario.lookback_hours,
                 rainfall_72h_mm=scenario.rainfall_72h_mm,
                 river_mouth_distance_km=scenario.river_mouth_distance_km,

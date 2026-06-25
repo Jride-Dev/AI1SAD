@@ -2,13 +2,13 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26A follow-up planning docs (Australian archival source lanes and Vic Hislop corpus) - implemented locally, uncommitted
+- Current phase number: Phase 26A follow-up backend maintenance (Lovers Point biological-event replay freshness fix) - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
-- Latest completed committed phase: Phase 26A GSAF XLS Intake and Delta Tracker
-- Latest local maintenance: targeted Vite security patch from `7.3.3` to `7.3.5`; frontend/docs/security checks passed, backend suite currently has one unrelated biological-events replay test failure
-- Latest commit hash: `efda16b` Add GSAF import delta tracker
-- Repo status: uncommitted planning docs for Australian archival newspaper research and Vic Hislop source tracking; verify with `git status`
+- Latest completed committed phase: Phase 26A follow-up planning docs for Australian archival newspaper source lanes and Vic Hislop corpus tracking
+- Latest local maintenance: targeted backend replay freshness fix for the Lovers Point whale-carcass scenario; backend suite passed locally with `296 passed, 3 warnings`
+- Latest commit hash: `6354a20` Add archival source planning docs
+- Repo status: uncommitted backend/test/status-doc maintenance changes for Lovers Point biological-event freshness; verify with `git status`
 
 ## Major Completed Systems
 
@@ -279,6 +279,21 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Backend/frontend tests: not required because this is documentation/schema planning only
 - Current implementation: planning docs for Australian archival newspaper research and Vic Hislop source tracking, including copyright/rights guardrails, metadata-first capture, source confidence, conflict tracking, provisional behavioral-hypothesis review, and no scraping, Trove API use, ingestion code, scoring changes, replay changes, public-feed changes, or raw article-body redistribution.
 
+## Validation Counts (Lovers Point Backend Freshness Fix)
+
+- Root cause: Lovers Point replay/test scoring used current wall-clock time for biological-event freshness instead of the scenario timestamp, making the 2026-06-03 carcass fixture age out after the 14-day freshness window.
+- Fix: `calculate_warning` accepts an optional evaluation timestamp and replay/surveillance replay paths pass scenario time through to biological-event freshness scoring. Default live/API behavior still uses current wall-clock time.
+- Focused Lovers Point test: `1 passed`
+- Biological events provider tests: `13 passed`
+- Full backend tests: `296 passed, 3 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `55` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Replay outputs: not regenerated or modified
+- Fixture dates: unchanged
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -291,15 +306,16 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Australian archival newspaper source-tracker and Vic Hislop corpus planning docs awaiting review.
-- Adds `docs/AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md` for future Phase 26C planning: source targets, metadata fields, metadata-first capture rules, OCR uncertainty, rights restrictions, duplicate/reprint handling, confidence values, and behavioral-hypothesis guardrails.
-- Adds `docs/VIC_HISLOP_CORPUS_ARCHIVE.md` for future Phase 26D planning: source targets, field model, supported source types, supported claim types, claim confidence values, controversy/conflict tracking, rights rules, and explicit non-authoritative confidence model.
-- Updates README, current data sources, MkDocs navigation, project status, and next-phase handoff.
-- Planning docs do not add scraping, Trove API calls, bulk newspaper text downloads, copyrighted article bodies, backend ingestion code, warnings, alerts, replay facts, scoring changes, public feed entries, or drone observations.
-- Review gate: do not commit until reviewed; do not begin Phase 26B, Phase 26C, or Phase 26D implementation.
+- Lovers Point biological-event freshness fix awaiting review.
+- Adds scenario-time evaluation support for biological-event freshness in `calculate_warning` and replay/surveillance replay paths.
+- Updates the focused Lovers Point carcass test to assert bounded fresh behavior at scenario time and stale behavior after the freshness window.
+- Updates README, current data sources, biological-events provider docs, replay validation docs, project status, and next-phase handoff.
+- This fix does not change scoring weights, provider adapters, fixture dates, replay artifacts, frontend dependencies, dependency-security files, warnings, alerts, public feeds, drone observations, scraping behavior, or Phase 26B implementation.
+- Review gate: do not stage or commit until reviewed; do not begin Phase 26B implementation.
 
 ## Recent Important Commits
 
+- `6354a20` Add archival source planning docs
 - `e8f85f0` Add UAV operator research brief and compatibility matrix
 - `fe5b230` Harden local media attachment metadata validation
 - `1996b0a` Add AI1SAD repository agent instructions

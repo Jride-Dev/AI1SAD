@@ -68,6 +68,8 @@ High-impact attractant events use shorter windows:
 
 Expired events are excluded from active public signal inputs. Replay decay remains deterministic and type-specific.
 
+Warning scoring evaluates biological-event freshness against the current wall-clock time by default. Strict replay callers pass the scenario timestamp as the evaluation time so historical carcass fixtures do not drift as the calendar advances. This does not extend stale biological events, change scoring weights, move fixture dates, or refresh replay artifacts.
+
 ## Scoring Rules
 
 Biological event signals are bounded.

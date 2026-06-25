@@ -379,6 +379,7 @@ def calculate_warning(
     *,
     lat: float,
     lon: float,
+    as_of: datetime | None = None,
     lookback_hours: int = 72,
     rainfall_72h_mm: float | None = None,
     river_mouth_distance_km: float | None = None,
@@ -465,7 +466,7 @@ def calculate_warning(
     factors.append({"factor": "fishing_vessel_activity_score", "value": vessel_activity_index, "points": vessel_score, "rationale": "Fishing or vessel activity signal."})
 
     bio_events = biological_events or []
-    bio_score = biological_event_score(bio_events)
+    bio_score = biological_event_score(bio_events, now=as_of)
     if bio_events:
         data_sources_used.append("biological_events")
     else:
