@@ -26,6 +26,13 @@ Phase 26A leaves AI1SAD with:
 - provisional behavioral hypothesis candidates with confidence labels
 - no warnings, alerts, replay facts, public feed entries, drone observations, scoring changes, or raw-row redistribution
 
+Additional planning docs now describe two later source lanes:
+
+- Phase 26C: Australian Archival Newspaper Source Tracker
+- Phase 26D: Vic Hislop Corpus and Case-Claim Archive
+
+These planning docs do not start Phase 26B, Phase 26C, or Phase 26D implementation.
+
 ## Planned Scope
 
 1. Define the AI1SAD shark-human incident registry schema.
@@ -37,6 +44,15 @@ Phase 26A leaves AI1SAD with:
 7. Define merge/deduplication rules for multiple upstream sources pointing at one incident.
 8. Define privacy/public-release fields before any public output path exists.
 9. Keep registry ingestion separate from warning, alert, replay, scoring, and drone systems unless a later reviewed phase explicitly bridges them.
+
+## Planned Follow-On Phases
+
+- Phase 26C: Australian Archival Newspaper Source Tracker
+  - Local/manual metadata-first capture for Trove, Australian state libraries, local newspapers, surf lifesaving histories, legal/inquest references where accessible, fisheries/shark-control reports, and maritime accident archives.
+  - No scraping, Trove API use, bulk article-body downloads, or public copyrighted-article reproduction without explicit rights review.
+- Phase 26D: Vic Hislop Corpus and Case-Claim Archive
+  - Local/manual metadata and claim tracking for Hislop books, interviews, media profiles, Shark Show-era records, shark capture records, and disputed case claims.
+  - Claims require corroboration, conflict tracking, controversy flags, and confidence scoring; Hislop sources are not automatically authoritative.
 
 ## Likely Files
 
@@ -63,6 +79,8 @@ Phase 26A leaves AI1SAD with:
 - Do not infer shark intent as confirmed behavior.
 - Do not default to mistaken identity.
 - Do not claim individual incident probability or safety guarantees.
+- Do not bulk-download archival newspaper text or reproduce copyrighted articles.
+- Do not treat any single archival source or Vic Hislop claim as definitive without review.
 
 ## Validation Expectations
 

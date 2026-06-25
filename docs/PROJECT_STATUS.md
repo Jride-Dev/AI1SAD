@@ -2,13 +2,13 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26A (GSAF XLS Intake and Delta Tracker) - implemented locally, uncommitted
+- Current phase number: Phase 26A follow-up planning docs (Australian archival source lanes and Vic Hislop corpus) - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
-- Latest completed committed phase: Phase 25E UAV Operator Research Brief and Compatibility Matrix
+- Latest completed committed phase: Phase 26A GSAF XLS Intake and Delta Tracker
 - Latest local maintenance: targeted Vite security patch from `7.3.3` to `7.3.5`; frontend/docs/security checks passed, backend suite currently has one unrelated biological-events replay test failure
-- Latest commit hash: `e8f85f0` Add UAV operator research brief and compatibility matrix
-- Repo status: uncommitted Phase 26A GSAF importer, tests, local data-folder guardrails, and docs; verify with `git status`
+- Latest commit hash: `efda16b` Add GSAF import delta tracker
+- Repo status: uncommitted planning docs for Australian archival newspaper research and Vic Hislop source tracking; verify with `git status`
 
 ## Major Completed Systems
 
@@ -38,6 +38,8 @@
 - Phase 25E UAV operator research brief and compatibility matrix: operator-facing documentation covering manual consumer drone workflow, MAVLink read-only telemetry workflow, post-flight evidence workflow, agency/helicopter report workflow, compatibility matrix, operator questions, minimum field checklist, safety boundaries, and research questions for real UAV operators. Documentation-only phase; no code changes.
 - Phase 25F UAV operator feedback intake implemented locally: research-only feedback records, `/api/v1/uav/operator-feedback` POST/GET/PATCH endpoints, frontend `/uav-feedback` submission page, public/private field filtering, enum and length validation, unsafe contact-reference rejection, public-summary contact leakage checks, secret-like text rejection, and no side effects on observations, sightings, warnings, public alerts, replay facts, surveillance feeds, scoring, drone operations, vendor SDKs, media upload, cloud storage, computer vision, or MAVLink command behavior.
 - Phase 26A GSAF XLS intake and delta tracker implemented locally: local/manual `.csv`, `.xlsx`, and `.xls` importer, normalized internal staging JSON, stable source-field fingerprints, baseline delta reports, duplicate and malformed-row reporting, provisional behavioral hypotheses, and local data-folder ignore guardrails. Imported GSAF rows do not overwrite AI1SAD incidents, create warnings or alerts, alter scoring, modify replay outputs, create public feed entries, create drone observations, scrape upstream sources, or redistribute raw GSAF rows.
+- Australian archival newspaper source-tracker planning added locally: metadata-first planning for Trove/National Library of Australia, state libraries, local newspapers, surf lifesaving histories, coroner/inquest references where accessible, fisheries/shark-control reports, court/inquest reporting, and maritime accident archives. No Trove API, scraping, bulk downloads, ingestion code, warning/scoring behavior, or replay output changes added.
+- Vic Hislop corpus and case-claim archive planning added locally: source and claim metadata model for books, catalogue records, interviews, profiles, Shark Show-era records, shark capture records, and disputed case claims. Hislop sources are treated as historically important but not automatically authoritative; claims require corroboration, conflict tracking, controversy flags, and confidence scoring.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -64,6 +66,7 @@
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - UAV operator feedback is research/requirements input only; Phase 25G still needs a review dashboard and requirements prioritization workflow.
 - GSAF rows are staging-only upstream records; Phase 26B still needs the first-class AI1SAD shark-human incident registry schema and reviewed promotion rules.
+- Archival newspaper and Vic Hislop source lanes are planning-only; local/manual metadata capture, copyright/rights caution, OCR uncertainty, source confidence, and behavioral-hypothesis review rules must be implemented before any registry use.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -74,6 +77,7 @@
 ## Next Planned Phase
 
 - Phase 26B: AI1SAD Shark-Human Incident Registry Schema
+- Planned follow-ons: Phase 26C Australian Archival Newspaper Source Tracker, then Phase 26D Vic Hislop Corpus and Case-Claim Archive
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -265,6 +269,16 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Local environment note: corrected `pydantic-core` from `2.47.0` to `2.46.4` in `F:\Python310` to match installed `pydantic 2.13.4` before validation.
 - Current implementation: local/manual GSAF staging importer, source provenance preservation, stable row fingerprints, baseline delta reports, duplicate/malformed-row reporting, provisional behavior hypotheses, and no warnings, alerts, public feed entries, replay facts, scoring changes, drone observations, scraping, AI1SAD incident overwrites, or raw-row public redistribution.
 
+## Validation Counts (Latest Archival Planning Docs Local Run)
+
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `57` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Backend/frontend tests: not required because this is documentation/schema planning only
+- Current implementation: planning docs for Australian archival newspaper research and Vic Hislop source tracking, including copyright/rights guardrails, metadata-first capture, source confidence, conflict tracking, provisional behavioral-hypothesis review, and no scraping, Trove API use, ingestion code, scoring changes, replay changes, public-feed changes, or raw article-body redistribution.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -277,13 +291,12 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 26A GSAF XLS Intake and Delta Tracker awaiting review.
-- Adds `app/services/gsaf_importer.py` for local/manual `.csv`, `.xlsx`, and `.xls` intake, normalized staging records, row fingerprints, baseline comparison, JSON report writing, and optional baseline updates.
-- Adds `tests/test_gsaf_importer.py` with synthetic fixtures for CSV/XLSX parsing, stable fingerprints, new/changed/removed delta detection, duplicate case numbers, vague-date preservation, conservative behavior mapping, and no replay/scoring/public-feed side effects.
-- Adds `docs/GSAF_IMPORT_AND_DELTA_TRACKING.md` and updates README, current data sources, MkDocs navigation, project status, and next-phase handoff.
-- Adds local `data/imports/gsaf/` folder scaffolding and `.gitignore` rules so raw GSAF files and generated staging/report/baseline outputs remain local.
-- Imported GSAF rows remain upstream staging records only. They do not overwrite AI1SAD incidents, create warnings, public alerts, replay facts, public feed entries, scoring changes, drone observations, scraping behavior, or raw-row redistribution.
-- Review gate: do not commit until reviewed; do not begin Phase 26B.
+- Australian archival newspaper source-tracker and Vic Hislop corpus planning docs awaiting review.
+- Adds `docs/AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md` for future Phase 26C planning: source targets, metadata fields, metadata-first capture rules, OCR uncertainty, rights restrictions, duplicate/reprint handling, confidence values, and behavioral-hypothesis guardrails.
+- Adds `docs/VIC_HISLOP_CORPUS_ARCHIVE.md` for future Phase 26D planning: source targets, field model, supported source types, supported claim types, claim confidence values, controversy/conflict tracking, rights rules, and explicit non-authoritative confidence model.
+- Updates README, current data sources, MkDocs navigation, project status, and next-phase handoff.
+- Planning docs do not add scraping, Trove API calls, bulk newspaper text downloads, copyrighted article bodies, backend ingestion code, warnings, alerts, replay facts, scoring changes, public feed entries, or drone observations.
+- Review gate: do not commit until reviewed; do not begin Phase 26B, Phase 26C, or Phase 26D implementation.
 
 ## Recent Important Commits
 

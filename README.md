@@ -72,6 +72,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
 - GSAF local import and delta tracking reads manually downloaded `.csv`, `.xlsx`, or `.xls` files into internal staging JSON, preserves source provenance, computes row fingerprints, and reports new, changed, unchanged, duplicate, malformed, and possibly removed upstream rows. Imported rows do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
+- AI1SAD is planning an Australian archival source tracker for historical newspaper evidence and a Vic Hislop corpus archive for shark-attack case claims, interviews, writings, and museum-era records. These sources will support provenance and behavioral hypothesis review, not automatic shark-intent conclusions.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
@@ -306,6 +307,8 @@ Phase 26A local validation:
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
 - [GSAF Import And Delta Tracking](docs/GSAF_IMPORT_AND_DELTA_TRACKING.md)
+- [Australian Archival News Tracker](docs/AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md)
+- [Vic Hislop Corpus Archive](docs/VIC_HISLOP_CORPUS_ARCHIVE.md)
 - [Replay Library](docs/REPLAY_LIBRARY.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
 - [Explainability Engine](docs/EXPLAINABILITY_ENGINE.md)
