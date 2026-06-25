@@ -2,13 +2,13 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 25F (UAV Operator Feedback Intake and Field Requirements Tracker) - implemented locally, uncommitted
+- Current phase number: Phase 26A (GSAF XLS Intake and Delta Tracker) - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
-- AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
+- AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
 - Latest completed committed phase: Phase 25E UAV Operator Research Brief and Compatibility Matrix
 - Latest local maintenance: targeted Vite security patch from `7.3.3` to `7.3.5`; frontend/docs/security checks passed, backend suite currently has one unrelated biological-events replay test failure
 - Latest commit hash: `e8f85f0` Add UAV operator research brief and compatibility matrix
-- Repo status: uncommitted Phase 25F UAV operator feedback intake; verify with `git status`
+- Repo status: uncommitted Phase 26A GSAF importer, tests, local data-folder guardrails, and docs; verify with `git status`
 
 ## Major Completed Systems
 
@@ -37,6 +37,7 @@
 - Phase 25D-D media attachment hardening implemented locally: stricter attachment metadata validation for path traversal, absolute paths, Windows drive-root paths, parent-directory references, executable/script filename extensions, unsupported enums, invalid checksums, impossible file sizes, malformed timestamps, and overlong summaries. No binary upload, cloud storage, external fetch, media analysis, scoring change, replay change, or flight-control behavior added.
 - Phase 25E UAV operator research brief and compatibility matrix: operator-facing documentation covering manual consumer drone workflow, MAVLink read-only telemetry workflow, post-flight evidence workflow, agency/helicopter report workflow, compatibility matrix, operator questions, minimum field checklist, safety boundaries, and research questions for real UAV operators. Documentation-only phase; no code changes.
 - Phase 25F UAV operator feedback intake implemented locally: research-only feedback records, `/api/v1/uav/operator-feedback` POST/GET/PATCH endpoints, frontend `/uav-feedback` submission page, public/private field filtering, enum and length validation, unsafe contact-reference rejection, public-summary contact leakage checks, secret-like text rejection, and no side effects on observations, sightings, warnings, public alerts, replay facts, surveillance feeds, scoring, drone operations, vendor SDKs, media upload, cloud storage, computer vision, or MAVLink command behavior.
+- Phase 26A GSAF XLS intake and delta tracker implemented locally: local/manual `.csv`, `.xlsx`, and `.xls` importer, normalized internal staging JSON, stable source-field fingerprints, baseline delta reports, duplicate and malformed-row reporting, provisional behavioral hypotheses, and local data-folder ignore guardrails. Imported GSAF rows do not overwrite AI1SAD incidents, create warnings or alerts, alter scoring, modify replay outputs, create public feed entries, create drone observations, scrape upstream sources, or redistribute raw GSAF rows.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -62,6 +63,7 @@
 - Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, EXIF/geotag stripping, and production upload hardening remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - UAV operator feedback is research/requirements input only; Phase 25G still needs a review dashboard and requirements prioritization workflow.
+- GSAF rows are staging-only upstream records; Phase 26B still needs the first-class AI1SAD shark-human incident registry schema and reviewed promotion rules.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -71,7 +73,7 @@
 
 ## Next Planned Phase
 
-- Phase 25G: UAV Feedback Review Dashboard and Requirements Prioritization
+- Phase 26B: AI1SAD Shark-Human Incident Registry Schema
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -250,6 +252,19 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Git whitespace check: passed with CRLF normalization warnings only
 - Current implementation: research-only UAV operator feedback intake, private-by-default contact fields, public-safe output filtering, no observation/sighting/feed creation, no warnings or public alerts, no replay/scoring changes, no drone operations, no SDK integrations, no media upload, no cloud storage, no computer vision, and no MAVLink command behavior.
 
+## Validation Counts (Latest Phase 26A Local Run)
+
+- Focused GSAF importer tests: `13 passed, 1 warning`
+- Full backend tests: `295 passed, 1 failed, 3 warnings`
+- Known unrelated failing test: `tests/test_biological_events_provider.py::test_lovers_point_carcass_warning_is_bounded` (`biological_event_score` remains `0.0`); not patched because Phase 26A does not touch that provider, replay output, or scoring behavior.
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `55` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Local environment note: corrected `pydantic-core` from `2.47.0` to `2.46.4` in `F:\Python310` to match installed `pydantic 2.13.4` before validation.
+- Current implementation: local/manual GSAF staging importer, source provenance preservation, stable row fingerprints, baseline delta reports, duplicate/malformed-row reporting, provisional behavior hypotheses, and no warnings, alerts, public feed entries, replay facts, scoring changes, drone observations, scraping, AI1SAD incident overwrites, or raw-row public redistribution.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -262,13 +277,13 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 25F UAV Operator Feedback Intake and Field Requirements Tracker awaiting review.
-- Adds `app/services/uav_operator_feedback.py` for bounded validation, public/private output filtering, and research-only side-effect flags.
-- Adds `/api/v1/uav/operator-feedback` POST/GET/PATCH endpoints for feedback submission, listing, and status updates.
-- Adds frontend route `http://localhost:5174/uav-feedback` with required safety/privacy copy, feedback submission form, validation errors, backend unavailable state, and success summary.
-- Adds `docs/UAV_OPERATOR_FEEDBACK_INTAKE.md` and updates README, API docs, drone docs, current data sources, UAV research docs, MkDocs navigation, and next-phase handoff.
-- Feedback remains requirements input only. It does not create observations, sightings, public feed entries, warnings, public alerts, replay facts, scoring changes, drone operations, SDK integrations, media upload, cloud storage, computer vision, or MAVLink command behavior.
-- Review gate: do not commit until reviewed; do not begin Phase 25G.
+- Phase 26A GSAF XLS Intake and Delta Tracker awaiting review.
+- Adds `app/services/gsaf_importer.py` for local/manual `.csv`, `.xlsx`, and `.xls` intake, normalized staging records, row fingerprints, baseline comparison, JSON report writing, and optional baseline updates.
+- Adds `tests/test_gsaf_importer.py` with synthetic fixtures for CSV/XLSX parsing, stable fingerprints, new/changed/removed delta detection, duplicate case numbers, vague-date preservation, conservative behavior mapping, and no replay/scoring/public-feed side effects.
+- Adds `docs/GSAF_IMPORT_AND_DELTA_TRACKING.md` and updates README, current data sources, MkDocs navigation, project status, and next-phase handoff.
+- Adds local `data/imports/gsaf/` folder scaffolding and `.gitignore` rules so raw GSAF files and generated staging/report/baseline outputs remain local.
+- Imported GSAF rows remain upstream staging records only. They do not overwrite AI1SAD incidents, create warnings, public alerts, replay facts, public feed entries, scoring changes, drone observations, scraping behavior, or raw-row redistribution.
+- Review gate: do not commit until reviewed; do not begin Phase 26B.
 
 ## Recent Important Commits
 

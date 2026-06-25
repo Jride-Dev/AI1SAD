@@ -1,77 +1,80 @@
 # Next Phase
 
-## Phase 25G: UAV Feedback Review Dashboard and Requirements Prioritization
+## Phase 26B: AI1SAD Shark-Human Incident Registry Schema
 
 ## Objective
 
-Add a review dashboard for UAV operator feedback records and turn submitted workflow notes into prioritized requirements without treating feedback as live surveillance data.
+Design the first-class AI1SAD shark-human incident registry schema that can receive reviewed upstream source records without treating GSAF staging rows as final public incidents.
 
 Target full working-version launch: September 7, 2026.
 
-AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
+AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
 
-Do not start this phase automatically. Phase 25G begins only after Phase 25F is reviewed and committed.
+Do not start this phase automatically. Phase 26B begins only after Phase 26A is reviewed.
 
 ## Current Baseline
 
-Phase 25F should leave AI1SAD with:
+Phase 26A leaves AI1SAD with:
 
-- `POST /api/v1/uav/operator-feedback`
-- `GET /api/v1/uav/operator-feedback`
-- `PATCH /api/v1/uav/operator-feedback/{feedback_id}/status`
-- frontend route `/uav-feedback`
-- research-only feedback records
-- public/private field filtering
-- validation for enums, note lengths, unsafe contact references, public-summary contact leakage, and obvious secrets
-- no sightings, warnings, public alerts, replay facts, surveillance feed entries, scoring changes, drone operations, SDK integrations, media upload, cloud storage, computer vision, or MAVLink command behavior
+- `app/services/gsaf_importer.py`
+- local `python -m app.services.gsaf_importer` entry point
+- manual `.csv`, `.xlsx`, and `.xls` GSAF intake
+- normalized internal staging JSON
+- stable source-field row fingerprints
+- baseline delta reporting for new, changed, unchanged, duplicate, malformed, and possibly removed rows
+- provenance fields for source file, source row number, source case number, raw dates, raw species, raw source notes, and raw GSAF type
+- provisional behavioral hypothesis candidates with confidence labels
+- no warnings, alerts, replay facts, public feed entries, drone observations, scoring changes, or raw-row redistribution
 
 ## Planned Scope
 
-1. Add a dedicated feedback review dashboard.
-2. Show feedback cards grouped by review status.
-3. Add requirements prioritization fields:
-   - priority
-   - effort estimate
-   - safety impact
-   - workflow impact
-   - dependency notes
-4. Add filters for:
-   - region
-   - organization type
-   - telemetry availability
-   - media workflow
-   - requirements tag
-5. Keep private contact references and private notes out of public-facing views.
-6. Update docs with a requirements triage workflow.
+1. Define the AI1SAD shark-human incident registry schema.
+2. Separate reviewed internal incidents from upstream source staging records.
+3. Preserve source provenance, source confidence, source licensing/redistribution status, and review status.
+4. Model incident date precision without inventing exact dates from vague sources.
+5. Model species assessment provenance and confidence.
+6. Model behavioral hypotheses as provisional analyst-reviewed fields, not confirmed intent.
+7. Define merge/deduplication rules for multiple upstream sources pointing at one incident.
+8. Define privacy/public-release fields before any public output path exists.
+9. Keep registry ingestion separate from warning, alert, replay, scoring, and drone systems unless a later reviewed phase explicitly bridges them.
+
+## Likely Files
+
+- `app/models.py`
+- `app/mongodb.py`
+- `app/services/incident_registry.py`
+- `tests/test_incident_registry.py`
+- `docs/SCHEMA.md`
+- `docs/CURRENT_DATA_SOURCES.md`
+- `docs/GSAF_IMPORT_AND_DELTA_TRACKING.md`
+- `docs/PROJECT_STATUS.md`
+- `docs/NEXT_PHASE.md`
+- `mkdocs.yml`
 
 ## Safety Boundaries
 
-- Do not convert feedback into live observations.
-- Do not create sightings from feedback.
-- Do not create warnings or public alerts from feedback.
+- Do not overwrite existing AI1SAD incident data.
+- Do not publish raw GSAF rows.
+- Do not create warnings or public alerts from staged or registry records.
 - Do not alter scoring weights.
 - Do not modify replay outputs.
-- Do not add cloud storage.
-- Do not add media upload.
-- Do not add computer vision.
-- Do not add drone SDK integrations.
-- Do not add autonomous flight control.
-- Do not add MAVLink command/control behavior.
-- Do not imply endorsement from any agency/operator.
+- Do not create drone observations.
+- Do not add scraping or live upstream fetches.
+- Do not infer shark intent as confirmed behavior.
+- Do not default to mistaken identity.
+- Do not claim individual incident probability or safety guarantees.
 
 ## Validation Expectations
 
-- focused UAV feedback tests
+- focused incident-registry tests
+- focused GSAF importer tests if registry touches staging contracts
 - full backend tests
-- frontend tests
-- frontend build
-- npm audit high
 - mkdocs build
-- README link/image check
+- README local links/images check
 - secret scan
 - prohibited-language scan
 - git diff --check
 
 ## Review Gate
 
-Stop before committing unless explicitly asked to commit Phase 25G work.
+Stop before committing unless explicitly asked to commit Phase 26B work.

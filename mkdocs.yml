@@ -99,6 +99,7 @@ nav:
       - Hawaii Habitat: HAWAII_HABITAT_PROVIDER.md
       - Hawaii Tide And Current: HAWAII_TIDE_CURRENT_PROVIDER.md
       - Hawaii Water Clarity: HAWAII_WATER_CLARITY_PROVIDER.md
+      - GSAF Import And Delta Tracking: GSAF_IMPORT_AND_DELTA_TRACKING.md
       - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
       - Drone Data Contract: DRONE_DATA_CONTRACT.md
       - MAVLink Telemetry Bridge: MAVLINK_TELEMETRY_BRIDGE.md

@@ -18,14 +18,14 @@ Current development checkpoint:
 
 - Latest completed phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
 - Latest completed maintenance: Phase 25D-D media attachment security review and metadata hardening
-- Current implementation: Phase 25F, UAV Operator Feedback Intake and Field Requirements Tracker
-- Next planned phase: Phase 25G, UAV Feedback Review Dashboard and Requirements Prioritization
+- Current implementation: Phase 26A, GSAF XLS Intake and Delta Tracker
+- Next planned phase: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
 - Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
 
-AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on UAV operator workflows, evidence metadata, replay explainability, and public-safe surveillance outputs.
+AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
 
 See:
 
@@ -71,6 +71,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Metadata-only analyst review fields for annotating observations with review status, outcome, public summary, and private notes
 - Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
+- GSAF local import and delta tracking reads manually downloaded `.csv`, `.xlsx`, or `.xls` files into internal staging JSON, preserves source provenance, computes row fingerprints, and reports new, changed, unchanged, duplicate, malformed, and possibly removed upstream rows. Imported rows do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
@@ -154,6 +155,14 @@ mkdocs serve --dev-addr 0.0.0.0:8001
 - `/api/v1/uav/operator-feedback`
 
 Drone write endpoints are disabled by default unless `DRONE_INGEST_ENABLED=true`.
+
+Local GSAF intake is a script entry point, not a public API route:
+
+```powershell
+F:\Python310\python.exe -m app.services.gsaf_importer --input data/imports/gsaf/raw/latest_gsaf.xls --report data/imports/gsaf/reports/latest_import_report.json
+```
+
+Raw GSAF spreadsheets and generated staging/report artifacts stay local under `data/imports/gsaf/` and must not be committed unless rights are explicitly approved.
 
 ## Replay Library
 
@@ -276,16 +285,16 @@ Operational recommendations require human review. Scores support interpretation 
 
 Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-Phase 25C local validation:
+Phase 26A local validation:
 
-- Frontend tests: `4 passed`, `17 tests passed`
-- Frontend build: passed
-- Frontend audit: `0 vulnerabilities`
-- Focused drone-ingestion tests: `11 passed, 1 warning`
-- Focused MAVLink bridge tests: `11 passed`
-- Full backend tests: `256 passed, 3 warnings`
+- Focused GSAF importer tests: `13 passed, 1 warning`
+- Full backend tests: `295 passed, 1 failed, 3 warnings`
+- Known unrelated failure: `tests/test_biological_events_provider.py::test_lovers_point_carcass_warning_is_bounded`
 - MkDocs build: passed with the known Material advisory banner
-- README link/image check: passed
+- README local links/images check: `55` checked, passed
+- Secret scan: no credential patterns matched
+- Prohibited-language scan: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
 
 ## Documentation Map
 
@@ -296,6 +305,7 @@ Phase 25C local validation:
 - [Disclaimer](docs/DISCLAIMER.md)
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
+- [GSAF Import And Delta Tracking](docs/GSAF_IMPORT_AND_DELTA_TRACKING.md)
 - [Replay Library](docs/REPLAY_LIBRARY.md)
 - [Surveillance Engine](docs/SURVEILLANCE_ENGINE.md)
 - [Explainability Engine](docs/EXPLAINABILITY_ENGINE.md)

@@ -16,6 +16,14 @@ data/processed/
 reports/*.json
 reports/*.csv
 
+# Local/manual GSAF intake files and generated audit outputs stay private.
+data/imports/gsaf/raw/*
+!data/imports/gsaf/raw/.gitkeep
+data/imports/gsaf/staging/*
+!data/imports/gsaf/staging/.gitkeep
+data/imports/gsaf/reports/*
+!data/imports/gsaf/reports/.gitkeep
+
 # Generated public artifacts can be rebuilt from raw data.
 data/public/*.csv
 data/public/*.sqlite
