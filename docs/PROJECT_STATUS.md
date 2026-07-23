@@ -2,13 +2,13 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26A follow-up backend maintenance (Lovers Point biological-event replay freshness fix) - implemented locally, uncommitted
+- Current phase number: Phase 26B AI1SAD Shark-Human Incident Registry Schema - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
-- Latest completed committed phase: Phase 26A follow-up planning docs for Australian archival newspaper source lanes and Vic Hislop corpus tracking
-- Latest local maintenance: targeted backend replay freshness fix for the Lovers Point whale-carcass scenario; backend suite passed locally with `296 passed, 3 warnings`
-- Latest commit hash: `6354a20` Add archival source planning docs
-- Repo status: uncommitted backend/test/status-doc maintenance changes for Lovers Point biological-event freshness; verify with `git status`
+- Latest completed committed phase: Phase 26A follow-up backend maintenance for Lovers Point biological-event replay freshness
+- Latest local implementation: Phase 26B internal incident-registry schema/service foundations with official/public species status, internal species hypotheses, and retaliation-risk species-disclosure guardrails; focused tests passed locally
+- Latest commit hash: `6a20a49` Anchor biological event freshness to replay time
+- Repo status: uncommitted Phase 26B schema/service/test/docs changes; verify with `git status`
 
 ## Major Completed Systems
 
@@ -40,6 +40,7 @@
 - Phase 26A GSAF XLS intake and delta tracker implemented locally: local/manual `.csv`, `.xlsx`, and `.xls` importer, normalized internal staging JSON, stable source-field fingerprints, baseline delta reports, duplicate and malformed-row reporting, provisional behavioral hypotheses, and local data-folder ignore guardrails. Imported GSAF rows do not overwrite AI1SAD incidents, create warnings or alerts, alter scoring, modify replay outputs, create public feed entries, create drone observations, scrape upstream sources, or redistribute raw GSAF rows.
 - Australian archival newspaper source-tracker planning added locally: metadata-first planning for Trove/National Library of Australia, state libraries, local newspapers, surf lifesaving histories, coroner/inquest references where accessible, fisheries/shark-control reports, court/inquest reporting, and maritime accident archives. No Trove API, scraping, bulk downloads, ingestion code, warning/scoring behavior, or replay output changes added.
 - Vic Hislop corpus and case-claim archive planning added locally: source and claim metadata model for books, catalogue records, interviews, profiles, Shark Show-era records, shark capture records, and disputed case claims. Hislop sources are treated as historically important but not automatically authoritative; claims require corroboration, conflict tracking, controversy flags, and confidence scoring.
+- Phase 26B AI1SAD Shark-Human Incident Registry Schema implemented locally: internal Pydantic-style service models for reviewed case records, source links, official/public species status, internal species hypotheses, species/size claims, retaliation-risk species-disclosure guardrails, behavioral hypotheses, source conflicts, public-safe output, and explicit no-side-effect reporting. No public registry endpoint, ingestion endpoint, persistence workflow, warning/alert/scoring/replay/feed/drone behavior, Trove scraping, or copyrighted article download added.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -65,8 +66,9 @@
 - Local media attachments are metadata-only and disabled by default; binary upload, public attachment release, authentication, malware scanning, EXIF/geotag stripping, and production upload hardening remain future work.
 - MAVLink bridge is read-only telemetry-only; `.tlog` parsing and UDP live parsing remain future/reviewed work.
 - UAV operator feedback is research/requirements input only; Phase 25G still needs a review dashboard and requirements prioritization workflow.
-- GSAF rows are staging-only upstream records; Phase 26B still needs the first-class AI1SAD shark-human incident registry schema and reviewed promotion rules.
-- Archival newspaper and Vic Hislop source lanes are planning-only; local/manual metadata capture, copyright/rights caution, OCR uncertainty, source confidence, and behavioral-hypothesis review rules must be implemented before any registry use.
+- GSAF rows remain staging-only upstream records; Phase 26B adds source-link schema foundations but no reviewed promotion workflow, public incident release path, or automatic public species confirmation.
+- Official/public species status is separate from internal species hypotheses. Public-safe registry output suppresses speculative species attribution by default and whenever species-disclosure risk is moderate or high.
+- Archival newspaper and Vic Hislop source lanes remain planning-only; local/manual metadata capture, copyright/rights caution, OCR uncertainty, source confidence, and behavioral-hypothesis review workflows still require future phases before production registry use.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -76,8 +78,8 @@
 
 ## Next Planned Phase
 
-- Phase 26B: AI1SAD Shark-Human Incident Registry Schema
-- Planned follow-ons: Phase 26C Australian Archival Newspaper Source Tracker, then Phase 26D Vic Hislop Corpus and Case-Claim Archive
+- Phase 26C: Australian Archival Newspaper Source Tracker
+- Planned follow-on: Phase 26D Vic Hislop Corpus and Case-Claim Archive
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -294,6 +296,17 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Replay outputs: not regenerated or modified
 - Fixture dates: unchanged
 
+## Validation Counts (Latest Phase 26B Local Run)
+
+- Focused incident registry tests: `13 passed`
+- Full backend tests: `309 passed, 3 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `58` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/disclaimer/test-only matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Current implementation: internal shark-human incident registry schema/service foundations, source-link model for GSAF/archival/Hislop evidence lanes, official/public species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral-hypothesis confidence rules, source-conflict tracking, public-safe output helper, and no warning, alert, public-feed, replay, scoring, drone-observation, provider-adapter, Trove, API-ingestion, or copyrighted-article-download side effects.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -306,15 +319,16 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Lovers Point biological-event freshness fix awaiting review.
-- Adds scenario-time evaluation support for biological-event freshness in `calculate_warning` and replay/surveillance replay paths.
-- Updates the focused Lovers Point carcass test to assert bounded fresh behavior at scenario time and stale behavior after the freshness window.
-- Updates README, current data sources, biological-events provider docs, replay validation docs, project status, and next-phase handoff.
-- This fix does not change scoring weights, provider adapters, fixture dates, replay artifacts, frontend dependencies, dependency-security files, warnings, alerts, public feeds, drone observations, scraping behavior, or Phase 26B implementation.
-- Review gate: do not stage or commit until reviewed; do not begin Phase 26B implementation.
+- Phase 26B AI1SAD Shark-Human Incident Registry Schema awaiting review.
+- Adds `app/services/incident_registry.py` with internal registry record, source link, official species status, internal species hypothesis, species disclosure risk, species/size claim, behavioral hypothesis, source conflict, public-safe output, GSAF source-link, and no-side-effect helpers.
+- Adds `tests/test_incident_registry.py` with synthetic-only coverage for valid records, GSAF/archival/Hislop links, no default mistaken identity, questionable evidence behavior, competing hypotheses, conflict tracking, official unconfirmed species vs internal tiger-shark hypothesis handling, moderate/high species-disclosure risk suppression, public/private filtering, coordinate confidence, normalization warnings, and no scoring/replay/feed/drone side effects.
+- Adds `docs/SHARK_HUMAN_INCIDENT_REGISTRY.md` and updates README, current data sources, GSAF importer docs, Australian archival planning docs, Vic Hislop planning docs, schema docs, project status, next-phase handoff, and MkDocs navigation.
+- This phase does not add public registry endpoints, public ingestion endpoints, database persistence, scoring changes, replay artifact changes, provider adapter changes, frontend dependency changes, warning/alert/feed/drone side effects, Trove scraping, Trove API use, raw GSAF publication, or copyrighted article-body downloads.
+- Review gate: do not stage or commit until reviewed; do not begin Phase 26C implementation.
 
 ## Recent Important Commits
 
+- `6a20a49` Anchor biological event freshness to replay time
 - `6354a20` Add archival source planning docs
 - `e8f85f0` Add UAV operator research brief and compatibility matrix
 - `fe5b230` Harden local media attachment metadata validation

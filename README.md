@@ -18,8 +18,8 @@ Current development checkpoint:
 
 - Latest completed phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
 - Latest completed maintenance: Phase 25D-D media attachment security review and metadata hardening
-- Current implementation: Phase 26A, GSAF XLS Intake and Delta Tracker
-- Next planned phase: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
+- Current implementation: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
+- Next planned phase: Phase 26C, Australian Archival Newspaper Source Tracker
 - Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
 - FastAPI docs: <http://localhost:8000/docs>
@@ -72,6 +72,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
 - GSAF local import and delta tracking reads manually downloaded `.csv`, `.xlsx`, or `.xls` files into internal staging JSON, preserves source provenance, computes row fingerprints, and reports new, changed, unchanged, duplicate, malformed, and possibly removed upstream rows. Imported rows do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
+- Internal Shark-Human Incident Registry schema links reviewed AI1SAD case records to GSAF staging rows, future archival newspaper metadata, future Vic Hislop corpus claims, source conflicts, official species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral hypotheses, confidence labels, public summaries, and private analyst notes. Registry records do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
 - AI1SAD is planning an Australian archival source tracker for historical newspaper evidence and a Vic Hislop corpus archive for shark-attack case claims, interviews, writings, and museum-era records. These sources will support provenance and behavioral hypothesis review, not automatic shark-intent conclusions.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
@@ -164,6 +165,8 @@ F:\Python310\python.exe -m app.services.gsaf_importer --input data/imports/gsaf/
 ```
 
 Raw GSAF spreadsheets and generated staging/report artifacts stay local under `data/imports/gsaf/` and must not be committed unless rights are explicitly approved.
+
+The Phase 26B incident registry is an internal service/schema foundation, not a public ingestion route. Future public registry endpoints require a separate reviewed phase.
 
 ## Replay Library
 
@@ -286,17 +289,15 @@ Operational recommendations require human review. Scores support interpretation 
 
 Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-Lovers Point backend freshness fix validation:
+Phase 26B local validation:
 
-- Focused Lovers Point carcass test: `1 passed`
-- Biological events provider tests: `13 passed`
-- Full backend tests: `296 passed, 3 warnings`
-- Replay freshness behavior: biological-event freshness can be evaluated at scenario time for strict replay; default live/API scoring still uses current time.
-- No scoring weights, fixture dates, provider adapters, replay artifacts, frontend dependencies, or dependency-security files changed.
+- Focused incident registry tests: `13 passed`
+- Full backend tests: `309 passed, 3 warnings`
+- Registry behavior: internal schema/service helpers only; no public ingestion route, warning/alert/scoring/replay/feed/drone side effects, provider adapter changes, fixture changes, or public speculative species attribution.
 - MkDocs build: passed with the known Material advisory banner
-- README local links/images check: `55` checked, passed
+- README local links/images check: `58` checked, passed
 - Secret scan: no credential patterns matched
-- Prohibited-language scan: guardrail/disclaimer matches only
+- Prohibited-language scan: guardrail/disclaimer/test-only matches only
 - Git whitespace check: passed with CRLF normalization warnings only
 
 ## Documentation Map
@@ -309,6 +310,7 @@ Lovers Point backend freshness fix validation:
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
 - [GSAF Import And Delta Tracking](docs/GSAF_IMPORT_AND_DELTA_TRACKING.md)
+- [Shark-Human Incident Registry](docs/SHARK_HUMAN_INCIDENT_REGISTRY.md)
 - [Australian Archival News Tracker](docs/AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md)
 - [Vic Hislop Corpus Archive](docs/VIC_HISLOP_CORPUS_ARCHIVE.md)
 - [Replay Library](docs/REPLAY_LIBRARY.md)

@@ -107,6 +107,7 @@ nav:
       - MAVLink Safety Boundaries: MAVLINK_SAFETY_BOUNDARIES.md
 
   - Incident Registry & Source Provenance:
+      - Shark-Human Incident Registry: SHARK_HUMAN_INCIDENT_REGISTRY.md
       - GSAF Import And Delta Tracking: GSAF_IMPORT_AND_DELTA_TRACKING.md
       - Australian Archival News Tracker: AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md
       - Vic Hislop Corpus Archive: VIC_HISLOP_CORPUS_ARCHIVE.md

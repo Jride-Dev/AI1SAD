@@ -127,4 +127,8 @@ Public AI1SAD outputs should use citations, safe metadata, and short rights-revi
 
 ## Phase 26B And 26C Handoff
 
-Phase 26B should define the incident registry schema that these archival sources can link to. Phase 26C can then implement the Australian Archival Newspaper Source Tracker as a local/manual metadata capture workflow.
+Phase 26B defines the internal incident registry schema that future archival sources can link to through `archival_newspaper`, `trove_metadata`, `state_library_record`, `government_report`, `coroner_or_inquest`, and related source-link types.
+
+Future archival species mentions should enter the registry as source claims or internal species hypotheses with confidence, limitations, and disclosure review. They must not automatically become `confirmed_public` official species values, and moderate/high species-disclosure risk should suppress speculative public species attribution.
+
+Phase 26C is the next planned phase. It can implement the Australian Archival Newspaper Source Tracker as a local/manual metadata capture workflow. It must preserve OCR/source uncertainty, rights notes, citations, source confidence, and conflict tracking. It must not scrape Trove, use the Trove API, bulk-download article bodies, reproduce copyrighted article text in public outputs, create warnings or alerts, modify scoring, alter replay artifacts, create public feed entries, or create drone observations.

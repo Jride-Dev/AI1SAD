@@ -130,4 +130,8 @@ The archive should preserve catalogue references, citations, dates, source type,
 
 ## Phase 26D Handoff
 
-Phase 26D can implement a local/manual Vic Hislop corpus and case-claim archive after Phase 26B defines the incident registry schema and Phase 26C establishes archival source-tracker patterns. Phase 26D should not start until explicitly approved.
+Phase 26B defines the internal incident registry schema that future Vic Hislop corpus records can link to through `vic_hislop_corpus`, `interview`, `media_report`, and related source-link types.
+
+Future Hislop species claims should remain source-attributed claims or internal hypotheses until corroborated by reviewed public official records. They must not automatically populate public official species fields, and retaliation-risk guardrails should suppress speculative species attribution in public-safe output when risk is moderate or high.
+
+Phase 26D can implement a local/manual Vic Hislop corpus and case-claim archive after Phase 26C establishes archival source-tracker patterns. Phase 26D should not start until explicitly approved. Hislop claims can inform registry source links, conflicts, and behavioral hypotheses, but they cannot automatically become authoritative, decide shark intent, create warnings, create alerts, modify scoring, alter replay artifacts, create public feed entries, or create drone observations.

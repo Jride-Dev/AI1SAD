@@ -170,8 +170,10 @@ GSAF raw files can contain sensitive personal details, source notes, and license
 
 Public docs should describe the import workflow and use synthetic examples only. Do not paste raw GSAF rows into public docs or public API output.
 
-## Phase 26B Handoff
+## Phase 26B Registry Link
 
-The next planned phase is Phase 26B: AI1SAD Shark-Human Incident Registry Schema.
+Phase 26B adds the internal AI1SAD Shark-Human Incident Registry schema.
 
-Phase 26B should design the richer AI1SAD registry model and decide how reviewed upstream records become first-class internal incidents. It should not be started automatically from Phase 26A.
+GSAF staging rows can now be represented as `gsaf_row` source links on internal registry records. A GSAF link preserves source case number, source date, local staging context, provisional claims, and rights/privacy notes. It does not make the upstream row final truth, publish the raw row, create warnings, create alerts, modify replay outputs, create public feed entries, create drone observations, decide behavioral intent, or convert raw species text into public official species confirmation.
+
+Phase 26B keeps GSAF species text in source/provenance fields unless a separate reviewed official/public source supports disclosure. Internal species hypotheses and species-disclosure risk are handled by the registry schema, not by the importer.

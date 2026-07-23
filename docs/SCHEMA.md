@@ -40,6 +40,105 @@ Scrubbed, API-facing incident records.
 
 Excluded from `incidents`: victim names, investigator/source notes, PDF links, href links, private notes, exact street addresses, restricted raw content, and raw geocode caches.
 
+## shark_human_incident_registry
+
+Internal reviewed AI1SAD shark-human incident registry records. Phase 26B defines the schema/service layer only; no public registry API route or database persistence workflow is added in this phase.
+
+```json
+{
+  "ai1sad_case_id": "AI1SAD-SYN-0001",
+  "registry_version": "phase_26b_v1",
+  "review_status": "analyst_review",
+  "public_visibility": "private",
+  "incident_date_raw": "June 1901",
+  "incident_date_normalized": null,
+  "country": "Australia",
+  "region": "Queensland",
+  "area": "Synthetic Coast",
+  "location": "Example Beach",
+  "latitude": -25.0,
+  "longitude": 153.0,
+  "coordinate_confidence": "approximate_region",
+  "activity": "bathing",
+  "injury_summary": "Synthetic reviewed summary",
+  "fatality": false,
+  "official_species_status": "unconfirmed",
+  "official_species_name": null,
+  "official_species_source_id": null,
+  "official_species_public_note": "Species was not officially confirmed in public records. AI1SAD preserves the uncertainty and does not publish speculative species attribution where doing so could encourage retaliation or distort the source record.",
+  "species_claims": [
+    {
+      "species_raw": "large shark",
+      "normalized_species": null,
+      "source_ids": ["gsaf:case:SYN.1901.01"],
+      "confidence": "weak"
+    }
+  ],
+  "internal_species_hypotheses": [
+    {
+      "species_common_name": "tiger shark",
+      "species_scientific_name": "Galeocerdo cuvier",
+      "claim_status": "analyst_hypothesis",
+      "confidence": "plausible",
+      "basis": "Synthetic internal hypothesis retained for review.",
+      "limitations": "No public official species confirmation.",
+      "source_ids": ["archive:trove:SYN-1901"],
+      "visibility": "internal_review_only",
+      "analyst_notes_private": "Private species-review note."
+    }
+  ],
+  "species_disclosure_risk": "moderate",
+  "source_links": [
+    {
+      "source_id": "gsaf:case:SYN.1901.01",
+      "source_type": "gsaf_row",
+      "source_name": "GSAF",
+      "source_ref": "SYN.1901.01",
+      "source_confidence": "weak",
+      "public_citation_allowed": false,
+      "private_notes": "Local staging row context remains private."
+    },
+    {
+      "source_id": "archive:trove:SYN-1901",
+      "source_type": "archival_newspaper",
+      "source_name": "Synthetic Gazette",
+      "source_rights_note": "Citation only; article body not redistributed.",
+      "quote_excerpt_allowed": false,
+      "public_citation_allowed": true,
+      "full_copyrighted_article_text": "Private-only field."
+    }
+  ],
+  "behavioral_hypotheses": [
+    {
+      "hypothesis": "investigative_contact",
+      "confidence": "weak",
+      "source_ids": ["archive:trove:SYN-1901"]
+    }
+  ],
+  "primary_behavioral_hypothesis": "investigative_contact",
+  "behavioral_confidence": "weak",
+  "source_conflicts": [
+    {
+      "conflict_id": "conflict:species:SYN-1901",
+      "conflict_type": "species_disagreement",
+      "summary": "Sources disagree on species certainty.",
+      "sources_in_conflict": ["gsaf:case:SYN.1901.01", "archive:trove:SYN-1901"],
+      "current_resolution": "retain_uncertain_species",
+      "resolution_confidence": "weak",
+      "public_summary_allowed": true,
+      "analyst_notes_private": "Private conflict notes."
+    }
+  ],
+  "public_summary": "Public-safe summary after review.",
+  "analyst_notes_private": "Private analyst notes.",
+  "normalization_warnings": ["date_vague_preserved"]
+}
+```
+
+Public-safe registry output must exclude `analyst_notes_private`, source `private_notes`, full copyrighted article text, full private quotes, private contact/source details, and uncleared conflict notes. Registry records do not create warnings, alerts, public feed entries, replay facts, scoring changes, or drone observations.
+
+Official/public species fields are separate from source species claims and internal analyst hypotheses. Public-safe registry output includes `official_species_status`, an official species name only when public official records confirm one, and the public uncertainty note when species is not publicly confirmed. Internal species hypotheses are private by default and are suppressed whenever species-disclosure risk is `moderate` or `high`.
+
 ## sources
 
 Public source metadata.
