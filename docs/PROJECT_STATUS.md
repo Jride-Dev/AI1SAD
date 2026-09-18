@@ -2,13 +2,13 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26B AI1SAD Shark-Human Incident Registry Schema - implemented locally, uncommitted
+- Current phase number: Phase 26B follow-up, first real-world AI1SAD Shark-Human Incident Registry case - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
-- Latest completed committed phase: Phase 26A follow-up backend maintenance for Lovers Point biological-event replay freshness
-- Latest local implementation: Phase 26B internal incident-registry schema/service foundations with official/public species status, internal species hypotheses, and retaliation-risk species-disclosure guardrails; focused tests passed locally
-- Latest commit hash: `6a20a49` Anchor biological event freshness to replay time
-- Repo status: uncommitted Phase 26B schema/service/test/docs changes; verify with `git status`
+- Latest completed committed phase: Phase 26B AI1SAD Shark-Human Incident Registry Schema
+- Latest local implementation: restricted source-linked Glenfield Beach / Mel Ismail real-world registry seed case with unconfirmed species, September 18 ABC DNA-analysis update retained as unresolved provenance, no internal species hypothesis, unknown primary behavior, provisional competing behavior hypotheses only, and no warning/scoring/replay/feed/drone side effects
+- Latest commit hash: `03eb198` Remove Ko-fi funding link
+- Repo status: uncommitted Glenfield registry-data/test/docs changes; verify with `git status`
 
 ## Major Completed Systems
 
@@ -41,6 +41,7 @@
 - Australian archival newspaper source-tracker planning added locally: metadata-first planning for Trove/National Library of Australia, state libraries, local newspapers, surf lifesaving histories, coroner/inquest references where accessible, fisheries/shark-control reports, court/inquest reporting, and maritime accident archives. No Trove API, scraping, bulk downloads, ingestion code, warning/scoring behavior, or replay output changes added.
 - Vic Hislop corpus and case-claim archive planning added locally: source and claim metadata model for books, catalogue records, interviews, profiles, Shark Show-era records, shark capture records, and disputed case claims. Hislop sources are treated as historically important but not automatically authoritative; claims require corroboration, conflict tracking, controversy flags, and confidence scoring.
 - Phase 26B AI1SAD Shark-Human Incident Registry Schema implemented locally: internal Pydantic-style service models for reviewed case records, source links, official/public species status, internal species hypotheses, species/size claims, retaliation-risk species-disclosure guardrails, behavioral hypotheses, source conflicts, public-safe output, and explicit no-side-effect reporting. No public registry endpoint, ingestion endpoint, persistence workflow, warning/alert/scoring/replay/feed/drone behavior, Trove scraping, or copyrighted article download added.
+- Phase 26B follow-up first real-world registry seed case implemented locally: restricted Glenfield Beach / Mel Ismail 2026 source-linked registry data, with ABC News September 15 and September 18 reporting, 7NEWS, Geraldton Guardian, and news.com.au citations; species remains unconfirmed, surfboard/wetsuit DNA analysis is provenance-only, no internal species hypothesis is stored, behavior remains `unknown_insufficient_evidence`, and attempted predation/probe are provisional alternatives only.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -68,6 +69,7 @@
 - UAV operator feedback is research/requirements input only; Phase 25G still needs a review dashboard and requirements prioritization workflow.
 - GSAF rows remain staging-only upstream records; Phase 26B adds source-link schema foundations but no reviewed promotion workflow, public incident release path, or automatic public species confirmation.
 - Official/public species status is separate from internal species hypotheses. Public-safe registry output suppresses speculative species attribution by default and whenever species-disclosure risk is moderate or high.
+- Glenfield Beach 2026 registry seed data awaits any future official fisheries/DPIRD species or size determination. The September 18 ABC update still described DNA analysis from the damaged board and wetsuit as underway, so until reviewed evidence supports an update, the case stays unconfirmed with no internal species hypothesis and named-victim citation metadata suppressed from public-safe output.
 - Archival newspaper and Vic Hislop source lanes remain planning-only; local/manual metadata capture, copyright/rights caution, OCR uncertainty, source confidence, and behavioral-hypothesis review workflows still require future phases before production registry use.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
@@ -307,6 +309,18 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Git whitespace check: passed with CRLF normalization warnings only
 - Current implementation: internal shark-human incident registry schema/service foundations, source-link model for GSAF/archival/Hislop evidence lanes, official/public species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral-hypothesis confidence rules, source-conflict tracking, public-safe output helper, and no warning, alert, public-feed, replay, scoring, drone-observation, provider-adapter, Trove, API-ingestion, or copyrighted-article-download side effects.
 
+## Validation Counts (Latest Glenfield Registry Case Local Run)
+
+- Focused incident registry tests: `15 passed`
+- Full backend tests: `311 passed, 4 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `58` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/source-title/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Local environment note: corrected `pydantic-core` from `2.49.0` to `2.46.5` in `F:\Python310` to match installed `pydantic 2.13.5` before validation.
+- Current implementation: one restricted source-linked real-world registry seed case for Glenfield Beach / Mel Ismail 2026; September 18 ABC reporting still leaves DNA species analysis unresolved, with no official species identification, no internal species hypothesis, no selected predatory primary behavior, no mistaken-identity default, no shark-intent claim, no warning, alert, public-feed, replay, scoring, drone-observation, provider-adapter, fixture-date, frontend-dependency, or public speculative species-attribution changes.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -319,15 +333,17 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Phase 26B AI1SAD Shark-Human Incident Registry Schema awaiting review.
-- Adds `app/services/incident_registry.py` with internal registry record, source link, official species status, internal species hypothesis, species disclosure risk, species/size claim, behavioral hypothesis, source conflict, public-safe output, GSAF source-link, and no-side-effect helpers.
-- Adds `tests/test_incident_registry.py` with synthetic-only coverage for valid records, GSAF/archival/Hislop links, no default mistaken identity, questionable evidence behavior, competing hypotheses, conflict tracking, official unconfirmed species vs internal tiger-shark hypothesis handling, moderate/high species-disclosure risk suppression, public/private filtering, coordinate confidence, normalization warnings, and no scoring/replay/feed/drone side effects.
-- Adds `docs/SHARK_HUMAN_INCIDENT_REGISTRY.md` and updates README, current data sources, GSAF importer docs, Australian archival planning docs, Vic Hislop planning docs, schema docs, project status, next-phase handoff, and MkDocs navigation.
-- This phase does not add public registry endpoints, public ingestion endpoints, database persistence, scoring changes, replay artifact changes, provider adapter changes, frontend dependency changes, warning/alert/feed/drone side effects, Trove scraping, Trove API use, raw GSAF publication, or copyrighted article-body downloads.
+- Glenfield Beach / Mel Ismail first real-world AI1SAD registry seed case awaiting review.
+- Adds `app/services/incident_registry_cases.py` with the restricted source-linked case payload and registry materialization helper.
+- Updates `tests/test_incident_registry.py` with focused assertions for unconfirmed species, no internal species hypothesis, provisional competing behavior hypotheses, no mistaken-identity default, source provenance, privacy-bounded public output, and no scoring/alert side effects.
+- Updates README, current data sources, schema docs, incident-registry docs, project status, and next-phase handoff.
+- This follow-up does not add public registry endpoints, public ingestion endpoints, database persistence, scoring changes, replay artifact changes, provider adapter changes, frontend dependency changes, warning/alert/feed/drone side effects, Trove scraping, Trove API use, species inference, raw source publication, or copyrighted article-body downloads.
 - Review gate: do not stage or commit until reviewed; do not begin Phase 26C implementation.
 
 ## Recent Important Commits
 
+- `03eb198` Remove Ko-fi funding link
+- `402cdfd` Add shark-human incident registry schema
 - `6a20a49` Anchor biological event freshness to replay time
 - `6354a20` Add archival source planning docs
 - `e8f85f0` Add UAV operator research brief and compatibility matrix

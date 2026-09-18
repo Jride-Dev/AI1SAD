@@ -10,13 +10,14 @@ Target full working-version launch: September 7, 2026.
 
 AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
 
-Do not start this phase automatically. Phase 26C begins only after Phase 26B is reviewed.
+Do not start this phase automatically. Phase 26C begins only after Phase 26B and the Glenfield Beach registry seed follow-up are reviewed.
 
 ## Current Baseline
 
 Phase 26B leaves AI1SAD with:
 
 - `app/services/incident_registry.py`
+- `app/services/incident_registry_cases.py`
 - `tests/test_incident_registry.py`
 - `docs/SHARK_HUMAN_INCIDENT_REGISTRY.md`
 - internal registry record fields for reviewed AI1SAD case records
@@ -28,8 +29,9 @@ Phase 26B leaves AI1SAD with:
 - source conflict tracking for species, species disclosure, date, location, fatality, injury, behavioral interpretation, and source reliability disagreements
 - public-safe output helpers that exclude private analyst notes, source private notes, internal species hypotheses unless explicitly public-safe and risk-cleared, speculative species guesses, full copyrighted article text, full private quotes, private contact/source details, and uncleared conflict notes
 - explicit no-side-effect behavior for warnings, alerts, public feeds, replay facts, scoring, and drone observations
+- a restricted first real-world registry seed case for the September 14, 2026 Glenfield Beach / Mel Ismail incident, with media source links, unconfirmed official species status, no internal species hypothesis, September 18 ABC DNA-analysis reporting retained as unresolved provenance only, `unknown_insufficient_evidence` as primary behavior, and attempted predation/probe retained only as provisional alternatives
 
-Phase 26B does not add public registry endpoints, public ingestion endpoints, database persistence, Trove scraping, Trove API calls, copyrighted article downloads, replay artifact regeneration, scoring changes, provider adapters, frontend dependencies, or Phase 26C source-capture workflows.
+Phase 26B and the Glenfield seed follow-up do not add public registry endpoints, public ingestion endpoints, database persistence, Trove scraping, Trove API calls, copyrighted article downloads, replay artifact regeneration, scoring changes, provider adapters, frontend dependencies, alerts, public-feed observations, drone observations, or Phase 26C source-capture workflows.
 
 ## Planned Scope
 

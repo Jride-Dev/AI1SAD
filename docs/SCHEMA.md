@@ -42,7 +42,7 @@ Excluded from `incidents`: victim names, investigator/source notes, PDF links, h
 
 ## shark_human_incident_registry
 
-Internal reviewed AI1SAD shark-human incident registry records. Phase 26B defines the schema/service layer only; no public registry API route or database persistence workflow is added in this phase.
+Internal reviewed AI1SAD shark-human incident registry records. Phase 26B defines the schema/service layer only; no public registry API route or database persistence workflow is added in this phase. `app/services/incident_registry_cases.py` uses the same schema for restricted source-linked seed cases, including the first real-world Glenfield Beach 2026 record.
 
 ```json
 {
@@ -138,6 +138,8 @@ Internal reviewed AI1SAD shark-human incident registry records. Phase 26B define
 Public-safe registry output must exclude `analyst_notes_private`, source `private_notes`, full copyrighted article text, full private quotes, private contact/source details, and uncleared conflict notes. Registry records do not create warnings, alerts, public feed entries, replay facts, scoring changes, or drone observations.
 
 Official/public species fields are separate from source species claims and internal analyst hypotheses. Public-safe registry output includes `official_species_status`, an official species name only when public official records confirm one, and the public uncertainty note when species is not publicly confirmed. Internal species hypotheses are private by default and are suppressed whenever species-disclosure risk is `moderate` or `high`.
+
+The Glenfield Beach 2026 seed case keeps `official_species_status` as `unconfirmed`, leaves `official_species_name` empty, stores no internal species hypothesis, and treats attempted predation and predatory probe only as provisional alternatives while `unknown_insufficient_evidence` remains primary. It does not add scoring, replay, alert, public-feed, drone-observation, or provider side effects.
 
 ## sources
 

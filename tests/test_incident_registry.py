@@ -17,6 +17,10 @@ from app.services.incident_registry import (
     registry_side_effects,
     source_link_from_gsaf_record,
 )
+from app.services.incident_registry_cases import (
+    GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID,
+    real_world_registry_records,
+)
 
 
 NOW = datetime(2026, 6, 25, 12, 0, tzinfo=timezone.utc)
@@ -502,3 +506,69 @@ def test_registry_records_do_not_create_scoring_replay_feed_or_drone_side_effect
         "alters_scoring": False,
         "alters_replay": False,
     }
+
+
+def test_glenfield_beach_real_world_registry_case_preserves_uncertain_species_and_behavior():
+    [record] = real_world_registry_records(now=NOW)
+
+    assert record.ai1sad_case_id == GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID
+    assert record.incident_date_normalized == "2026-09-14"
+    assert record.incident_time_raw == "about 09:45-09:50 local time"
+    assert record.location == "Glenfield Beach, north of Geraldton"
+    assert record.activity == "surfing"
+    assert "Mel Ismail" in record.victim_context
+    assert "56-year-old" in record.victim_context
+    assert record.fatality is False
+    assert "below-shin amputation" in record.injury_summary
+    assert "surfing alone" in record.human_group_context
+    assert "another surfer" in record.human_group_context
+    assert record.official_species_status == "unconfirmed"
+    assert record.official_species_name is None
+    assert record.official_species_source_id is None
+    assert record.internal_species_hypotheses == []
+    assert record.species_disclosure_risk == "moderate"
+    assert record.primary_behavioral_hypothesis == "unknown_insufficient_evidence"
+    assert record.behavioral_confidence == "unknown"
+    assert record.alternative_hypotheses == ["attempted_predation_event", "predatory_probe"]
+    assert "mistaken_identity_candidate" not in record.alternative_hypotheses
+
+    hypotheses = {
+        hypothesis.hypothesis: hypothesis.confidence
+        for hypothesis in record.behavioral_hypotheses
+    }
+    assert hypotheses == {
+        "unknown_insufficient_evidence": "unknown",
+        "attempted_predation_event": "unknown",
+        "predatory_probe": "unknown",
+    }
+
+
+def test_glenfield_beach_real_world_registry_case_sources_and_public_output_are_bounded():
+    [record] = real_world_registry_records(now=NOW)
+    public = public_safe_registry_output(record)
+    rendered_public = str(public)
+
+    source_ids = {source.source_id for source in record.source_links}
+    assert source_ids == {
+        "abc:2026-09-15:geraldton-shark-attack",
+        "abc:2026-09-18:glenfield-beach-rescuer",
+        "seven:2026-09-15:glenfield-beach-mel-ismail",
+        "geraldton_guardian:2026-09-14:mel-ismail",
+        "newscomau:2026-09-14:hero-teens-mel-ismail",
+    }
+    assert all(source.public_citation_allowed is False for source in record.source_links)
+    assert any("fisheries/DPIRD testing" in note for note in record.provenance_notes)
+    assert any("tourniquet" in note for note in record.provenance_notes)
+    assert any("retained by WA fisheries/DPIRD" in claim.size_raw for claim in record.shark_size_claims)
+
+    assert public["official_species_status"] == "unconfirmed"
+    assert public["official_species_name"] is None
+    assert public["official_species_public_note"] == record.official_species_public_note
+    assert public["internal_species_hypotheses"] == []
+    assert public["source_citations"] == []
+    assert "Mel Ismail" not in rendered_public
+    assert "tiger shark" not in rendered_public.lower()
+    assert "white shark" not in rendered_public.lower()
+    assert "mistaken_identity_candidate" not in rendered_public
+    assert registry_side_effects()["alters_scoring"] is False
+    assert registry_side_effects()["creates_alerts"] is False
