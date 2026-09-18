@@ -16,9 +16,9 @@ AI1SAD does not predict individual incidents or infer shark intent. It separates
 
 Current development checkpoint:
 
-- Latest completed phase: Phase 25E, UAV Operator Research Brief and Compatibility Matrix
-- Latest completed maintenance: Phase 25D-D media attachment security review and metadata hardening
-- Current implementation: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
+- Latest completed phase: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
+- Latest completed maintenance: Phase 26A follow-up backend freshness stabilization
+- Current implementation: Phase 26B follow-up, first restricted real-world AI1SAD shark-human incident registry seed case
 - Next planned phase: Phase 26C, Australian Archival Newspaper Source Tracker
 - Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
@@ -72,7 +72,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - Local-only media attachment prototype is available behind an explicit configuration gate. Attachments are private by default and are not exposed through public feeds. AI1SAD does not analyze media, infer species, or create sightings from attachments.
 - UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
 - GSAF local import and delta tracking reads manually downloaded `.csv`, `.xlsx`, or `.xls` files into internal staging JSON, preserves source provenance, computes row fingerprints, and reports new, changed, unchanged, duplicate, malformed, and possibly removed upstream rows. Imported rows do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
-- Internal Shark-Human Incident Registry schema links reviewed AI1SAD case records to GSAF staging rows, future archival newspaper metadata, future Vic Hislop corpus claims, source conflicts, official species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral hypotheses, confidence labels, public summaries, and private analyst notes. Registry records do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
+- Internal Shark-Human Incident Registry schema links reviewed AI1SAD case records to GSAF staging rows, future archival newspaper metadata, future Vic Hislop corpus claims, source conflicts, official species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral hypotheses, confidence labels, public summaries, and private analyst notes. It now includes the first restricted real-world seed case for the September 14, 2026 Glenfield Beach incident involving Mel Ismail, preserving source links while keeping species unconfirmed, storing no internal species hypothesis, and avoiding shark-intent claims. Registry records do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
 - AI1SAD is planning an Australian archival source tracker for historical newspaper evidence and a Vic Hislop corpus archive for shark-attack case claims, interviews, writings, and museum-era records. These sources will support provenance and behavioral hypothesis review, not automatic shark-intent conclusions.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
@@ -166,7 +166,7 @@ F:\Python310\python.exe -m app.services.gsaf_importer --input data/imports/gsaf/
 
 Raw GSAF spreadsheets and generated staging/report artifacts stay local under `data/imports/gsaf/` and must not be committed unless rights are explicitly approved.
 
-The Phase 26B incident registry is an internal service/schema foundation, not a public ingestion route. Future public registry endpoints require a separate reviewed phase.
+The Phase 26B incident registry is an internal service/schema foundation, not a public ingestion route. The Glenfield Beach seed case is internal/restricted registry data and does not create an alert, warning, public-feed observation, replay artifact, or API endpoint. Future public registry endpoints require a separate reviewed phase.
 
 ## Replay Library
 
@@ -289,15 +289,15 @@ Operational recommendations require human review. Scores support interpretation 
 
 Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-Phase 26B local validation:
+Glenfield registry-data local validation:
 
-- Focused incident registry tests: `13 passed`
-- Full backend tests: `309 passed, 3 warnings`
-- Registry behavior: internal schema/service helpers only; no public ingestion route, warning/alert/scoring/replay/feed/drone side effects, provider adapter changes, fixture changes, or public speculative species attribution.
+- Focused incident registry tests: `15 passed`
+- Full backend tests: `311 passed, 4 warnings`
+- Registry behavior: internal schema/service helpers plus one restricted real-world seed case only; no public ingestion route, warning/alert/scoring/replay/feed/drone side effects, provider adapter changes, fixture changes, public speculative species attribution, or shark-intent claim.
 - MkDocs build: passed with the known Material advisory banner
 - README local links/images check: `58` checked, passed
 - Secret scan: no credential patterns matched
-- Prohibited-language scan: guardrail/disclaimer/test-only matches only
+- Prohibited-language scan: guardrail/source-title/disclaimer matches only
 - Git whitespace check: passed with CRLF normalization warnings only
 
 ## Documentation Map

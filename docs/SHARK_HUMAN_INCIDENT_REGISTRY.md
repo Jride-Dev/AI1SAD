@@ -1,6 +1,6 @@
 # Shark-Human Incident Registry
 
-Phase 26B adds the first internal AI1SAD Shark-Human Incident Registry schema.
+Phase 26B adds the first internal AI1SAD Shark-Human Incident Registry schema. The follow-up registry-data pass adds the first source-linked real-world seed case for the September 14, 2026 Glenfield Beach incident involving Mel Ismail.
 
 Target full working-version launch remains September 7, 2026.
 
@@ -11,8 +11,10 @@ The registry is not a clone of ISAF/GSAF and is not a public incident feed. It i
 Phase 26B adds:
 
 - `app/services/incident_registry.py`
+- `app/services/incident_registry_cases.py`
 - synthetic focused tests in `tests/test_incident_registry.py`
 - internal schema/service helpers for registry records, source links, official species status, internal species hypotheses, species-disclosure risk, behavioral hypotheses, source conflicts, and public-safe output
+- a source-linked real-world seed payload for `AI1SAD-WA-GLENFIELD-BEACH-2026-09-14`
 
 Phase 26B does not add public ingestion endpoints, public registry endpoints, database persistence, warning creation, alert creation, replay changes, scoring changes, drone observations, Trove scraping, Trove API calls, raw GSAF row publication, or copyrighted article downloads.
 
@@ -25,6 +27,44 @@ AI1SAD now separates three layers:
 - Public API incidents: scrubbed public records only after future release rules and review gates.
 
 The registry is the middle layer. It can store evidence relationships and uncertainty before any public release or model use.
+
+## Initial Real-World Registry Case
+
+`AI1SAD-WA-GLENFIELD-BEACH-2026-09-14` records the Glenfield Beach, Western Australia shark-human incident reported on September 14, 2026. The internal case preserves source links to ABC News reporting from September 15 and September 18, 7NEWS, the Geraldton Guardian, and news.com.au reporting. Article bodies are not copied into the repository.
+
+The record preserves reported facts as source-attributed registry data:
+
+- victim context: Mel Ismail, age 56
+- date: September 14, 2026
+- approximate time: about 09:45-09:50 local time
+- location: Glenfield Beach, north of Geraldton, Western Australia
+- activity: surfing
+- approximate offshore distance: about 40 m, retained as a reported value
+- reported context: surfing alone before another surfer assisted
+- rescue sequence: another surfer paddled to assist, the victim was brought to shore, and a surfboard leg rope or ripcord was reportedly used as an improvised tourniquet
+- injury: catastrophic right lower-leg injury with subsequent below-shin amputation
+- outcome status: nonfatal, serious but stable
+- surfboard: severely damaged and retained by WA fisheries/DPIRD for species and size examination; later ABC reporting said DNA from the board and wetsuit was still being analysed
+
+Species boundaries:
+
+- `official_species_status` remains `unconfirmed`
+- `official_species_name` remains `null`
+- `internal_species_hypotheses` remains empty
+- no species is inferred from geography, injury pattern, board damage, or media speculation
+- the record notes that fisheries/DPIRD testing of the surfboard was reported as underway and that later ABC reporting still described DNA analysis from the board and wetsuit as unresolved
+
+Behavior boundaries:
+
+- `primary_behavioral_hypothesis` remains `unknown_insufficient_evidence`
+- `attempted_predation_event` and `predatory_probe` are retained only as provisional competing hypotheses with `unknown` confidence
+- the registry does not select a primary predatory hypothesis, default to mistaken identity, or claim shark intent
+
+Public/privacy boundaries:
+
+- the source-linked case is internal/restricted registry data
+- public-safe output suppresses named-victim citation metadata for this active incident
+- the case does not create alerts, warnings, public-feed entries, drone observations, replay facts, or scoring changes
 
 ## Core Fields
 
@@ -277,21 +317,22 @@ Phase 26B is schema/service foundation only. Promotion workflows, database persi
 - The registry is an in-process service/schema foundation, not a persisted database collection.
 - No public or internal API route is added in Phase 26B.
 - Synthetic tests exercise the schema and public-safe helper; they do not import real GSAF rows, scrape Trove, use the Trove API, or include copyrighted article bodies.
+- The Glenfield Beach case is source-linked from current media reporting and awaits any later official fisheries/DPIRD species or size determination. As of the September 18 ABC update reviewed for this seed case, DNA analysis from the board and wetsuit was still underway, so species and size remain unconfirmed.
 - Species disclosure review still needs future workflow, reviewer roles, storage, and public-release policy before production use.
 
 ## Validation Snapshot
 
-Latest Phase 26B local validation:
+Latest Glenfield registry-data local validation:
 
-- Focused incident registry tests: `13 passed`
-- Full backend tests: `309 passed, 3 warnings`
+- Focused incident registry tests: `15 passed`
+- Full backend tests: `311 passed, 4 warnings`
 - MkDocs build: passed with the standard Material for MkDocs advisory banner
 - README local links/images check: `58` checked, passed
 - Secret scan on changed files: no credential patterns matched
-- Prohibited-language scan on changed files: guardrail/disclaimer/test-only matches only
+- Prohibited-language scan on changed files: guardrail/source-title/disclaimer matches only
 - Git whitespace check: passed with CRLF normalization warnings only
 
-No replay outputs, scoring weights, provider adapters, frontend dependencies, fixture dates, public feeds, alerts, warnings, drone observations, Trove scraping, Trove API calls, or copyrighted article downloads changed.
+No replay outputs, scoring weights, provider adapters, frontend dependencies, fixture dates, public feeds, alerts, warnings, drone observations, Trove scraping, Trove API calls, species inferences, or copyrighted article downloads changed.
 
 ## Next Phase
 
