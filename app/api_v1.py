@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path as FilePath
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
@@ -66,6 +68,7 @@ from app.replay.library import get_replay_library_item, list_replay_library
 
 
 router = APIRouter(prefix="/api/v1")
+INCIDENT_GLOBE_ARTIFACT = FilePath("data/public/incident_globe_2000_2026.json")
 
 
 def maybe_demo(payload: dict[str, Any]) -> dict[str, Any]:
@@ -110,6 +113,42 @@ def serialize_incident(document: dict[str, Any]) -> PublicIncident:
     document = dict(document)
     document["_id"] = str(document["_id"])
     return PublicIncident.model_validate(document)
+
+
+def _incident_globe_records() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    settings = get_settings()
+    if settings.mongodb_uri:
+        database = get_database()
+        collection = database[COLLECTIONS["incident_globe"]]
+        if collection.estimated_document_count() > 0:
+            build = database["dataset_builds"].find_one({"_id": "incident_globe_2000_2026"}) or {}
+            return [mongo_public_doc(item) for item in collection.find({}, {"_id": 0})], build
+    if not INCIDENT_GLOBE_ARTIFACT.exists():
+        raise HTTPException(status_code=503, detail="Incident globe dataset has not been built")
+    payload = json.loads(INCIDENT_GLOBE_ARTIFACT.read_text(encoding="utf-8"))
+    return payload.get("records", []), payload
+
+
+def _globe_summary(records: list[dict[str, Any]], dataset: dict[str, Any]) -> dict[str, Any]:
+    outcome_counts: dict[str, int] = {}
+    provocation_counts: dict[str, int] = {}
+    decade_counts: dict[str, int] = {}
+    for record in records:
+        outcome = str(record.get("outcome_category") or "unknown")
+        provocation = str(record.get("provocation") or "unknown")
+        decade = str(record.get("decade") or "unknown")
+        outcome_counts[outcome] = outcome_counts.get(outcome, 0) + 1
+        provocation_counts[provocation] = provocation_counts.get(provocation, 0) + 1
+        decade_counts[decade] = decade_counts.get(decade, 0) + 1
+    return {
+        "total_records": len(records),
+        "mapped_records": sum(bool(record.get("mapped")) for record in records),
+        "unmapped_records": sum(not bool(record.get("mapped")) for record in records),
+        "outcome_counts": outcome_counts,
+        "provocation_counts": provocation_counts,
+        "decade_counts": decade_counts,
+        "dataset_total_records": dataset.get("summary", {}).get("total_records", len(records)),
+    }
 
 
 def mongo_public_doc(document: dict[str, Any]) -> dict[str, Any]:
@@ -312,6 +351,37 @@ def get_incident(incident_id: str, db: Database = Depends(get_database)) -> Publ
     if not document:
         raise HTTPException(status_code=404, detail="Incident not found")
     return serialize_incident(document)
+
+
+@router.get("/incidents-globe")
+def incident_globe(
+    decade: Annotated[int | None, Query()] = None,
+    provocation: Annotated[str, Query()] = "all",
+    outcome: Annotated[str, Query()] = "all",
+) -> dict[str, Any]:
+    if decade is not None and decade not in {2000, 2010, 2020}:
+        raise HTTPException(status_code=422, detail="decade must be 2000, 2010, or 2020")
+    if provocation not in {"all", "provoked", "unprovoked", "unknown", "conflicted"}:
+        raise HTTPException(status_code=422, detail="invalid provocation filter")
+    if outcome not in {"all", "fatal", "fatal_consumed", "non_fatal", "no_injury"}:
+        raise HTTPException(status_code=422, detail="invalid outcome filter")
+    records, dataset = _incident_globe_records()
+    filtered = [
+        record
+        for record in records
+        if (decade is None or record.get("decade") == decade)
+        and (provocation == "all" or record.get("provocation") == provocation)
+        and (outcome == "all" or record.get("outcome_category") == outcome)
+    ]
+    return {
+        "schema_version": dataset.get("schema_version", "incident_globe_v1"),
+        "generated_at": dataset.get("generated_at"),
+        "range": dataset.get("range", {"start_year": 2000, "end_year": 2026}),
+        "filters": {"decade": decade, "provocation": provocation, "outcome": outcome},
+        "summary": _globe_summary(filtered, dataset),
+        "data_boundaries": dataset.get("data_boundaries", {}),
+        "records": filtered,
+    }
 
 
 def grouped_stats(db: Database, field: str, limit: int = 250, sort_by_key_desc: bool = False) -> list[dict[str, Any]]:

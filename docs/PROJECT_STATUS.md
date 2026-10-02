@@ -2,13 +2,18 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26B follow-up, first real-world AI1SAD Shark-Human Incident Registry case - implemented locally, uncommitted
+- Current phase number: Phase 26C Australian Archival Newspaper Source Tracker - implemented locally, uncommitted
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
-- Latest completed committed phase: Phase 26B AI1SAD Shark-Human Incident Registry Schema
-- Latest local implementation: restricted source-linked Glenfield Beach / Mel Ismail real-world registry seed case with unconfirmed species, September 18 ABC DNA-analysis update retained as unresolved provenance, no internal species hypothesis, unknown primary behavior, provisional competing behavior hypotheses only, and no warning/scoring/replay/feed/drone side effects
-- Latest commit hash: `03eb198` Remove Ko-fi funding link
-- Repo status: uncommitted Glenfield registry-data/test/docs changes; verify with `git status`
+- Latest completed committed phase: Phase 26B follow-up first real-world AI1SAD Shark-Human Incident Registry case
+- Latest local implementation: Phase 26C local/manual Australian archival source tracker plus a local-only incident registry viewer that visibly renders the Glenfield Beach record, evidence, sources, uncertainty boundaries, and Mongo archival-source counts
+- Latest bounded source addition: Hal's Sharks Happen workbook imported as `864` private, attributed source records with duplicate comparison and separate Mongo persistence; no automatic merge or registry promotion
+- Latest local product view: the 2000-2026 Incident Globe presents `3,398` deduplicated, source-attributed records with decade, outcome, and Provoked/Unprovoked filters. `1,915` records have supported map coordinates; `1,483` remain unplotted rather than receiving guessed locations. The projection excludes `174` explicit invalid/no-shark-involvement rows, attaches `96` reviewed exact Sharks Happen matches, and retains `326` standalone Sharks Happen records.
+- Deployment preparation: `AI1SAD.org` has been registered through Cloudflare. Local configuration now supports a Cloudflare Workers Static Assets frontend at `ai1sad.org`, Railway API at `api.ai1sad.org`, Cloudflare Pages docs at `docs.ai1sad.org`, production-origin CORS, SPA route fallback, browser security headers, Railway health checks, and production smoke coverage. No external service has been created or DNS changed from this working tree.
+- Latest commit hash: `6524cfb` Add Glenfield Beach registry seed case
+- Repo status: uncommitted Phase 26C archival tracker service/test/docs changes; verify with `git status`
+
+The Incident Globe does not change warning scoring, alerts, replay outputs, species findings, drone observations, or source truth. Its next handoff is human-reviewed coordinate resolution, case-media rights review, and pre-2000 decade expansion. Target full working-version launch remains September 7, 2026.
 
 ## Major Completed Systems
 
@@ -42,6 +47,10 @@
 - Vic Hislop corpus and case-claim archive planning added locally: source and claim metadata model for books, catalogue records, interviews, profiles, Shark Show-era records, shark capture records, and disputed case claims. Hislop sources are treated as historically important but not automatically authoritative; claims require corroboration, conflict tracking, controversy flags, and confidence scoring.
 - Phase 26B AI1SAD Shark-Human Incident Registry Schema implemented locally: internal Pydantic-style service models for reviewed case records, source links, official/public species status, internal species hypotheses, species/size claims, retaliation-risk species-disclosure guardrails, behavioral hypotheses, source conflicts, public-safe output, and explicit no-side-effect reporting. No public registry endpoint, ingestion endpoint, persistence workflow, warning/alert/scoring/replay/feed/drone behavior, Trove scraping, or copyrighted article download added.
 - Phase 26B follow-up first real-world registry seed case implemented locally: restricted Glenfield Beach / Mel Ismail 2026 source-linked registry data, with ABC News September 15 and September 18 reporting, 7NEWS, Geraldton Guardian, and news.com.au citations; species remains unconfirmed, surfboard/wetsuit DNA analysis is provenance-only, no internal species hypothesis is stored, behavior remains `unknown_insufficient_evidence`, and attempted predation/probe are provisional alternatives only.
+- Phase 26C Australian Archival Newspaper Source Tracker implemented locally: manual metadata-only archival source records, JSON/CSV CLI import into `data/imports/archival_news/`, citation and rights-state preservation, OCR uncertainty, duplicate/reprint/later-retelling tracking, source conflicts, source confidence, registry `SourceLink` conversion, public-safe output, article-body/raw-OCR rejection, and explicit no-side-effect reporting. No Trove API, scraping, bulk downloads, article-body storage, public endpoint, warning/alert/scoring/replay/feed/drone behavior, provider adapter, or frontend dependency added.
+- Local registry usability fix implemented: `AI1SAD_Registry.exe` opens a browser view generated from the real internal registry records, and successful archival imports open that view automatically. The viewer reads Mongo archival-source counts when configured but does not persist registry cases, expose an API route, or change model outputs.
+- Backend dependency security floor updated locally: `fastapi>=0.133,<1.0` and `starlette>=1.3.1,<2.0` prevent fresh installs from resolving into the reported Starlette request-validation, denial-of-service, path-handling, and SSRF advisory ranges. The validated environment resolves `fastapi 0.141.1` and `starlette 1.7.0`; no application behavior, scoring, replay, provider, MongoDB, or frontend dependency changed.
+- Sharks Happen source intake added locally: `864` substantive rows from Hal's supplied workbook are preserved as independent internal source claims, with `162` exact duplicate candidates, `435` likely candidates, `267` unmatched rows, and `8` rows involved in possible within-workbook repeats. All `864` records were upserted to `sharks_happen_sources`; the import summary was written to `sharks_happen_import_reports`. No rows were merged, rejected as false, promoted to registry incidents, exposed publicly, or used for warnings, alerts, scoring, replay, feeds, providers, or drone observations.
 - GitHub wiki initialized and structured separately from the main application repo
 
 ## Active Safety Rules
@@ -70,7 +79,8 @@
 - GSAF rows remain staging-only upstream records; Phase 26B adds source-link schema foundations but no reviewed promotion workflow, public incident release path, or automatic public species confirmation.
 - Official/public species status is separate from internal species hypotheses. Public-safe registry output suppresses speculative species attribution by default and whenever species-disclosure risk is moderate or high.
 - Glenfield Beach 2026 registry seed data awaits any future official fisheries/DPIRD species or size determination. The September 18 ABC update still described DNA analysis from the damaged board and wetsuit as underway, so until reviewed evidence supports an update, the case stays unconfirmed with no internal species hypothesis and named-victim citation metadata suppressed from public-safe output.
-- Archival newspaper and Vic Hislop source lanes remain planning-only; local/manual metadata capture, copyright/rights caution, OCR uncertainty, source confidence, and behavioral-hypothesis review workflows still require future phases before production registry use.
+- Archival newspaper source tracking is implemented locally as a metadata-only Phase 26C service foundation. Persistence, public endpoints, source connectors, OCR processing, article downloads, automated case promotion, and production reviewer workflows remain future work.
+- Vic Hislop source lanes remain planning-only; local/manual metadata capture, controversy/corroboration review, source confidence, and behavioral-hypothesis review workflows still require a future phase before production registry use.
 - Hawaii cohort expansion (10-20 strict timeline-separated cases) not yet complete
 - WA carcass replay exposes the need for tide/current drift support before down-current corridor recommendations can become data-backed
 - Greater Recife replay exposes missing Pernambuco regional-pack, reef-barrier, tide/current, turbidity, human-exposure, and monitoring-program ingestion support
@@ -80,8 +90,8 @@
 
 ## Next Planned Phase
 
-- Phase 26C: Australian Archival Newspaper Source Tracker
-- Planned follow-on: Phase 26D Vic Hislop Corpus and Case-Claim Archive
+- Phase 26D: Vic Hislop Corpus and Case-Claim Archive
+- Planned follow-on: production persistence/public-release workflow review after source-lane foundations stabilize
 - Planning details: see [NEXT_PHASE.md](NEXT_PHASE.md)
 
 ## Local Startup Instructions
@@ -137,6 +147,15 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Local environment note: `pydantic-core` was corrected to `2.46.4` to match installed `pydantic 2.13.4` before backend validation
 
 ## Validation Counts (Latest Dependency Security Maintenance)
+
+- Starlette security floor: `starlette>=1.3.1,<2.0`; compatible FastAPI floor: `fastapi>=0.133,<1.0`
+- Active environment: `fastapi 0.141.1`, `starlette 1.7.0`; `325 passed, 3 warnings`
+- Minimum supported pair: `fastapi 0.133.0`, `starlette 1.3.1`; `325 passed, 4 warnings`
+- Clean resolver dry run: passed; selected `fastapi 0.141.1` and `starlette 1.7.0`
+- Targeted requirements audit: no Starlette advisory; unrelated `pytest 8.4.2` advisory remains for a separate pytest 9 compatibility review
+- No backend route, scoring, replay, provider, MongoDB schema, frontend dependency, or public/private data boundary changed
+
+Previous Vite security maintenance:
 
 - GitHub Dependabot open alerts reviewed: `2` Vite alerts (`1 high`, `1 medium`)
 - Patched package: `vite 7.3.3` -> `7.3.5`
@@ -321,6 +340,35 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 - Local environment note: corrected `pydantic-core` from `2.49.0` to `2.46.5` in `F:\Python310` to match installed `pydantic 2.13.5` before validation.
 - Current implementation: one restricted source-linked real-world registry seed case for Glenfield Beach / Mel Ismail 2026; September 18 ABC reporting still leaves DNA species analysis unresolved, with no official species identification, no internal species hypothesis, no selected predatory primary behavior, no mistaken-identity default, no shark-intent claim, no warning, alert, public-feed, replay, scoring, drone-observation, provider-adapter, fixture-date, frontend-dependency, or public speculative species-attribution changes.
 
+## Validation Counts (Latest Phase 26C Local Run)
+
+- Focused archival tracker tests: `12 passed`
+- Focused incident registry and local viewer tests: `17 passed`
+- Full backend tests: `325 passed, 3 warnings`
+- Frontend tests/build: `30 passed`; production build passed
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `56` checked, passed
+- Secret scan on changed files: no credential patterns matched
+- Prohibited-language scan on changed files: guardrail/disclaimer matches only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Current implementation: local/manual metadata-only Australian archival source tracker, JSON/CSV CLI import into ignored local staging/report files, Windows `.bat`/`.exe` launchers with secure Mongo credential prompting, opt-in internal Mongo persistence for accepted records and sanitized reports, registry source-link conversion, public-safe output, duplicate/reprint/conflict metadata, article-body/raw-OCR rejection, and no Trove API, scraping, bulk download, warning, alert, public-feed, replay, scoring, drone-observation, provider-adapter, fixture-date, frontend-dependency, public endpoint, or copyrighted article redistribution changes.
+
+## Validation Counts (Sharks Happen Source Addition)
+
+- Supplied workbook records imported: `864`
+- Cross-source duplicate comparison: `162` exact candidates, `435` likely candidates, `267` unmatched
+- Possible within-workbook repeat rows: `8`
+- MongoDB persistence: `864` records upserted to `sharks_happen_sources`; `1` report inserted into `sharks_happen_import_reports`
+- Focused source/registry/archival/viewer tests: `34 passed`
+- Full backend tests: `330 passed, 2 warnings`
+- MkDocs build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `59` checked, `0` missing
+- Secret scan: no credential patterns matched
+- Prohibited-language scan: guardrail/disclaimer statements only
+- Git whitespace check: passed with CRLF normalization warnings only
+- Target full working-version launch date: September 7, 2026
+- No warning, alert, scoring, replay, public-feed, provider, drone, frontend dependency, or public registry behavior changed. No source rows were automatically merged or promoted.
+
 ## Validation Counts (Latest Coogee Media Evidence Update)
 
 - Focused replay tests: pending
@@ -333,15 +381,18 @@ Note: FretTrack may occupy `5173`; AI1SAD runs on `5174`.
 
 ## Current Review Item
 
-- Glenfield Beach / Mel Ismail first real-world AI1SAD registry seed case awaiting review.
-- Adds `app/services/incident_registry_cases.py` with the restricted source-linked case payload and registry materialization helper.
-- Updates `tests/test_incident_registry.py` with focused assertions for unconfirmed species, no internal species hypothesis, provisional competing behavior hypotheses, no mistaken-identity default, source provenance, privacy-bounded public output, and no scoring/alert side effects.
-- Updates README, current data sources, schema docs, incident-registry docs, project status, and next-phase handoff.
-- This follow-up does not add public registry endpoints, public ingestion endpoints, database persistence, scoring changes, replay artifact changes, provider adapter changes, frontend dependency changes, warning/alert/feed/drone side effects, Trove scraping, Trove API use, species inference, raw source publication, or copyrighted article-body downloads.
-- Review gate: do not stage or commit until reviewed; do not begin Phase 26C implementation.
+- Phase 26C Australian Archival Newspaper Source Tracker awaiting review.
+- Adds `app/services/archival_news_tracker.py` with local/manual metadata-only archival records, JSON/CSV CLI import, staging/report writers, opt-in internal Mongo persistence, rights/OCR/source confidence state, duplicate/reprint/conflict metadata, source-link conversion, public-safe output, and no-side-effect helpers.
+- Adds `run_archival_news_import.bat`, `run_archival_news_import.ps1`, `run_archival_news_import.exe`, and `build_archival_news_import_exe.ps1` for a Windows local importer workflow with optional secure Mongo credential prompts.
+- Adds `app/services/incident_registry_viewer.py`, `AI1SAD_Registry.exe`, and `build_ai1sad_registry_exe.ps1` for a visible local-only registry view; a successful importer run opens it automatically unless `--no-viewer` is supplied.
+- Adds `tests/test_archival_news_tracker.py` with focused coverage for metadata preservation, JSON/CSV import, CLI exit status, Mongo persistence, article-body rejection, blocked scraping/API capture methods, public/private filtering, registry `SourceLink` integration, duplicate/reprint tracking, conflict summaries, and no scoring/replay/feed/drone side effects.
+- Updates README, current data sources, schema docs, incident-registry docs, Australian archival tracker docs, project status, and next-phase handoff.
+- This phase does not add public archival endpoints, public ingestion endpoints, scoring changes, replay artifact changes, provider adapter changes, frontend dependency changes, warning/alert/feed/drone side effects, Trove scraping, Trove API use, species inference, raw source publication, raw OCR storage, or copyrighted article-body downloads. Mongo persistence is internal, opt-in, and metadata/report-only.
+- Review gate: do not stage or commit until reviewed; do not begin Phase 26D implementation.
 
 ## Recent Important Commits
 
+- `6524cfb` Add Glenfield Beach registry seed case
 - `03eb198` Remove Ko-fi funding link
 - `402cdfd` Add shark-human incident registry schema
 - `6a20a49` Anchor biological event freshness to replay time

@@ -18,10 +18,12 @@ Current development checkpoint:
 
 - Latest completed phase: Phase 26B, AI1SAD Shark-Human Incident Registry Schema
 - Latest completed maintenance: Phase 26A follow-up backend freshness stabilization
-- Current implementation: Phase 26B follow-up, first restricted real-world AI1SAD shark-human incident registry seed case
-- Next planned phase: Phase 26C, Australian Archival Newspaper Source Tracker
+- Current implementation: 2000-2026 Incident Globe built on the Phase 26C source foundation
+- Next planned phase: Phase 26D, Vic Hislop Corpus and Case-Claim Archive
 - Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
+- Incident Globe: <http://localhost:5174/incident-globe>
+- Production domain preparation: `ai1sad.org` frontend, `api.ai1sad.org` API, and `docs.ai1sad.org` documentation
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
 
@@ -32,6 +34,7 @@ See:
 - [Project Status](docs/PROJECT_STATUS.md)
 - [Next Phase](docs/NEXT_PHASE.md)
 - [Local Visual QA](docs/LOCAL_VISUAL_QA.md)
+- [AI1SAD.org Deployment](docs/CLOUDFLARE_DEPLOY.md)
 
 ## Visual Preview
 
@@ -58,7 +61,7 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 ## What Is Included
 
 - FastAPI backend with public API routes and privacy filtering
-- MongoDB collection/index definitions for incidents, signals, alerts, replay, regional packs, and drone observation intake
+- MongoDB collection/index definitions for incidents, signals, alerts, replay, regional packs, drone observation intake, internal archival-source metadata, and the private Sharks Happen source lane
 - React/Vite frontend dashboard for the local AI1SAD demo
 - MkDocs documentation portal with branded theme and case-study pages
 - Replay library with timeline-separated historical and demo scenarios
@@ -73,7 +76,10 @@ Additional replay artifacts live in [docs/assets/case_studies](docs/assets/case_
 - UAV Operator Feedback Intake collects real-world workflow notes from drone operators, lifeguards, researchers, and coastal teams. Feedback is treated as research input only; it does not create sightings, warnings, or public alerts.
 - GSAF local import and delta tracking reads manually downloaded `.csv`, `.xlsx`, or `.xls` files into internal staging JSON, preserves source provenance, computes row fingerprints, and reports new, changed, unchanged, duplicate, malformed, and possibly removed upstream rows. Imported rows do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
 - Internal Shark-Human Incident Registry schema links reviewed AI1SAD case records to GSAF staging rows, future archival newspaper metadata, future Vic Hislop corpus claims, source conflicts, official species status, internal species hypotheses, retaliation-risk species-disclosure guardrails, behavioral hypotheses, confidence labels, public summaries, and private analyst notes. It now includes the first restricted real-world seed case for the September 14, 2026 Glenfield Beach incident involving Mel Ismail, preserving source links while keeping species unconfirmed, storing no internal species hypothesis, and avoiding shark-intent claims. Registry records do not create warnings, alerts, replay facts, drone observations, public feed entries, or scoring changes.
-- AI1SAD is planning an Australian archival source tracker for historical newspaper evidence and a Vic Hislop corpus archive for shark-attack case claims, interviews, writings, and museum-era records. These sources will support provenance and behavioral hypothesis review, not automatic shark-intent conclusions.
+- Australian Archival News Tracker captures local/manual metadata for historical newspaper and public-record evidence, preserving citations, rights state, OCR uncertainty, duplicate/reprint context, source conflicts, source confidence, and registry source-link metadata. It includes a local JSON/CSV CLI importer that writes metadata-only staging/report JSON under `data/imports/archival_news/` and can optionally persist accepted records to internal MongoDB collections with `--mongo`. It does not scrape Trove, use the Trove API, bulk-download article bodies, store full article text, expose public archival endpoints, create warnings or alerts, alter scoring, change replay artifacts, create public feed entries, or create drone observations.
+- Sharks Happen source intake preserves Hal's supplied `Sharks Happen Stats.xlsx` rows as attributed, internal source claims. The importer writes a private staging artifact and duplicate-review CSV, compares rows with the existing 40,309-row normalized incident database, and can upsert the source records into separate MongoDB collections. Candidate matches are not automatically merged, promoted, published, or treated as confirmed facts.
+- Incident Globe provides a professional 3D explorer for 3,398 deduplicated incidents from 2000 through 2026, with decade, Provoked/Unprovoked, and four bounded outcome filters. It plots 1,915 records with supported coordinates and retains 1,483 unresolved records without inventing locations. Clickable infographics show scrubbed incident fields and all available source attribution. It does not change warning scoring, alerts, replay outputs, species findings, or source claims. See [Incident Globe](docs/INCIDENT_GLOBE.md).
+- AI1SAD is planning a Vic Hislop corpus archive for shark-attack case claims, interviews, writings, and museum-era records. These sources will support provenance and behavioral hypothesis review, not automatic shark-intent conclusions.
 - Read-only MAVLink telemetry bridge for local fixture replay into existing telemetry endpoints
 - One-click Windows local demo launcher and stop scripts
 
@@ -133,6 +139,7 @@ mkdocs serve --dev-addr 0.0.0.0:8001
 ## Core API Areas
 
 - `/api/v1/incidents`
+- `/api/v1/incidents-globe`
 - `/api/v1/stats/yearly`
 - `/api/v1/stats/by-country`
 - `/api/v1/stats/by-region`
@@ -166,7 +173,51 @@ F:\Python310\python.exe -m app.services.gsaf_importer --input data/imports/gsaf/
 
 Raw GSAF spreadsheets and generated staging/report artifacts stay local under `data/imports/gsaf/` and must not be committed unless rights are explicitly approved.
 
-The Phase 26B incident registry is an internal service/schema foundation, not a public ingestion route. The Glenfield Beach seed case is internal/restricted registry data and does not create an alert, warning, public-feed observation, replay artifact, or API endpoint. Future public registry endpoints require a separate reviewed phase.
+The Phase 26B incident registry is an internal service/schema foundation, not a public ingestion route. The Glenfield Beach seed case is internal/restricted registry data and does not create an alert, warning, public-feed observation, replay artifact, or API endpoint.
+
+Open the local internal registry viewer by double-clicking `AI1SAD_Registry.exe` or running:
+
+```powershell
+.\AI1SAD_Registry.exe
+```
+
+The viewer renders the real registry cases, evidence notes, source links, species status, behavioral uncertainty, and Mongo archival-source counts in the browser. It reads local repository records and configured MongoDB metadata; it does not publish a registry endpoint. Rebuild the launcher with `powershell -NoProfile -ExecutionPolicy Bypass -File .\build_ai1sad_registry_exe.ps1`.
+
+The Phase 26C archival news tracker is also an internal local/manual service foundation, not a public ingestion route or source connector. It includes Windows launchers:
+
+```powershell
+.\run_archival_news_import.exe --prompt-mongo
+```
+
+The launcher prompts for MongoDB Atlas host, database username, and password when credentials are not already available through `.env` or environment variables. It builds `MONGODB_URI` in memory for that run only and does not write the password to disk.
+
+It can also import manually prepared `.json` or `.csv` metadata into local staging/report files:
+
+```powershell
+F:\Python310\python.exe -m app.services.archival_news_tracker --input data/imports/archival_news/raw/example_archival_sources.json
+```
+
+With MongoDB configured, accepted metadata records and sanitized import reports can also be persisted internally:
+
+```powershell
+F:\Python310\python.exe -m app.services.archival_news_tracker --input data/imports/archival_news/raw/example_archival_sources.json --mongo
+```
+
+The importer executable is a small wrapper around `run_archival_news_import.bat`, which delegates to `run_archival_news_import.ps1`; the batch wrapper keeps the console open after double-click runs so errors and reports remain visible. After a successful import it opens the local registry viewer. Pass `--no-viewer` for command-line or automated imports that should not open a browser. Rebuild it with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build_archival_news_import_exe.ps1
+```
+
+Raw archival metadata and generated staging/report artifacts stay local under `data/imports/archival_news/` and must not be committed unless rights are explicitly approved. The tracker does not scrape Trove, use the Trove API, download article bodies, or create public API endpoints. Future public registry or archival endpoints require a separate reviewed phase.
+
+Import the private Sharks Happen workbook, compare duplicate candidates, and persist it to configured MongoDB with:
+
+```powershell
+F:\Python310\python.exe -m app.services.sharks_happen_importer --input "data/imports/sharks_happen/raw/Sharks Happen Stats.xlsx" --mongo
+```
+
+The duplicate review queue is written to `data/imports/sharks_happen/reports/latest_duplicate_review.csv`. Raw workbooks, staging JSON, reports, victim names, and source-specific claims remain ignored local data. See [Sharks Happen Source Intake](docs/SHARKS_HAPPEN_SOURCE.md).
 
 ## Replay Library
 
@@ -289,16 +340,20 @@ Operational recommendations require human review. Scores support interpretation 
 
 Latest validation is recorded in [Project Status](docs/PROJECT_STATUS.md).
 
-Glenfield registry-data local validation:
+Phase 26C local validation:
 
-- Focused incident registry tests: `15 passed`
-- Full backend tests: `311 passed, 4 warnings`
-- Registry behavior: internal schema/service helpers plus one restricted real-world seed case only; no public ingestion route, warning/alert/scoring/replay/feed/drone side effects, provider adapter changes, fixture changes, public speculative species attribution, or shark-intent claim.
+- Focused archival tracker tests: `12 passed`
+- Focused incident registry and local viewer tests: `17 passed`
+- Full backend tests: `325 passed, 3 warnings`
+- Frontend tests/build: `30 passed`; production build passed
+- Tracker behavior: internal local/manual metadata helpers with optional Mongo persistence and Windows `.bat`/`.exe` launchers only; no public ingestion route, public archival endpoint, source scraping, Trove API use, article-body download, raw OCR storage, warning/alert/scoring/replay/feed/drone side effects, provider adapter changes, fixture changes, public speculative species attribution, or shark-intent claim.
 - MkDocs build: passed with the known Material advisory banner
-- README local links/images check: `58` checked, passed
+- README local links/images check: `56` checked, passed
 - Secret scan: no credential patterns matched
-- Prohibited-language scan: guardrail/source-title/disclaimer matches only
+- Prohibited-language scan: guardrail/disclaimer matches only
 - Git whitespace check: passed with CRLF normalization warnings only
+
+Sharks Happen source intake validation is recorded in [Project Status](docs/PROJECT_STATUS.md). The current real import contains `864` source rows and produced `162` exact duplicate candidates, `435` likely candidates, `267` unmatched rows, and `8` rows participating in possible within-workbook repeats; no automatic merges or registry promotions occurred.
 
 ## Documentation Map
 
@@ -310,6 +365,7 @@ Glenfield registry-data local validation:
 - [Data Quality](docs/DATA_QUALITY.md)
 - [Current Data Sources](docs/CURRENT_DATA_SOURCES.md)
 - [GSAF Import And Delta Tracking](docs/GSAF_IMPORT_AND_DELTA_TRACKING.md)
+- [Sharks Happen Source Intake](docs/SHARKS_HAPPEN_SOURCE.md)
 - [Shark-Human Incident Registry](docs/SHARK_HUMAN_INCIDENT_REGISTRY.md)
 - [Australian Archival News Tracker](docs/AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md)
 - [Vic Hislop Corpus Archive](docs/VIC_HISLOP_CORPUS_ARCHIVE.md)

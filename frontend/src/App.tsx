@@ -1,5 +1,5 @@
-import { Activity, AlertTriangle, BookOpen, Boxes, ClipboardList, ExternalLink, HeartPulse, Map, MessageSquare, Plane, RotateCcw } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Activity, AlertTriangle, BookOpen, Boxes, ClipboardList, ExternalLink, Globe2, HeartPulse, Map, MessageSquare, Plane, RotateCcw } from "lucide-react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 
 import { getDashboardData } from "./api/client";
 import { scenarioCoordinates } from "./api/mockData";
@@ -8,8 +8,12 @@ import { DroneOperatorConsole } from "./components/DroneOperatorConsole";
 import { UavFeedbackPage } from "./components/UavFeedbackPage";
 import type { DashboardData, DominantFactor, ExplanationResponse, ProviderHealth, ReplayLibraryItem } from "./types";
 
+const IncidentGlobePage = lazy(() => import("./components/IncidentGlobePage"));
+const DOCS_URL = import.meta.env.VITE_AI1SAD_DOCS_URL ?? "http://localhost:8001";
+
 const pages = [
   { id: "map", label: "Live Map", icon: Map, path: "/" },
+  { id: "incidentGlobe", label: "Incident Globe", icon: Globe2, path: "/incident-globe" },
   { id: "surveillance", label: "Surveillance", icon: Plane, path: "/surveillance" },
   { id: "droneConsole", label: "Drone Console", icon: ClipboardList, path: "/drone-console" },
   { id: "uavFeedback", label: "UAV Feedback", icon: MessageSquare, path: "/uav-feedback" },
@@ -41,6 +45,11 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (activePage === "incidentGlobe") {
+      setLoading(false);
+      setError(null);
+      return;
+    }
     let cancelled = false;
     const scenario = scenarioCoordinates[selectedScenarioId] ?? scenarioCoordinates.horseshoe_reef_2026;
     setLoading(true);
@@ -60,7 +69,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [selectedScenarioId]);
+  }, [activePage, selectedScenarioId]);
 
   const page = useMemo(() => pages.find((item) => item.id === activePage) ?? pages[0], [activePage]);
 
@@ -72,7 +81,7 @@ export default function App() {
   };
 
   return (
-    <main className="shell">
+    <main className={`shell ${activePage === "incidentGlobe" ? "globe-shell" : ""}`}>
       <aside className="sidebar">
         <div className="brand">
           <img src="/brand/ai1sad-emblem.png" alt="AI1SAD emblem" className="brand-mark" />
@@ -91,14 +100,14 @@ export default function App() {
               </button>
             );
           })}
-          <a href="http://localhost:8001" target="_blank" rel="noreferrer">
+          <a href={DOCS_URL} target="_blank" rel="noreferrer">
             <ExternalLink size={18} aria-hidden="true" />
             <span>Docs</span>
           </a>
         </nav>
       </aside>
 
-      <section className="workspace">
+      <section className={`workspace ${activePage === "incidentGlobe" ? "globe-workspace" : ""}`}>
         {data?.demoStatus.demo_mode ? <DemoBanner /> : null}
         <header className="topbar">
           <div className="topbar-title">
@@ -110,12 +119,14 @@ export default function App() {
           </div>
           <div className="status-pill">
             <Activity size={16} aria-hidden="true" />
-            {data?.data_source === "mock" ? "Mock demo data source" : "Live backend data source"}
+            {activePage === "incidentGlobe" ? "Local AI1SAD incident database" : data?.data_source === "mock" ? "Mock demo data source" : "Live backend data source"}
           </div>
         </header>
-        <BrandHero />
+        {activePage !== "incidentGlobe" ? <BrandHero /> : null}
 
-        {activePage === "droneConsole" ? (
+        {activePage === "incidentGlobe" ? (
+          <Suspense fallback={<LoadingPanel />}><IncidentGlobePage /></Suspense>
+        ) : activePage === "droneConsole" ? (
           <DroneOperatorConsole />
         ) : activePage === "uavFeedback" ? (
           <UavFeedbackPage />

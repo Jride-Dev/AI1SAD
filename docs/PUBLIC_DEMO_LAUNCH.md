@@ -57,6 +57,7 @@ Frontend demo deployment:
 VITE_AI1SAD_DEMO_MODE=true
 VITE_AI1SAD_USE_MOCKS=false
 VITE_AI1SAD_API_BASE_URL=https://<demo-backend>
+VITE_AI1SAD_DOCS_URL=https://docs.ai1sad.org
 ```
 
 For a standalone frontend demo without a backend, keep mock mode enabled:
@@ -129,3 +130,5 @@ Manual checklist:
 ## Safety Boundary
 
 The public demo is an operational intelligence demonstration. It is not an individual attack prediction system, beach closure authority, shark-intent inference system, or substitute for local lifeguards, emergency services, wildlife agencies, marine agencies, weather offices, or beach managers.
+
+For the registered production domain and exact hosting settings, see [AI1SAD.org Deployment](CLOUDFLARE_DEPLOY.md).

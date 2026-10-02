@@ -6,6 +6,14 @@ from functools import lru_cache
 from pathlib import Path
 
 
+DEFAULT_CORS_ALLOWED_ORIGINS = (
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+)
+
+
 def load_env(path: Path = Path(".env")) -> None:
     if not path.exists():
         return
@@ -31,6 +39,14 @@ class Settings:
     media_attachments_storage_root: str = "./data/media_attachments"
     api_access_enabled: bool = False
     api_free_rate_limit_per_minute: int = 60
+    cors_allowed_origins: tuple[str, ...] = DEFAULT_CORS_ALLOWED_ORIGINS
+
+
+def comma_separated_origins(value: str | None) -> tuple[str, ...]:
+    if value is None:
+        return DEFAULT_CORS_ALLOWED_ORIGINS
+    origins = tuple(dict.fromkeys(item.strip().rstrip("/") for item in value.split(",") if item.strip()))
+    return origins or DEFAULT_CORS_ALLOWED_ORIGINS
 
 
 @lru_cache
@@ -50,4 +66,5 @@ def get_settings() -> Settings:
         media_attachments_storage_root=os.getenv("MEDIA_ATTACHMENTS_STORAGE_ROOT", "./data/media_attachments"),
         api_access_enabled=os.getenv("API_ACCESS_ENABLED", "false").lower() == "true",
         api_free_rate_limit_per_minute=int(os.getenv("API_FREE_RATE_LIMIT_PER_MINUTE", "60")),
+        cors_allowed_origins=comma_separated_origins(os.getenv("CORS_ALLOWED_ORIGINS")),
     )

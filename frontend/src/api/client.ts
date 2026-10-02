@@ -14,6 +14,7 @@ import type {
   DroneObservationPayload,
   DroneSurveillanceFeed,
   ExplanationResponse,
+  IncidentGlobeData,
   ProviderHealth,
   RegionalPack,
   ReplayLibraryItem,
@@ -84,6 +85,18 @@ function query(params: Record<string, string | number | undefined>): string {
     }
   });
   return search.toString();
+}
+
+export async function getIncidentGlobe(): Promise<IncidentGlobeData> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/incidents-globe`);
+  if (!response.ok) {
+    throw new Error(`Incident globe data unavailable (${response.status}). Build the globe dataset and start the backend.`);
+  }
+  const payload: unknown = await response.json();
+  if (!payload || typeof payload !== "object" || !Array.isArray((payload as { records?: unknown }).records)) {
+    throw new Error("Incident globe API returned malformed data.");
+  }
+  return payload as IncidentGlobeData;
 }
 
 export async function getWarning(coords: Coordinates): Promise<WarningResponse> {
