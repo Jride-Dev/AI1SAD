@@ -6,7 +6,7 @@ AI1SAD uses three independently deployable surfaces:
 
 | Host | Service | Purpose |
 | --- | --- | --- |
-| `https://ai1sad.org` | Cloudflare Pages project `ai1sad` | React dashboard and Incident Globe |
+| `https://ai1sad.org` | Cloudflare Worker `ai1sad` with Static Assets | React dashboard and Incident Globe |
 | `https://www.ai1sad.org` | Cloudflare redirect | Redirects to the apex domain |
 | `https://api.ai1sad.org` | Railway FastAPI service | Read-only public API backed by MongoDB Atlas |
 | `https://docs.ai1sad.org` | Cloudflare Pages project `ai1sad-docs` | MkDocs documentation portal |
@@ -19,17 +19,17 @@ The production branch must contain the reviewed globe, deployment configuration,
 
 The configured MongoDB database currently contains `40,309` normalized incident documents and `3,398` Incident Globe projection documents. Keep the connection string in Railway variables only.
 
-## Frontend Pages Project
+## Frontend Workers Static Assets Project
 
-Create a Cloudflare Pages project from `Jride-Dev/AI1SAD` with:
+Create a Cloudflare Workers application by importing `Jride-Dev/AI1SAD` with:
 
 ```text
 Project name: ai1sad
 Production branch: main
-Framework preset: React (Vite)
 Root directory: frontend
 Build command: npm run build
-Build output directory: dist
+Deploy command: npm run deploy
+Preview command: npx wrangler preview
 ```
 
 Set these production build variables:
@@ -41,9 +41,9 @@ VITE_AI1SAD_API_BASE_URL=https://api.ai1sad.org
 VITE_AI1SAD_DOCS_URL=https://docs.ai1sad.org
 ```
 
-The committed `frontend/public/_redirects` file provides SPA route fallback, including direct visits to `/incident-globe`. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache.
+The committed `frontend/wrangler.jsonc` names the Worker `ai1sad`, deploys `frontend/dist`, and enables Cloudflare's `single-page-application` fallback for direct visits to `/incident-globe`. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache. `_redirects` remains compatible with Cloudflare static assets.
 
-After the first successful Pages build, attach `ai1sad.org` and `www.ai1sad.org` under the project's Custom domains panel. The apex domain must be a zone in the same Cloudflare account. Configure a Cloudflare Redirect Rule from `www.ai1sad.org/*` to `https://ai1sad.org/${1}` with a permanent redirect after both hostnames are active.
+After the first successful Worker deployment, attach `ai1sad.org` and `www.ai1sad.org` under the Worker's Custom domains panel. Configure a Cloudflare Redirect Rule from `www.ai1sad.org/*` to `https://ai1sad.org/${1}` with a permanent redirect after both hostnames are active.
 
 ## Backend Railway Service
 
@@ -69,7 +69,7 @@ CORS_ALLOWED_ORIGINS=https://ai1sad.org,https://www.ai1sad.org
 SHARK_ATTACK_API_TITLE=AI1SAD Shark Attack Data API
 ```
 
-Do not put `MONGODB_URI` in Cloudflare Pages variables because the browser application does not need database access.
+Do not put `MONGODB_URI` in Cloudflare build variables because the browser application does not need database access.
 
 In Railway Public Networking, add `api.ai1sad.org` as a custom domain. Railway supplies a CNAME target and a TXT verification record. Add both records exactly as Railway provides them in Cloudflare DNS. Keep the CNAME DNS-only while Railway verifies ownership and issues its certificate; any later Cloudflare proxy change requires a separate API cache and security review.
 
@@ -97,7 +97,7 @@ Use these bounded production defaults:
 - Minimum TLS version: 1.2 or newer.
 - Automatic HTTPS Rewrites: enabled.
 - Browser Integrity Check: enabled.
-- Cache HTML using Pages defaults; do not cache `api.ai1sad.org` responses without endpoint-specific review.
+- Cache HTML using Workers Static Assets defaults; do not cache `api.ai1sad.org` responses without endpoint-specific review.
 - Keep Cloudflare Access off the public frontend and docs. Private analyst tools remain local and are not deployed.
 
 Web Analytics is optional. If enabled later, document its privacy behavior before activation; the current build adds no analytics, advertising pixels, cookies, or user tracking.
@@ -124,7 +124,7 @@ Confirm that an Origin request from `https://ai1sad.org` receives an appropriate
 
 ## Rollback
 
-- Cloudflare Pages can roll the frontend or docs back to a prior successful deployment.
+- Cloudflare Workers can roll the frontend back to a prior successful deployment; Cloudflare Pages can roll the docs back.
 - Railway can roll the API back to a prior successful deployment while retaining the same MongoDB service variables.
 - DNS changes should be reverted only to the last verified target; do not delete the MongoDB data or source collections as part of a frontend rollback.
 
@@ -143,7 +143,7 @@ Validation completed October 2, 2026:
 - Backend: `336 passed`, with two existing FastAPI startup-event deprecation warnings.
 - Production CORS: `https://ai1sad.org` allowed; an unrelated test origin denied.
 - Frontend tests: `30 passed`.
-- Frontend production build: passed; Cloudflare `_headers`, `_redirects`, and globe texture copied into `dist`.
+- Frontend production build: passed; Cloudflare `_headers`, `_redirects`, and globe texture copied into `dist`. Workers Static Assets configuration is provided by `frontend/wrangler.jsonc`.
 - MkDocs strict build: passed.
 - `railway.json` and `sitemap.xml`: parsed successfully.
 - Frontend audit: seven existing development/build-chain advisories remain (`1` low, `3` moderate, `3` high); no broad dependency update was performed in this deployment-preparation change.

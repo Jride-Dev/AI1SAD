@@ -9,7 +9,7 @@ Phase 13 prepares AI1SAD for a controlled public demo deployment. It does not ad
 - Railway-style start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Frontend: React + Vite shell under `frontend/`
 - Documentation: MkDocs Material portal under `docs/`
-- Production domain plan: Cloudflare Pages at `ai1sad.org`, Railway API at `api.ai1sad.org`, and Cloudflare Pages docs at `docs.ai1sad.org`
+- Production domain plan: Cloudflare Workers Static Assets at `ai1sad.org`, Railway API at `api.ai1sad.org`, and Cloudflare Pages docs at `docs.ai1sad.org`
 
 `docs/assets/railway_config.json` documents the Railway deployment command currently used for the backend service.
 
