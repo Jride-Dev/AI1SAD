@@ -41,7 +41,7 @@ VITE_AI1SAD_API_BASE_URL=https://api.ai1sad.org
 VITE_AI1SAD_DOCS_URL=https://docs.ai1sad.org
 ```
 
-The committed `frontend/wrangler.jsonc` names the Worker `ai1sad`, deploys `frontend/dist`, and enables Cloudflare's `single-page-application` fallback for direct visits to `/incident-globe`. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache. `_redirects` remains compatible with Cloudflare static assets.
+The committed `frontend/wrangler.jsonc` names the Worker `ai1sad`, deploys `frontend/dist`, and enables Cloudflare's `single-page-application` fallback for direct visits to `/incident-globe`. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache. Do not add a Pages-style `_redirects` SPA rule: Workers Static Assets rejects it as an infinite loop when `not_found_handling` already provides the fallback.
 
 After the first successful Worker deployment, attach `ai1sad.org` and `www.ai1sad.org` under the Worker's Custom domains panel. Configure a Cloudflare Redirect Rule from `www.ai1sad.org/*` to `https://ai1sad.org/${1}` with a permanent redirect after both hostnames are active.
 
@@ -143,7 +143,7 @@ Validation completed October 2, 2026:
 - Backend: `336 passed`, with two existing FastAPI startup-event deprecation warnings.
 - Production CORS: `https://ai1sad.org` allowed; an unrelated test origin denied.
 - Frontend tests: `30 passed`.
-- Frontend production build: passed; Cloudflare `_headers`, `_redirects`, and globe texture copied into `dist`. Workers Static Assets configuration is provided by `frontend/wrangler.jsonc`.
+- Frontend production build: passed; Cloudflare `_headers` and globe texture copied into `dist`. Workers Static Assets configuration and SPA fallback are provided by `frontend/wrangler.jsonc`; the redundant `_redirects` rule was removed after Cloudflare correctly rejected it as an infinite loop.
 - MkDocs strict build: passed.
 - `railway.json` and `sitemap.xml`: parsed successfully.
 - Frontend audit: seven existing development/build-chain advisories remain (`1` low, `3` moderate, `3` high); no broad dependency update was performed in this deployment-preparation change.
