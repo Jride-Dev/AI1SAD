@@ -15,6 +15,7 @@ SPECIES_UNCONFIRMED_PUBLIC_NOTE = (
 
 SOURCE_TYPES = {
     "gsaf_row",
+    "sharks_happen_spreadsheet",
     "isaf_reference",
     "archival_newspaper",
     "trove_metadata",

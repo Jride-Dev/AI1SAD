@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from app.api_v1 import router
-from app.config import get_settings
+from app.config import DEFAULT_CORS_ALLOWED_ORIGINS, comma_separated_origins, get_settings
 from app.main import app as main_app
 from app.mongodb import get_database
 from tests.test_public_api_privacy import FakeDB
@@ -81,6 +81,21 @@ def test_admin_writes_disabled_in_demo_mode(monkeypatch):
     monkeypatch.setenv("ADMIN_EVENTS_ENABLED", "true")
     monkeypatch.setenv("ADMIN_SURVEILLANCE_ENABLED", "true")
     monkeypatch.setenv("ADMIN_ALERTS_ENABLED", "true")
+    get_settings.cache_clear()
+
+
+def test_cors_origins_default_to_local_frontend():
+    assert comma_separated_origins(None) == DEFAULT_CORS_ALLOWED_ORIGINS
+
+
+def test_cors_origins_accept_production_domains_without_duplicates(monkeypatch):
+    monkeypatch.setenv(
+        "CORS_ALLOWED_ORIGINS",
+        "https://ai1sad.org, https://www.ai1sad.org/,https://ai1sad.org",
+    )
+    get_settings.cache_clear()
+
+    assert get_settings().cors_allowed_origins == ("https://ai1sad.org", "https://www.ai1sad.org")
     get_settings.cache_clear()
     client, _db = make_api_client()
     manual = client.post("/api/v1/admin/events/manual", json={"event_type": "baitfish_presence", "lat": 25, "lon": -80})

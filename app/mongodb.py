@@ -67,6 +67,11 @@ COLLECTIONS = {
     "pack_features": "pack_features",
     "pack_replay_scenarios": "pack_replay_scenarios",
     "pack_species_profiles": "pack_species_profiles",
+    "archival_sources": "archival_sources",
+    "archival_import_reports": "archival_import_reports",
+    "sharks_happen_sources": "sharks_happen_sources",
+    "sharks_happen_import_reports": "sharks_happen_import_reports",
+    "incident_globe": "incident_globe",
 }
 
 
@@ -87,6 +92,35 @@ def public_match(extra: dict[str, Any] | None = None) -> dict[str, Any]:
     if extra:
         query.update(extra)
     return query
+
+
+def ensure_archival_tracker_indexes(db: Database) -> None:
+    db[COLLECTIONS["archival_sources"]].create_index([("archival_source_id", ASCENDING)], unique=True)
+    db[COLLECTIONS["archival_sources"]].create_index([("visibility", ASCENDING), ("review_status", ASCENDING)])
+    db[COLLECTIONS["archival_sources"]].create_index([("linked_ai1sad_case_id", ASCENDING)])
+    db[COLLECTIONS["archival_sources"]].create_index([("source_fingerprint", ASCENDING)])
+    db[COLLECTIONS["archival_sources"]].create_index([("duplicate_group_id", ASCENDING)])
+    db[COLLECTIONS["archival_sources"]].create_index([("last_imported_at", DESCENDING)])
+    db[COLLECTIONS["archival_import_reports"]].create_index([("imported_at", DESCENDING)])
+    db[COLLECTIONS["archival_import_reports"]].create_index([("source_name", ASCENDING), ("input_file", ASCENDING)])
+
+
+def ensure_sharks_happen_indexes(db: Database) -> None:
+    db[COLLECTIONS["sharks_happen_sources"]].create_index([("source_record_id", ASCENDING)], unique=True)
+    db[COLLECTIONS["sharks_happen_sources"]].create_index([("incident_date_normalized", ASCENDING)])
+    db[COLLECTIONS["sharks_happen_sources"]].create_index([("country_normalized", ASCENDING)])
+    db[COLLECTIONS["sharks_happen_sources"]].create_index([("duplicate_review.status", ASCENDING)])
+    db[COLLECTIONS["sharks_happen_sources"]].create_index([("last_imported_at", DESCENDING)])
+    db[COLLECTIONS["sharks_happen_import_reports"]].create_index([("imported_at", DESCENDING)])
+
+
+def ensure_incident_globe_indexes(db: Database) -> None:
+    collection = db[COLLECTIONS["incident_globe"]]
+    collection.create_index([("globe_id", ASCENDING)], unique=True)
+    collection.create_index([("year", DESCENDING), ("mapped", ASCENDING)])
+    collection.create_index([("decade", DESCENDING), ("provocation", ASCENDING)])
+    collection.create_index([("outcome_category", ASCENDING)])
+    collection.create_index([("coordinates", GEOSPHERE)], sparse=True)
 
 
 def ensure_mongodb_indexes(db: Database) -> None:
@@ -204,3 +238,6 @@ def ensure_mongodb_indexes(db: Database) -> None:
     db[COLLECTIONS["pack_features"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("feature_key", ASCENDING)])
     db[COLLECTIONS["pack_replay_scenarios"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("scenario_id", ASCENDING)])
     db[COLLECTIONS["pack_species_profiles"]].create_index([("visibility", ASCENDING), ("pack_id", ASCENDING), ("species", ASCENDING)])
+    ensure_archival_tracker_indexes(db)
+    ensure_sharks_happen_indexes(db)
+    ensure_incident_globe_indexes(db)

@@ -100,6 +100,7 @@ nav:
       - Hawaii Tide And Current: HAWAII_TIDE_CURRENT_PROVIDER.md
       - Hawaii Water Clarity: HAWAII_WATER_CLARITY_PROVIDER.md
       - GSAF Import And Delta Tracking: GSAF_IMPORT_AND_DELTA_TRACKING.md
+      - Sharks Happen Source Intake: SHARKS_HAPPEN_SOURCE.md
       - Drone Observation Ingestion: DRONE_OBSERVATION_INGESTION.md
       - Drone Data Contract: DRONE_DATA_CONTRACT.md
       - MAVLink Telemetry Bridge: MAVLINK_TELEMETRY_BRIDGE.md
@@ -107,8 +108,10 @@ nav:
       - MAVLink Safety Boundaries: MAVLINK_SAFETY_BOUNDARIES.md
 
   - Incident Registry & Source Provenance:
+      - Incident Globe: INCIDENT_GLOBE.md
       - Shark-Human Incident Registry: SHARK_HUMAN_INCIDENT_REGISTRY.md
       - GSAF Import And Delta Tracking: GSAF_IMPORT_AND_DELTA_TRACKING.md
+      - Sharks Happen Source Intake: SHARKS_HAPPEN_SOURCE.md
       - Australian Archival News Tracker: AUSTRALIAN_ARCHIVAL_NEWS_TRACKER.md
       - Vic Hislop Corpus Archive: VIC_HISLOP_CORPUS_ARCHIVE.md
 
@@ -156,10 +159,12 @@ nav:
       - Human Override: HUMAN_OVERRIDE.md
 
   - Frontend:
+      - Incident Globe: INCIDENT_GLOBE.md
       - Frontend Dashboard: FRONTEND_DASHBOARD.md
       - Local Visual QA: LOCAL_VISUAL_QA.md
 
   - Deployment:
+      - AI1SAD.org Cloudflare Deployment: CLOUDFLARE_DEPLOY.md
       - Public Demo Launch: PUBLIC_DEMO_LAUNCH.md
       - Railway Deploy: RAILWAY_DEPLOY.md
       - Demo Environment: DEMO_ENVIRONMENT.md

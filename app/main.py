@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api_v1 import router as api_v1_router
 from app.api_access import ApiAccessMiddleware
@@ -16,6 +17,13 @@ app = FastAPI(
     description="MongoDB Atlas API for public, privacy-preserving shark incident records.",
 )
 app.include_router(api_v1_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=list(settings.cors_allowed_origins),
+    allow_credentials=False,
+    allow_methods=["GET", "OPTIONS"],
+    allow_headers=["Accept", "Content-Type"],
+)
 if settings.api_access_enabled:
     app.add_middleware(ApiAccessMiddleware, default_rate_limit_per_minute=settings.api_free_rate_limit_per_minute)
 

@@ -1,6 +1,53 @@
 # Dependency Security Review
 
-Latest review date: 2026-06-21
+## 2026-10-02 Incident Globe Dependency Review
+
+Scope: the Incident Globe frontend adds `three@0.186.1` and development typings `@types/three@0.186.0`. Three.js renders the local globe and NASA Blue Marble texture in the browser. It receives no credentials and does not fetch arbitrary user-supplied URLs.
+
+Validation found no audit finding attributed to `three` or `@types/three`. `npm audit --audit-level=high` currently reports seven advisories in the existing frontend development/build dependency tree: one low, three moderate, and three high, involving Babel/build-browser metadata, Vitest mocking, Nano ID, PostCSS, and Browserslist paths. No broad dependency rewrite was applied as part of this feature, and the globe does not change the backend Starlette dependency. These findings require a separate bounded dependency-maintenance review.
+
+Runtime boundaries: the globe endpoint is read-only, its data is scrubbed, CORS is restricted to local frontend origins, and the feature does not accept remote texture URLs or user-authored executable content.
+
+Latest review date: 2026-09-29
+
+## 2026-09-29 Starlette Security Floor
+
+Scope: eight reported Starlette advisories covering request URL/host validation, HTTP endpoint method dispatch, Windows `StaticFiles` path handling and SSRF/NTLM risk, `FileResponse` range parsing, and form/multipart denial-of-service behavior.
+
+Repository classification before the patch:
+
+- The active `F:\Python310` environment already resolved `fastapi 0.141.1` and `starlette 1.7.0`, which are newer than the reported `starlette 1.3.1` remediation floor.
+- `requirements.txt` did not declare Starlette directly and allowed FastAPI as old as `0.111`. A fresh or older cached resolution therefore did not encode the required patched Starlette floor.
+- AI1SAD imports Starlette request/response and middleware primitives through `app/api_access.py`. No application route currently calls `request.form()` or mounts `StaticFiles`, but the transitive framework dependency remains part of the backend request boundary and must be reproducibly patched.
+
+Patch applied:
+
+```text
+fastapi>=0.133,<1.0
+starlette>=1.3.1,<2.0
+```
+
+Why both floors are required:
+
+- `starlette 1.3.1` is the first release containing the complete reported remediation set, including enforced URL-encoded form limits.
+- PyPI metadata shows FastAPI `0.129.0` through `0.132.0` capped Starlette below `1.0.0`. FastAPI `0.133.0` is the first release line that permits Starlette `1.x`.
+- The upper bounds preserve the existing major-version policy. This is a minimum security floor, not a downgrade: the validated local environment remains on `fastapi 0.141.1` and `starlette 1.7.0`.
+
+What did not change:
+
+- No backend route, middleware behavior, warning score, replay output, provider, MongoDB schema, frontend dependency, or public/private data boundary changed.
+- No form upload, static-file serving, proxy trust, redirect, or SSRF feature was added.
+- No dependency lock file exists in this repository; deployments must install from the updated `requirements.txt`.
+
+Validation and known limitations:
+
+- A clean resolver dry run selected `fastapi 0.141.1` and `starlette 1.7.0` without dependency conflicts.
+- The active environment (`fastapi 0.141.1`, `starlette 1.7.0`) passed all `325` backend tests with `3` warnings.
+- An isolated minimum-version environment (`fastapi 0.133.0`, `starlette 1.3.1`) passed all `325` backend tests with `4` warnings.
+- `pip-audit 2.10.1 -r requirements.txt` reported no Starlette advisory. It separately reported `PYSEC-2026-1845` for `pytest 8.4.2`; that finding requires pytest `9.0.3` and remains outside this Starlette-only patch because the repository currently caps pytest below `9.0`.
+- The active environment's global `pip check` still reports an unrelated pre-existing `sympy 1.14.0` / `mpmath 1.4.1` mismatch. The clean requirements resolver itself completed without conflicts.
+- This targeted review covers the reported Starlette advisories only. It is not a complete audit of every installed Python package.
+- AI1SAD still targets the full working-version launch date of September 7, 2026; this maintenance patch does not change roadmap scope.
 
 ## 2026-06-21 Vite Windows Dev Server Alerts
 

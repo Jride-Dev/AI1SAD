@@ -1,5 +1,21 @@
 # API
 
+## Incident Globe
+
+`GET /api/v1/incidents-globe` returns the scrubbed 2000-2026 geographical projection used by the frontend globe.
+
+Optional query parameters:
+
+| Parameter | Values |
+| --- | --- |
+| `decade` | `2000`, `2010`, `2020` |
+| `provocation` | `all`, `provoked`, `unprovoked`, `unknown`, `conflicted` |
+| `outcome` | `all`, `fatal`, `fatal_consumed`, `non_fatal`, `no_injury` |
+
+The response includes build metadata, filtered summary counts, data-boundary notes, and records. Records without supported coordinates have `mapped=false` and are counted but not rendered as markers. Source entries include attribution and a link only when one is available. The endpoint never returns victim names or private Sharks Happen workbook fields.
+
+The endpoint reads the internal MongoDB `incident_globe` projection when configured and populated, otherwise the ignored local build artifact. It does not write data or create warnings, alerts, observations, replay facts, or scoring changes.
+
 AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
 
 Base URL for local development: `http://127.0.0.1:8000`

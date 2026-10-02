@@ -52,6 +52,7 @@ def main() -> int:
         ("health", "/health", ["status"]),
         ("demo status", "/api/v1/demo/status", ["demo_mode", "private_internal_data_exposed", "disclaimer"]),
         ("demo scenarios", "/api/v1/demo/scenarios", ["scenarios", "private_internal_data_exposed", "disclaimer"]),
+        ("incident globe", "/api/v1/incidents-globe?decade=2020", ["schema_version", "summary", "records"]),
         ("explain location", f"/api/v1/explain/location?{explain_query}", ["warning_score", "surveillance_priority_score", "disclaimer"]),
     ]
 

@@ -39,6 +39,7 @@ Live MongoDB-backed environment:
 MONGODB_URI=<mongodb-atlas-uri>
 MONGODB_DATABASE=AI1SAD
 DEMO_MODE=false
+CORS_ALLOWED_ORIGINS=https://ai1sad.org,https://www.ai1sad.org
 ```
 
 ## MongoDB Atlas Notes
@@ -76,3 +77,5 @@ python scripts/smoke_demo.py --base-url https://<demo-backend>
 ```
 
 See [Public Demo Launch](PUBLIC_DEMO_LAUNCH.md) for the full launch checklist.
+
+The production API hostname is planned as `https://api.ai1sad.org`. Railway requires both the CNAME and TXT verification records it supplies for the custom domain. See [AI1SAD.org Deployment](CLOUDFLARE_DEPLOY.md).

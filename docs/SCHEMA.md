@@ -1,5 +1,18 @@
 # Schema
 
+## incident_globe
+
+A derived scrubbed projection for the 2000-2026 geographical explorer. Each document represents one deduplicated event or one still-standalone source record and includes:
+
+- `record_id`, optional `canonical_record_id`, `year`, `decade`, date, public location, activity, and injury summary
+- `outcome_category`: `fatal`, `fatal_consumed`, `non_fatal`, or `no_injury`
+- `provocation`: `provoked`, `unprovoked`, `unknown`, or `conflicted`
+- `mapped` plus optional GeoJSON-style coordinates and coordinate provenance/confidence
+- `sources`: attributed source name, record identifier, and optional URL
+- `media`: approved references only; empty when no rights-cleared item exists
+
+The schema excludes victim names and private notes. It preserves uncertainty and does not infer coordinates, species, behavior, or intent. It is not used by warning, scoring, alert, replay, or observation systems.
+
 The MongoDB Atlas phase uses public API collections, internal ingestion/quality collections, provider-freshness collections, current-condition collections, and event-intelligence collections. Public responses are served with `visibility="public"` filters and exclude private notes, restricted records, raw source notes, exact addresses, and sensitive source content.
 
 ## incidents
@@ -140,6 +153,166 @@ Public-safe registry output must exclude `analyst_notes_private`, source `privat
 Official/public species fields are separate from source species claims and internal analyst hypotheses. Public-safe registry output includes `official_species_status`, an official species name only when public official records confirm one, and the public uncertainty note when species is not publicly confirmed. Internal species hypotheses are private by default and are suppressed whenever species-disclosure risk is `moderate` or `high`.
 
 The Glenfield Beach 2026 seed case keeps `official_species_status` as `unconfirmed`, leaves `official_species_name` empty, stores no internal species hypothesis, and treats attempted predation and predatory probe only as provisional alternatives while `unknown_insufficient_evidence` remains primary. It does not add scoring, replay, alert, public-feed, drone-observation, or provider side effects.
+
+## archival_sources
+
+Internal local/manual archival source metadata records. Phase 26C supports opt-in CLI persistence to MongoDB for accepted metadata records; no public archival API route, Trove API client, scraper, OCR processor, or article downloader is added.
+
+The local CLI importer accepts manually prepared `.json` or `.csv` files and writes ignored local outputs:
+
+- raw input folder: `data/imports/archival_news/raw/`
+- staging output: `data/imports/archival_news/staging/latest_archival_sources.json`
+- report output: `data/imports/archival_news/reports/latest_archival_import_report.json`
+
+Staging JSON contains `records`, registry-compatible `registry_source_links`, `public_records`, and no-side-effect flags. Report JSON contains row counts, rejected-row errors, supported formats, output paths, metadata-only flags, optional Mongo persistence summary, and no-side-effect flags.
+
+When the CLI runs with `--mongo`, accepted records are upserted into `archival_sources` with `visibility: "internal"` and `public_visibility: "restricted"`. Rejected rows are not inserted into `archival_sources`.
+
+```json
+{
+  "archival_source_id": "trove:article:SYN-1901",
+  "tracker_schema_version": "phase_26c_v1",
+  "capture_method": "manual_metadata_entry",
+  "source_platform": "trove",
+  "source_kind": "newspaper_article",
+  "archive_collection": "Trove / National Library of Australia",
+  "newspaper_title": "Synthetic Coastal Gazette",
+  "publication_date": "1901-06-02",
+  "article_title": "Reported shark incident near Example Beach",
+  "article_url": "https://trove.example.invalid/newspaper/article/SYN-1901",
+  "trove_article_id": "SYN-1901",
+  "page_url": "https://trove.example.invalid/newspaper/page/SYN-PAGE",
+  "page_number": "2",
+  "jurisdiction": "Queensland",
+  "location_mentioned": "Example Beach",
+  "shark_attack_case_candidate": true,
+  "people_mentioned": ["Private Person"],
+  "species_mentioned_raw": "large shark, unconfirmed",
+  "incident_date_raw": "late May 1901",
+  "incident_date_normalized": null,
+  "source_text_excerpt_allowed": true,
+  "source_text_excerpt": "Short rights-reviewed synthetic excerpt.",
+  "copyright_status": "public_domain",
+  "rights_note": "Synthetic public-domain metadata only; no article body.",
+  "access_note": "Manual citation captured from catalogue metadata.",
+  "citation": "Synthetic Coastal Gazette, 2 June 1901, p. 2.",
+  "extraction_status": "excerpt_reviewed",
+  "review_status": "case_link_candidate",
+  "linked_ai1sad_case_id": "AI1SAD-SYN-0001",
+  "source_confidence": "plausible",
+  "ocr_confidence": "low",
+  "ocr_uncertainty_notes": "Synthetic OCR uncertainty retained for review.",
+  "public_citation_allowed": true,
+  "duplicate_group_id": "dup:example-beach-1901",
+  "duplicate_relation": "same_incident_possible",
+  "duplicate_of_source_id": null,
+  "related_source_ids": ["trove:article:SYN-1901-REPRINT"],
+  "claim_tags": ["incident_date", "location", "species_raw"],
+  "conflicts": [
+    {
+      "conflict_id": "conflict:archive:SYN-1901:date",
+      "conflict_type": "date_disagreement",
+      "summary": "Synthetic article date conflicts with a later retelling.",
+      "conflicting_source_ids": ["trove:article:SYN-1901", "trove:article:SYN-1901-REPRINT"],
+      "current_resolution": "retain_source_dates_pending_review",
+      "resolution_confidence": "weak",
+      "public_summary_allowed": true,
+      "notes_private": "Private conflict note."
+    }
+  ],
+  "provenance_notes": ["Synthetic metadata-only archival fixture."],
+  "normalization_warnings": [],
+  "notes_private": "Private analyst note.",
+  "source_fingerprint": "sha256-metadata-fingerprint",
+  "metadata_only": true,
+  "article_body_stored": false,
+  "visibility": "internal",
+  "public_visibility": "restricted",
+  "ingest_source": "archival_news_tracker_manual_import",
+  "last_imported_at": "2026-06-25T12:00:00+00:00"
+}
+```
+
+Public-safe archival output excludes `notes_private`, named `people_mentioned`, private conflict notes, full article text, raw OCR dumps, downloaded HTML, and any excerpt that is not explicitly allowed. Article/page URLs are included only when `public_citation_allowed` is true.
+
+The tracker rejects scraping, Trove API, archive API, bulk-download, article-body-download, and OCR-dump capture modes. It also rejects payload keys that attempt to store full article text, raw article text, raw OCR text, downloaded HTML, or full copyrighted article text.
+
+Archival records can be converted into incident-registry `SourceLink` records. Those source links are citations and claim provenance, not final AI1SAD case truth. They do not create warnings, alerts, public feed entries, replay facts, scoring changes, drone observations, provider behavior, or public species confirmation.
+
+Indexes:
+
+- unique `archival_source_id`
+- `visibility + review_status`
+- `linked_ai1sad_case_id`
+- `source_fingerprint`
+- `duplicate_group_id`
+- `last_imported_at`
+
+## archival_import_reports
+
+Internal metadata import reports for the archival source tracker. Reports summarize manual file imports and optional Mongo writes; they are not public API documents.
+
+```json
+{
+  "source_name": "AI1SAD Australian Archival News Tracker",
+  "tracker_schema_version": "phase_26c_v1",
+  "input_file": "example_archival_sources.json",
+  "imported_at": "2026-06-25T12:00:00+00:00",
+  "records_written": 1,
+  "rejected_rows": 0,
+  "errors": [],
+  "metadata_only": true,
+  "article_body_stored": false,
+  "visibility": "internal",
+  "ingest_source": "archival_news_tracker_manual_import"
+}
+```
+
+Rejected-row reports include row numbers, source ids when supplied, and validation errors only. They do not persist rejected full-article text.
+
+Indexes:
+
+- `imported_at`
+- `source_name + input_file`
+
+## sharks_happen_sources
+
+Private source records imported from Hal's `Sharks Happen Stats.xlsx`. The record preserves the original workbook values under `raw_claims`, keeps victim names in `victim_name_private`, and stores normalized date/country fields only as matching aids. A source species label is not an official AI1SAD species determination.
+
+```json
+{
+  "source_record_id": "sharks_happen:0001",
+  "source_name": "Sharks Happen Stats",
+  "source_creator": "Hal",
+  "source_channel": "@sharkshappen on YouTube",
+  "visibility": "internal",
+  "review_status": "unreviewed_source_claim",
+  "incident_date_raw": "1985-03-03",
+  "incident_date_normalized": "1985-03-03",
+  "location_raw": "Wisemans Beach",
+  "country_normalized": "AUSTRALIA",
+  "shark_label_raw": "GW",
+  "shark_size_raw": "19.5 Foot",
+  "fatality_claim": true,
+  "duplicate_review": {
+    "status": "likely_candidate",
+    "auto_merged": false,
+    "within_source_possible_duplicate_ids": [],
+    "cross_source_candidates": []
+  },
+  "normalization_warnings": [],
+  "side_effects": {
+    "creates_warnings": false,
+    "creates_alerts": false,
+    "alters_scoring": false,
+    "alters_replay": false,
+    "promotes_registry_cases": false,
+    "merges_duplicate_candidates": false
+  }
+}
+```
+
+Indexes cover unique `source_record_id`, normalized incident date, normalized country, duplicate-review status, and last import time. `sharks_happen_import_reports` stores internal run summaries and aggregate duplicate counts.
 
 ## sources
 

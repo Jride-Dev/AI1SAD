@@ -55,3 +55,7 @@ Signal broker endpoints query only public normalized signals, public species sea
 Raw and external source files stay local and are ignored by Git. They can include names and restricted fields needed for auditing, but those fields are not copied into API-facing public responses.
 
 Environmental provider credentials, weather/ocean API keys, and external data-provider config must stay in `.env` or the deployment secret store only.
+
+## Incident Globe
+
+The Incident Globe endpoint is built from scrubbed records. It excludes victim names, private analyst notes, raw workbook claims, and credentials. Generalized location text and supported map coordinates are retained for historical exploration; unresolved records are not assigned invented coordinates. Source links are included only when present in approved source metadata, and media references remain empty until rights and privacy review are complete.

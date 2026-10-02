@@ -2,6 +2,8 @@
 
 This project compares and consolidates local GSAF-style files, public GitHub mirrors, the Australian Shark-Incident Database, and the live GSAF spreadsheet.
 
+Hal's privately supplied Sharks Happen workbook is maintained as an additional independent source lane. It is compared with the consolidated database but is not automatically folded into its canonical records.
+
 ## Sources
 
 | Source | Status | Notes |
@@ -34,6 +36,12 @@ Reports are written to `reports`:
 ## Current Local Build
 
 The latest local build normalized 40,309 source rows into 8,173 unique scrubbed records after duplicate matching.
+
+## Sharks Happen Comparison
+
+The October 2, 2026 local import retained `864` substantive Sharks Happen rows. Comparison against the `40,309` normalized source rows found `162` exact candidates, `435` likely candidates, and `267` unmatched rows. Eight workbook rows participate in possible within-source repeat groups. These classifications are review aids, not adjudications: no records were merged, deleted, promoted, or marked false.
+
+The review queue is local at `data/imports/sharks_happen/reports/latest_duplicate_review.csv`. It includes the source row, top candidate, score, matched fields, conflicts, and possible within-workbook duplicate ids. The workbook and review queue are ignored because they include victim names and license/redistribution status has not been established.
 
 Quality checks from the generated report:
 

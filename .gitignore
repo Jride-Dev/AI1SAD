@@ -15,6 +15,7 @@ data/raw/external/
 data/processed/
 reports/*.json
 reports/*.csv
+reports/*.html
 
 # Local/manual GSAF intake files and generated audit outputs stay private.
 data/imports/gsaf/raw/*
@@ -24,11 +25,29 @@ data/imports/gsaf/staging/*
 data/imports/gsaf/reports/*
 !data/imports/gsaf/reports/.gitkeep
 
+# Local/manual archival source metadata and generated audit outputs stay private.
+data/imports/archival_news/raw/*
+!data/imports/archival_news/raw/.gitkeep
+!data/imports/archival_news/raw/archival_sources_template.csv
+data/imports/archival_news/staging/*
+!data/imports/archival_news/staging/.gitkeep
+data/imports/archival_news/reports/*
+!data/imports/archival_news/reports/.gitkeep
+
+# Local Sharks Happen source workbooks and generated comparison outputs stay private.
+data/imports/sharks_happen/raw/*
+!data/imports/sharks_happen/raw/.gitkeep
+data/imports/sharks_happen/staging/*
+!data/imports/sharks_happen/staging/.gitkeep
+data/imports/sharks_happen/reports/*
+!data/imports/sharks_happen/reports/.gitkeep
+
 # Generated public artifacts can be rebuilt from raw data.
 data/public/*.csv
 data/public/*.sqlite
 data/public/*.db
 data/public/schema.json
+data/public/incident_globe_*.json
 
 # Hidden, sensitive, restricted, or license-unclear data must stay local.
 data/private/

@@ -3,6 +3,73 @@ export type Coordinates = {
   lon: number;
 };
 
+export type GlobeOutcome = "fatal" | "fatal_consumed" | "non_fatal" | "no_injury";
+export type GlobeProvocation = "provoked" | "unprovoked" | "unknown" | "conflicted";
+
+export type GlobeSource = {
+  source_name: string;
+  source_label: string;
+  source_record_id?: string | null;
+  source_row_number?: number | null;
+  url?: string | null;
+  url_scope?: string | null;
+  match_status: string;
+};
+
+export type GlobeMedia = {
+  url: string;
+  thumbnail_url?: string | null;
+  alt: string;
+  source_label?: string | null;
+};
+
+export type GlobeIncident = {
+  globe_id: string;
+  canonical_record_id?: string | null;
+  year: number;
+  decade: number;
+  date_text?: string | null;
+  month?: number | null;
+  day?: number | null;
+  country?: string | null;
+  region?: string | null;
+  location?: string | null;
+  coordinates?: { type: "Point"; coordinates: [number, number] } | null;
+  mapped: boolean;
+  coordinate_source: string;
+  coordinate_confidence: string;
+  activity?: string | null;
+  incident_type_raw?: string | null;
+  provocation: GlobeProvocation;
+  provocation_conflict: boolean;
+  injury_summary?: string | null;
+  fatal: boolean;
+  outcome_category: GlobeOutcome;
+  species_common?: string | null;
+  species_scientific?: string | null;
+  sources: GlobeSource[];
+  source_count: number;
+  media: GlobeMedia[];
+};
+
+export type IncidentGlobeData = {
+  schema_version: string;
+  generated_at?: string | null;
+  range: { start_year: number; end_year: number };
+  filters: { decade?: number | null; provocation: string; outcome: string };
+  summary: {
+    total_records: number;
+    mapped_records: number;
+    unmapped_records: number;
+    outcome_counts: Record<string, number>;
+    provocation_counts: Record<string, number>;
+    decade_counts: Record<string, number>;
+    dataset_total_records: number;
+  };
+  data_boundaries: Record<string, boolean>;
+  records: GlobeIncident[];
+};
+
 export type DominantFactor = {
   factor: string;
   value?: string | number | boolean | string[] | null;

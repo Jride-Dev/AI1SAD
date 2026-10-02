@@ -20,3 +20,6 @@ Incident counts do not measure risk by themselves. Meaningful risk analysis need
 
 Use this API for exploratory analysis, dashboards, teaching, and broad public-interest statistics. Avoid ranking victims, republishing identifying details, or using the data to stigmatize regions, communities, or activities.
 
+## Globe Interpretation
+
+The Incident Globe is a historical record explorer, not a map of present-day danger. Marker density reflects reporting, source coverage, geocoding completeness, and water-use exposure as well as incidents. Provoked/Unprovoked values reproduce bounded source classifications and must not be treated as findings about shark intent. Fatal-and-consumed classification requires explicit source support; attempted consumption alone is insufficient. Unresolved locations remain off-map rather than being guessed.
