@@ -10,7 +10,7 @@ The next planned numbered phase remains Phase 26D. Target full working-version l
 
 ## Deployment Handoff
 
-The frontend and email routing are live at `ai1sad.org`. The free Render Docker API, MongoDB Atlas connection, DNS-only `api.ai1sad.org` CNAME, managed TLS, CORS, and production API smoke checks are complete. Remaining operational work is to finish the frontend production-routing redeploy, verify the Incident Globe visually, and create the Cloudflare Pages documentation project. Target full working-version launch remains September 7, 2026.
+The frontend, Incident Globe, and email routing are live at `ai1sad.org`. The free Render Docker API, MongoDB Atlas connection, DNS-only `api.ai1sad.org` CNAME, managed TLS, CORS, production API smoke checks, frontend production routing, and live Incident Globe verification are complete. Remaining operational work is to create the Cloudflare Pages documentation project. Target full working-version launch remains September 7, 2026.
 
 ## Phase 26D: Vic Hislop Corpus And Case-Claim Archive
 

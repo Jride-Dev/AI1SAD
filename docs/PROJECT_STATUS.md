@@ -9,9 +9,9 @@
 - Latest local implementation: Phase 26C local/manual Australian archival source tracker plus a local-only incident registry viewer that visibly renders the Glenfield Beach record, evidence, sources, uncertainty boundaries, and Mongo archival-source counts
 - Latest bounded source addition: Hal's Sharks Happen workbook imported as `864` private, attributed source records with duplicate comparison and separate Mongo persistence; no automatic merge or registry promotion
 - Latest local product view: the 2000-2026 Incident Globe presents `3,398` deduplicated, source-attributed records with decade, outcome, and Provoked/Unprovoked filters. `1,915` records have supported map coordinates; `1,483` remain unplotted rather than receiving guessed locations. The projection excludes `174` explicit invalid/no-shark-involvement rows, attaches `96` reviewed exact Sharks Happen matches, and retains `326` standalone Sharks Happen records.
-- Deployment status: the Cloudflare Workers Static Assets frontend, apex/`www` DNS, TLS, Email Routing, Render API, MongoDB Atlas connection, and `api.ai1sad.org` custom domain are live. Production API smoke checks return the expected CORS origin and `668` records for the 2020s query. Cloudflare Pages docs at `docs.ai1sad.org` remain pending. Target full working-version launch remains September 7, 2026.
+- Deployment status: the Cloudflare Workers Static Assets frontend, Incident Globe, apex/`www` DNS, TLS, Email Routing, Render API, MongoDB Atlas connection, and `api.ai1sad.org` custom domain are live. Production API smoke checks return the expected CORS origin and `668` records for the 2020s query; the public globe renders those records without the local-API fetch failure. Cloudflare Pages docs at `docs.ai1sad.org` remain pending. Target full working-version launch remains September 7, 2026.
 - Latest deployment commit: `d91e210` Switch backend deployment to Render
-- Repo status: production frontend API fallback and deployment-status documentation are under review; verify with `git status`
+- Repo status: production frontend API routing is deployed; verify the remaining documentation-only follow-up with `git status`
 
 The Incident Globe does not change warning scoring, alerts, replay outputs, species findings, drone observations, or source truth. Its next handoff is human-reviewed coordinate resolution, case-media rights review, and pre-2000 decade expansion. Target full working-version launch remains September 7, 2026.
 
@@ -30,6 +30,7 @@ The Incident Globe does not change warning scoring, alerts, replay outputs, spec
 - Production Render service, MongoDB secret, custom domain, managed TLS, and production API smoke checks passed on October 3, 2026
 - Production globe query returned `668` records for `decade=2020`; the API allowed `https://ai1sad.org` through CORS
 - The public frontend bundle initially retained the local API fallback; the bounded frontend routing fix keeps explicit build variables authoritative while using `https://api.ai1sad.org` on production hostnames
+- Cloudflare Worker version `af066447-76bf-45b4-8864-eb07ea0e35b4` deployed successfully; live visual verification confirmed `668` records, `211` mapped, and `457` unresolved for 2020-2026
 
 ## Major Completed Systems
 

@@ -149,10 +149,11 @@ Validation completed October 3, 2026:
 - Docker image and Render Blueprint: validated locally; the container health check and `/health` passed on port `10000`, with the production frontend CORS origin allowed.
 - Render production service: live at `api.ai1sad.org`; MongoDB Atlas is configured, the DNS-only CNAME is verified, managed TLS is active, `/health` returns HTTP `200`, and the 2020s globe query returns `668` records with the expected CORS origin.
 - Frontend production routing: explicit `VITE_AI1SAD_API_BASE_URL` remains authoritative; production hostnames use `https://api.ai1sad.org` if the build variable is absent, while local development retains `http://localhost:8000`.
+- Cloudflare Worker production deploy: version `af066447-76bf-45b4-8864-eb07ea0e35b4` passed; live browser verification showed the 2020-2026 filter with `668` records, `211` mapped, and `457` unresolved.
 - README local links/images check: `64` checked, `0` missing.
 - Changed-file secret and prohibited-language scans: passed with no credential values or prohibited claims.
 - Git whitespace check: passed with CRLF normalization warnings only.
 - `sitemap.xml`: validated locally.
 - Frontend audit: seven existing development/build-chain advisories remain (`1` low, `3` moderate, `3` high); no broad dependency update was performed in this deployment-preparation change.
 
-Frontend deployment, apex/`www` DNS, TLS, Email Routing, Render API deployment, MongoDB connectivity, `api.ai1sad.org`, and backend production smoke checks are complete. Documentation hosting at `docs.ai1sad.org` remains pending; do not create its DNS record until the documentation service provides its real target.
+Frontend deployment and production API routing, Incident Globe visual verification, apex/`www` DNS, TLS, Email Routing, Render API deployment, MongoDB connectivity, `api.ai1sad.org`, and backend production smoke checks are complete. Documentation hosting at `docs.ai1sad.org` remains pending; do not create its DNS record until the documentation service provides its real target.
