@@ -9,11 +9,24 @@
 - Latest local implementation: Phase 26C local/manual Australian archival source tracker plus a local-only incident registry viewer that visibly renders the Glenfield Beach record, evidence, sources, uncertainty boundaries, and Mongo archival-source counts
 - Latest bounded source addition: Hal's Sharks Happen workbook imported as `864` private, attributed source records with duplicate comparison and separate Mongo persistence; no automatic merge or registry promotion
 - Latest local product view: the 2000-2026 Incident Globe presents `3,398` deduplicated, source-attributed records with decade, outcome, and Provoked/Unprovoked filters. `1,915` records have supported map coordinates; `1,483` remain unplotted rather than receiving guessed locations. The projection excludes `174` explicit invalid/no-shark-involvement rows, attaches `96` reviewed exact Sharks Happen matches, and retains `326` standalone Sharks Happen records.
-- Deployment preparation: `AI1SAD.org` has been registered through Cloudflare. Local configuration now supports a Cloudflare Workers Static Assets frontend at `ai1sad.org`, Railway API at `api.ai1sad.org`, Cloudflare Pages docs at `docs.ai1sad.org`, production-origin CORS, SPA route fallback, browser security headers, Railway health checks, and production smoke coverage. No external service has been created or DNS changed from this working tree.
-- Latest commit hash: `6524cfb` Add Glenfield Beach registry seed case
-- Repo status: uncommitted Phase 26C archival tracker service/test/docs changes; verify with `git status`
+- Deployment status: the Cloudflare Workers Static Assets frontend, apex/`www` DNS, TLS, and Email Routing are live. The API target has changed from Railway to a Hugging Face Docker Space at `api.ai1sad.org`; the reviewed Docker runtime is prepared locally but the Space, secret, custom domain, and production smoke checks remain pending. Cloudflare Pages docs at `docs.ai1sad.org` also remain pending. Target full working-version launch remains September 7, 2026.
+- Latest deployment commit: `ac5ed9f` Configure AI1SAD domains and email routing docs
+- Repo status: Hugging Face Spaces migration changes are under review; verify with `git status`
 
 The Incident Globe does not change warning scoring, alerts, replay outputs, species findings, drone observations, or source truth. Its next handoff is human-reviewed coordinate resolution, case-media rights review, and pre-2000 decade expansion. Target full working-version launch remains September 7, 2026.
+
+## Validation Counts (Hugging Face Spaces Migration)
+
+- Docker image build: passed with the reviewed `app/`, `providers/`, and documentation-asset runtime subset
+- Container smoke test: `/health` returned `status=ok`; container health check passed; production frontend CORS origin allowed
+- Full backend tests: `336 passed, 2 warnings`
+- MkDocs strict build: passed with the standard Material for MkDocs advisory banner
+- README local links/images check: `64` checked, `0` missing
+- Secret scan on changed files: no credential values matched
+- Prohibited-language scan on changed files: no matches
+- Git whitespace check: passed with CRLF normalization warnings only
+- No warning scoring, alerts, replay outputs, source records, fixture dates, provider behavior, frontend dependencies, or database contents changed
+- Production Space, MongoDB secret, custom domain, and production API smoke checks remain pending authenticated Hugging Face setup
 
 ## Major Completed Systems
 

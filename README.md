@@ -23,7 +23,9 @@ Current development checkpoint:
 - Target full working-version launch: September 7, 2026.
 - Local demo frontend: <http://localhost:5174>
 - Incident Globe: <http://localhost:5174/incident-globe>
-- Production domain preparation: `ai1sad.org` frontend, `api.ai1sad.org` API, and `docs.ai1sad.org` documentation
+- Production frontend: <https://ai1sad.org>
+- Production API: `api.ai1sad.org` pending Hugging Face Space deployment and custom-domain activation
+- Production documentation: `docs.ai1sad.org` pending deployment
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
 
@@ -35,6 +37,7 @@ See:
 - [Next Phase](docs/NEXT_PHASE.md)
 - [Local Visual QA](docs/LOCAL_VISUAL_QA.md)
 - [AI1SAD.org Deployment](docs/CLOUDFLARE_DEPLOY.md)
+- [Hugging Face Spaces Deployment](docs/HUGGINGFACE_SPACES_DEPLOY.md)
 
 ## Visual Preview
 

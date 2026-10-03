@@ -10,7 +10,7 @@ The next planned numbered phase remains Phase 26D. Target full working-version l
 
 ## Deployment Handoff
 
-The repository is prepared for `ai1sad.org`, `api.ai1sad.org`, and `docs.ai1sad.org`. The remaining work is operational: review and commit the current branch, push it to GitHub, create the Cloudflare Pages and Railway services, enter secrets in Railway, add the Railway-provided CNAME and TXT records, attach custom domains, and run production smoke checks. These external changes require explicit review and authenticated account access; they must not be inferred from local success.
+The frontend and email routing are live at `ai1sad.org`. The backend deployment target is now a Hugging Face Docker Space rather than Railway. Remaining operational work is to authenticate the Hugging Face CLI, create the `ai1sad-api` Space on a qualifying plan, add `MONGODB_URI` as a Space secret, deploy the reviewed runtime files, attach `api.ai1sad.org` with the required `hf.space` CNAME, create the Cloudflare Pages documentation project, and run production smoke checks. Target full working-version launch remains September 7, 2026.
 
 ## Phase 26D: Vic Hislop Corpus And Case-Claim Archive
 

@@ -67,10 +67,10 @@ VITE_AI1SAD_DEMO_MODE=true
 VITE_AI1SAD_USE_MOCKS=true
 ```
 
-## Railway Backend Checklist
+## Hugging Face Spaces Backend Checklist
 
-- Confirm start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
-- Store `MONGODB_URI` only in Railway variables if using Atlas.
+- Confirm the Docker Space listens on port `7860`.
+- Store `MONGODB_URI` only as a Hugging Face Space secret.
 - Keep `DEMO_MODE=true` for public demo deployments.
 - Keep all admin write flags false.
 - Keep `API_ACCESS_ENABLED=false` unless real key storage is deployed later.
@@ -98,7 +98,7 @@ VITE_AI1SAD_USE_MOCKS=true
 
 - `mkdocs build` succeeds.
 - `site/` remains ignored.
-- Public docs include disclaimer, demo environment, deployment readiness, Railway deploy, operational mapping, and usage policy pages.
+- Public docs include disclaimer, demo environment, deployment readiness, Hugging Face Spaces deployment, operational mapping, and usage policy pages.
 - No secrets, private data, or restricted source content appear in generated docs.
 
 ## Public Launch Smoke Checks

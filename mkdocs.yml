@@ -166,5 +166,5 @@ nav:
   - Deployment:
       - AI1SAD.org Cloudflare Deployment: CLOUDFLARE_DEPLOY.md
       - Public Demo Launch: PUBLIC_DEMO_LAUNCH.md
-      - Railway Deploy: RAILWAY_DEPLOY.md
+      - Hugging Face Spaces Deploy: HUGGINGFACE_SPACES_DEPLOY.md
       - Demo Environment: DEMO_ENVIRONMENT.md
