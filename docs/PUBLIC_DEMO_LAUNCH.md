@@ -67,10 +67,10 @@ VITE_AI1SAD_DEMO_MODE=true
 VITE_AI1SAD_USE_MOCKS=true
 ```
 
-## Hugging Face Spaces Backend Checklist
+## Render Backend Checklist
 
-- Confirm the Docker Space listens on port `7860`.
-- Store `MONGODB_URI` only as a Hugging Face Space secret.
+- Confirm the Docker service listens on Render's `PORT`.
+- Store `MONGODB_URI` only as a Render secret environment variable.
 - Keep `DEMO_MODE=true` for public demo deployments.
 - Keep all admin write flags false.
 - Keep `API_ACCESS_ENABLED=false` unless real key storage is deployed later.
@@ -98,7 +98,7 @@ VITE_AI1SAD_USE_MOCKS=true
 
 - `mkdocs build` succeeds.
 - `site/` remains ignored.
-- Public docs include disclaimer, demo environment, deployment readiness, Hugging Face Spaces deployment, operational mapping, and usage policy pages.
+- Public docs include disclaimer, demo environment, deployment readiness, Render deployment, operational mapping, and usage policy pages.
 - No secrets, private data, or restricted source content appear in generated docs.
 
 ## Public Launch Smoke Checks

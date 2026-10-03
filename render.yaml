@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: ai1sad-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: AI1SAD
+      - key: DEMO_MODE
+        value: true
+      - key: ADMIN_EVENTS_ENABLED
+        value: false
+      - key: ADMIN_SURVEILLANCE_ENABLED
+        value: false
+      - key: ADMIN_ALERTS_ENABLED
+        value: false
+      - key: DRONE_INGEST_ENABLED
+        value: false
+      - key: MEDIA_ATTACHMENTS_ENABLED
+        value: false
+      - key: API_ACCESS_ENABLED
+        value: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://ai1sad.org,https://www.ai1sad.org
+      - key: SHARK_ATTACK_API_TITLE
+        value: AI1SAD Shark Attack Data API

@@ -6,12 +6,12 @@ Phase 13 prepares AI1SAD for a controlled public demo deployment. It does not ad
 
 - FastAPI entrypoint: `app.main:app`
 - API router: `app.api_v1:router`
-- Hugging Face Docker Space command: `uvicorn app.main:app --host 0.0.0.0 --port 7860`
+- Render Docker command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 - Frontend: React + Vite shell under `frontend/`
 - Documentation: MkDocs Material portal under `docs/`
-- Production domain plan: Cloudflare Workers Static Assets at `ai1sad.org`, a Hugging Face Docker Space at `api.ai1sad.org`, and Cloudflare Pages docs at `docs.ai1sad.org`
+- Production domain plan: Cloudflare Workers Static Assets at `ai1sad.org`, a Render Docker web service at `api.ai1sad.org`, and Cloudflare Pages docs at `docs.ai1sad.org`
 
-The root `Dockerfile` and `deploy/huggingface-space/README.md` define the bounded Space runtime. See [Hugging Face Spaces Deployment](HUGGINGFACE_SPACES_DEPLOY.md).
+The root `Dockerfile` and `render.yaml` define the bounded backend runtime. See [Render Deployment](RENDER_DEPLOY.md).
 
 ## Required Environment Variables
 
@@ -69,4 +69,4 @@ When `DEMO_MODE=true`:
 
 AI1SAD estimates environmental and surveillance-relevant shark encounter conditions. It does not predict individual attacks or guarantee safety outcomes.
 
-See [AI1SAD.org Deployment](CLOUDFLARE_DEPLOY.md) for the exact Cloudflare, Hugging Face Spaces, MongoDB, DNS, TLS, and rollback configuration.
+See [AI1SAD.org Deployment](CLOUDFLARE_DEPLOY.md) for the exact Cloudflare, Render, MongoDB, DNS, TLS, and rollback configuration.
