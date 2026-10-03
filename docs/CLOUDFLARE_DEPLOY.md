@@ -41,9 +41,13 @@ VITE_AI1SAD_API_BASE_URL=https://api.ai1sad.org
 VITE_AI1SAD_DOCS_URL=https://docs.ai1sad.org
 ```
 
-The committed `frontend/wrangler.jsonc` names the Worker `ai1sad`, deploys `frontend/dist`, and enables Cloudflare's `single-page-application` fallback for direct visits to `/incident-globe`. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache. Do not add a Pages-style `_redirects` SPA rule: Workers Static Assets rejects it as an infinite loop when `not_found_handling` already provides the fallback.
+The committed `frontend/wrangler.jsonc` names the Worker `ai1sad`, deploys `frontend/dist`, binds the Worker custom domains `ai1sad.org` and `www.ai1sad.org`, and enables Cloudflare's `single-page-application` fallback for direct visits to `/incident-globe`. Cloudflare manages the custom-domain DNS edge addresses; do not invent origin A or AAAA records for this static Worker. The committed `_headers` file sets browser security headers and permits API connections only to `https://api.ai1sad.org`. Hashed assets receive immutable caching; the data directory uses a one-day cache. Do not add a Pages-style `_redirects` SPA rule: Workers Static Assets rejects it as an infinite loop when `not_found_handling` already provides the fallback.
 
-After the first successful Worker deployment, attach `ai1sad.org` and `www.ai1sad.org` under the Worker's Custom domains panel. Configure a Cloudflare Redirect Rule from `www.ai1sad.org/*` to `https://ai1sad.org/${1}` with a permanent redirect after both hostnames are active.
+The Worker custom domains are deployed from `wrangler.jsonc`. Both hostnames currently serve the same application; a separate permanent `www`-to-apex Redirect Rule may be added later if canonical-host redirects are desired.
+
+Cloudflare Email Routing is enabled for `ai1sad.org`. The public aliases `noreply@ai1sad.org` and `info@ai1sad.org` forward to a verified administrative destination. Cloudflare manages the required MX, SPF, and DKIM records. The private forwarding destination must not be committed to this repository or exposed in frontend configuration.
+
+Do not add manual A, AAAA, or CNAME records for the apex or `www` hostnames while they are Worker custom domains. Cloudflare publishes and maintains the edge A/AAAA answers for those bindings, and a literal CNAME would conflict with the Worker route. Add `api` and `docs` CNAME records only after their Railway and documentation-host targets exist; no placeholder origin addresses are permitted.
 
 ## Backend Railway Service
 
@@ -144,8 +148,10 @@ Validation completed October 2, 2026:
 - Production CORS: `https://ai1sad.org` allowed; an unrelated test origin denied.
 - Frontend tests: `30 passed`.
 - Frontend production build: passed; Cloudflare `_headers` and globe texture copied into `dist`. Workers Static Assets configuration and SPA fallback are provided by `frontend/wrangler.jsonc`; the redundant `_redirects` rule was removed after Cloudflare correctly rejected it as an infinite loop.
+- Cloudflare Worker deployment: passed; `ai1sad.org`, `www.ai1sad.org`, and `/incident-globe` returned HTTP `200` over HTTPS, with managed IPv4 and IPv6 edge answers.
+- Email Routing: `ready`; the `noreply` and `info` forwarding rules are enabled, and Cloudflare reports the required MX, SPF, and DKIM records.
 - MkDocs strict build: passed.
 - `railway.json` and `sitemap.xml`: parsed successfully.
 - Frontend audit: seven existing development/build-chain advisories remain (`1` low, `3` moderate, `3` high); no broad dependency update was performed in this deployment-preparation change.
 
-External deployment, DNS, TLS, and production smoke checks remain pending until the reviewed branch is committed, pushed, and the authenticated Cloudflare and Railway account steps are completed.
+Frontend deployment, apex/`www` DNS, TLS, Email Routing, and frontend production smoke checks are complete. Railway API deployment plus `api.ai1sad.org` and documentation hosting plus `docs.ai1sad.org` remain pending; do not create their CNAME records until each service provides its real target.
