@@ -136,7 +136,7 @@ Confirm that an Origin request from `https://ai1sad.org` receives an appropriate
 
 ## Local Validation
 
-Validation completed October 2, 2026:
+Validation completed October 3, 2026:
 
 - MongoDB connectivity: configured; `40,309` incident documents and `3,398` Incident Globe documents confirmed.
 - Backend: `336 passed`, with two existing FastAPI startup-event deprecation warnings.
@@ -147,10 +147,12 @@ Validation completed October 2, 2026:
 - Email Routing: `ready`; the `noreply` and `info` forwarding rules are enabled, and Cloudflare reports the required MX, SPF, and DKIM records.
 - MkDocs strict build: passed.
 - Docker image and Render Blueprint: validated locally; the container health check and `/health` passed on port `10000`, with the production frontend CORS origin allowed.
+- Render production service: live at `api.ai1sad.org`; MongoDB Atlas is configured, the DNS-only CNAME is verified, managed TLS is active, `/health` returns HTTP `200`, and the 2020s globe query returns `668` records with the expected CORS origin.
+- Frontend production routing: explicit `VITE_AI1SAD_API_BASE_URL` remains authoritative; production hostnames use `https://api.ai1sad.org` if the build variable is absent, while local development retains `http://localhost:8000`.
 - README local links/images check: `64` checked, `0` missing.
 - Changed-file secret and prohibited-language scans: passed with no credential values or prohibited claims.
 - Git whitespace check: passed with CRLF normalization warnings only.
 - `sitemap.xml`: validated locally.
 - Frontend audit: seven existing development/build-chain advisories remain (`1` low, `3` moderate, `3` high); no broad dependency update was performed in this deployment-preparation change.
 
-Frontend deployment, apex/`www` DNS, TLS, Email Routing, and frontend production smoke checks are complete. Render API deployment plus `api.ai1sad.org` and documentation hosting plus `docs.ai1sad.org` remain pending; do not create their DNS records until each service provides or requests its real target.
+Frontend deployment, apex/`www` DNS, TLS, Email Routing, Render API deployment, MongoDB connectivity, `api.ai1sad.org`, and backend production smoke checks are complete. Documentation hosting at `docs.ai1sad.org` remains pending; do not create its DNS record until the documentation service provides its real target.

@@ -10,7 +10,7 @@ The next planned numbered phase remains Phase 26D. Target full working-version l
 
 ## Deployment Handoff
 
-The frontend and email routing are live at `ai1sad.org`. The backend deployment target is a free Render Docker web service. Remaining operational work is to create the `ai1sad-api` service from the committed Blueprint, enter `MONGODB_URI` as a secret, verify the Render URL, attach `api.ai1sad.org` using Render's exact DNS target, create the Cloudflare Pages documentation project, and run production smoke checks. Target full working-version launch remains September 7, 2026.
+The frontend and email routing are live at `ai1sad.org`. The free Render Docker API, MongoDB Atlas connection, DNS-only `api.ai1sad.org` CNAME, managed TLS, CORS, and production API smoke checks are complete. Remaining operational work is to finish the frontend production-routing redeploy, verify the Incident Globe visually, and create the Cloudflare Pages documentation project. Target full working-version launch remains September 7, 2026.
 
 ## Phase 26D: Vic Hislop Corpus And Case-Claim Archive
 

@@ -2,6 +2,8 @@
 
 AI1SAD deploys its read-only public FastAPI backend as a Render Docker web service. The committed `render.yaml` Blueprint uses Render's free web-service plan and the root `Dockerfile`.
 
+Production deployment completed October 3, 2026. The service is live at `https://api.ai1sad.org`, its DNS-only Cloudflare CNAME is verified by Render, managed TLS is active, and MongoDB Atlas remains the persistent source of record.
+
 ## Create The Service
 
 In Render, create a Blueprint from `Jride-Dev/AI1SAD` on branch `main`. Render reads `render.yaml` and proposes one service named `ai1sad-api` with:

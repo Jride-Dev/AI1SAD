@@ -26,7 +26,20 @@ import type {
   WarningResponse,
 } from "../types";
 
-const API_BASE_URL = import.meta.env.VITE_AI1SAD_API_BASE_URL ?? "http://localhost:8000";
+export function resolveApiBaseUrl(configuredUrl: string | undefined, hostname: string | undefined): string {
+  if (configuredUrl) {
+    return configuredUrl;
+  }
+  if (hostname === "ai1sad.org" || hostname === "www.ai1sad.org") {
+    return "https://api.ai1sad.org";
+  }
+  return "http://localhost:8000";
+}
+
+const API_BASE_URL = resolveApiBaseUrl(
+  import.meta.env.VITE_AI1SAD_API_BASE_URL,
+  typeof window === "undefined" ? undefined : window.location.hostname,
+);
 const DEMO_MODE = import.meta.env.VITE_AI1SAD_DEMO_MODE === "true";
 let mockModeOverride: boolean | null = null;
 

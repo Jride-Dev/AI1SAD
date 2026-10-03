@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { __setMockModeForTests, getAlerts, getDashboardData, getDroneConsoleData, submitDroneObservation, getWarning } from "./client";
+import {
+  __setMockModeForTests,
+  getAlerts,
+  getDashboardData,
+  getDroneConsoleData,
+  getWarning,
+  resolveApiBaseUrl,
+  submitDroneObservation,
+} from "./client";
 
 describe("dashboard API client", () => {
   const fetchMock = vi.fn();
@@ -13,6 +21,13 @@ describe("dashboard API client", () => {
     __setMockModeForTests(null);
     fetchMock.mockReset();
     vi.unstubAllGlobals();
+  });
+
+  it("uses the production API for AI1SAD hosts when no build override is set", () => {
+    expect(resolveApiBaseUrl(undefined, "ai1sad.org")).toBe("https://api.ai1sad.org");
+    expect(resolveApiBaseUrl(undefined, "www.ai1sad.org")).toBe("https://api.ai1sad.org");
+    expect(resolveApiBaseUrl(undefined, "localhost")).toBe("http://localhost:8000");
+    expect(resolveApiBaseUrl("https://example.test", "ai1sad.org")).toBe("https://example.test");
   });
 
   it("returns mock dashboard data without a backend", async () => {

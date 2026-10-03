@@ -24,7 +24,7 @@ Current development checkpoint:
 - Local demo frontend: <http://localhost:5174>
 - Incident Globe: <http://localhost:5174/incident-globe>
 - Production frontend: <https://ai1sad.org>
-- Production API: `api.ai1sad.org` pending Render deployment and custom-domain activation
+- Production API: <https://api.ai1sad.org>
 - Production documentation: `docs.ai1sad.org` pending deployment
 - FastAPI docs: <http://localhost:8000/docs>
 - MkDocs portal: <http://localhost:8001>
