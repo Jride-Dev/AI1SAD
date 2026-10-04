@@ -129,7 +129,7 @@ Confirm that an Origin request from `https://ai1sad.org` receives an appropriate
 
 ## Known Limits
 
-- `2,946` current globe records have no reviewed coordinate and remain unplotted, including all `1,463` location-only geocode-cache matches retained for human review.
+- `1,471` current globe records have no validated coordinate and remain unplotted. Contextual vendor results that fail relevance, country-boundary, or 25 km coastline validation remain review-only.
 - Per-case media remains empty until rights and privacy review is complete.
 - The public API has no end-user authentication or production billing system.
 - The current frontend dependency audit has known development/build-chain advisories documented in [Dependency Security Review](DEPENDENCY_SECURITY_REVIEW.md). None originate from Three.js, but they require a separate bounded maintenance pass.

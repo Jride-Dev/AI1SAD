@@ -14,6 +14,7 @@ from typing import Any
 GLOBE_SCHEMA_VERSION = "incident_globe_v1"
 DEFAULT_DATABASE = Path("data/processed/complete_incidents_scrubbed.sqlite")
 DEFAULT_GEOCODE_CACHE = Path("data/raw/geocode_cache.csv")
+DEFAULT_CONTEXT_GEOCODES = Path("data/review/incident_globe_context_geocodes_1900_2026.csv")
 DEFAULT_HAL_STAGING = Path("data/imports/sharks_happen/staging/latest_sharks_happen_sources.json")
 DEFAULT_OUTPUT = Path("data/public/incident_globe_2000_2026.json")
 
@@ -155,6 +156,34 @@ def load_geocode_cache(path: str | Path) -> dict[str, tuple[float, float, bool]]
     return result
 
 
+def contextual_key(location: Any, region: Any, country: Any) -> tuple[str, str, str]:
+    return location_key(location), location_key(region), location_key(country)
+
+
+def load_context_geocodes(path: str | Path) -> dict[tuple[str, str, str], tuple[float, float, float | None]]:
+    cache_path = Path(path)
+    if not cache_path.exists():
+        return {}
+    result: dict[tuple[str, str, str], tuple[float, float, float | None]] = {}
+    with cache_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("validation_status") != "validated":
+                continue
+            if not valid_coordinate(row.get("latitude"), row.get("longitude")):
+                continue
+            relevance = None
+            try:
+                relevance = float(row["relevance"]) if row.get("relevance") else None
+            except ValueError:
+                pass
+            result[contextual_key(row.get("location"), row.get("region"), row.get("country"))] = (
+                float(row["latitude"]),
+                float(row["longitude"]),
+                relevance,
+            )
+    return result
+
+
 def load_source_rows(path: str | Path, start_year: int, end_year: int) -> list[dict[str, Any]]:
     with sqlite3.connect(Path(path)) as connection:
         connection.row_factory = sqlite3.Row
@@ -224,7 +253,9 @@ def outcome_category(fatal: bool, injury: Any, hal_records: list[dict[str, Any]]
 
 
 def coordinates_for_record(
-    record: dict[str, Any], geocodes: dict[str, tuple[float, float, bool]]
+    record: dict[str, Any],
+    geocodes: dict[str, tuple[float, float, bool]],
+    context_geocodes: dict[tuple[str, str, str], tuple[float, float, float | None]] | None = None,
 ) -> tuple[dict[str, Any] | None, str, str]:
     if valid_coordinate(record.get("latitude"), record.get("longitude")):
         return (
@@ -232,6 +263,17 @@ def coordinates_for_record(
             "source_coordinate",
             "reviewed_source",
         )
+    context = (context_geocodes or {}).get(
+        contextual_key(
+            record.get("location_public") or record.get("location_raw"),
+            record.get("area") or record.get("area_raw"),
+            record.get("country") or record.get("country_normalized") or record.get("country_raw"),
+        )
+    )
+    if context:
+        lat, lon, relevance = context
+        confidence = "high_contextual" if relevance is not None and relevance >= 0.9 else "reviewed_contextual"
+        return {"type": "Point", "coordinates": [lon, lat]}, "csv2geo_contextual", confidence
     cached = geocodes.get(location_key(record.get("location_public") or record.get("location_raw")))
     if cached:
         lat, lon, reviewed = cached
@@ -273,6 +315,7 @@ def build_globe_dataset(
     *,
     database_path: str | Path = DEFAULT_DATABASE,
     geocode_cache_path: str | Path = DEFAULT_GEOCODE_CACHE,
+    context_geocode_path: str | Path = DEFAULT_CONTEXT_GEOCODES,
     hal_staging_path: str | Path = DEFAULT_HAL_STAGING,
     start_year: int = 2000,
     end_year: int = 2026,
@@ -280,6 +323,7 @@ def build_globe_dataset(
 ) -> dict[str, Any]:
     rows = load_source_rows(database_path, start_year, end_year)
     geocodes = load_geocode_cache(geocode_cache_path)
+    context_geocodes = load_context_geocodes(context_geocode_path)
     root_by_record = {row["record_id"]: row.get("duplicate_of") or row["record_id"] for row in rows}
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     base_by_root: dict[str, dict[str, Any]] = {}
@@ -313,7 +357,7 @@ def build_globe_dataset(
         year = as_int(base.get("year"))
         if year is None:
             continue
-        coordinates, coordinate_source, coordinate_confidence = coordinates_for_record(base, geocodes)
+        coordinates, coordinate_source, coordinate_confidence = coordinates_for_record(base, geocodes, context_geocodes)
         provocation, provocation_conflict = provocation_label([row.get("incident_type") for row in supporting_rows])
         sources = unique_sources(supporting_rows)
         sources.extend(hal_source_ref(record, "exact_candidate") for record in hal_matches)
@@ -350,7 +394,7 @@ def build_globe_dataset(
         )
 
     for record in hal_standalone:
-        coordinates, coordinate_source, coordinate_confidence = coordinates_for_record(record, geocodes)
+        coordinates, coordinate_source, coordinate_confidence = coordinates_for_record(record, geocodes, context_geocodes)
         records.append(
             {
                 "globe_id": f"incident:{record['source_record_id']}",
@@ -394,6 +438,7 @@ def build_globe_dataset(
     unreviewed_geocode_rejections = sum(
         record["coordinate_source"] == "unreviewed_geocode_rejected" for record in records
     )
+    contextual_geocode_count = sum(record["coordinate_source"] == "csv2geo_contextual" for record in records)
     return {
         "schema_version": GLOBE_SCHEMA_VERSION,
         "generated_at": generated_at or utc_now_iso(),
@@ -411,6 +456,7 @@ def build_globe_dataset(
             "explicit_invalid_records_excluded": excluded_invalid_records,
             "country_mismatch_coordinates_rejected": country_mismatch_rejections,
             "unreviewed_geocode_coordinates_rejected": unreviewed_geocode_rejections,
+            "contextual_geocode_coordinates_mapped": contextual_geocode_count,
         },
         "data_boundaries": {
             "victim_names_included": False,
@@ -421,6 +467,7 @@ def build_globe_dataset(
             "explicit_invalid_rows_included": False,
             "approximate_cache_coordinates_country_checked": True,
             "unreviewed_cache_coordinates_plotted": False,
+            "contextual_geocodes_require_country_and_coast_validation": True,
         },
         "records": records,
     }
@@ -451,6 +498,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Build the AI1SAD 2000-2026 incident globe dataset.")
     parser.add_argument("--database", default=str(DEFAULT_DATABASE))
     parser.add_argument("--geocode-cache", default=str(DEFAULT_GEOCODE_CACHE))
+    parser.add_argument("--context-geocodes", default=str(DEFAULT_CONTEXT_GEOCODES))
     parser.add_argument("--hal-staging", default=str(DEFAULT_HAL_STAGING))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--start-year", type=int, default=2000)
@@ -464,6 +512,7 @@ def main(argv: list[str] | None = None) -> int:
     payload = build_globe_dataset(
         database_path=args.database,
         geocode_cache_path=args.geocode_cache,
+        context_geocode_path=args.context_geocodes,
         hal_staging_path=args.hal_staging,
         start_year=args.start_year,
         end_year=args.end_year,

@@ -2,7 +2,7 @@
 
 ## Incident Globe Handoff
 
-The local 2000-2026 Incident Globe is implemented before further historical expansion. It contains `3,398` deduplicated records, plots `452` source-provided coordinates, and explicitly retains `2,946` unresolved locations off-map. The unresolved total includes all `1,463` location-only geocode-cache matches, now withheld until explicit human review. It includes decade, Provoked/Unprovoked, and bounded outcome filters with source-attributed click-through infographics.
+The local 2000-2026 Incident Globe is implemented before further historical expansion. It contains `3,398` deduplicated records, plots `1,927` validated coordinates, and explicitly retains `1,471` unresolved locations off-map. The mapped total includes `452` source coordinates and `1,475` contextual results validated against relevance, stated-country boundaries, and a 25 km coastline limit. A sanitized 1900-2026 batch and validated cache are preserved for future pre-2000 decade layers; those historical decades are not yet published. The current globe includes decade, Provoked/Unprovoked, and bounded outcome filters with source-attributed click-through infographics.
 
 Future globe work is limited to human-reviewed coordinate resolution, rights-cleared case media, and pre-2000 decade layers. Likely source matches must not be auto-merged, unresolved places must not receive guessed coordinates, and the view must not alter scoring, warnings, alerts, replay outputs, species determinations, or shark-intent interpretation. See [Incident Globe](INCIDENT_GLOBE.md).
 

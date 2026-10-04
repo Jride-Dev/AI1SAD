@@ -45,6 +45,26 @@ def create_geocodes(path: Path) -> None:
         writer.writerow({"Location": "Example Beach", "Latitude": 27.5, "Longitude": -80.2, "ReviewStatus": "reviewed"})
 
 
+def create_context_geocodes(path: Path) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["location", "region", "country", "latitude", "longitude", "relevance", "validation_status"],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "location": "Chatham Island",
+                "region": "Massachusetts",
+                "country": "USA",
+                "latitude": 41.68227,
+                "longitude": -70.0146,
+                "relevance": 0.98,
+                "validation_status": "validated",
+            }
+        )
+
+
 def create_hal(path: Path) -> None:
     payload = {
         "records": [
@@ -76,6 +96,7 @@ def test_build_globe_dataset_deduplicates_sources_and_keeps_hal_standalone(tmp_p
     payload = build_globe_dataset(
         database_path=database,
         geocode_cache_path=geocodes,
+        context_geocode_path=tmp_path / "missing-context.csv",
         hal_staging_path=hal,
         generated_at="2026-10-02T00:00:00+00:00",
     )
@@ -131,6 +152,23 @@ def test_unreviewed_cache_coordinate_is_never_plotted():
     assert confidence == "unknown"
 
 
+def test_contextual_geocode_uses_location_region_and_country(tmp_path: Path):
+    path = tmp_path / "context.csv"
+    create_context_geocodes(path)
+    from app.services.incident_globe import load_context_geocodes
+
+    context = load_context_geocodes(path)
+    coordinates, source, confidence = coordinates_for_record(
+        {"country": "USA", "area": "Massachusetts", "location_public": "Chatham Island"},
+        {},
+        context,
+    )
+
+    assert coordinates == {"type": "Point", "coordinates": [-70.0146, 41.68227]}
+    assert source == "csv2geo_contextual"
+    assert confidence == "high_contextual"
+
+
 def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pytest.MonkeyPatch):
     records = [
         {"record_id": "a", "decade": 2000, "provocation": "unprovoked", "outcome_category": "fatal", "mapped": True},
@@ -145,6 +183,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
             "total_records": 3,
             "country_mismatch_coordinates_rejected": 2,
             "unreviewed_geocode_coordinates_rejected": 7,
+            "contextual_geocode_coordinates_mapped": 11,
         },
         "data_boundaries": {"coordinates_are_not_inferred": True},
     }
@@ -158,6 +197,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
     assert payload["summary"]["dataset_total_records"] == 3
     assert payload["summary"]["dataset_country_mismatch_coordinates_rejected"] == 2
     assert payload["summary"]["dataset_unreviewed_geocode_coordinates_rejected"] == 7
+    assert payload["summary"]["dataset_contextual_geocode_coordinates_mapped"] == 11
 
 
 def test_globe_endpoint_rejects_unsupported_filters(monkeypatch: pytest.MonkeyPatch):
