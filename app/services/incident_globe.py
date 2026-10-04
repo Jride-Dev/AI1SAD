@@ -66,6 +66,24 @@ COUNTRY_COORDINATE_BOUNDS: dict[str, tuple[tuple[float, float, float, float], ..
     ),
     "st maartin": ((18.0, 18.2, -63.2, -62.8),),
     "st maarten": ((18.0, 18.2, -63.2, -62.8),),
+    "usa": (
+        (24.0, 50.0, -125.0, -66.0),
+        (51.0, 72.0, -180.0, -129.0),
+        (51.0, 72.0, 170.0, 180.0),
+        (18.0, 23.0, -161.0, -154.0),
+        (13.0, 21.0, 144.0, 146.0),
+        (-15.0, -10.0, -172.0, -168.0),
+        (17.5, 18.6, -65.2, -64.0),
+    ),
+    "united states": (
+        (24.0, 50.0, -125.0, -66.0),
+        (51.0, 72.0, -180.0, -129.0),
+        (51.0, 72.0, 170.0, 180.0),
+        (18.0, 23.0, -161.0, -154.0),
+        (13.0, 21.0, 144.0, 146.0),
+        (-15.0, -10.0, -172.0, -168.0),
+        (17.5, 18.6, -65.2, -64.0),
+    ),
 }
 
 
@@ -119,15 +137,21 @@ def valid_coordinate(latitude: Any, longitude: Any) -> bool:
     return -90 <= lat <= 90 and -180 <= lon <= 180
 
 
-def load_geocode_cache(path: str | Path) -> dict[str, tuple[float, float]]:
+def load_geocode_cache(path: str | Path) -> dict[str, tuple[float, float, bool]]:
     cache_path = Path(path)
     if not cache_path.exists():
         return {}
-    result: dict[str, tuple[float, float]] = {}
+    result: dict[str, tuple[float, float, bool]] = {}
     with cache_path.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
             if valid_coordinate(row.get("Latitude"), row.get("Longitude")):
-                result[location_key(row.get("Location"))] = (float(row["Latitude"]), float(row["Longitude"]))
+                review_status = location_key(row.get("ReviewStatus") or row.get("review_status"))
+                reviewed = review_status in {"approved", "reviewed", "verified"}
+                result[location_key(row.get("Location"))] = (
+                    float(row["Latitude"]),
+                    float(row["Longitude"]),
+                    reviewed,
+                )
     return result
 
 
@@ -199,7 +223,9 @@ def outcome_category(fatal: bool, injury: Any, hal_records: list[dict[str, Any]]
     return "non_fatal"
 
 
-def coordinates_for_record(record: dict[str, Any], geocodes: dict[str, tuple[float, float]]) -> tuple[dict[str, Any] | None, str, str]:
+def coordinates_for_record(
+    record: dict[str, Any], geocodes: dict[str, tuple[float, float, bool]]
+) -> tuple[dict[str, Any] | None, str, str]:
     if valid_coordinate(record.get("latitude"), record.get("longitude")):
         return (
             {"type": "Point", "coordinates": [float(record["longitude"]), float(record["latitude"])]},
@@ -208,7 +234,9 @@ def coordinates_for_record(record: dict[str, Any], geocodes: dict[str, tuple[flo
         )
     cached = geocodes.get(location_key(record.get("location_public") or record.get("location_raw")))
     if cached:
-        lat, lon = cached
+        lat, lon, reviewed = cached
+        if not reviewed:
+            return None, "unreviewed_geocode_rejected", "unknown"
         country = record.get("country") or record.get("country_normalized") or record.get("country_raw")
         if not coordinate_matches_country(lat, lon, country):
             return None, "country_mismatch_rejected", "unknown"
@@ -363,6 +391,9 @@ def build_globe_dataset(
     country_mismatch_rejections = sum(
         record["coordinate_source"] == "country_mismatch_rejected" for record in records
     )
+    unreviewed_geocode_rejections = sum(
+        record["coordinate_source"] == "unreviewed_geocode_rejected" for record in records
+    )
     return {
         "schema_version": GLOBE_SCHEMA_VERSION,
         "generated_at": generated_at or utc_now_iso(),
@@ -379,6 +410,7 @@ def build_globe_dataset(
             "hal_standalone_records": len(hal_standalone),
             "explicit_invalid_records_excluded": excluded_invalid_records,
             "country_mismatch_coordinates_rejected": country_mismatch_rejections,
+            "unreviewed_geocode_coordinates_rejected": unreviewed_geocode_rejections,
         },
         "data_boundaries": {
             "victim_names_included": False,
@@ -388,6 +420,7 @@ def build_globe_dataset(
             "media_invented": False,
             "explicit_invalid_rows_included": False,
             "approximate_cache_coordinates_country_checked": True,
+            "unreviewed_cache_coordinates_plotted": False,
         },
         "records": records,
     }

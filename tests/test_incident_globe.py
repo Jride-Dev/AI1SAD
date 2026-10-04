@@ -40,9 +40,9 @@ def create_database(path: Path) -> None:
 
 def create_geocodes(path: Path) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["Location", "Latitude", "Longitude"])
+        writer = csv.DictWriter(handle, fieldnames=["Location", "Latitude", "Longitude", "ReviewStatus"])
         writer.writeheader()
-        writer.writerow({"Location": "Example Beach", "Latitude": 27.5, "Longitude": -80.2})
+        writer.writerow({"Location": "Example Beach", "Latitude": 27.5, "Longitude": -80.2, "ReviewStatus": "reviewed"})
 
 
 def create_hal(path: Path) -> None:
@@ -104,7 +104,7 @@ def test_outcome_and_provocation_are_conservative():
 
 
 def test_approximate_cache_coordinate_must_match_known_country():
-    geocodes = {"lighthouse beach": (40.6290808, -73.2211281)}
+    geocodes = {"lighthouse beach": (40.6290808, -73.2211281, True)}
 
     coordinates, source, confidence = coordinates_for_record(
         {"country": "AUSTRALIA", "location_public": "Lighthouse Beach"},
@@ -116,6 +116,19 @@ def test_approximate_cache_coordinate_must_match_known_country():
     assert confidence == "unknown"
     assert coordinate_matches_country(-31.9, 115.8, "AUSTRALIA") is True
     assert coordinate_matches_country(40.6, -73.2, "AUSTRALIA") is False
+    assert coordinate_matches_country(41.68, -69.96, "USA") is True
+    assert coordinate_matches_country(-43.912705, -176.475029, "USA") is False
+
+
+def test_unreviewed_cache_coordinate_is_never_plotted():
+    coordinates, source, confidence = coordinates_for_record(
+        {"country": "USA", "location_public": "Chatham Island"},
+        {"chatham island": (-43.912705, -176.475029, False)},
+    )
+
+    assert coordinates is None
+    assert source == "unreviewed_geocode_rejected"
+    assert confidence == "unknown"
 
 
 def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pytest.MonkeyPatch):
@@ -128,7 +141,11 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
         "schema_version": "incident_globe_v1",
         "generated_at": "2026-10-02T00:00:00+00:00",
         "range": {"start_year": 2000, "end_year": 2026},
-        "summary": {"total_records": 3, "country_mismatch_coordinates_rejected": 2},
+        "summary": {
+            "total_records": 3,
+            "country_mismatch_coordinates_rejected": 2,
+            "unreviewed_geocode_coordinates_rejected": 7,
+        },
         "data_boundaries": {"coordinates_are_not_inferred": True},
     }
     monkeypatch.setattr(api_v1, "_incident_globe_records", lambda: (records, dataset))
@@ -140,6 +157,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
     assert payload["summary"]["mapped_records"] == 1
     assert payload["summary"]["dataset_total_records"] == 3
     assert payload["summary"]["dataset_country_mismatch_coordinates_rejected"] == 2
+    assert payload["summary"]["dataset_unreviewed_geocode_coordinates_rejected"] == 7
 
 
 def test_globe_endpoint_rejects_unsupported_filters(monkeypatch: pytest.MonkeyPatch):

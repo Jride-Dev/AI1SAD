@@ -151,6 +151,9 @@ def _globe_summary(records: list[dict[str, Any]], dataset: dict[str, Any]) -> di
         "dataset_country_mismatch_coordinates_rejected": dataset.get("summary", {}).get(
             "country_mismatch_coordinates_rejected", 0
         ),
+        "dataset_unreviewed_geocode_coordinates_rejected": dataset.get("summary", {}).get(
+            "unreviewed_geocode_coordinates_rejected", 0
+        ),
     }
 
 
