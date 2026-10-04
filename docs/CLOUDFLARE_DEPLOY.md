@@ -150,6 +150,7 @@ Validation completed October 3, 2026:
 - Render production service: live at `api.ai1sad.org`; MongoDB Atlas is configured, the DNS-only CNAME is verified, managed TLS is active, `/health` returns HTTP `200`, and the 2020s globe query returns `668` records with the expected CORS origin.
 - Frontend production routing: explicit `VITE_AI1SAD_API_BASE_URL` remains authoritative; production hostnames use `https://api.ai1sad.org` if the build variable is absent, while local development retains `http://localhost:8000`.
 - Cloudflare Worker production deploy: version `af066447-76bf-45b4-8864-eb07ea0e35b4` passed; live browser verification showed the 2020-2026 filter with `668` records, `211` mapped, and `457` unresolved.
+- Incident Globe 1990-1999 expansion: Cloudflare Worker version `2dfb96ae-a58d-4d47-90a3-12bab0557cd4` passed; the production API and browser show `691` records, `380` mapped, and `311` unresolved for the 1990s filter, while the all-years view shows `4,089` total, `2,307` mapped, and `1,782` unresolved.
 - README local links/images check: `64` checked, `0` missing.
 - Changed-file secret and prohibited-language scans: passed with no credential values or prohibited claims.
 - Git whitespace check: passed with CRLF normalization warnings only.

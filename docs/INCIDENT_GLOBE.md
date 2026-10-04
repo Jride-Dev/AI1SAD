@@ -90,7 +90,7 @@ Validation completed October 4, 2026:
 - Full-history vendor validation: `1,914` unique contexts accepted; `1,115` low relevance, `562` country mismatch, `466` missing/invalid, `142` too far inland, and `43` unknown country boundary results rejected
 - Chatham Island regression: the 21-Jul-2001 Massachusetts record resolves to `41.68227, -70.01460`, with `0.98` relevance and `0.58 km` coastline distance
 - local Mongo-backed API verification: full query returned `4,089` total, `2,307` mapped, and `1,782` unresolved; `decade=1990` returned `691` total, `380` mapped, and `311` unresolved
-- live production verification: pending deployment
+- live production verification: API and browser render `4,089` total, `2,307` mapped, and `1,782` unresolved; selecting the 1990s layer renders `691` total, `380` mapped, and `311` unresolved
 - MkDocs strict build, README local-link check (`64` checked, `0` missing), changed-file secret scan, prohibited-language scan, and Git whitespace check: passed
 
 ## Next Handoff
