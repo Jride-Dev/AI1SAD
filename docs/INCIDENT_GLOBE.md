@@ -84,7 +84,7 @@ Validation completed October 3, 2026:
 - frontend production build: passed
 - MongoDB projection rebuild: `3,398` records inserted; `452` source-coordinate records mapped, `2,946` unresolved, and `1,463` unreviewed cache coordinates withheld
 - Chatham Island regression fixture: the 21-Jul-2001 Massachusetts record cannot use the New Zealand cache coordinate
-- live browser verification: corrected counts rendered and the front-face marker bundle deployed as Cloudflare Worker version `f378f220-3b33-44df-a42f-6d8f67cab7ab`
+- live production verification: the API exposes the `1,463`-record withheld-cache count, the Chatham Island record has no coordinates, zero fatal records are plotted, and the browser renders `3,398` total, `452` mapped, and `2,946` unresolved
 - MkDocs strict build, README local-link check, changed-file secret scan, prohibited-language scan, and Git whitespace check: passed
 
 ## Next Handoff
