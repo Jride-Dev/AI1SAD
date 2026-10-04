@@ -148,6 +148,9 @@ def _globe_summary(records: list[dict[str, Any]], dataset: dict[str, Any]) -> di
         "provocation_counts": provocation_counts,
         "decade_counts": decade_counts,
         "dataset_total_records": dataset.get("summary", {}).get("total_records", len(records)),
+        "dataset_country_mismatch_coordinates_rejected": dataset.get("summary", {}).get(
+            "country_mismatch_coordinates_rejected", 0
+        ),
     }
 
 

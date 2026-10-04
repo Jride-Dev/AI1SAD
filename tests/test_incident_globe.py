@@ -9,7 +9,14 @@ import pytest
 from fastapi import HTTPException
 
 from app import api_v1
-from app.services.incident_globe import build_globe_dataset, explicitly_invalid, outcome_category, provocation_label
+from app.services.incident_globe import (
+    build_globe_dataset,
+    coordinate_matches_country,
+    coordinates_for_record,
+    explicitly_invalid,
+    outcome_category,
+    provocation_label,
+)
 
 
 COLUMNS = [
@@ -96,6 +103,21 @@ def test_outcome_and_provocation_are_conservative():
     assert explicitly_invalid({"incident_type": "Questionable", "species_common": None}) is False
 
 
+def test_approximate_cache_coordinate_must_match_known_country():
+    geocodes = {"lighthouse beach": (40.6290808, -73.2211281)}
+
+    coordinates, source, confidence = coordinates_for_record(
+        {"country": "AUSTRALIA", "location_public": "Lighthouse Beach"},
+        geocodes,
+    )
+
+    assert coordinates is None
+    assert source == "country_mismatch_rejected"
+    assert confidence == "unknown"
+    assert coordinate_matches_country(-31.9, 115.8, "AUSTRALIA") is True
+    assert coordinate_matches_country(40.6, -73.2, "AUSTRALIA") is False
+
+
 def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pytest.MonkeyPatch):
     records = [
         {"record_id": "a", "decade": 2000, "provocation": "unprovoked", "outcome_category": "fatal", "mapped": True},
@@ -106,7 +128,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
         "schema_version": "incident_globe_v1",
         "generated_at": "2026-10-02T00:00:00+00:00",
         "range": {"start_year": 2000, "end_year": 2026},
-        "summary": {"total_records": 3},
+        "summary": {"total_records": 3, "country_mismatch_coordinates_rejected": 2},
         "data_boundaries": {"coordinates_are_not_inferred": True},
     }
     monkeypatch.setattr(api_v1, "_incident_globe_records", lambda: (records, dataset))
@@ -117,6 +139,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
     assert payload["filters"] == {"decade": 2020, "provocation": "unprovoked", "outcome": "non_fatal"}
     assert payload["summary"]["mapped_records"] == 1
     assert payload["summary"]["dataset_total_records"] == 3
+    assert payload["summary"]["dataset_country_mismatch_coordinates_rejected"] == 2
 
 
 def test_globe_endpoint_rejects_unsupported_filters(monkeypatch: pytest.MonkeyPatch):

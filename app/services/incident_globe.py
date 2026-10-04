@@ -44,6 +44,30 @@ CONSUMED_PATTERNS = (
     "swallowed whole",
 )
 
+# Broad envelopes only gate approximate cache matches. Source-provided coordinates
+# remain untouched, and ambiguous cache points become unresolved rather than guessed.
+COUNTRY_COORDINATE_BOUNDS: dict[str, tuple[tuple[float, float, float, float], ...]] = {
+    "australia": (
+        (-44.5, -9.0, 112.0, 154.5),
+        (-11.5, -9.5, 105.0, 106.5),
+        (-13.0, -11.0, 96.0, 97.5),
+    ),
+    "ecuador": ((-5.5, 2.0, -82.0, -75.0), (-2.0, 2.0, -93.0, -88.0)),
+    "fiji": ((-21.0, -12.0, 176.0, 180.0), (-21.0, -12.0, -180.0, -177.0)),
+    "mauritius": ((-21.0, -18.5, 56.0, 58.0), (-20.5, -18.5, 63.0, 64.5)),
+    "new zealand": ((-48.0, -33.0, 165.0, 180.0), (-48.0, -33.0, -180.0, -175.0)),
+    "puerto rico": ((17.5, 18.7, -67.5, -65.0),),
+    "reunion": ((-22.0, -20.0, 54.0, 56.0),),
+    "south africa": ((-35.5, -22.0, 16.0, 33.5),),
+    "st helena british overseas territory": (
+        (-17.0, -15.0, -6.5, -4.5),
+        (-8.5, -7.0, -15.0, -13.0),
+        (-38.5, -36.5, -13.0, -11.0),
+    ),
+    "st maartin": ((18.0, 18.2, -63.2, -62.8),),
+    "st maarten": ((18.0, 18.2, -63.2, -62.8),),
+}
+
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -74,6 +98,16 @@ def as_int(value: Any) -> int | None:
 def location_key(value: Any) -> str:
     text = (clean_text(value) or "").casefold()
     return re.sub(r"[^a-z0-9]+", " ", text).strip()
+
+
+def coordinate_matches_country(latitude: float, longitude: float, country: Any) -> bool:
+    bounds = COUNTRY_COORDINATE_BOUNDS.get(location_key(country))
+    if not bounds:
+        return True
+    return any(
+        min_lat <= latitude <= max_lat and min_lon <= longitude <= max_lon
+        for min_lat, max_lat, min_lon, max_lon in bounds
+    )
 
 
 def valid_coordinate(latitude: Any, longitude: Any) -> bool:
@@ -175,6 +209,9 @@ def coordinates_for_record(record: dict[str, Any], geocodes: dict[str, tuple[flo
     cached = geocodes.get(location_key(record.get("location_public") or record.get("location_raw")))
     if cached:
         lat, lon = cached
+        country = record.get("country") or record.get("country_normalized") or record.get("country_raw")
+        if not coordinate_matches_country(lat, lon, country):
+            return None, "country_mismatch_rejected", "unknown"
         return {"type": "Point", "coordinates": [lon, lat]}, "local_geocode_cache", "approximate"
     return None, "unresolved", "unknown"
 
@@ -323,6 +360,9 @@ def build_globe_dataset(
     provocation_counts = Counter(record["provocation"] for record in records)
     decade_counts = Counter(record["decade"] for record in records)
     mapped_count = sum(record["mapped"] for record in records)
+    country_mismatch_rejections = sum(
+        record["coordinate_source"] == "country_mismatch_rejected" for record in records
+    )
     return {
         "schema_version": GLOBE_SCHEMA_VERSION,
         "generated_at": generated_at or utc_now_iso(),
@@ -338,6 +378,7 @@ def build_globe_dataset(
             "hal_exact_matches_attached": sum(len(items) for items in hal_by_root.values()),
             "hal_standalone_records": len(hal_standalone),
             "explicit_invalid_records_excluded": excluded_invalid_records,
+            "country_mismatch_coordinates_rejected": country_mismatch_rejections,
         },
         "data_boundaries": {
             "victim_names_included": False,
@@ -346,6 +387,7 @@ def build_globe_dataset(
             "source_labels_are_confirmed_facts": False,
             "media_invented": False,
             "explicit_invalid_rows_included": False,
+            "approximate_cache_coordinates_country_checked": True,
         },
         "records": records,
     }

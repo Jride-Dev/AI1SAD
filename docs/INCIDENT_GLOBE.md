@@ -8,19 +8,20 @@ Open the frontend at `http://localhost:5174/incident-globe`. The supporting read
 
 ## Current Build
 
-The October 2, 2026 build contains:
+The October 3, 2026 build contains:
 
 | Measure | Count |
 | --- | ---: |
 | Deduplicated records | 3,398 |
-| Records with usable coordinates | 1,915 |
-| Records retained without a map point | 1,483 |
+| Records with usable coordinates | 1,811 |
+| Records retained without a map point | 1,587 |
+| Impossible approximate cache coordinates rejected | 104 |
 | Explicit invalid/no-shark-involvement rows excluded | 174 |
 | Sharks Happen rows considered in the period | 422 |
 | Reviewed exact Sharks Happen matches attached | 96 |
 | Standalone Sharks Happen source records | 326 |
 
-Unresolved locations remain visible in totals and filtering but are not placed on the globe. AI1SAD does not invent coordinates from broad or ambiguous location text.
+Unresolved locations remain visible in totals and filtering but are not placed on the globe. AI1SAD does not invent coordinates from broad or ambiguous location text. Approximate local-cache coordinates are checked against broad country envelopes; an impossible match such as an Australian beach resolving to a North American namesake is rejected and retained as unresolved. Reviewed source coordinates are not rewritten by this check.
 
 ## Interaction
 
@@ -30,6 +31,7 @@ Unresolved locations remain visible in totals and filtering but are not placed o
 - Hover over a mapped marker for a compact summary.
 - Select a marker to open an incident infographic with event fields, coordinate confidence, source attribution, links, and any approved media references.
 - Drag to rotate, use the mouse wheel or zoom controls to change scale, and toggle automatic rotation.
+- Markers use front-face rendering and globe depth testing so points on the far hemisphere cannot appear through or around the Earth surface.
 
 The globe uses NASA's [Blue Marble](https://visibleearth.nasa.gov/images/57723/the-blue-marble) imagery as its Earth texture.
 
@@ -58,6 +60,8 @@ F:\Python310\python.exe -m app.services.incident_globe --mongo
 
 This writes ignored local data to `data/public/incident_globe_2000_2026.json` and replaces the internal MongoDB `incident_globe` projection when MongoDB is enabled.
 
+The coordinate-review queues are `data/review/incident_globe_country_mismatch_review_2026-10-03.csv` for all 104 rejected records and `data/review/incident_globe_australia_coordinate_review_2026-10-03.csv` for the 56 Australian records. Reviewers can fill `reviewed_latitude`, `reviewed_longitude`, `review_status`, and `review_notes`; rejected coordinates and source identifiers remain alongside the blank review fields for provenance.
+
 ## Safety, Privacy, And Limits
 
 - The projection is built from the scrubbed incident database and does not expose victim names or private analyst notes.
@@ -66,8 +70,9 @@ This writes ignored local data to `data/public/incident_globe_2000_2026.json` an
 - Explicit invalid/no-shark-involvement rows are excluded. Questionable records remain source-attributed rather than silently discarded.
 - No rights-cleared per-case image collection is currently available. The infographic supports approved media references but does not invent, scrape, or hotlink images.
 - A mapped point may be approximate. Coordinate confidence and provenance are shown in the infographic.
+- Country-envelope checks are deliberately broad and apply only to approximate cache matches. They prevent obvious cross-country placement errors but do not replace human coordinate review or prove that a remaining point is exact.
 - Incident density is not a risk rate and does not account for water-use exposure, reporting differences, or population.
 
 ## Next Handoff
 
-The next bounded globe work is human-reviewed coordinate resolution for the 1,483 unresolved records, rights review for case media, and expansion to pre-2000 decades. That work must preserve source independence and may not auto-merge likely duplicate candidates. The project roadmap retains the target full working-version launch date of September 7, 2026.
+The next bounded globe work is human-reviewed coordinate resolution for the 1,587 unresolved records, including the 104 rejected cache matches, rights review for case media, and expansion to pre-2000 decades. That work must preserve source independence and may not auto-merge likely duplicate candidates. The project roadmap retains the target full working-version launch date of September 7, 2026.

@@ -265,7 +265,14 @@ const GlobeCanvas = forwardRef<GlobeHandle, {
         const textureMap = markerTexture(outcomeConfig[outcome].color, outcome === "fatal_consumed");
         const mesh = new THREE.InstancedMesh(
           new THREE.PlaneGeometry(0.13, 0.13),
-          new THREE.MeshBasicMaterial({ map: textureMap, transparent: true, alphaTest: 0.08, side: THREE.DoubleSide, depthWrite: false }),
+          new THREE.MeshBasicMaterial({
+            map: textureMap,
+            transparent: true,
+            alphaTest: 0.08,
+            side: THREE.FrontSide,
+            depthTest: true,
+            depthWrite: false,
+          }),
           subset.length,
         );
         const dummy = new THREE.Object3D();
