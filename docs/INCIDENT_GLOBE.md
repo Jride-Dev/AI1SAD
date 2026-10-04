@@ -86,6 +86,7 @@ Validation completed October 4, 2026:
 - Local projection rebuild: `3,398` records; `1,927` mapped, `1,471` unresolved, and `1,475` contextual coordinates accepted
 - Full-history vendor validation: `1,914` unique contexts accepted; `1,115` low relevance, `562` country mismatch, `466` missing/invalid, `142` too far inland, and `43` unknown country boundary results rejected
 - Chatham Island regression: the 21-Jul-2001 Massachusetts record resolves to `41.68227, -70.01460`, with `0.98` relevance and `0.58 km` coastline distance
+- live production verification: API and browser render `3,398` total, `1,927` mapped, and `1,471` unresolved; the API reports `1,475` contextual map points and `93` mapped fatal records
 - MkDocs strict build, README local-link check, changed-file secret scan, prohibited-language scan, and Git whitespace check: passed
 
 ## Next Handoff
