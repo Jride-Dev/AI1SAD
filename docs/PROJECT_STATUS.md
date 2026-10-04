@@ -32,6 +32,7 @@ The Incident Globe does not change warning scoring, alerts, replay outputs, spec
 - The public frontend bundle initially retained the local API fallback; the bounded frontend routing fix keeps explicit build variables authoritative while using `https://api.ai1sad.org` on production hostnames
 - Cloudflare Worker version `af066447-76bf-45b4-8864-eb07ea0e35b4` deployed successfully; live visual verification confirmed `668` records, `211` mapped, and `457` unresolved for 2020-2026
 - Incident Globe coordinate hardening: approximate cache matches outside the stated country are retained as unresolved, and front-face marker rendering prevents far-hemisphere bleed-through. No source coordinates, source claims, outcomes, provocation labels, scoring, alerts, replay outputs, or species findings changed.
+- Incident Globe hardening deployment: MongoDB projection rebuilt with `104` rejected country mismatches; Cloudflare Worker version `f378f220-3b33-44df-a42f-6d8f67cab7ab` is live; `337` backend tests, `31` frontend tests, the frontend production build, MkDocs strict build, README links, safety scans, and whitespace validation passed.
 
 ## Major Completed Systems
 

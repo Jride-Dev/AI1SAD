@@ -73,6 +73,19 @@ The coordinate-review queues are `data/review/incident_globe_country_mismatch_re
 - Country-envelope checks are deliberately broad and apply only to approximate cache matches. They prevent obvious cross-country placement errors but do not replace human coordinate review or prove that a remaining point is exact.
 - Incident density is not a risk rate and does not account for water-use exposure, reporting differences, or population.
 
+## Validation
+
+Validation completed October 3, 2026:
+
+- focused Incident Globe tests: `5 passed`
+- full backend tests: `337 passed`, with two existing FastAPI startup-event deprecation warnings
+- frontend tests: `31 passed`
+- frontend production build: passed
+- MongoDB projection rebuild: `3,398` records inserted; `1,811` mapped, `1,587` unresolved, and `104` country-mismatch coordinates rejected
+- live production audit: zero Australian records remain mapped in the mainland U.S. coordinate cluster
+- live browser verification: corrected counts rendered and the front-face marker bundle deployed as Cloudflare Worker version `f378f220-3b33-44df-a42f-6d8f67cab7ab`
+- MkDocs strict build, README local-link check, changed-file secret scan, prohibited-language scan, and Git whitespace check: passed
+
 ## Next Handoff
 
 The next bounded globe work is human-reviewed coordinate resolution for the 1,587 unresolved records, including the 104 rejected cache matches, rights review for case media, and expansion to pre-2000 decades. That work must preserve source independence and may not auto-merge likely duplicate candidates. The project roadmap retains the target full working-version launch date of September 7, 2026.
