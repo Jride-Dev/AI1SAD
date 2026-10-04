@@ -32,7 +32,8 @@ const outcomeConfig: Record<GlobeOutcome, { label: string; color: string; icon: 
 };
 
 const decades = [
-  { value: null, label: "All 2000–2026" },
+  { value: null, label: "All 1990–2026" },
+  { value: 1990, label: "1990s" },
   { value: 2000, label: "2000s" },
   { value: 2010, label: "2010s" },
   { value: 2020, label: "2020–2026" },
@@ -103,7 +104,7 @@ export function IncidentGlobePage() {
 
       <header className="globe-heading">
         <p className="eyebrow">AI1SAD incident atlas</p>
-        <h2>Shark incidents, 2000–2026</h2>
+        <h2>Shark incidents, 1990–2026</h2>
         <p>Deduplicated source records from the AI1SAD database, GSAF-derived files, ASID, and Hal / Sharks Happen.</p>
       </header>
 

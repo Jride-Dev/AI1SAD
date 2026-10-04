@@ -17,7 +17,7 @@ The public deployment is a controlled demo. It does not enable admin writes, ale
 
 The production branch must contain the reviewed globe, deployment configuration, and documentation. Do not deploy directly from the current dirty working tree. Commit and push only after review.
 
-The configured MongoDB database currently contains `40,309` normalized incident documents and `3,398` Incident Globe projection documents. Keep the connection string in the Render secret environment variable named `MONGODB_URI` only.
+The configured MongoDB database currently contains `40,309` normalized incident documents. The pending 1990-2026 Incident Globe deployment contains `4,089` projection documents. Keep the connection string in the Render secret environment variable named `MONGODB_URI` only.
 
 ## Frontend Workers Static Assets Project
 
@@ -129,7 +129,7 @@ Confirm that an Origin request from `https://ai1sad.org` receives an appropriate
 
 ## Known Limits
 
-- `1,471` current globe records have no validated coordinate and remain unplotted. Contextual vendor results that fail relevance, country-boundary, or 25 km coastline validation remain review-only.
+- `1,782` current globe records have no validated coordinate and remain unplotted. Contextual vendor results that fail relevance, country-boundary, or 25 km coastline validation remain review-only.
 - Per-case media remains empty until rights and privacy review is complete.
 - The public API has no end-user authentication or production billing system.
 - The current frontend dependency audit has known development/build-chain advisories documented in [Dependency Security Review](DEPENDENCY_SECURITY_REVIEW.md). None originate from Three.js, but they require a separate bounded maintenance pass.
@@ -138,7 +138,7 @@ Confirm that an Origin request from `https://ai1sad.org` receives an appropriate
 
 Validation completed October 3, 2026:
 
-- MongoDB connectivity: configured; `40,309` incident documents and `3,398` Incident Globe documents confirmed.
+- MongoDB connectivity: configured; `40,309` incident documents and `4,089` Incident Globe documents confirmed after the 1990-1999 expansion.
 - Backend: `336 passed`, with two existing FastAPI startup-event deprecation warnings.
 - Production CORS: `https://ai1sad.org` allowed; an unrelated test origin denied.
 - Frontend tests: `30 passed`.

@@ -68,7 +68,7 @@ from app.replay.library import get_replay_library_item, list_replay_library
 
 
 router = APIRouter(prefix="/api/v1")
-INCIDENT_GLOBE_ARTIFACT = FilePath("data/public/incident_globe_2000_2026.json")
+INCIDENT_GLOBE_ARTIFACT = FilePath("data/public/incident_globe_1990_2026.json")
 
 
 def maybe_demo(payload: dict[str, Any]) -> dict[str, Any]:
@@ -121,7 +121,9 @@ def _incident_globe_records() -> tuple[list[dict[str, Any]], dict[str, Any]]:
         database = get_database()
         collection = database[COLLECTIONS["incident_globe"]]
         if collection.estimated_document_count() > 0:
-            build = database["dataset_builds"].find_one({"_id": "incident_globe_2000_2026"}) or {}
+            build = database["dataset_builds"].find_one({"_id": "incident_globe_1990_2026"})
+            if not build:
+                build = database["dataset_builds"].find_one({"_id": "incident_globe_2000_2026"}) or {}
             return [mongo_public_doc(item) for item in collection.find({}, {"_id": 0})], build
     if not INCIDENT_GLOBE_ARTIFACT.exists():
         raise HTTPException(status_code=503, detail="Incident globe dataset has not been built")
@@ -368,8 +370,8 @@ def incident_globe(
     provocation: Annotated[str, Query()] = "all",
     outcome: Annotated[str, Query()] = "all",
 ) -> dict[str, Any]:
-    if decade is not None and decade not in {2000, 2010, 2020}:
-        raise HTTPException(status_code=422, detail="decade must be 2000, 2010, or 2020")
+    if decade is not None and decade not in {1990, 2000, 2010, 2020}:
+        raise HTTPException(status_code=422, detail="decade must be 1990, 2000, 2010, or 2020")
     if provocation not in {"all", "provoked", "unprovoked", "unknown", "conflicted"}:
         raise HTTPException(status_code=422, detail="invalid provocation filter")
     if outcome not in {"all", "fatal", "fatal_consumed", "non_fatal", "no_injury"}:
@@ -385,7 +387,7 @@ def incident_globe(
     return {
         "schema_version": dataset.get("schema_version", "incident_globe_v1"),
         "generated_at": dataset.get("generated_at"),
-        "range": dataset.get("range", {"start_year": 2000, "end_year": 2026}),
+        "range": dataset.get("range", {"start_year": 1990, "end_year": 2026}),
         "filters": {"decade": decade, "provocation": provocation, "outcome": outcome},
         "summary": _globe_summary(filtered, dataset),
         "data_boundaries": dataset.get("data_boundaries", {}),

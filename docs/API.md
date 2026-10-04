@@ -2,13 +2,13 @@
 
 ## Incident Globe
 
-`GET /api/v1/incidents-globe` returns the scrubbed 2000-2026 geographical projection used by the frontend globe.
+`GET /api/v1/incidents-globe` returns the scrubbed 1990-2026 geographical projection used by the frontend globe. The `1990` filter covers 1990 through 1999; the `2000` filter begins at 2000.
 
 Optional query parameters:
 
 | Parameter | Values |
 | --- | --- |
-| `decade` | `2000`, `2010`, `2020` |
+| `decade` | `1990`, `2000`, `2010`, `2020` |
 | `provocation` | `all`, `provoked`, `unprovoked`, `unknown`, `conflicted` |
 | `outcome` | `all`, `fatal`, `fatal_consumed`, `non_fatal`, `no_injury` |
 

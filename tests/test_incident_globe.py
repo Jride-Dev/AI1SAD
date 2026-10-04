@@ -178,7 +178,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
     dataset = {
         "schema_version": "incident_globe_v1",
         "generated_at": "2026-10-02T00:00:00+00:00",
-        "range": {"start_year": 2000, "end_year": 2026},
+        "range": {"start_year": 1990, "end_year": 2026},
         "summary": {
             "total_records": 3,
             "country_mismatch_coordinates_rejected": 2,
@@ -203,8 +203,11 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
 def test_globe_endpoint_rejects_unsupported_filters(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(api_v1, "_incident_globe_records", lambda: ([], {}))
 
+    payload = api_v1.incident_globe(decade=1990, provocation="all", outcome="all")
+    assert payload["filters"]["decade"] == 1990
+
     with pytest.raises(HTTPException) as error:
-        api_v1.incident_globe(decade=1990, provocation="all", outcome="all")
+        api_v1.incident_globe(decade=1980, provocation="all", outcome="all")
     assert error.value.status_code == 422
 
     with pytest.raises(HTTPException):

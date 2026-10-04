@@ -59,7 +59,7 @@ Default collections:
 - `archival_import_reports`: internal archival metadata import summaries.
 - `sharks_happen_sources`: private, source-attributed Sharks Happen workbook rows with normalization warnings and duplicate-review candidates.
 - `sharks_happen_import_reports`: internal Sharks Happen import and comparison summaries.
-- `incident_globe`: scrubbed, derived 2000-2026 presentation records used by the read-only Incident Globe endpoint. The collection stores source attribution and optional supported coordinates, but excludes private victim names and raw private source claims.
+- `incident_globe`: scrubbed, derived 1990-2026 presentation records used by the read-only Incident Globe endpoint. The collection stores source attribution and optional supported coordinates, but excludes private victim names and raw private source claims.
 
 Build or replace the local artifact and MongoDB globe projection with:
 

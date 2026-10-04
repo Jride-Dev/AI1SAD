@@ -16,7 +16,7 @@ DEFAULT_DATABASE = Path("data/processed/complete_incidents_scrubbed.sqlite")
 DEFAULT_GEOCODE_CACHE = Path("data/raw/geocode_cache.csv")
 DEFAULT_CONTEXT_GEOCODES = Path("data/review/incident_globe_context_geocodes_1900_2026.csv")
 DEFAULT_HAL_STAGING = Path("data/imports/sharks_happen/staging/latest_sharks_happen_sources.json")
-DEFAULT_OUTPUT = Path("data/public/incident_globe_2000_2026.json")
+DEFAULT_OUTPUT = Path("data/public/incident_globe_1990_2026.json")
 
 SOURCE_METADATA = {
     "local_legacy_attacks_csv": {"label": "AI1SAD local legacy incident file", "url": None},
@@ -317,7 +317,7 @@ def build_globe_dataset(
     geocode_cache_path: str | Path = DEFAULT_GEOCODE_CACHE,
     context_geocode_path: str | Path = DEFAULT_CONTEXT_GEOCODES,
     hal_staging_path: str | Path = DEFAULT_HAL_STAGING,
-    start_year: int = 2000,
+    start_year: int = 1990,
     end_year: int = 2026,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
@@ -486,22 +486,23 @@ def persist_dataset(db: Any, payload: dict[str, Any]) -> dict[str, Any]:
     collection.delete_many({"year": {"$gte": payload["range"]["start_year"], "$lte": payload["range"]["end_year"]}})
     if payload["records"]:
         collection.insert_many(payload["records"], ordered=False)
+    build_id = f"incident_globe_{payload['range']['start_year']}_{payload['range']['end_year']}"
     db["dataset_builds"].replace_one(
-        {"_id": "incident_globe_2000_2026"},
-        {"_id": "incident_globe_2000_2026", **{key: value for key, value in payload.items() if key != "records"}},
+        {"_id": build_id},
+        {"_id": build_id, **{key: value for key, value in payload.items() if key != "records"}},
         upsert=True,
     )
     return {"records_inserted": len(payload["records"]), "collection": COLLECTIONS["incident_globe"]}
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Build the AI1SAD 2000-2026 incident globe dataset.")
+    parser = argparse.ArgumentParser(description="Build the AI1SAD 1990-2026 incident globe dataset.")
     parser.add_argument("--database", default=str(DEFAULT_DATABASE))
     parser.add_argument("--geocode-cache", default=str(DEFAULT_GEOCODE_CACHE))
     parser.add_argument("--context-geocodes", default=str(DEFAULT_CONTEXT_GEOCODES))
     parser.add_argument("--hal-staging", default=str(DEFAULT_HAL_STAGING))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
-    parser.add_argument("--start-year", type=int, default=2000)
+    parser.add_argument("--start-year", type=int, default=1990)
     parser.add_argument("--end-year", type=int, default=2026)
     parser.add_argument("--mongo", action="store_true")
     return parser

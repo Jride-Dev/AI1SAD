@@ -2,7 +2,7 @@
 
 ## incident_globe
 
-A derived scrubbed projection for the 2000-2026 geographical explorer. Each document represents one deduplicated event or one still-standalone source record and includes:
+A derived scrubbed projection for the 1990-2026 geographical explorer. Each document represents one deduplicated event or one still-standalone source record and includes:
 
 - `record_id`, optional `canonical_record_id`, `year`, `decade`, date, public location, activity, and injury summary
 - `outcome_category`: `fatal`, `fatal_consumed`, `non_fatal`, or `no_injury`
