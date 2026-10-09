@@ -53,6 +53,10 @@ data/public/incident_globe_*.json
 data/private/
 data/media_attachments/
 
+# Private source documents copied into docs for local research only.
+docs/Sharks Happen Stats.xlsx
+docs/Steven Payne Attack.docx
+
 # Frontend local dependencies and generated build output.
 frontend/node_modules/
 frontend/dist/
