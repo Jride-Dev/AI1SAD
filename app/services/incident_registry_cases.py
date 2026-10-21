@@ -10,6 +10,7 @@ from app.services.incident_registry import IncidentRegistryRecord, create_regist
 
 
 GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID = "AI1SAD-WA-GLENFIELD-BEACH-2026-09-14"
+ORIENT_BEACH_SOUTH_AFRICA_2026_CASE_ID = "AI1SAD-ZA-ORIENT-BEACH-2026-10-20"
 
 
 GLENFIELD_BEACH_MEL_ISMAIL_2026: dict[str, Any] = {
@@ -286,8 +287,190 @@ GLENFIELD_BEACH_MEL_ISMAIL_2026: dict[str, Any] = {
 }
 
 
+ORIENT_BEACH_SOUTH_AFRICA_2026: dict[str, Any] = {
+    "ai1sad_case_id": ORIENT_BEACH_SOUTH_AFRICA_2026_CASE_ID,
+    "source_case_ids": [
+        "reuters:2026-10-20:orient-beach-fatality",
+        "ap:2026-10-20:orient-beach-fatality",
+        "timeslive:2026-10-20:orient-beach-fatality",
+        "openstreetmap:way:48959821",
+    ],
+    "registry_version": "AI1SAD-incident-registry-v1",
+    "review_status": "source_review",
+    "public_visibility": "public",
+    "incident_date_raw": "Tuesday 20 October 2026",
+    "incident_date_normalized": "2026-10-20",
+    "incident_time_raw": "early morning; police attended at about 07:00 local time",
+    "timezone": "Africa/Johannesburg",
+    "country": "South Africa",
+    "region": "Eastern Cape",
+    "area": "Buffalo City Metropolitan Municipality / KuGompo City (East London)",
+    "location": "Orient Beach",
+    "latitude": -33.02495,
+    "longitude": 27.91513,
+    "coordinate_confidence": "reviewed_named_beach_centroid",
+    "water_body": "Indian Ocean",
+    "activity": "open-water swimming",
+    "victim_context": "65-year-old woman and regular open-water swimmer",
+    "human_group_context": (
+        "The swimmer was in the water near an open-water swimming group. Fellow swimmers "
+        "responded to her distress signal, brought her ashore, and attempted emergency care."
+    ),
+    "injury_summary": (
+        "Fatal injuries after two severe bites reported to the thigh and upper arm; "
+        "the swimmer was declared dead at the scene."
+    ),
+    "injury_severity": "fatal",
+    "fatality": True,
+    "body_recovered": True,
+    "consumption_evidence": "none_reported",
+    "official_species_status": "unconfirmed",
+    "official_species_name": None,
+    "official_species_source_id": None,
+    "official_species_public_note": (
+        "The shark species was not identified in the reviewed police, municipal, or media reporting."
+    ),
+    "species_claims": [
+        {
+            "species_raw": "Unknown shark species",
+            "normalized_species": None,
+            "source_ids": [
+                "reuters:2026-10-20:orient-beach-fatality",
+                "ap:2026-10-20:orient-beach-fatality",
+            ],
+            "confidence": "unknown",
+            "attribution_notes": "Reviewed reporting explicitly left the shark species unknown.",
+        }
+    ],
+    "internal_species_hypotheses": [],
+    "species_disclosure_risk": "moderate",
+    "shark_size_claims": [],
+    "behavioral_hypotheses": [
+        {
+            "hypothesis": "unknown_insufficient_evidence",
+            "confidence": "unknown",
+            "source_ids": [
+                "reuters:2026-10-20:orient-beach-fatality",
+                "ap:2026-10-20:orient-beach-fatality",
+                "timeslive:2026-10-20:orient-beach-fatality",
+            ],
+            "rationale": (
+                "The reviewed reporting establishes a fatal shark incident but does not "
+                "establish shark intent, event mechanics, or a behavioral classification."
+            ),
+        }
+    ],
+    "primary_behavioral_hypothesis": "unknown_insufficient_evidence",
+    "behavioral_confidence": "unknown",
+    "alternative_hypotheses": [],
+    "rejected_hypotheses": ["confirmed_shark_intent", "mistaken_identity_candidate"],
+    "source_conflicts": [],
+    "source_links": [
+        {
+            "source_id": "reuters:2026-10-20:orient-beach-fatality",
+            "source_type": "media_report",
+            "source_name": "Reuters",
+            "source_url": "https://www.reuters.com/world/africa/woman-dies-after-shark-attack-south-africa-sabc-reports-2026-10-20/",
+            "source_date": "2026-10-20",
+            "source_title": "Shark kills woman swimming off South Africa's Eastern Cape",
+            "source_rights_note": "Citation and paraphrase only; copyrighted article body is not redistributed.",
+            "source_confidence": "plausible",
+            "linked_claims": [
+                "age",
+                "date",
+                "location",
+                "activity",
+                "injuries",
+                "fatality",
+                "rescue_sequence",
+                "species_unconfirmed",
+                "beach_closures",
+            ],
+            "public_citation_allowed": True,
+        },
+        {
+            "source_id": "ap:2026-10-20:orient-beach-fatality",
+            "source_type": "media_report",
+            "source_name": "Associated Press",
+            "source_url": "https://apnews.com/article/7b9110691f71319e3c0ecc56ef0567a0",
+            "source_date": "2026-10-20",
+            "source_title": "Shark kills woman swimming off South Africa's Eastern Cape, beaches closed",
+            "source_rights_note": "Citation and paraphrase only; copyrighted article body is not redistributed.",
+            "source_confidence": "plausible",
+            "linked_claims": [
+                "age",
+                "date",
+                "police_attendance_time",
+                "location",
+                "activity",
+                "fatality",
+                "rescue_sequence",
+                "inquest",
+                "beach_closures",
+            ],
+            "public_citation_allowed": True,
+        },
+        {
+            "source_id": "timeslive:2026-10-20:orient-beach-fatality",
+            "source_type": "media_report",
+            "source_name": "TimesLIVE",
+            "source_url": "https://www.timeslive.co.za/news/south-africa/2026-10-20-kugompo-city-records-first-fatal-shark-attack-since-1997/",
+            "source_date": "2026-10-20",
+            "source_title": "KuGompo City records first fatal shark attack since 1997",
+            "source_rights_note": "Citation and paraphrase only; copyrighted article body is not redistributed.",
+            "source_confidence": "plausible",
+            "linked_claims": [
+                "age",
+                "date",
+                "location",
+                "fatality",
+                "inquest",
+                "municipal_history",
+                "beach_closures",
+            ],
+            "public_citation_allowed": True,
+        },
+        {
+            "source_id": "openstreetmap:way:48959821",
+            "source_type": "unknown",
+            "source_name": "OpenStreetMap",
+            "source_url": "https://www.openstreetmap.org/way/48959821",
+            "source_title": "Orient Beach mapped feature",
+            "source_rights_note": "Named-beach centroid used for public map placement; not an incident-evidence source.",
+            "source_confidence": "plausible",
+            "linked_claims": ["named_beach_coordinates"],
+            "public_citation_allowed": True,
+        },
+    ],
+    "public_summary": (
+        "On 2026-10-20, a 65-year-old open-water swimmer died after a shark incident "
+        "at Orient Beach in KuGompo City (East London), Eastern Cape, South Africa. "
+        "Fellow swimmers brought her ashore and attempted emergency care. The shark "
+        "species and behavioral interpretation remain unconfirmed."
+    ),
+    "analyst_notes_private": (
+        "Current-event registry case. Do not infer species, provocation, or shark intent. "
+        "Re-review police or municipal findings if the inquest publishes new evidence."
+    ),
+    "provenance_notes": [
+        "Reuters and AP attributed the fatal incident confirmation to Buffalo City municipal authorities.",
+        "AP attributed the approximately 07:00 police attendance time and inquest status to Eastern Cape police.",
+        "Reuters reported two severe bites based on a witness account; this is retained as attributed reporting, not forensic reconstruction.",
+        "The Orient Beach map point is the reviewed named-beach centroid, not a claimed bite coordinate.",
+    ],
+    "normalization_warnings": [
+        "species_unconfirmed_public_records",
+        "behavior_unknown_insufficient_evidence",
+        "provocation_unclassified",
+        "injury_details_from_media_witness_reporting",
+        "coordinates_are_named_beach_centroid_not_incident_point",
+    ],
+}
+
+
 REAL_WORLD_REGISTRY_CASE_PAYLOADS: tuple[dict[str, Any], ...] = (
     GLENFIELD_BEACH_MEL_ISMAIL_2026,
+    ORIENT_BEACH_SOUTH_AFRICA_2026,
 )
 
 

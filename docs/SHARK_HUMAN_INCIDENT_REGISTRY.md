@@ -1,6 +1,6 @@
 # Shark-Human Incident Registry
 
-Phase 26B adds the first internal AI1SAD Shark-Human Incident Registry schema. The follow-up registry-data pass adds the first source-linked real-world seed case for the September 14, 2026 Glenfield Beach incident involving Mel Ismail.
+Phase 26B adds the AI1SAD Shark-Human Incident Registry schema. Follow-up registry-data passes add the source-linked September 14, 2026 Glenfield Beach incident and the public-safe October 20, 2026 Orient Beach, South Africa fatality.
 
 ## Local Registry Viewer
 
@@ -71,6 +71,29 @@ Public/privacy boundaries:
 - the source-linked case is internal/restricted registry data
 - public-safe output suppresses named-victim citation metadata for this active incident
 - the case does not create alerts, warnings, public-feed entries, drone observations, replay facts, or scoring changes
+
+## Orient Beach, South Africa Case
+
+`AI1SAD-ZA-ORIENT-BEACH-2026-10-20` records the fatal incident reported at Orient Beach in KuGompo City (East London), Eastern Cape, on October 20, 2026. Reuters, Associated Press, and TimesLIVE support the date, location, age, swimming activity, fatal outcome, response sequence, police inquest, and beach closures. Copyrighted article text is not stored.
+
+The reviewed record preserves these bounded facts:
+
+- the victim was a 65-year-old open-water swimmer; her identity is not included in the public globe projection
+- fellow swimmers responded to distress, brought her ashore, and attempted emergency care
+- witness reporting described two severe bites, to the thigh and upper arm
+- the body was recovered and the outcome is `fatal`, not `fatal_consumed`
+- police attended at about 07:00 local time; this is not normalized as the exact incident time
+- the map point is the reviewed Orient Beach centroid, not a claimed bite coordinate
+- Orient Beach and nearby Eastern Beach were closed while authorities assessed safety
+
+Uncertainty and safety boundaries:
+
+- `official_species_status` is `unconfirmed`, with no public or internal species hypothesis
+- `primary_behavioral_hypothesis` remains `unknown_insufficient_evidence`
+- provocation remains `unknown`; activity and injury are not used to infer an unprovoked classification
+- no shark intent, mistaken-identity explanation, warning score, alert, replay fact, public-feed observation, or drone observation is created
+- only cases marked `public` enter the globe adapter; the restricted Glenfield case remains excluded
+- future inquest or municipal evidence requires a new source review before species, behavior, time, or coordinate semantics change
 
 ## Core Fields
 

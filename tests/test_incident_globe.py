@@ -14,6 +14,7 @@ from app.services.incident_globe import (
     coordinate_matches_country,
     coordinates_for_record,
     explicitly_invalid,
+    merge_public_registry_globe_records,
     outcome_category,
     provocation_label,
 )
@@ -99,6 +100,7 @@ def test_build_globe_dataset_deduplicates_sources_and_keeps_hal_standalone(tmp_p
         context_geocode_path=tmp_path / "missing-context.csv",
         hal_staging_path=hal,
         generated_at="2026-10-02T00:00:00+00:00",
+        include_public_registry=False,
     )
 
     assert payload["summary"]["total_records"] == 3
@@ -112,6 +114,43 @@ def test_build_globe_dataset_deduplicates_sources_and_keeps_hal_standalone(tmp_p
     standalone = next(record for record in payload["records"] if record["canonical_record_id"] is None)
     assert standalone["outcome_category"] == "no_injury"
     assert standalone["provocation"] == "unknown"
+
+
+def test_public_registry_case_is_added_without_restricted_cases(tmp_path: Path):
+    database = tmp_path / "incidents.sqlite"
+    create_database(database)
+
+    payload = build_globe_dataset(
+        database_path=database,
+        geocode_cache_path=tmp_path / "missing-geocodes.csv",
+        context_geocode_path=tmp_path / "missing-context.csv",
+        hal_staging_path=tmp_path / "missing-hal.json",
+        generated_at="2026-10-21T00:00:00+00:00",
+    )
+
+    registry_records = [
+        record
+        for record in payload["records"]
+        if record["visibility"] == "public_reviewed_registry"
+    ]
+    assert len(registry_records) == 1
+    [record] = registry_records
+    assert record["canonical_record_id"] == "AI1SAD-ZA-ORIENT-BEACH-2026-10-20"
+    assert record["coordinates"]["coordinates"] == [27.91513, -33.02495]
+    assert record["outcome_category"] == "fatal"
+    assert record["provocation"] == "unknown"
+    assert record["species_common"] is None
+    assert record["source_count"] == 4
+    assert payload["summary"]["public_registry_records_added"] == 1
+    assert payload["data_boundaries"]["restricted_registry_cases_included"] is False
+
+
+def test_public_registry_merge_does_not_duplicate_exact_existing_case():
+    records: list[dict] = []
+
+    assert merge_public_registry_globe_records(records, 1990, 2026) == 1
+    assert merge_public_registry_globe_records(records, 1990, 2026) == 0
+    assert len(records) == 1
 
 
 def test_outcome_and_provocation_are_conservative():

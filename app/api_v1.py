@@ -14,6 +14,7 @@ from app.models import PaginatedIncidents, PublicIncident, PublicLocation, Publi
 from app.mongodb import COLLECTIONS, get_database, public_match
 from app.risk_model import RISK_DISCLAIMER, RISK_FACTOR_DEFINITIONS, nearest_profile, score_risk
 from app.services.surveillance_engine import SURVEILLANCE_DISCLAIMER, score_surveillance_zones
+from app.services.incident_globe import merge_public_registry_globe_records
 from app.services.signal_broker import active_public_signals, data_freshness_summary, warning_inputs_from_signals
 from app.services.alert_engine import evaluate_alerts
 from app.services.drone_observations import (
@@ -124,11 +125,28 @@ def _incident_globe_records() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             build = database["dataset_builds"].find_one({"_id": "incident_globe_1990_2026"})
             if not build:
                 build = database["dataset_builds"].find_one({"_id": "incident_globe_2000_2026"}) or {}
-            return [mongo_public_doc(item) for item in collection.find({}, {"_id": 0})], build
+            records = [mongo_public_doc(item) for item in collection.find({}, {"_id": 0})]
+            added = merge_public_registry_globe_records(records, 1990, 2026)
+            if added:
+                build = dict(build)
+                summary = dict(build.get("summary", {}))
+                summary["total_records"] = len(records)
+                summary["mapped_records"] = sum(bool(record.get("mapped")) for record in records)
+                summary["unmapped_records"] = sum(not bool(record.get("mapped")) for record in records)
+                summary["public_registry_records_added_at_read"] = added
+                build["summary"] = summary
+            return records, build
     if not INCIDENT_GLOBE_ARTIFACT.exists():
         raise HTTPException(status_code=503, detail="Incident globe dataset has not been built")
     payload = json.loads(INCIDENT_GLOBE_ARTIFACT.read_text(encoding="utf-8"))
-    return payload.get("records", []), payload
+    records = payload.get("records", [])
+    added = merge_public_registry_globe_records(records, 1990, 2026)
+    if added:
+        payload["summary"]["total_records"] = len(records)
+        payload["summary"]["mapped_records"] = sum(bool(record.get("mapped")) for record in records)
+        payload["summary"]["unmapped_records"] = sum(not bool(record.get("mapped")) for record in records)
+        payload["summary"]["public_registry_records_added_at_read"] = added
+    return records, payload
 
 
 def _globe_summary(records: list[dict[str, Any]], dataset: dict[str, Any]) -> dict[str, Any]:

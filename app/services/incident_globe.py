@@ -311,6 +311,115 @@ def load_hal_records(path: str | Path, start_year: int, end_year: int) -> list[d
     ]
 
 
+def load_public_registry_globe_records(start_year: int, end_year: int) -> list[dict[str, Any]]:
+    """Project reviewed public registry cases into the victim-name-free globe shape."""
+
+    from app.services.incident_registry_cases import real_world_registry_records
+
+    records: list[dict[str, Any]] = []
+    for record in real_world_registry_records():
+        if record.public_visibility != "public" or not record.incident_date_normalized:
+            continue
+        try:
+            incident_date = datetime.strptime(record.incident_date_normalized, "%Y-%m-%d")
+        except ValueError:
+            continue
+        if not start_year <= incident_date.year <= end_year:
+            continue
+        coordinates = None
+        if valid_coordinate(record.latitude, record.longitude):
+            coordinates = {
+                "type": "Point",
+                "coordinates": [float(record.longitude), float(record.latitude)],
+            }
+        sources = [
+            {
+                "source_name": source.source_name or source.source_type,
+                "source_label": source.source_name or source.source_type.replace("_", " ").title(),
+                "source_record_id": source.source_id,
+                "source_row_number": None,
+                "url": source.source_url,
+                "url_scope": "article" if source.source_url else None,
+                "match_status": "reviewed_registry_source",
+            }
+            for source in record.source_links
+            if source.public_citation_allowed
+        ]
+        records.append(
+            {
+                "globe_id": f"incident:registry:{record.ai1sad_case_id}",
+                "canonical_record_id": record.ai1sad_case_id,
+                "year": incident_date.year,
+                "decade": incident_date.year // 10 * 10,
+                "date_text": record.incident_date_raw,
+                "month": incident_date.month,
+                "day": incident_date.day,
+                "country": record.country,
+                "region": record.region,
+                "location": record.location,
+                "coordinates": coordinates,
+                "mapped": coordinates is not None,
+                "coordinate_source": "registry_named_location",
+                "coordinate_confidence": record.coordinate_confidence,
+                "activity": record.activity,
+                "incident_type_raw": None,
+                "provocation": "unknown",
+                "provocation_conflict": False,
+                "injury_summary": record.injury_summary,
+                "fatal": record.fatality is True,
+                "outcome_category": outcome_category(
+                    record.fatality is True,
+                    record.injury_summary,
+                ),
+                "species_common": (
+                    record.official_species_name
+                    if record.official_species_status == "confirmed_public"
+                    else None
+                ),
+                "species_scientific": None,
+                "sources": sources,
+                "source_count": len(sources),
+                "media": [],
+                "visibility": "public_reviewed_registry",
+            }
+        )
+    return records
+
+
+def merge_public_registry_globe_records(
+    records: list[dict[str, Any]],
+    start_year: int,
+    end_year: int,
+) -> int:
+    """Add reviewed public registry cases without duplicating an existing exact case key."""
+
+    existing_keys = {
+        (
+            record.get("year"),
+            record.get("month"),
+            record.get("day"),
+            location_key(record.get("country")),
+            location_key(record.get("location")),
+        )
+        for record in records
+    }
+    added = 0
+    for record in load_public_registry_globe_records(start_year, end_year):
+        key = (
+            record["year"],
+            record.get("month"),
+            record.get("day"),
+            location_key(record.get("country")),
+            location_key(record.get("location")),
+        )
+        if key in existing_keys:
+            continue
+        records.append(record)
+        existing_keys.add(key)
+        added += 1
+    return added
+
+
 def build_globe_dataset(
     *,
     database_path: str | Path = DEFAULT_DATABASE,
@@ -320,6 +429,7 @@ def build_globe_dataset(
     start_year: int = 1990,
     end_year: int = 2026,
     generated_at: str | None = None,
+    include_public_registry: bool = True,
 ) -> dict[str, Any]:
     rows = load_source_rows(database_path, start_year, end_year)
     geocodes = load_geocode_cache(geocode_cache_path)
@@ -427,6 +537,12 @@ def build_globe_dataset(
             }
         )
 
+    registry_records_added = (
+        merge_public_registry_globe_records(records, start_year, end_year)
+        if include_public_registry
+        else 0
+    )
+
     records.sort(key=lambda item: (item["year"], item.get("date_text") or "", item["globe_id"]), reverse=True)
     outcome_counts = Counter(record["outcome_category"] for record in records)
     provocation_counts = Counter(record["provocation"] for record in records)
@@ -457,6 +573,7 @@ def build_globe_dataset(
             "country_mismatch_coordinates_rejected": country_mismatch_rejections,
             "unreviewed_geocode_coordinates_rejected": unreviewed_geocode_rejections,
             "contextual_geocode_coordinates_mapped": contextual_geocode_count,
+            "public_registry_records_added": registry_records_added,
         },
         "data_boundaries": {
             "victim_names_included": False,
@@ -468,6 +585,7 @@ def build_globe_dataset(
             "approximate_cache_coordinates_country_checked": True,
             "unreviewed_cache_coordinates_plotted": False,
             "contextual_geocodes_require_country_and_coast_validation": True,
+            "restricted_registry_cases_included": False,
         },
         "records": records,
     }

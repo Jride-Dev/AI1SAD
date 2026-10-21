@@ -19,6 +19,7 @@ from app.services.incident_registry import (
 )
 from app.services.incident_registry_cases import (
     GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID,
+    ORIENT_BEACH_SOUTH_AFRICA_2026_CASE_ID,
     real_world_registry_records,
 )
 
@@ -509,7 +510,11 @@ def test_registry_records_do_not_create_scoring_replay_feed_or_drone_side_effect
 
 
 def test_glenfield_beach_real_world_registry_case_preserves_uncertain_species_and_behavior():
-    [record] = real_world_registry_records(now=NOW)
+    record = next(
+        record
+        for record in real_world_registry_records(now=NOW)
+        if record.ai1sad_case_id == GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID
+    )
 
     assert record.ai1sad_case_id == GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID
     assert record.incident_date_normalized == "2026-09-14"
@@ -544,7 +549,11 @@ def test_glenfield_beach_real_world_registry_case_preserves_uncertain_species_an
 
 
 def test_glenfield_beach_real_world_registry_case_sources_and_public_output_are_bounded():
-    [record] = real_world_registry_records(now=NOW)
+    record = next(
+        record
+        for record in real_world_registry_records(now=NOW)
+        if record.ai1sad_case_id == GLENFIELD_BEACH_MEL_ISMAIL_2026_CASE_ID
+    )
     public = public_safe_registry_output(record)
     rendered_public = str(public)
 
@@ -572,3 +581,34 @@ def test_glenfield_beach_real_world_registry_case_sources_and_public_output_are_
     assert "mistaken_identity_candidate" not in rendered_public
     assert registry_side_effects()["alters_scoring"] is False
     assert registry_side_effects()["creates_alerts"] is False
+
+
+def test_orient_beach_registry_case_is_public_safe_and_keeps_unknowns_explicit():
+    record = next(
+        record
+        for record in real_world_registry_records(now=NOW)
+        if record.ai1sad_case_id == ORIENT_BEACH_SOUTH_AFRICA_2026_CASE_ID
+    )
+    public = public_safe_registry_output(record)
+    rendered_public = str(public).lower()
+
+    assert record.incident_date_normalized == "2026-10-20"
+    assert record.country == "South Africa"
+    assert record.region == "Eastern Cape"
+    assert record.location == "Orient Beach"
+    assert record.activity == "open-water swimming"
+    assert record.fatality is True
+    assert record.body_recovered is True
+    assert record.consumption_evidence == "none_reported"
+    assert record.official_species_status == "unconfirmed"
+    assert record.official_species_name is None
+    assert record.internal_species_hypotheses == []
+    assert record.primary_behavioral_hypothesis == "unknown_insufficient_evidence"
+    assert record.behavioral_confidence == "unknown"
+    assert record.alternative_hypotheses == []
+    assert record.public_visibility == "public"
+    assert len(public["source_citations"]) == 4
+    assert "great white" not in rendered_public
+    assert "bull shark" not in rendered_public
+    assert "mistaken identity" not in rendered_public
+    assert "consumed" not in public["injury_summary"].lower()

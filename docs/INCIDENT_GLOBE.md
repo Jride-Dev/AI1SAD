@@ -2,20 +2,21 @@
 
 ## Scope
 
-The Incident Globe is an AI1SAD geographical explorer for shark-human incident records from 1990 through 2026. It combines the normalized scrubbed incident database with reviewed exact-match attribution from the private Sharks Happen source lane. The current release provides non-overlapping layers for 1990-1999, the 2000s, the 2010s, and 2020-2026.
+The Incident Globe is an AI1SAD geographical explorer for shark-human incident records from 1990 through 2026. It combines the normalized scrubbed incident database with reviewed exact-match attribution from the private Sharks Happen source lane and reviewed registry cases explicitly marked for public visibility. The current release provides non-overlapping layers for 1990-1999, the 2000s, the 2010s, and 2020-2026.
 
 Open the frontend at `http://localhost:5174/incident-globe`. The supporting read-only endpoint is `GET /api/v1/incidents-globe`.
 
 ## Current Build
 
-The October 4, 2026 build contains:
+The October 21, 2026 build contains:
 
 | Measure | Count |
 | --- | ---: |
-| Deduplicated records | 4,089 |
-| Records with validated coordinates | 2,307 |
+| Deduplicated records | 4,090 |
+| Records with validated coordinates | 2,308 |
 | Source-provided coordinates | 531 |
 | Contextual CSV2GEO coordinates | 1,776 |
+| Reviewed public-registry named-beach centroids | 1 |
 | Records retained without a validated map point | 1,782 |
 | Explicit invalid/no-shark-involvement rows excluded | 205 |
 | Sharks Happen rows considered in the period | 516 |
@@ -55,6 +56,10 @@ An attempted-consumption claim alone does not classify a case as fatal and consu
 
 Canonical normalized records are grouped with their duplicate source rows so one event can show all retained source attributions. A Sharks Happen record is attached to an existing event only when the importer marked it as an exact candidate. Likely candidates remain separate pending human review. Every infographic lists the available dataset or source-channel attribution; a case-specific URL appears only when the source record contains one.
 
+Reviewed registry records enter the globe only when `public_visibility` is `public`. The adapter emits a victim-name-free record and only source links explicitly approved for public citation. Restricted records remain outside the globe. The Orient Beach case is the first record through this path; its coordinate is a reviewed named-beach centroid, its provocation remains `unknown`, and its recovered-body fatality remains `fatal` rather than `fatal_consumed`.
+
+The API overlays these reviewed public registry records onto the stored MongoDB projection with an exact date/country/location duplicate guard. A later MongoDB rebuild containing the same case therefore does not produce a second marker. This keeps current reviewed cases available even when a local Atlas maintenance connection is unavailable; MongoDB remains the bulk historical projection.
+
 The local projection is generated with:
 
 ```powershell
@@ -68,6 +73,7 @@ The original coordinate-review queue is `data/review/incident_globe_all_geocode_
 ## Safety, Privacy, And Limits
 
 - The projection is built from the scrubbed incident database and does not expose victim names or private analyst notes.
+- Public registry projection is allowlisted by record visibility; restricted registry cases are excluded.
 - Raw Sharks Happen workbook content and private fields remain outside the response.
 - The feature does not change warning scoring, create alerts, create observations, alter replay artifacts, or determine species.
 - Explicit invalid/no-shark-involvement rows are excluded. Questionable records remain source-attributed rather than silently discarded.
@@ -79,19 +85,20 @@ The original coordinate-review queue is `data/review/incident_globe_all_geocode_
 
 ## Validation
 
-Validation completed October 4, 2026:
+Validation completed October 21, 2026:
 
-- focused Incident Globe tests: `7 passed`
-- full backend tests: `342 passed`, with two existing FastAPI startup-event deprecation warnings
+- focused registry, viewer, and Incident Globe tests: `27 passed`
+- full backend tests: `345 passed`, with two existing FastAPI startup-event deprecation warnings
 - frontend tests: `32 passed`
 - frontend production build: passed
-- Local projection rebuild: `4,089` records; `2,307` mapped, `1,782` unresolved, and `1,776` contextual coordinates accepted
+- local projection rebuild: `4,090` records; `2,308` mapped, `1,782` unresolved, and `1,776` contextual coordinates accepted
+- Orient Beach public-registry projection: one mapped `fatal` record, `unknown` provocation, unconfirmed species, four reviewed public citations, and no restricted Glenfield projection
 - 1990-1999 layer: `691` records; `380` mapped and `311` unresolved
 - Full-history vendor validation: `1,914` unique contexts accepted; `1,115` low relevance, `562` country mismatch, `466` missing/invalid, `142` too far inland, and `43` unknown country boundary results rejected
 - Chatham Island regression: the 21-Jul-2001 Massachusetts record resolves to `41.68227, -70.01460`, with `0.98` relevance and `0.58 km` coastline distance
-- local Mongo-backed API verification: full query returned `4,089` total, `2,307` mapped, and `1,782` unresolved; `decade=1990` returned `691` total, `380` mapped, and `311` unresolved
-- live production verification: API and browser render `4,089` total, `2,307` mapped, and `1,782` unresolved; selecting the 1990s layer renders `691` total, `380` mapped, and `311` unresolved
-- MkDocs strict build, README local-link check (`64` checked, `0` missing), changed-file secret scan, prohibited-language scan, and Git whitespace check: passed
+- MongoDB projection rebuild: `4,090` records inserted after the Atlas connection was restored
+- live production fatal-2020s query: exactly one Orient Beach registry marker at `27.91513, -33.02495`, with `fatal` outcome, `unknown` provocation, no species value, and four source citations
+- MkDocs strict build, README local-link check (`62` checked, `0` missing), changed-file secret scan, prohibited-language scan, Git whitespace check, and frontend production build: passed
 
 ## Next Handoff
 

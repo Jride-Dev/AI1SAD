@@ -7,10 +7,12 @@ def test_local_registry_view_renders_real_case_without_side_effects() -> None:
     view_model = build_registry_view_model(include_mongo=False)
     rendered = render_registry_html(view_model)
 
-    assert view_model["record_count"] == 1
+    assert view_model["record_count"] == 2
     assert "AI1SAD-WA-GLENFIELD-BEACH-2026-09-14" in rendered
+    assert "AI1SAD-ZA-ORIENT-BEACH-2026-10-20" in rendered
     assert "Mel Ismail" in rendered
     assert "Glenfield Beach" in rendered
+    assert "Orient Beach" in rendered
     assert "unconfirmed" in rendered
     assert "unknown_insufficient_evidence" in rendered
     assert view_model["side_effects"]["creates_alerts"] is False

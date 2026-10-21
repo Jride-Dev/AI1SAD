@@ -2,18 +2,22 @@
 
 ## Current Snapshot
 
-- Current phase number: Phase 26C Australian Archival Newspaper Source Tracker - implemented locally, uncommitted
+- Current phase number: Phase 26C Australian Archival Newspaper Source Tracker - implemented
 - Target full working-version launch: September 7, 2026.
 - AI1SAD is targeting a full working-version launch on September 7, 2026. Current development is focused on evidence provenance, staged upstream data review, replay explainability, UAV operator workflows, and public-safe surveillance outputs.
 - Latest completed committed phase: Phase 26B follow-up first real-world AI1SAD Shark-Human Incident Registry case
-- Latest local implementation: Phase 26C local/manual Australian archival source tracker plus a local-only incident registry viewer that visibly renders the Glenfield Beach record, evidence, sources, uncertainty boundaries, and Mongo archival-source counts
+- Latest local implementation: reviewed Orient Beach, South Africa fatal incident registry case plus its victim-name-free public Incident Globe projection
 - Latest bounded source addition: Hal's Sharks Happen workbook imported as `864` private, attributed source records with duplicate comparison and separate Mongo persistence; no automatic merge or registry promotion
-- Latest local product view: the 1990-2026 Incident Globe presents `4,089` deduplicated, source-attributed records with decade, outcome, and Provoked/Unprovoked filters. `2,307` records have validated map points and `1,782` remain unplotted. The mapped total includes `531` source coordinates and `1,776` contextual CSV2GEO results that passed relevance, country-boundary, and 25 km coastline checks. The 1990-1999 layer contains `691` records, with `380` mapped and `311` unresolved. The projection excludes `205` explicit invalid/no-shark-involvement rows, attaches `110` reviewed exact Sharks Happen matches, and retains `406` standalone Sharks Happen records.
+- Latest local product view: the 1990-2026 Incident Globe presents `4,090` deduplicated, source-attributed records with decade, outcome, and Provoked/Unprovoked filters. `2,308` records have validated map points and `1,782` remain unplotted. The mapped total includes `531` source coordinates, `1,776` contextual CSV2GEO results that passed relevance, country-boundary, and 25 km coastline checks, and one reviewed public-registry named-beach centroid. The 1990-1999 layer contains `691` records, with `380` mapped and `311` unresolved. The projection excludes `205` explicit invalid/no-shark-involvement rows, attaches `110` reviewed exact Sharks Happen matches, and retains `406` standalone Sharks Happen records.
 - Deployment status: the Cloudflare Workers Static Assets frontend, Incident Globe, apex/`www` DNS, TLS, Email Routing, Render API, MongoDB Atlas connection, and `api.ai1sad.org` custom domain are live. The production API and browser now expose the non-overlapping 1990-1999 layer with `691` records, `380` mapped, and `311` unresolved; the all-years view exposes `4,089` records, `2,307` mapped, and `1,782` unresolved. Cloudflare Pages docs at `docs.ai1sad.org` remain pending. Target full working-version launch remains September 7, 2026.
 - Incident Globe expansion commit: `077214b` Add 1990s incident globe layer
 - Cloudflare Worker version: `7163d7e4-7d5c-42e5-afa9-2c2f7a72d85a`; production is healthy, while the dashboard's stale failed-build badge remains until the disconnected GitHub build trigger is reviewed and reconnected
 
 The Incident Globe does not change warning scoring, alerts, replay outputs, species findings, drone observations, source truth, outcome labels, or provocation labels. Its next handoff is human-reviewed coordinate resolution, case-media rights review, and pre-1990 decade expansion. Target full working-version launch remains September 7, 2026.
+
+The October 20, 2026 Orient Beach case is recorded as a fatal recovered-body incident involving a 65-year-old open-water swimmer. Reuters, Associated Press, and TimesLIVE support the incident facts; the map uses a reviewed Orient Beach centroid. Species is unconfirmed, provocation and behavior remain unknown, victim identity is absent from the public globe projection, and the case creates no warning, alert, public-feed observation, scoring change, replay fact, or drone observation.
+
+Current-case validation on October 21, 2026: `27` focused registry/viewer/globe tests, `345` full backend tests, `32` frontend tests, the production frontend build, and MkDocs strict build pass. The MongoDB projection contains `4,090` records, `2,308` mapped, and `1,782` unresolved after the Atlas connection was restored. The live API returns exactly one Orient Beach marker with the reviewed coordinates, fatal outcome, unknown provocation, no species value, and four source citations. The API also overlays reviewed public registry cases with exact duplicate suppression, so future code/data deployment order cannot create duplicate markers; no credential, scoring, replay, or alert behavior changed.
 
 ## Validation Counts (Backend Hosting Migration)
 
