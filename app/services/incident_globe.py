@@ -160,11 +160,13 @@ def contextual_key(location: Any, region: Any, country: Any) -> tuple[str, str, 
     return location_key(location), location_key(region), location_key(country)
 
 
-def load_context_geocodes(path: str | Path) -> dict[tuple[str, str, str], tuple[float, float, float | None]]:
+def load_context_geocodes(
+    path: str | Path,
+) -> dict[tuple[str, str, str], tuple[float, float, float | None, str]]:
     cache_path = Path(path)
     if not cache_path.exists():
         return {}
-    result: dict[tuple[str, str, str], tuple[float, float, float | None]] = {}
+    result: dict[tuple[str, str, str], tuple[float, float, float | None, str]] = {}
     with cache_path.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
             if row.get("validation_status") != "validated":
@@ -180,6 +182,7 @@ def load_context_geocodes(path: str | Path) -> dict[tuple[str, str, str], tuple[
                 float(row["latitude"]),
                 float(row["longitude"]),
                 relevance,
+                clean_text(row.get("provider")) or "CSV2GEO",
             )
     return result
 
@@ -255,7 +258,10 @@ def outcome_category(fatal: bool, injury: Any, hal_records: list[dict[str, Any]]
 def coordinates_for_record(
     record: dict[str, Any],
     geocodes: dict[str, tuple[float, float, bool]],
-    context_geocodes: dict[tuple[str, str, str], tuple[float, float, float | None]] | None = None,
+    context_geocodes: dict[
+        tuple[str, str, str], tuple[float, float, float | None, str] | tuple[float, float, float | None]
+    ]
+    | None = None,
 ) -> tuple[dict[str, Any] | None, str, str]:
     if valid_coordinate(record.get("latitude"), record.get("longitude")):
         return (
@@ -271,9 +277,15 @@ def coordinates_for_record(
         )
     )
     if context:
-        lat, lon, relevance = context
+        lat, lon, relevance = context[:3]
+        provider = context[3] if len(context) > 3 else "CSV2GEO"
         confidence = "high_contextual" if relevance is not None and relevance >= 0.9 else "reviewed_contextual"
-        return {"type": "Point", "coordinates": [lon, lat]}, "csv2geo_contextual", confidence
+        coordinate_source = (
+            "geonames_contextual"
+            if location_key(provider) == "geonames"
+            else "csv2geo_contextual"
+        )
+        return {"type": "Point", "coordinates": [lon, lat]}, coordinate_source, confidence
     cached = geocodes.get(location_key(record.get("location_public") or record.get("location_raw")))
     if cached:
         lat, lon, reviewed = cached
@@ -555,6 +567,7 @@ def build_globe_dataset(
         record["coordinate_source"] == "unreviewed_geocode_rejected" for record in records
     )
     contextual_geocode_count = sum(record["coordinate_source"] == "csv2geo_contextual" for record in records)
+    geonames_geocode_count = sum(record["coordinate_source"] == "geonames_contextual" for record in records)
     return {
         "schema_version": GLOBE_SCHEMA_VERSION,
         "generated_at": generated_at or utc_now_iso(),
@@ -573,6 +586,7 @@ def build_globe_dataset(
             "country_mismatch_coordinates_rejected": country_mismatch_rejections,
             "unreviewed_geocode_coordinates_rejected": unreviewed_geocode_rejections,
             "contextual_geocode_coordinates_mapped": contextual_geocode_count,
+            "geonames_contextual_coordinates_mapped": geonames_geocode_count,
             "public_registry_records_added": registry_records_added,
         },
         "data_boundaries": {

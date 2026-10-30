@@ -208,6 +208,18 @@ def test_contextual_geocode_uses_location_region_and_country(tmp_path: Path):
     assert confidence == "high_contextual"
 
 
+def test_contextual_geocode_preserves_geonames_provenance():
+    coordinates, source, confidence = coordinates_for_record(
+        {"country": "USA", "area": "Florida", "location_public": "Jacksonville Beach"},
+        {},
+        {("jacksonville beach", "florida", "usa"): (30.29469, -81.39314, 1.0, "GeoNames")},
+    )
+
+    assert coordinates == {"type": "Point", "coordinates": [-81.39314, 30.29469]}
+    assert source == "geonames_contextual"
+    assert confidence == "high_contextual"
+
+
 def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pytest.MonkeyPatch):
     records = [
         {"record_id": "a", "decade": 2000, "provocation": "unprovoked", "outcome_category": "fatal", "mapped": True},
@@ -237,6 +249,7 @@ def test_globe_endpoint_filters_decade_provocation_and_outcome(monkeypatch: pyte
     assert payload["summary"]["dataset_country_mismatch_coordinates_rejected"] == 2
     assert payload["summary"]["dataset_unreviewed_geocode_coordinates_rejected"] == 7
     assert payload["summary"]["dataset_contextual_geocode_coordinates_mapped"] == 11
+    assert payload["summary"]["dataset_geonames_contextual_coordinates_mapped"] == 0
 
 
 def test_globe_endpoint_rejects_unsupported_filters(monkeypatch: pytest.MonkeyPatch):

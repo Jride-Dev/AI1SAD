@@ -8,24 +8,25 @@ Open the frontend at `http://localhost:5174/incident-globe`. The supporting read
 
 ## Current Build
 
-The October 21, 2026 build contains:
+The October 30, 2026 build contains:
 
 | Measure | Count |
 | --- | ---: |
 | Deduplicated records | 4,090 |
-| Records with validated coordinates | 2,308 |
+| Records with validated coordinates | 2,704 |
 | Source-provided coordinates | 531 |
 | Contextual CSV2GEO coordinates | 1,776 |
+| Contextual GeoNames coordinates | 396 |
 | Reviewed public-registry named-beach centroids | 1 |
-| Records retained without a validated map point | 1,782 |
+| Records retained without a validated map point | 1,386 |
 | Explicit invalid/no-shark-involvement rows excluded | 205 |
 | Sharks Happen rows considered in the period | 516 |
 | Reviewed exact Sharks Happen matches attached | 110 |
 | Standalone Sharks Happen source records | 406 |
 | 1990-1999 records | 691 |
-| 1990-1999 mapped / unresolved | 380 / 311 |
+| 1990-1999 mapped / unresolved | 452 / 239 |
 
-Unresolved locations remain visible in totals and filtering but are not placed on the globe. AI1SAD does not reuse coordinates from broad or ambiguous location text. The original cache keyed coordinates by location alone, which allowed names such as Chatham Island, Portland, North Beach, and Black Point to resolve to unrelated countries or inland places. The replacement contextual cache keys location, region, and country together. CSV2GEO results require relevance of at least `0.75`, containment within the stated Natural Earth country boundary, and no more than `25 km` distance from the Natural Earth coastline. Source-provided coordinates are not rewritten by this check.
+Unresolved locations remain visible in totals and filtering but are not placed on the globe. AI1SAD does not reuse coordinates from broad or ambiguous location text. The original cache keyed coordinates by location alone, which allowed names such as Chatham Island, Portland, North Beach, and Black Point to resolve to unrelated countries or inland places. The replacement contextual cache keys location, region, and country together. CSV2GEO results require relevance of at least `0.75`, containment within the stated Natural Earth country boundary, and no more than `25 km` distance from the Natural Earth coastline. The offline GeoNames pass requires stated-country agreement, supplied-region corroboration, exact or tightly bounded fuzzy matching, an allowed populated-place or coastal feature, rejection of near-tied candidates, and a coastline limit of `5 km` for ordinary places, `10 km` for parks, or `25 km` for large islands/bays/atolls. Reviewed ambiguous names are recorded separately and remain off-map. Source-provided coordinates are not rewritten by these checks.
 
 ## Interaction
 
@@ -37,7 +38,7 @@ Unresolved locations remain visible in totals and filtering but are not placed o
 - Drag to rotate, use the mouse wheel or zoom controls to change scale, and toggle automatic rotation.
 - Markers use front-face rendering and globe depth testing so points on the far hemisphere cannot appear through or around the Earth surface.
 
-The globe uses NASA's [Blue Marble](https://visibleearth.nasa.gov/images/57723/the-blue-marble) imagery as its Earth texture. Contextual coordinate validation uses [Natural Earth](https://www.naturalearthdata.com/) 1:10m country and coastline geometry; those reference files are validation inputs rather than browser assets.
+The globe uses NASA's [Blue Marble](https://visibleearth.nasa.gov/images/57723/the-blue-marble) imagery as its Earth texture. Contextual coordinate validation uses [Natural Earth](https://www.naturalearthdata.com/) 1:10m country and coastline geometry; those reference files are validation inputs rather than browser assets. The bounded offline resolver uses [GeoNames country dumps](https://download.geonames.org/export/dump/) and [feature codes](https://www.geonames.org/export/codes.html) under CC BY 4.0; the downloaded gazetteers remain ignored local build inputs, while accepted coordinates retain GeoNames provider and feature provenance.
 
 ## Classification Rules
 
@@ -70,6 +71,8 @@ This writes ignored local data to `data/public/incident_globe_1990_2026.json` an
 
 The original coordinate-review queue is `data/review/incident_globe_all_geocode_review_2026-10-03.csv`. The full-history sanitized vendor input is `data/review/incident_globe_csv2geo_1900_2026_upload_2026-10-03.csv`, the raw vendor result is `data/review/incident_globe_csv2geo_1900_2026_result_2026-10-03.csv`, and the validated cache is `data/review/incident_globe_context_geocodes_1900_2026.csv`. They contain location metadata and internal query IDs only; victim names, injuries, private analyst notes, credentials, and restricted registry data were not submitted. Every vendor result retains its validation status and provenance.
 
+`scripts/resolve_incident_globe_geonames.py` reproduces the offline GeoNames pass. `data/review/incident_globe_geonames_rejections.csv` preserves reviewed ambiguity decisions rather than hard-coding guessed coordinates. GeoNames receives no AI1SAD incident data because its country files are downloaded and searched locally.
+
 ## Safety, Privacy, And Limits
 
 - The projection is built from the scrubbed incident database and does not expose victim names or private analyst notes.
@@ -79,24 +82,26 @@ The original coordinate-review queue is `data/review/incident_globe_all_geocode_
 - Explicit invalid/no-shark-involvement rows are excluded. Questionable records remain source-attributed rather than silently discarded.
 - No rights-cleared per-case image collection is currently available. The infographic supports approved media references but does not invent, scrape, or hotlink images.
 - Mapped points come from source-provided coordinates or validated contextual results. Coordinate source and confidence remain visible in the infographic.
-- Relevance, country-boundary, and coastline checks prevent broad classes of wrong placement but do not prove street-level or offshore precision. Rejected results remain available for human review.
+- Relevance, country, region, ambiguity, feature-type, and coastline checks prevent broad classes of wrong placement but do not prove street-level or offshore precision. Rejected results remain available for source enrichment and human review.
+- `147` incident records have blank location text and cannot be safely geocoded. Other ambiguous or underspecified records remain unresolved; the resolver does not substitute country or region centroids.
 - Fatal records are plotted only when a source or contextual coordinate passes the same validation boundary; outcome severity never relaxes coordinate requirements.
 - Incident density is not a risk rate and does not account for water-use exposure, reporting differences, or population.
 
 ## Validation
 
-Validation completed October 21, 2026:
+Validation completed October 30, 2026:
 
-- focused registry, viewer, and Incident Globe tests: `27 passed`
-- full backend tests: `345 passed`, with two existing FastAPI startup-event deprecation warnings
+- focused GeoNames and Incident Globe tests: `22 passed`
+- full backend tests: `358 passed`, with two existing FastAPI startup-event deprecation warnings
 - frontend tests: `32 passed`
 - frontend production build: passed
-- local projection rebuild: `4,090` records; `2,308` mapped, `1,782` unresolved, and `1,776` contextual coordinates accepted
+- local and MongoDB projection rebuild: `4,090` records; `2,704` mapped, `1,386` unresolved, `1,776` CSV2GEO coordinates, and `396` GeoNames coordinates
 - Orient Beach public-registry projection: one mapped `fatal` record, `unknown` provocation, unconfirmed species, four reviewed public citations, and no restricted Glenfield projection
-- 1990-1999 layer: `691` records; `380` mapped and `311` unresolved
+- 1990-1999 layer: `691` records; `452` mapped and `239` unresolved
 - Full-history vendor validation: `1,914` unique contexts accepted; `1,115` low relevance, `562` country mismatch, `466` missing/invalid, `142` too far inland, and `43` unknown country boundary results rejected
 - Chatham Island regression: the 21-Jul-2001 Massachusetts record resolves to `41.68227, -70.01460`, with `0.98` relevance and `0.58 km` coastline distance
-- MongoDB projection rebuild: `4,090` records inserted after the Atlas connection was restored
+- MongoDB projection rebuild: `4,090` records inserted
+- live production API: `4,090` records, `2,704` mapped, and `1,386` unresolved
 - live production fatal-2020s query: exactly one Orient Beach registry marker at `27.91513, -33.02495`, with `fatal` outcome, `unknown` provocation, no species value, and four source citations
 - MkDocs strict build, README local-link check (`62` checked, `0` missing), changed-file secret scan, prohibited-language scan, Git whitespace check, and frontend production build: passed
 

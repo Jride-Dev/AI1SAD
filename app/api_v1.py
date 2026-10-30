@@ -177,6 +177,9 @@ def _globe_summary(records: list[dict[str, Any]], dataset: dict[str, Any]) -> di
         "dataset_contextual_geocode_coordinates_mapped": dataset.get("summary", {}).get(
             "contextual_geocode_coordinates_mapped", 0
         ),
+        "dataset_geonames_contextual_coordinates_mapped": dataset.get("summary", {}).get(
+            "geonames_contextual_coordinates_mapped", 0
+        ),
     }
 
 
