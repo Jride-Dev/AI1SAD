@@ -35,6 +35,7 @@ Unresolved locations remain visible in totals and filtering but are not placed o
 - Toggle `Fatal`, `Fatal and consumed/body not recovered`, `Non-fatal`, and `No injury` markers.
 - Hover over a mapped marker for a compact summary.
 - Select a marker to open an incident infographic with event fields, coordinate confidence, source attribution, links, and any approved media references.
+- Open `Browse records` to inspect every unresolved incident without assigning it a guessed pin. The drawer follows the active decade, outcome, and provocation filters; summarizes named-locality, region-only, country-only, and no-location records; supports text, country, and region filtering; and opens the same source infographic as a mapped marker.
 - Drag to rotate, use the mouse wheel or zoom controls to change scale, and toggle automatic rotation.
 - Markers use front-face rendering and globe depth testing so points on the far hemisphere cannot appear through or around the Earth surface.
 
@@ -84,6 +85,7 @@ The original coordinate-review queue is `data/review/incident_globe_all_geocode_
 - Mapped points come from source-provided coordinates or validated contextual results. Coordinate source and confidence remain visible in the infographic.
 - Relevance, country, region, ambiguity, feature-type, and coastline checks prevent broad classes of wrong placement but do not prove street-level or offshore precision. Rejected results remain available for source enrichment and human review.
 - `147` incident records have blank location text and cannot be safely geocoded. Other ambiguous or underspecified records remain unresolved; the resolver does not substitute country or region centroids.
+- Unresolved does not mean excluded: all `1,386` unresolved records remain visible in filtered totals and in the searchable ledger. Location-resolution labels describe only the available geographic detail and do not raise coordinate confidence.
 - Fatal records are plotted only when a source or contextual coordinate passes the same validation boundary; outcome severity never relaxes coordinate requirements.
 - Incident density is not a risk rate and does not account for water-use exposure, reporting differences, or population.
 
@@ -95,6 +97,7 @@ Validation completed October 30, 2026:
 - full backend tests: `358 passed`, with two existing FastAPI startup-event deprecation warnings
 - frontend tests: `32 passed`
 - frontend production build: passed
+- local browser verification: the unresolved ledger exposed all `1,386` records, reported `1,240` named-locality, `92` region-only, `53` country-only, and `1` no-location record, and opened a source-attributed unmapped incident infographic at the mobile breakpoint
 - local and MongoDB projection rebuild: `4,090` records; `2,704` mapped, `1,386` unresolved, `1,776` CSV2GEO coordinates, and `396` GeoNames coordinates
 - Orient Beach public-registry projection: one mapped `fatal` record, `unknown` provocation, unconfirmed species, four reviewed public citations, and no restricted Glenfield projection
 - 1990-1999 layer: `691` records; `452` mapped and `239` unresolved
@@ -107,4 +110,4 @@ Validation completed October 30, 2026:
 
 ## Next Handoff
 
-The next bounded globe work is human review of rejected contextual results, rights review for case media, and publication of the already-prepared pre-1990 decade layers. Historical publication must preserve source independence and may not auto-merge likely duplicate candidates. The project roadmap retains the target full working-version launch date of September 7, 2026.
+The next bounded globe work is source-backed promotion from the unresolved ledger into reviewed coordinates, rights review for case media, and publication of the already-prepared pre-1990 decade layers. Historical publication must preserve source independence and may not auto-merge likely duplicate candidates or replace broad location evidence with a precise-looking point. The project roadmap retains the target full working-version launch date of September 7, 2026.

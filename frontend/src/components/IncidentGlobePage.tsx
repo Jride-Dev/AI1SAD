@@ -3,10 +3,13 @@ import {
   ExternalLink,
   HeartPulse,
   ImageOff,
+  ListFilter,
   LocateFixed,
+  MapPinOff,
   Minus,
   Plus,
   RotateCcw,
+  Search,
   ShieldCheck,
   Skull,
   X,
@@ -56,6 +59,7 @@ export function IncidentGlobePage() {
   const [provocation, setProvocation] = useState<"all" | GlobeProvocation>("all");
   const [outcomes, setOutcomes] = useState<Set<GlobeOutcome>>(new Set(Object.keys(outcomeConfig) as GlobeOutcome[]));
   const [autoRotate, setAutoRotate] = useState(true);
+  const [showUnmapped, setShowUnmapped] = useState(false);
   const globeRef = useRef<GlobeHandle>(null);
 
   useEffect(() => {
@@ -78,6 +82,7 @@ export function IncidentGlobePage() {
     );
   }, [data, decade, outcomes, provocation]);
   const mapped = useMemo(() => filtered.filter((record) => record.mapped && record.coordinates), [filtered]);
+  const unmapped = useMemo(() => filtered.filter((record) => !record.mapped || !record.coordinates), [filtered]);
   const counts = useMemo(
     () =>
       filtered.reduce<Record<string, number>>((acc, record) => {
@@ -134,7 +139,15 @@ export function IncidentGlobePage() {
       <div className="globe-summary" aria-live="polite">
         <strong>{filtered.length.toLocaleString()}</strong><span>records</span>
         <strong>{mapped.length.toLocaleString()}</strong><span>mapped</span>
-        <strong>{(filtered.length - mapped.length).toLocaleString()}</strong><span>location unresolved</span>
+        <strong>{unmapped.length.toLocaleString()}</strong><span>location unresolved</span>
+        <button
+          type="button"
+          className="unmapped-open"
+          onClick={() => { setSelected(null); setShowUnmapped(true); }}
+          disabled={!unmapped.length}
+        >
+          <ListFilter size={15} /> Browse records
+        </button>
       </div>
 
       <div className="globe-legend" aria-label="Outcome marker legend">
@@ -160,6 +173,13 @@ export function IncidentGlobePage() {
       </div>
 
       {hovered && !selected ? <div className="globe-tooltip"><strong>{formatLocation(hovered)}</strong><span>{formatDate(hovered)} · {outcomeConfig[hovered.outcome_category].label}</span></div> : null}
+      {showUnmapped ? (
+        <UnmappedIncidentDrawer
+          records={unmapped}
+          onClose={() => setShowUnmapped(false)}
+          onSelect={(incident) => { setShowUnmapped(false); setSelected(incident); }}
+        />
+      ) : null}
       {selected ? <IncidentInfographic incident={selected} onClose={() => setSelected(null)} /> : null}
     </section>
   );
@@ -426,7 +446,7 @@ function IncidentInfographic({ incident, onClose }: { incident: GlobeIncident; o
       <h2>{formatLocation(incident)}</h2>
       <div className="infographic-badges">
         <span className={`provocation ${incident.provocation}`}>{formatProvocation(incident.provocation)}</span>
-        <span>{incident.coordinate_confidence === "approximate" ? "Approximate map point" : "Source coordinate"}</span>
+        <span>{coordinateLabel(incident)}</span>
       </div>
       <dl className="incident-facts">
         <div><dt>Activity</dt><dd>{incident.activity || "Not recorded"}</dd></div>
@@ -456,6 +476,155 @@ function IncidentInfographic({ incident, onClose }: { incident: GlobeIncident; o
       <footer>Source-derived historical record. Provocation, species, injury, and outcome labels preserve database uncertainty.</footer>
     </aside>
   );
+}
+
+function UnmappedIncidentDrawer({
+  records,
+  onClose,
+  onSelect,
+}: {
+  records: GlobeIncident[];
+  onClose: () => void;
+  onSelect: (incident: GlobeIncident) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [country, setCountry] = useState("all");
+  const [region, setRegion] = useState("all");
+  const countryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    records.forEach((record) => {
+      const label = record.country?.trim() || "Country not recorded";
+      counts.set(label, (counts.get(label) ?? 0) + 1);
+    });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, [records]);
+  const regionCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    records.forEach((record) => {
+      const recordCountry = record.country?.trim() || "Country not recorded";
+      if (country !== "all" && recordCountry !== country) return;
+      const label = record.region?.trim() || "Region not recorded";
+      counts.set(label, (counts.get(label) ?? 0) + 1);
+    });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, [country, records]);
+  const visibleRecords = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    return records.filter((record) => {
+      const recordCountry = record.country?.trim() || "Country not recorded";
+      if (country !== "all" && recordCountry !== country) return false;
+      const recordRegion = record.region?.trim() || "Region not recorded";
+      if (region !== "all" && recordRegion !== region) return false;
+      if (!normalizedQuery) return true;
+      return [
+        record.location,
+        record.region,
+        record.country,
+        record.activity,
+        record.species_common,
+        record.injury_summary,
+        formatDate(record),
+      ].some((value) => String(value ?? "").toLocaleLowerCase().includes(normalizedQuery));
+    });
+  }, [country, query, records, region]);
+  const precisionCounts = useMemo(
+    () => records.reduce<Record<LocationResolution, number>>(
+      (counts, record) => {
+        counts[locationResolution(record)] += 1;
+        return counts;
+      },
+      { locality: 0, region: 0, country: 0, unknown: 0 },
+    ),
+    [records],
+  );
+
+  return (
+    <aside className="unmapped-drawer" aria-label="Unmapped incident records">
+      <header>
+        <div>
+          <p className="eyebrow">Visible without a guessed pin</p>
+          <h2>Unmapped incidents</h2>
+          <p>{records.length.toLocaleString()} source-derived records match the active globe filters.</p>
+        </div>
+        <button className="infographic-close" type="button" onClick={onClose} aria-label="Close unmapped incidents"><X size={20} /></button>
+      </header>
+
+      <div className="unmapped-resolution-summary" aria-label="Location resolution summary">
+        <div><strong>{precisionCounts.locality.toLocaleString()}</strong><span>Named locality</span></div>
+        <div><strong>{precisionCounts.region.toLocaleString()}</strong><span>Region only</span></div>
+        <div><strong>{precisionCounts.country.toLocaleString()}</strong><span>Country only</span></div>
+        <div><strong>{precisionCounts.unknown.toLocaleString()}</strong><span>No location</span></div>
+      </div>
+
+      <div className="unmapped-controls">
+        <label className="unmapped-search">
+          <Search size={16} aria-hidden="true" />
+          <input aria-label="Search unmapped incidents" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search location, activity, date, injury…" />
+        </label>
+        <label>
+          <span>Country</span>
+          <select value={country} onChange={(event) => { setCountry(event.target.value); setRegion("all"); }}>
+            <option value="all">All countries</option>
+            {countryCounts.map(([label, count]) => <option key={label} value={label}>{label} ({count.toLocaleString()})</option>)}
+          </select>
+        </label>
+        <label>
+          <span>Region</span>
+          <select value={region} onChange={(event) => setRegion(event.target.value)}>
+            <option value="all">All regions</option>
+            {regionCounts.map(([label, count]) => <option key={label} value={label}>{label} ({count.toLocaleString()})</option>)}
+          </select>
+        </label>
+      </div>
+
+      <div className="unmapped-results-heading">
+        <span>{visibleRecords.length.toLocaleString()} records</span>
+        <small>Open any record for its full source infographic.</small>
+      </div>
+      <div className="unmapped-list">
+        {visibleRecords.map((incident) => {
+          const outcome = outcomeConfig[incident.outcome_category];
+          const Icon = outcome.icon;
+          return (
+            <button key={incident.globe_id} type="button" onClick={() => onSelect(incident)}>
+              <span className="unmapped-outcome" style={{ color: outcome.color }}><Icon size={17} /></span>
+              <span className="unmapped-record-copy">
+                <strong>{formatLocation(incident)}</strong>
+                <span>{formatDate(incident)} · {incident.activity || "Activity not recorded"}</span>
+              </span>
+              <span className={`resolution-badge ${locationResolution(incident)}`}><MapPinOff size={13} />{resolutionLabel(incident)}</span>
+            </button>
+          );
+        })}
+        {!visibleRecords.length ? <p className="unmapped-empty">No unresolved records match this search.</p> : null}
+      </div>
+      <footer>These incidents remain part of the database and all filtered totals. Broad or missing locations are listed here instead of being assigned misleading coordinates.</footer>
+    </aside>
+  );
+}
+
+type LocationResolution = "locality" | "region" | "country" | "unknown";
+
+function locationResolution(incident: GlobeIncident): LocationResolution {
+  if (incident.location?.trim()) return "locality";
+  if (incident.region?.trim()) return "region";
+  if (incident.country?.trim()) return "country";
+  return "unknown";
+}
+
+function resolutionLabel(incident: GlobeIncident): string {
+  const resolution = locationResolution(incident);
+  if (resolution === "locality") return "Locality review";
+  if (resolution === "region") return "Region only";
+  if (resolution === "country") return "Country only";
+  return "No location";
+}
+
+function coordinateLabel(incident: GlobeIncident): string {
+  if (!incident.mapped || !incident.coordinates) return `Unmapped · ${resolutionLabel(incident)}`;
+  if (incident.coordinate_confidence === "approximate") return "Approximate map point";
+  if (incident.coordinate_source === "source_coordinate") return "Source coordinate";
+  return "Reviewed contextual coordinate";
 }
 
 function GlobeError({ message }: { message: string }) {

@@ -11,5 +11,6 @@ describe("IncidentGlobePage", () => {
     expect(markup).toContain("Shark incidents, 1990–2026");
     expect(markup).toContain("All 1990–2026");
     expect(markup).toContain("1990s");
+    expect(markup).toContain("Browse records");
   });
 });
